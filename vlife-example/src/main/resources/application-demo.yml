@@ -1,0 +1,26 @@
+server:
+  port: 8288
+  servlet:
+    context-path: /health
+spring:
+  datasource:
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://localhost:3306/bluestar?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update #更新或创建表
+    show-sql: true
+    database: mysql
+
+endpoints:
+  metrics:
+    sensitive: false
+
+#springdoc:
+#  swagger-ui:
+#    path: /swagger.html
+#    operations-sorter: method
+#    #custom path for api docs
+#    url: /doc/openapi.json

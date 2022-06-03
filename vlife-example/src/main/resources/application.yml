@@ -1,0 +1,45 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+    #关闭工程中的资源文件建立映射
+  resources:
+    add-mappings: false
+    static-locations: classpath:/static/, classpath:/templates/
+  profiles:
+    active: demo
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+
+    serialization:
+      indent_output: true
+      #忽略无法转换的对象
+      fail_on_empty_beans: false
+  datasource:
+  　type: com.alibaba.druid.pool.DruidDataSource   #配置当前要使用的数据源的操作类型那个
+  　driver-class-name: org.gjt.mm.mysql.Driver       #配置MySQL的驱动程序类
+  　filters: stat,wall,log4j     #druid监控配置
+  　dbcp2:
+    　min-idle: 5         #数据库连接池的最小维持连接数
+    　initial-size: 5     #初始化提供的连接数
+    　max-total: 5          #最大的连接数
+    　max-wait-millis: 20000        #等待连接获取的最大超时时间
+  aop:
+    proxy-target-class: true
+
+security:
+  basic:
+    enable: true # 避免跳到security的登录界面
+
+# 本项目的一些配置
+vlife:
+  packroot: cn.wwwlike.example
+
+logging:
+  config: classpath:log4j2.yml
+  level:
+    com:
+      th: debug
