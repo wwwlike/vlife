@@ -4,6 +4,8 @@
 
 VLIFE的核心能力是对复杂数据逻辑进行各种应用场景的处理，多维度赋能快速开发，推进研发由重复性基础开发转到业务能力提升、技术攻关方向上来。
 
+- [技术文档](http://vlife.wwwlike.cn) [快速开始](http://vlife.wwwlike.cn/#/quickstart/)
+
 ##  框架关系
 ![](http://vlife.wwwlike.cn/static/img/relation.png)
 * V-LIFE在JPA与QueryDsl基础上封装了能够处理复杂数据逻辑场景的CRUD接口。重复繁琐数据逻辑操作交给vlife完成，可显著降低研发难度。
@@ -36,9 +38,6 @@ VLIFE的核心能力是对复杂数据逻辑进行各种应用场景的处理，
 
 -  VLifeService与一般Service的显著区别是提供了更多单业务场景之外的又关联逻辑的CRUD接口.
 
-## 相关网址
-- 👉[官方网址](http://wwwlike.cn)
-- 👉[github](https://github.com/wwwlike/vlife)
 
 ## 联系帮助
 - QQ讨论1群：786134846
