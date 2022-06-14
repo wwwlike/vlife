@@ -5,7 +5,7 @@
 VLIFE的核心能力是对复杂数据逻辑进行各种应用场景的处理，多维度赋能快速开发，推进研发由重复性基础开发转到业务能力提升、技术攻关方向上来。
 
 ##  框架关系
-![](./assets/img/relation.png)
+![](http://vlife.wwwlike.cn/static/img/relation.png)
 * V-LIFE在JPA与QueryDsl基础上封装了能够处理复杂数据逻辑场景的CRUD接口。重复繁琐数据逻辑操作交给vlife完成，可显著降低研发难度。
 
 ## 核心能力
