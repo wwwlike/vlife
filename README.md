@@ -42,4 +42,4 @@ VLIFE的核心能力是对复杂数据逻辑进行各种应用场景的处理，
 
 ## 联系帮助
 - QQ讨论1群：786134846
-  ![](./assets/img/qq_qun_786134846.png)
+  ![](http://vlife.wwwlike.cn/static/img/qq_qun_786134846.png)
