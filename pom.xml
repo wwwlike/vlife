@@ -32,7 +32,6 @@
     </parent>
     <modules>
         <module>vlife-core</module>
-<!--        <module>vlife-plus</module>-->
         <module>vlife-plugin</module>
         <module>vlife-spring-boot-starter</module>
     </modules>
