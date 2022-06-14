@@ -24,7 +24,7 @@
     <groupId>io.github.wwwlike</groupId>
     <artifactId>vlife</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -32,10 +32,9 @@
     </parent>
     <modules>
         <module>vlife-core</module>
-        <module>vlife-plus</module>
+<!--        <module>vlife-plus</module>-->
         <module>vlife-plugin</module>
         <module>vlife-spring-boot-starter</module>
-        <module>vlife-example</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -57,7 +56,7 @@
     </licenses>
     <developers>
         <developer>
-            <name>donglichao</name>
+            <name>xiaoyu</name>
             <email>249168991@qq.com</email>
             <url>https://github.com/wwwlike</url>
         </developer>
@@ -69,7 +68,8 @@
     </scm>
     <profiles>
         <profile>
-            <id>release</id>
+<!--            <id>release</id>-->
+            <id>snapshot</id>
             <build>
                 <plugins>
                     <plugin>
@@ -121,6 +121,12 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <!-- 多模块版本插件 mvn versions:set -DnewVersion=1.1-SNAPSHOT-->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                        <version>2.8.1</version>
                     </plugin>
                 </plugins>
             </build>

@@ -131,8 +131,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * ✦✦✦✦原子查询✦✦✦✦
-     *
-     * @param entityVoClz 查询VO对象
+     * @param entityVoClz 查询对象CLz信息
      * @param wrapper     查询条件
      * @param page        分页条件
      * @param order       排序条件
@@ -141,6 +140,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     protected <E extends IdBean> JPAQuery dslQuery(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, PageableRequest page, OrderRequest order) {
         QModel model = select(entityVoClz);
+        wrapper.eq("status", "1");
         JPAQuery query = model.fromWhere(wrapper);
         if (page != null) {
             query = page(query, page);

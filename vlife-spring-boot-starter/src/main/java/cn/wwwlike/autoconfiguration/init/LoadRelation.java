@@ -24,6 +24,9 @@ import cn.wwwlike.vlife.objship.base.FieldInfo;
 import cn.wwwlike.vlife.objship.base.ItemInfo;
 import cn.wwwlike.vlife.objship.dto.*;
 import cn.wwwlike.vlife.objship.read.*;
+import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -34,7 +37,7 @@ import java.util.List;
  */
 public class LoadRelation {
     List<String> error = new ArrayList<>();
-
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     public void load(String path) {
         List<String> list = ItemReadTemplate.readPackage(path);
         try {
@@ -55,10 +58,12 @@ public class LoadRelation {
             SaveRead saveRead = SaveRead.getInstance(itemDtos);
             List<SaveDto> saveDtos = saveRead.read(loader, list);
             GlobalData.save(saveDtos);
-
             errInfo(itemDtos, voDtos, reqDtos, saveDtos);
             for (String str : error) {
-                System.out.println(str);
+                logger.error(str);
+            }
+            if(error.size()>0){
+
             }
         } catch (Exception exception) {
             exception.printStackTrace();

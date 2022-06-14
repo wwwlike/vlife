@@ -362,9 +362,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
     private <E extends IdBean> E saveBean(final E beanDto, Class<? extends Item> fkItemClz, String fkItemId, UnaryOperator<DataProcess> callBackMethod, boolean subIsFull) {
-
         DataProcess masterProcess = callBackMethod == null ? createProcess(beanDto) : callBackMethod.apply(createProcess(beanDto));
-
         if (beanDto instanceof SaveBean) {
             boolean editModel = beanDto.getId() == null ? false : true;
             SaveBean saveBean = (SaveBean) beanDto;
@@ -374,9 +372,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                 masterProcess.setVal(entityDto.getFkMap().get(fkItemClz), fkItemId);
             }
             SaveDto saveDto = GlobalData.saveDto(saveBean.getClass());
-
-
-            saveDto.filter(ITEM_TYPE.ENTITY, ITEM_TYPE.VO).stream().filter(
+            saveDto.filter(ITEM_TYPE.ENTITY, ITEM_TYPE.SAVE).stream().filter(
                     fieldDto -> {
                         Class fkClz = fieldDto.getEntityClz();
                         return entityDto.getFkTableClz().contains(fkClz) &&
@@ -389,11 +385,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                 String fkIdName = entityDto.getFkMap().get(dto.getEntityClz());
                 masterProcess.setVal(fkIdName, bean.getId());
             });
-
-
             String masterId = dao.save(saveBean, masterProcess.getColumnValMap()).getId();
-
-
             saveDto.filter(ITEM_TYPE.ENTITY, ITEM_TYPE.VO, ITEM_TYPE.LIST).stream().filter(
                     fieldDto -> {
                         Class fkClz = fieldDto.getEntityClz();
@@ -447,10 +439,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                     }
                 }
             });
-
-
             List<Class<? extends Item>> relationItems = entityDto.getRelationTableClz();
-
             saveDto.filter(ITEM_TYPE.LIST).stream().filter(
                     fieldDto -> {
                         Class fkClz = fieldDto.getEntityClz();
@@ -458,14 +447,13 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                                 && fieldDto.getEntityClz() != null;
                     }
             ).forEach(fieldDto -> {
-
                 relationItems.forEach(item -> {
                     EntityDto m2mDto = GlobalData.entityDto(item);
                     String rigthFkName = m2mDto.getFkMap().get(fieldDto.getEntityClz());
                     String leftFkName = m2mDto.getFkMap().get(entityClz);
                     if (rigthFkName != null && leftFkName != null && m2mDto.isM2M()) {
-
                         List<? extends IdBean> beans = (List<? extends IdBean>) ReflectionUtils.getFieldValue(saveBean, fieldDto.getFieldName());
+                        if(beans!=null){
                         List<? extends Item> existDbItem = new ArrayList<>();
                         if (editModel) {
                             QueryWrapper wrapper = new QueryWrapper(m2mDto.getClz());
@@ -473,7 +461,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                             existDbItem = dao.query(m2mDto.getClz(), wrapper, null, null);
                         }
                         if (subIsFull && editModel) {
-
                             List<String> commitIds = beans.stream()
                                     .filter(idBean1 -> idBean1.getId() != null).map(IdBean::getId).collect(Collectors.toList());
                             existDbItem.forEach(db -> {
@@ -482,17 +469,17 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                                 }
                             });
                         }
-                        for (IdBean b : beans) {
-
-                            String m2mId = saveBean(b, null, null, callBackMethod, false).getId();
-                            if (!existDbItem.stream().map(db -> ReflectionUtils.getFieldValue(db, rigthFkName)).collect(Collectors.toList()).contains(m2mId)) {
-                                try {
-                                    Item m2mEntity = m2mDto.getClz().newInstance();
-                                    ReflectionUtils.setFieldValue(m2mEntity, leftFkName, masterId);
-                                    ReflectionUtils.setFieldValue(m2mEntity, rigthFkName, m2mId);
-                                    saveBean(m2mEntity, null, null, callBackMethod, false);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                            for (IdBean b : beans) {
+                                String m2mId = saveBean(b, null, null, callBackMethod, false).getId();
+                                if (!existDbItem.stream().map(db -> ReflectionUtils.getFieldValue(db, rigthFkName)).collect(Collectors.toList()).contains(m2mId)) {
+                                    try {
+                                        Item m2mEntity = m2mDto.getClz().newInstance();
+                                        ReflectionUtils.setFieldValue(m2mEntity, leftFkName, masterId);
+                                        ReflectionUtils.setFieldValue(m2mEntity, rigthFkName, m2mId);
+                                        saveBean(m2mEntity, null, null, callBackMethod, false);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
@@ -588,9 +575,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     public <E extends SaveBean<T>> E save(E t, UnaryOperator<DataProcess> callBackMethod) {
         return saveBean(t, null, null, callBackMethod, false);
     }
-
-    ;
-
     /**
      * 回调保存
      *
@@ -601,7 +585,5 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     public <E extends SaveBean<T>> E save(E t, UnaryOperator<DataProcess> callBackMethod, boolean isfull) {
         return saveBean(t, null, null, callBackMethod, isfull);
     }
-
-    ;
 
 }

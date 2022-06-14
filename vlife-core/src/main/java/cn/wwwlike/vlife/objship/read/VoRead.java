@@ -43,7 +43,7 @@ import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.VO;
  */
 public class VoRead extends ItemReadTemplate<VoDto> {
     private static VoRead INSTANCE = null;
-    private List<EntityDto> infos;
+    private final List<EntityDto> infos;
 
     private VoRead(List<EntityDto> info) {
         this.infos = info;
@@ -57,16 +57,12 @@ public class VoRead extends ItemReadTemplate<VoDto> {
     }
 
     /**
-     * 读取一vo类的信息
-     *
-     * @param s
-     * @return
+     * 读取vo类的信息
      */
     public VoDto readInfo(Class s) {
         VoDto dto = null;
         if (VoBean.class.isAssignableFrom(s) && s != VoBean.class) {
             dto = new VoDto();
-
             superRead(dto, s);
             dto.setItemType(VO);
             Class entityClz = GenericsUtils.getGenericType(s);
@@ -90,16 +86,13 @@ public class VoRead extends ItemReadTemplate<VoDto> {
 
     @Override
     public VoDto finished(VoDto voDto) {
-
         voDto.setTitle(voDto.getEntityDto().getTitle() + "VO");
         voDto.getFields().stream().forEach(f -> {
             infos.stream().forEach(entityDto -> {
                 if (f.getEntityClz() != null && entityDto.getClz() == f.getEntityClz()) {
                     if (f.getEntityFieldName() != null) {
                         Optional<FieldDto> optionalFieldDto = entityDto.getFields().stream().filter(ff -> {
-                            return ff.getEntityFieldName().equals(f.getEntityFieldName())
-                                    && ff.getEntityClz() == f.getEntityClz()
-                                    ;
+                            return ff.getEntityFieldName().equals(f.getEntityFieldName()) && ff.getEntityClz() == f.getEntityClz();
                         }).findFirst();
                         if (optionalFieldDto.isPresent()) {
                             f.setTitle(optionalFieldDto.get().getTitle());
@@ -110,7 +103,6 @@ public class VoRead extends ItemReadTemplate<VoDto> {
                 }
             });
         });
-
         return voDto;
     }
 
@@ -129,30 +121,21 @@ public class VoRead extends ItemReadTemplate<VoDto> {
             List<FieldDto> fkFields = entityDto.getFkFields();
             List<Class<? extends Item>> in = entityDto.getFkTableClz();
             for (FieldDto fieldDto : item.getFields()) {
-
-
                 if (fieldDto.getEntityFieldName() == null) {
-                    if (BASIC.equals(fieldDto.getFieldType()) ||
-                            !IdBean.class.isAssignableFrom(fieldDto.getClz())
-                    ) {
+                    if (BASIC.equals(fieldDto.getFieldType()) || !IdBean.class.isAssignableFrom(fieldDto.getClz())) {
                         List queryPath = basicFieldMatch(item, fieldDto);
                         if (queryPath != null) {
                             fieldDto.setQueryPath(queryPath);
                         }
                     } else {
                         iocReverseMatch(fieldDto, entityDto);
-
-
                     }
                 }
             }
-
             List<String> loseStr = fkFields.stream().filter(fieldDto -> {
-                return item.getFields().stream().filter(
-                        voField -> {
-                            return fieldDto.getFieldName().equals(voField.getEntityFieldName());
-                        }
-                ).count() == 0;
+                return item.getFields().stream().filter(voField -> {
+                    return fieldDto.getFieldName().equals(voField.getEntityFieldName());
+                }).count() == 0;
             }).map(FieldInfo::getFieldName).collect(Collectors.toList());
             for (int i = 0; i < loseStr.size(); i++) {
                 item.getLoseIds().put(loseStr.get(i), i);

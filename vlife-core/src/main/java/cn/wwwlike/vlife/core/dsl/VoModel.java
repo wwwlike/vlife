@@ -272,9 +272,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
 
     }
 
-
     public <W extends AbstractWrapper<T, String, QueryWrapper<T>>> BooleanBuilder whereByWrapper(W wrapper) {
-        wrapper.eq("status", "1");
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         for (AbstractWrapper.Element element : wrapper.getElements()) {
@@ -359,7 +357,6 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      * @return
      */
     public <R extends AbstractWrapper> JPAQuery addQueryFilterJoin(JPAQuery jpaQuery, R request) {
-
         List<List<Class<? extends Item>>> allReqLeftPath = request.allLeftPath();
         for (List<Class<? extends Item>> path : allReqLeftPath) {
             Class item = path.get(0);
@@ -370,13 +367,10 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
 
 
     public <R extends AbstractWrapper> JPAQuery fromWhere(R request) {
-
         filterQuery = (JPAQuery) getVoFromQuery().clone();
         alljoin.clear();
         alljoin.putAll(voJoin);
-
         filterQuery = addQueryFilterJoin(filterQuery, request);
-
         filterQuery.where(whereByWrapper(request));
         return filterQuery;
     }
