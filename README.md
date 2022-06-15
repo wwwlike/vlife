@@ -3,10 +3,10 @@
 > V-LIFE是一个为全面提升研发效能而生的Java快速开发平台。
 
 VLIFE的核心能力是对复杂数据逻辑进行各种应用场景的处理，多维度赋能快速开发，推进研发由重复性基础开发转到业务能力提升、技术攻关方向上来。
-
-- [技术文档](http://vlife.wwwlike.cn) 
-- [快速开始](http://vlife.wwwlike.cn/#/quickstart/)
-- [示例DEMO](https://github.com/wwwlike/vlife-example)
+ 
+- [github] [https://github.com/wwwlike/vlife](https://github.com\wwwlike\vlife)
+- [技术文档] [http://vlife.wwwlike.cn](http://vlife.wwwlike.cn) 
+- [示例demo] [https://github.com/wwwlike/vlife-example](https://github.com/wwwlike/vlife-example)
 
 ##  框架关系
 ![](http://vlife.wwwlike.cn/static/img/relation.png)

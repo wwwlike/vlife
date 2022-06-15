@@ -26,8 +26,7 @@ import java.lang.annotation.*;
 import static cn.wwwlike.vlife.dict.Constants.DEFAULT_ORDER_TYPE;
 
 /**
- * 所有pojo对象上属性的注解
- * 约定之外增加灵活性
+ * 模型原元数据(pojo属性)的注解，在约定之外增加灵活性
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

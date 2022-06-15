@@ -21,7 +21,7 @@ package cn.wwwlike.vlife.base;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 
 /**
- * 查询条件接口基类_支持排序
+ * 查询条件Query的模型的接口，支持排序
  */
 public interface BaseRequest<E extends Item> extends IOrder {
     /**

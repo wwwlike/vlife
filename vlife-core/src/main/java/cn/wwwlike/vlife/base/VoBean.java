@@ -19,7 +19,7 @@
 package cn.wwwlike.vlife.base;
 
 /**
- * 查询vo对象实现接口
+ * vo视图层模型接口
  */
 public interface VoBean<T extends Item> extends IdBean {
 }

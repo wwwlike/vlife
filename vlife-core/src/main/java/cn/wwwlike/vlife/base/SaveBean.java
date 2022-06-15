@@ -19,7 +19,7 @@
 package cn.wwwlike.vlife.base;
 
 /**
- * 写类型的dto接口
+ * 终端提交给服务端进行保存的DTO数据模型接口
  */
 public interface SaveBean<E extends Item> extends IdBean {
 

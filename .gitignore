@@ -4,3 +4,5 @@ target/
 /logs/
 /doc/
 /vlife-plus/
+/old_doc/
+.gitignore

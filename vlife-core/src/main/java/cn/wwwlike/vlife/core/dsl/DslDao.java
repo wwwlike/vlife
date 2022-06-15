@@ -38,9 +38,11 @@ import cn.wwwlike.vlife.utils.VlifeUtils;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.ComparableExpression;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Sort;
@@ -55,15 +57,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * queryDSL的DAO实现
- *
+ * 以queryDsl方式的dao实现
  * @author xiaoyu
  * @date 2022/5/30
  */
 public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
-
     /**
-     * 当前类的实体解读信息
+     * 当前类的实体信息
      */
     public EntityDto entityDto;
     /**
@@ -90,14 +90,10 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         entityClz = GenericsUtils.getSuperClassGenricType(this.getClass());
         entityDto = GlobalData.entityDto(entityClz);
         factory = new JPAQueryFactory(em);
-        models = new HashMap<>();
     }
 
     /**
-     * 得到查询VO的模型
-     *
-     * @param voClz vo或者entity 的clz
-     * @return
+     * 通过视图VO类信息得到Dao封装的VO的查询模型
      */
     protected QModel select(Class<? extends IdBean> voClz) {
         if (models.get(voClz) == null) {
@@ -107,20 +103,15 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 得到查询VO的模型(每次都new)
-     *
-     * @param vo vo或entity的clz对象
-     * @return
+     * 得到VO查询的模型(每次都new)
+     * @param prefix 本次vo里主查询的alias的前缀
      */
     protected QModel selectNew(Class<? extends IdBean> vo, String prefix) {
         return new VoModel(factory, vo, prefix);
     }
 
     /**
-     * 写入的Model模型
-     *
-     * @param dto
-     * @return
+     * 通过传输保存对象dto从缓存提取写入Model模型
      */
     private WModel edit(Class<? extends IdBean> dto) {
         if (wModels.get(dto) == null) {
@@ -145,7 +136,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         if (page != null) {
             query = page(query, page);
         }
-
         if (order == null || order.getOrderReqList().size() == 0) {
             if (order == null) {
                 order = new OrderRequest();
@@ -164,14 +154,12 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 包装类型查询
-     * ??? 可以考虑提取到service里去
-     *
-     * @param vo
-     * @param wrapper
-     * @param isMainQuery
-     * @param <E>
-     * @return
+     * 用包装条件进行VO类型数据查询数据查询
+     * @param vo 返回查询的结果类型
+     * @param wrapper 包裹条件对象
+     * @param isMainQuery 本次是否是主查询(该方法支持递归)
+     * @param page 分页参数
+     * @param order 排序参数
      */
     private <E extends VoBean> List<E> query(Class<E> vo, QueryWrapper<? extends Item> wrapper, PageableRequest page, OrderRequest order, Boolean isMainQuery) {
         List mainResult = dslQuery(vo, wrapper, page, order).fetch();
@@ -187,11 +175,11 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 通用实体查询，与<T>无关
-     * 根据包装条件查询 ,无分页，使用默认排序
-     *
-     * @param entityVoClz vo or Item
-     * @param wrapper     包装条件
+     * 用包装条件进行 VO and DO 类型数据查询数据查询
+     * @param entityVoClz 返回视图的类信息
+     * @param wrapper   包装条件
+     * @param page 分页参数
+     * @param order 排序参数
      * @param <E>
      * @return
      */
@@ -204,24 +192,23 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 对外开放函数
-     * 一、实体类列表查询
+     * 用包装条件对象查询数量
      */
     @Override
     public Long count(QueryWrapper<T> wrapper) {
         return dslQuery(entityClz, wrapper, null, null).fetchCount();
     }
 
+    /**
+     * 终端传入的查询条件查询数量
+     */
     @Override
     public <W extends QueryWrapper<T>, R extends CustomQuery<T, W>> Long count(R request) {
         return dslQuery(entityClz, request.qw(), null, null).fetchCount();
     }
 
     /**
-     * 查询实体类列表不分页
-     *
-     * @param request
-     * @return <T>列表
+     * 终端传入的查询条件<CustsomQuery>进行实体对象<T>列表数据的过滤
      */
     @Override
     public <W extends QueryWrapper<T>, R extends CustomQuery<T, W>> List<T> find(R request) {
@@ -229,10 +216,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 根据wq查询查询dao的实体
-     *
-     * @param wq
-     * @return
+     * 包装条件进行实体对象<T>列表数据的过滤
      */
     @Override
     public List<T> find(QueryWrapper<T> wq) {
@@ -240,10 +224,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 分页查询实体对象
-     *
-     * @param pageRequest 分页及过滤条件
-     * @return <T>分页查询结果
+     * 通过终端入参的分页查询对象进行实体分页查询
      */
     @Override
     public <E extends PageQuery<T>> PageVo<T> findPage(E pageRequest) {
@@ -254,13 +235,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 分页query查询
-     *
-     * @param vo
-     * @param pageRequest
-     * @param <E>
-     * @param <N>
-     * @return
+     * 通过终端入参的分页查询对象和VO的class类型进行VO分页查询
      */
     @Override
     public <E extends VoBean<T>, N extends PageQuery<T>> PageVo<E> queryPage(Class<E> vo, N pageRequest) {
@@ -278,26 +253,23 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
                 pageRequest.getPager().getPage(), queryResults.getTotal());
     }
 
+    /**
+     * 通过条件包装对象和VO的class类型进行VO和DO的查询
+     * @param entityVoClz 实体类或VO类信息
+     * @param wrapper 条件包装对象
+     * @param order 排序对象
+     */
     @Override
-    public <E extends IdBean> List<E> query(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, PageableRequest page, OrderRequest order) {
+    public <E extends IdBean> List<E> query(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, OrderRequest order) {
         if (VoBean.class.isAssignableFrom(entityVoClz)) {
-            return (List<E>) query((Class<? extends VoBean>) entityVoClz, wrapper, page, order, true);
+            return (List<E>) query((Class<? extends VoBean>) entityVoClz, wrapper, null, order, true);
         } else {
-            return find(entityVoClz, wrapper, page, order);
+            return find(entityVoClz, wrapper, null, order);
         }
-    }
-
-
-    @Override
-    public long delete(BaseRequest<T> request) {
-        return 0;
     }
 
     /**
      * 实体类保存
-     *
-     * @param item
-     * @return
      */
     @Override
     public <E extends Item> E save(E item) {
@@ -310,14 +282,12 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 数据保存，
-     *
-     * @param saveBean 可能不包含fkMap里的key属性
-     * @param fk
-     * @param <E>
-     * @return
+     * SaveDto数据保存
+     * @param saveBean  保存的dto数据
+     * @param fkMap 可以写入到saveBean对应DO里的外键map集合
      */
-    public <E extends SaveBean> E save(E saveBean, Map<String, Object> fk) {
+    @Override
+    public <E extends SaveBean> E save(E saveBean, Map<String, Object> fkMap) {
         WModel wmodel = edit(saveBean.getClass());
         if (saveBean.getId() != null) {
             Class<T> saveEntityClz = GenericsUtils.getGenericType(saveBean.getClass());
@@ -325,14 +295,14 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
             StringPath idPath = (StringPath) ReflectionUtils.getFieldValue(saveEntityPath, "id");
             wmodel.where(idPath.eq(saveBean.getId()))
                     .setVal(saveBean);
-            fk.forEach((k, v) -> {
+            fkMap.forEach((k, v) -> {
                 Path fnNameDsl = (Path) ReflectionUtils.getFieldValue(saveEntityPath, k);
                 wmodel.getUpdateClause().set(fnNameDsl, v);
             });
             wmodel.getUpdateClause().execute();
         } else {
             Item item = wmodel.dtoToEntity((SaveBean) saveBean);
-            fk.forEach((k, v) -> {
+            fkMap.forEach((k, v) -> {
                 ReflectionUtils.setFieldValue(item, k, v);
             });
             save(item);
@@ -342,11 +312,42 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 分页过滤内容注入
-     *
-     * @param jQuery
-     * @param pageRequest
-     * @return
+     * 物理删除当前表ID所在的行数据
+     */
+    @Override
+    public long delete(String id) {
+        return delete(entityClz, id);
+    }
+
+    /**
+     * 物理删除itemClz表ID所在的行数据
+     */
+    @Override
+    public long delete(Class<? extends Item> itemClz, String id) {
+        Object item = em.find(itemClz, id);
+        if (item != null) {
+            em.remove(item);
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * 逻辑删除itemClz表ID所在的行数据
+     */
+    @Override
+    public long remove(Class<? extends Item> clazz, String id) {
+        Item item = em.find(clazz, id);
+        if (item != null) {
+            item.setStatus(CT.STATUS.REMOVE);
+            em.merge(item);
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * (私)分页过滤条件注入到jpaQuery里
      */
     private JPAQuery page(JPAQuery jQuery, PageableRequest pageRequest) {
         jQuery.offset(pageRequest.getPage() * pageRequest.getSize());
@@ -355,10 +356,8 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 排序内容注入
-     *
-     * @param jQuery
-     * @return
+     * (私)排序条件注入到jpaQuery里
+     * @param  main 排序目前值支持主查询里的字段进行排序
      */
     private JPAQuery order(EntityPathBase main, JPAQuery jQuery, List<Order> orderReqList) {
         orderReqList.stream().forEach(order -> {
@@ -374,52 +373,39 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * ??? 查询逻辑要转移到service里去，这里只做querydsl得查询
-     * 递归注入对象进行查询并且注入
-     *
+     * VO里的注入对象数据的查询
      * @param vo         主查询的Vo的clz信息
      * @param mainResult 查询的vo里的主结果集对象，可能是元组
      */
     private void iocQuery(Class<? extends VoBean> vo, List mainResult) {
         if (mainResult.size() > 0) {
             VoDto voDto = GlobalData.voDto(vo);
-
             List<FieldDto> iocFields = voDto.getFields().stream().filter(
                     fieldDto -> {
                         return !VCT.ITEM_TYPE.BASIC.equals(fieldDto.getFieldType());
                     }).collect(Collectors.toList());
             for (FieldDto fieldDto : iocFields) {
-
                 boolean iocList = (VCT.ITEM_TYPE.ENTITY.equals(fieldDto.getFieldType()) ||
                         VCT.ITEM_TYPE.VO.equals(fieldDto.getFieldType())) ? false : true;
                 if (fieldDto.getPathName().indexOf("_") != -1) {
-                    /**
-                     * 这一块应该在类注入的时候设置到
-                     * fieldDto里； queryPath->   为减少了最后一位的
-                     * iocRelationIdName -> 新增字段
-                     */
                     List<Class> pingList = VlifeUtils.queryPathClazzList(fieldDto.getQueryPath());
                     Class secondLastClz = pingList.get(pingList.size() - 2);
                     EntityDto secondLastEntityDto = GlobalData.entityDto(secondLastClz);
                     String idName = secondLastEntityDto.getFkMap().get(pingList.get(pingList.size() - 1));
                     idName = (idName == null ? "id" : idName);
-
-
                     List iocQueryPath = VlifeUtils.removeQueryPathLast(fieldDto.getQueryPath());
                     String mainIdName = idName.equals("id") ? voDto.getEntityDto().getFkMap().get(secondLastClz) : "id";
-
                     for (Object obj : mainResult) {
                         String idVal = getObjIdVal(obj, mainIdName);
                         if (idVal != null) {
                             QueryWrapper<T> wq = createWrapperFromQueryPath(null, iocQueryPath, idVal, Opt.eq, null, idName);
-
                             List sub = null;
                             if (Item.class.isAssignableFrom(fieldDto.getClz())) {
-                                sub = query(fieldDto.getEntityClz(), wq, null, null);
+                                sub = query(fieldDto.getEntityClz(), wq, null);
                             } else if (fieldDto.getClz().isPrimitive()
                                     || fieldDto.getClz() == Date.class
                                     || fieldDto.getClz() == String.class) {
-                                List<? extends Item> items = query(fieldDto.getEntityClz(), wq, null, null);
+                                List<? extends Item> items = query(fieldDto.getEntityClz(), wq, null);
 
                                 sub = items.stream().map(db -> {
                                     String fieldName = fieldDto.getEntityFieldName();
@@ -428,7 +414,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
                             } else {
                                 sub = query(fieldDto.getClz(), wq, null, null, true);
                             }
-
                             if (sub != null && sub.size() > 0) {
                                 Object setval = sub;
                                 if (!iocList) {
@@ -483,8 +468,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
                         wq.in(iocEntityDto.getFkMap().get(mainDto.getClz()), ids);
                     }
                     List iocResult = null;
-
-
                     if (Item.class.isAssignableFrom(fieldDto.getClz())) {
                         iocResult = find(fieldDto.getClz(), wq, null, null);
                     } else {
@@ -498,48 +481,4 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         }
     }
 
-    public long delete(String id) {
-        return delete(entityClz, id);
-    }
-
-    /**
-     * 默认删除原则
-     * 1. 不进行物理删除
-     * 2. 关联表有且只有有本表作为外键，那么删除主表的同时那么对这张关联表也进行逻辑删除；
-     * 3. 如果关联表有多个表作为外键，则清空关联关系——> clear;
-     * 4. 进行逻辑删除的表，会递归完成删除操作；
-     * 5. 多对多的表如何做？有且只有2张表可以看做多对多的表；且没有其他多余字段；删除关联一方数据则会把这个多对对多的表给删除掉（逻辑）
-     * 3.
-     * 物理删除
-     * 根据外键删除（status）,只负责自己表本身,关联表的处理在service里进行
-     *
-     * @param itemClz 删除制定class
-     */
-    @Override
-    public long delete(Class<? extends Item> itemClz, String id) {
-        Object item = em.find(itemClz, id);
-        if (item != null) {
-            em.remove(item);
-            return 1;
-        }
-        return 0;
-    }
-
-
-    /**
-     * 逻辑删除
-     *
-     * @param id
-     * @param clazz
-     * @return
-     */
-    public long remove(Class<? extends Item> clazz, String id) {
-        Item item = em.find(clazz, id);
-        if (item != null) {
-            item.setStatus(CT.STATUS.REMOVE);
-            em.merge(item);
-            return 1;
-        }
-        return 0;
-    }
 }

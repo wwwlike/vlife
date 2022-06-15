@@ -30,7 +30,7 @@ import java.util.Date;
 
 
 /**
- * 名称过去
+ * do数据模型继承的对象
  */
 @MappedSuperclass
 public abstract class DbEntity implements Item {
