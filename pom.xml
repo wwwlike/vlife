@@ -24,7 +24,7 @@
     <groupId>io.github.wwwlike</groupId>
     <artifactId>vlife</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -67,8 +67,8 @@
     </scm>
     <profiles>
         <profile>
-<!--            <id>release</id>-->
-            <id>snapshot</id>
+            <id>release</id>
+<!--            <id>snapshot</id>-->
             <build>
                 <plugins>
                     <plugin>
