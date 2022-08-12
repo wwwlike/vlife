@@ -18,10 +18,13 @@
 
 package cn.wwwlike.plugins;
 
-import cn.wwwlike.plugins.constant.comment.ClzTag;
 import cn.wwwlike.plugins.constant.comment.CommentParser;
 import cn.wwwlike.plugins.utils.FileUtil;
 import cn.wwwlike.plugins.utils.JsonUtil;
+import cn.wwwlike.vlife.objship.read.ItemReadTemplate;
+import cn.wwwlike.vlife.objship.read.tag.ClzTag;
+import cn.wwwlike.vlife.objship.read.tag.FieldTag;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -30,11 +33,14 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
+import sun.security.krb5.internal.ccache.Tag;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 读取entity里类及字段注释信息到resources里的title.json里
@@ -54,31 +60,90 @@ public class TitleJsonCreateMojo extends AbstractMojo {
     private MavenProject project;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        try {
-            List<File> files = new ArrayList<>();
-            if (entityPackages == null || entityPackages.size() == 0) {
-                throw new MojoFailureException("entityPackages没有设置");
+//        try {
+        List<File> files = new ArrayList<>();
+//            if (entityPackages == null || entityPackages.size() == 0) {
+//                throw new MojoFailureException("entityPackages没有设置");
+//            } else {
+//                String path = entity.substring(0, StringUtils.lastIndexOf(entity, "."));
+//
+//                List<String> list = ItemReadTemplate.readPackage(loader,rootPackage);
+//                entityPackages.stream().forEach(path -> {
+                try {
+//                        String srcPath = path.replace(".", "/");
+                    String srcPath = "";
+                    files.addAll(FileUtils.getFiles(new File(project.getBasedir() + "/src/main/java" + srcPath), null, null));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+//                });
+//            }
+        /* 写死，因为目前实体类父类都在class里。*/
+        List<ClzTag> tags = new ArrayList<>();
+        Map<String, FieldTag> dbEntityFieldTag=new HashMap<>();
+        FieldTag idTag=new FieldTag();
+        idTag.setTitle("主键id");
+        idTag.setFieldName("id");
+        dbEntityFieldTag.put("id",idTag);
+        FieldTag statusTag=new FieldTag();
+        statusTag.setTitle("删除状态");
+        statusTag.setFieldName("status");
+        dbEntityFieldTag.put("status",statusTag);
+        FieldTag createDateTag=new FieldTag();
+        createDateTag.setTitle("创建时间");
+        createDateTag.setFieldName("status");
+        dbEntityFieldTag.put("createDate",createDateTag);
+        FieldTag modifyDateTag=new FieldTag();
+        modifyDateTag.setTitle("修改时间");
+        modifyDateTag.setFieldName("modifyDate");
+        dbEntityFieldTag.put("modifyDate",modifyDateTag);
 
-            } else {
-                entityPackages.stream().forEach(path -> {
-                    try {
-                        String srcPath = path.replace(".", "/");
-                        files.addAll(FileUtils.getFiles(new File(project.getBasedir() + "/src/main/java/" + srcPath), null, null));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-            List<ClzTag> tags = new ArrayList<>();
-            for (File path : files) {
-                tags.add(CommentParser.parser(path));
-            }
-            String filePath = project.getBasedir() + "/src/main/resources/";
-            filePath = filePath + "/title.json";
-            String data = JsonUtil.toPrettyJson(tags);
-            FileUtil.nioWriteFile(data, filePath);
-        } catch (Exception e) {
-            e.printStackTrace();
+        FieldTag modifyIdTag=new FieldTag();
+        modifyIdTag.setTitle("修订人");
+        modifyIdTag.setFieldName("modifyId");
+        dbEntityFieldTag.put("modifyId",modifyIdTag);
+
+        FieldTag createIdTag=new FieldTag();
+        createIdTag.setTitle("创建人");
+        createIdTag.setFieldName("createId");
+        dbEntityFieldTag.put("createId",createIdTag);
+
+
+        for (File path : files) {
+            ClzTag tag=CommentParser.parser(path);
+            tags.add(tag);//字段
         }
+        /* 继承的属性 加入*/
+        for(ClzTag tag:tags){
+//            for(ClzTag parent:tags){
+//                if(tag.getSuperName()!=null&& tag.getSuperName().equalsIgnoreCase(parent.getEntityName())){
+//                    parent.getTags().forEach((key,val)->{
+//                        if(tag.getTags().get(key)==null){
+//                            tag.getTags().put(key,val);
+//                        }
+//                    });
+//                }
+//            }
+
+            if("DbEntity".equals(tag.getSuperName())){
+                if(tag.getTags()==null){
+                    tag.setTags(dbEntityFieldTag);
+                }else{
+                    dbEntityFieldTag.forEach((key,val)->{
+                        if(tag.getTags().get(key)==null){
+                            tag.getTags().put(key,val);
+                        }
+                    });
+                }
+            }
+        }
+
+        String filePath = project.getBasedir() + "/src/main/resources/";
+        filePath = filePath + "/title.json";
+        String data = JsonUtil.toPrettyJson(tags);
+        FileUtil.nioWriteFile(data, filePath);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }

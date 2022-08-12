@@ -1,0 +1,33 @@
+/*
+ *  vlife http://github.com/wwwlike/vlife
+ *
+ *  Copyright (C)  2018-2022 vlife
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+package cn.wwwlike.common;
+
+import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.core.DataProcess;
+import cn.wwwlike.vlife.core.HealthDataProcess;
+import cn.wwwlike.vlife.core.VLifeDao;
+import cn.wwwlike.vlife.core.VLifeService;
+
+public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeService<T,D> {
+
+    protected DataProcess createProcess(IdBean bean) {
+        return new VlifeDataProcess(bean);
+    }
+}

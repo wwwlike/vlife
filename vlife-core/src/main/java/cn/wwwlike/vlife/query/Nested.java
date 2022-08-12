@@ -51,6 +51,14 @@ public interface Nested<Param, Children> extends Serializable {
      */
     Children or(boolean condition, Consumer<Param> consumer);
 
+
+    /**
+     *  子查询语句创建
+     * @param subMainClz 子查询里的主查询对象，和外围表需要有外键关系
+     * @param consumer 子查询里的查询条件包裹封装
+     * @param leftPathClz 子查询条件里关联到外键表的实体路径
+     * @return
+     */
     default Children andSub(Class<? extends Item> subMainClz, Consumer<Param> consumer, Class<? extends Item>... leftPathClz) {
         return andSub(true, subMainClz, consumer, leftPathClz);
     }

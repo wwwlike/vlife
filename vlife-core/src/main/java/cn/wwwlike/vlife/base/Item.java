@@ -18,6 +18,9 @@
 
 package cn.wwwlike.vlife.base;
 
+import cn.wwwlike.base.model.IModel;
+import cn.wwwlike.base.model.IdBean;
+
 import java.util.Date;
 
 /**

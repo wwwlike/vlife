@@ -18,22 +18,26 @@
 
 package cn.wwwlike.vlife.objship.dto;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.objship.base.ISort;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
 /**
  * 实体类信息读取DTO
  */
-@Data
+@Getter
+@Setter
 public class EntityDto extends BeanDto<Item> implements ISort {
     /**
      * 本表的外键字段
      */
     public List<FieldDto> fkFields = new ArrayList<>();
-    /** 本表外键字段关联的表clz*/
+    /** 本表外键字段关联nsys的表clz*/
     ;
     public List<Class<? extends Item>> fkTableClz;
     /**
@@ -54,6 +58,11 @@ public class EntityDto extends BeanDto<Item> implements ISort {
      * 排序字段
      */
     public String orders;
+
+    /**
+     * 实体类默认的列表查询clz,没有注解
+     */
+    public Class<? extends IdBean> pageClz;
 
     /**
      * 是否是多对多的表
@@ -107,4 +116,5 @@ public class EntityDto extends BeanDto<Item> implements ISort {
             return relationTableClz;
         }
     }
+
 }

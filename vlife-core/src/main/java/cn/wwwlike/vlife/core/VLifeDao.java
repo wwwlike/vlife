@@ -18,26 +18,14 @@
 
 package cn.wwwlike.vlife.core;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.*;
 import cn.wwwlike.vlife.bean.PageVo;
-import cn.wwwlike.vlife.core.dsl.WModel;
-import cn.wwwlike.vlife.dict.CT;
-import cn.wwwlike.vlife.objship.dto.VoDto;
-import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.PageQuery;
-import cn.wwwlike.vlife.utils.GenericsUtils;
-import cn.wwwlike.vlife.utils.ReflectionUtils;
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.EntityPathBase;
-import com.querydsl.core.types.dsl.StringPath;
-
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 数据库操作的基础单元接口
@@ -95,8 +83,19 @@ public interface VLifeDao<T extends Item> {
     public <E extends SaveBean> E save(E saveBean, Map<String, Object> fkMap);
 
     /**
-     * 物理删除当前表ID所在的行数据
+     * 实体类数据保存。采用querydsl方式保存
      */
+//    public <E extends Item> E save(E IdBean, Map<String, Object> fkMap);
+
+    /**
+     * 实体对象数据保存，
+     * 支持保存之前设置默认值，只对固定字段进行保存；排除部分字段进行保存
+     */
+    public <E extends Item> E save(E item, DataProcess dataProcess);
+
+        /**
+         * 物理删除当前表ID所在的行数据
+         */
     public long delete(String id);
 
     /**

@@ -19,13 +19,20 @@
 package cn.wwwlike.plugins.constant.comment;
 
 import cn.wwwlike.plugins.utils.CommentUtils;
+import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.bean.DbEntity;
+import cn.wwwlike.vlife.objship.read.tag.ClzTag;
+import cn.wwwlike.vlife.objship.read.tag.FieldTag;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.lang.reflect.Type;
 
 /**
  * 实体类注释解析
@@ -46,21 +53,21 @@ public class CommentParser {
         return parser(new File(FILE_PATH));
     }
 
-
     public static ClzTag parser(File file) {
         ClzTag clzTag = new ClzTag();
         try {
-
-
             CompilationUnit cu = new JavaParser().parse(file).getResult().get();
-
             TypeDeclaration typeDeclaration = cu.getTypes().get(0);
+            /* 设置父类 */
+            if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes()!=null&&((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().size()>0)
+                clzTag.setSuperName(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getName().asString());
+
+            clzTag.setEntityName(file.getName().replace(".java",""));
 
             if (typeDeclaration.getComment().isPresent()) {
                 String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().get().getContent());
                 commentText = commentText.split("\n")[0].split("\r")[0];
                 clzTag.setTitle(commentText);
-                clzTag.setEntityName(typeDeclaration.getName().asString());
             }
             NodeList list = typeDeclaration.getMembers();
             FieldTag fieldTag = null;

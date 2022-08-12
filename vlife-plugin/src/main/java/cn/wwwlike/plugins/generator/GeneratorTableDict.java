@@ -43,24 +43,13 @@ import java.util.stream.Collectors;
 /**
  * 数据字典代码生成器
  */
-public class GeneratorTableDict {
-
+public class GeneratorTableDict extends GeneratorUtils{
     /**
-     * 生成到当前module的源文件目录下
-     *
-     * @param javaFile
-     * @throws IOException
+     * 1.创建字段属性的常量类
+     * 2.每个实体类能够左查询的字典类
      */
-    private static void generateToCurrentAndroidStudioModule(JavaFile javaFile) throws IOException {
-        String targetDirectory = "target/generated-sources/java";
-        File dir = new File(targetDirectory);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        javaFile.writeTo(dir);
-    }
-
-    public void generator(List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> res) {
+    public List<JavaFile> generator(List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> res) {
+        List<JavaFile> files=new ArrayList<>();
         List<Class<? extends Item>> entityList = entitys.stream().map(entityDto -> {
             return entityDto.getClz();
         }).collect(Collectors.toList());
@@ -70,14 +59,16 @@ public class GeneratorTableDict {
         List<Class<? extends BaseRequest>> reqList = res.stream().map(resDto -> {
             return resDto.getClz();
         }).collect(Collectors.toList());
-        dictGenerator(entitys);
-        ClzPath(entitys);
+        files.addAll(dictGenerator(entitys));
+        files.addAll(ClzPath(entitys));
+        return files;
     }
 
     /**
      * 字典生成一个包下面的生成在一起
      */
-    public void dictGenerator(List<EntityDto> entitys) {
+    public List<JavaFile> dictGenerator(List<EntityDto> entitys) {
+        List<JavaFile> files=new ArrayList<>();
         Map groupDatas = entitys.stream().collect(Collectors.groupingBy(
                 v -> {
                     return v.getClz().getPackage().getName();
@@ -86,8 +77,6 @@ public class GeneratorTableDict {
             List<EntityDto> list = (List<EntityDto>) groupDatas.get(entityPackage);
             List<TypeSpec> innerClz = new ArrayList();
             for (EntityDto dto : list) {
-
-
                 List<FieldSpec> fieldSpecs = new ArrayList<>();
                 for (FieldDto field : dto.getFields()) {
                     fieldSpecs.add(
@@ -101,29 +90,21 @@ public class GeneratorTableDict {
                         .build();
                 innerClz.add(sub);
             }
-            try {
-                TypeSpec constants = TypeSpec.classBuilder("HrConstants")
-                        .addModifiers(Modifier.PUBLIC)
-                        .addTypes(innerClz)
-                        .build();
-
-                JavaFile javaFile = JavaFile.builder(entityPackage.toString(), constants).build();
-                ;
-                generateToCurrentAndroidStudioModule(javaFile);
-            } catch (Exception ex) {
-
-            }
+            //常量类的名字可以斟酌
+            TypeSpec constants = TypeSpec.classBuilder("HrConstants")
+                    .addModifiers(Modifier.PUBLIC)
+                    .addTypes(innerClz)
+                    .build();
+            JavaFile javaFile = JavaFile.builder(entityPackage.toString(), constants).build();
+            files.add(javaFile);
         }
-
+        return files;
     }
 
     /**
-     * 呈现树形递归的趋势
-     *
-     * @param
-     * @return
+     * 左查询路径list形式
      */
-    public List<List<Class<? extends Item>>> getPath(List<List<Class<? extends Item>>> total, List<Class<? extends Item>> pathClz, EntityDto entityDto) {
+    private List<List<Class<? extends Item>>> getPath(List<List<Class<? extends Item>>> total, List<Class<? extends Item>> pathClz, EntityDto entityDto) {
         if (total == null) {
             total = new ArrayList<>();
         }
@@ -133,7 +114,6 @@ public class GeneratorTableDict {
         } else {
             total.add(pathClz);
         }
-
         for (Class fkClz : entityDto.getFkTableClz()) {
             if (!pathClz.contains(fkClz)) {
                 List temp = new ArrayList();
@@ -144,16 +124,15 @@ public class GeneratorTableDict {
                 total.add(pathClz);
             }
         }
-
         return total;
     }
 
     /**
      * 左查询路径创建，如果路径包涵了则结束
-     *
      * @param entitys
      */
-    public void ClzPath(List<EntityDto> entitys) {
+    public List<JavaFile> ClzPath(List<EntityDto> entitys) {
+        List<JavaFile> files=new ArrayList<>();
         for (EntityDto entityDto : entitys) {
             List<List<Class<? extends Item>>> list = getPath(null, null, entityDto);
             List<FieldSpec> fieldSpecs = new ArrayList<>();
@@ -164,8 +143,6 @@ public class GeneratorTableDict {
                 }
                 name = name.substring(0, name.length() - 1);
                 Class[] classes = clzss.toArray(new Class[clzss.size()]);
-
-
                 ClassName bundle[] = new ClassName[classes.length];
                 String str = "";
                 for (int i = 0; i < classes.length; i++) {
@@ -179,20 +156,13 @@ public class GeneratorTableDict {
                                         Modifier.FINAL, Modifier.STATIC, Modifier.PUBLIC)
                                 .initializer("new Class[]{" + str + "}", bundle).build());
             }
-
-
             TypeSpec constants = TypeSpec.classBuilder("V" + entityDto.getClz().getSimpleName())
                     .addModifiers(Modifier.PUBLIC)
                     .addFields(fieldSpecs)
                     .build();
             JavaFile javaFile = JavaFile.builder(entityDto.getClz().getPackage().getName() + ".V", constants).build();
-            try {
-                generateToCurrentAndroidStudioModule(javaFile);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
+            files.add(javaFile);
         }
+        return files;
     }
 }

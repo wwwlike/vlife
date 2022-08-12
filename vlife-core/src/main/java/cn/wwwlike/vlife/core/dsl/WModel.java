@@ -18,10 +18,10 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
-import cn.wwwlike.vlife.base.IdBean;
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
-import cn.wwwlike.vlife.objship.dto.SaveDto;
+import cn.wwwlike.vlife.objship.dto.BeanDto;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAUpdateClause;
@@ -38,7 +38,9 @@ public interface WModel<T extends Item> {
 
     public JPAUpdateClause getUpdateClause();
 
-    public SaveDto getSaveDto();
+    public void resetClause();
+
+    public BeanDto getSaveDto();
 
     public <E extends SaveBean<T>> T dtoToEntity(E saveBean);
 
@@ -50,6 +52,12 @@ public interface WModel<T extends Item> {
      */
     public WModel where(BooleanExpression... expressions);
 
+    /**
+     * 根据对象保存信息 排除部分字段
+     */
+    public <E extends IdBean> WModel setVal(E e,String ... ignore);
+
+    public <E extends IdBean> WModel setValWithAssign (E e,String ... assigns);
 
     /**
      * 根据对象保存信息
@@ -70,7 +78,6 @@ public interface WModel<T extends Item> {
      *
      * @return
      */
-    public WModel setVal(Map<Path, Object> valMap);
-
+    public WModel setUpdateClauseVal(Map<Path, Object> valMap);
 
 }

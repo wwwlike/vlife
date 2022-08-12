@@ -18,6 +18,7 @@
 
 package cn.wwwlike.vlife.core;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.*;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
@@ -29,6 +30,8 @@ import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +51,8 @@ import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE;
  */
 @Transactional
 public class VLifeService<T extends Item, D extends VLifeDao<T>> {
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public D dao;
     public Class<T> entityClz;
@@ -66,6 +71,10 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 1.根据id查询单个实体
      */
     public T findOne(String id) {
+        if(id==null){
+            logger.error("findOne-> id is null");
+          return null;
+        }
         QueryWrapper<T> wrapper = QueryWrapper.of(entityClz).eq("id", id);
         List<T> list = dao.find(wrapper);
         if (list.size() > 0) {
@@ -78,6 +87,10 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 2.根据id数组进行实体集合查询
      */
     public List<T> findByIds(String... ids) {
+        if(ids==null || ids.length==0){
+            logger.error("findByIds-> ids is null or length=0");
+           return null;
+        }
         QueryWrapper<T> wrapper = QueryWrapper.of(entityClz).in("id", ids);
         return dao.find(wrapper);
     }
@@ -109,15 +122,15 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     /**
      * 6.条件包装对象查询实体列表
      */
-    public <S extends QueryWrapper, E extends CustomQuery<T, S>> List<T> find(E wrapper) {
-        return dao.find(wrapper);
+    public <S extends QueryWrapper, E extends CustomQuery<T, S>> List<T> find(E request) {
+        return dao.find(request);
     }
 
     /**
      * 7.条件包装对象查询总数
      */
-    public <S extends QueryWrapper, E extends CustomQuery<T, S>> long count(E wrapper) {
-        return dao.count(wrapper.qw());
+    public <S extends QueryWrapper, E extends CustomQuery<T, S>> long count(E request) {
+        return dao.count(request.qw());
     }
 
     /**
@@ -138,6 +151,20 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
             return list.get(0);
         }
         return null;
+    }
+
+
+    /**
+     * 9. vo根据ids集合查询
+     */
+    public <E extends VoBean<T>> List<E> queryByIds(Class<E> voClz,String... ids) {
+        if(ids==null || ids.length==0){
+            logger.error("findByIds-> ids is null or length=0");
+            return null;
+        }
+        QueryWrapper<T> wrapper = QueryWrapper.of(entityClz).in("id", ids);
+        List<E> list = dao.query(voClz, wrapper, null);
+        return list;
     }
 
     /**
@@ -161,6 +188,10 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 12 根据ID逻辑删除<T>类实体对象，以及能递归以<T>为外键的关联实体数据根据规则进行操作（逻辑删除，清除外键关系，不做操作）
      */
     public long remove(String id) {
+        if(id==null){
+            logger.error("remove-> id is null");
+            return 0;
+        }
         return remove(entityClz, id);
     }
 
@@ -168,6 +199,10 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 13 物理删除
      */
     public long delete(String id) {
+        if(id==null){
+            logger.error("delete-> id is null");
+            return 0;
+        }
         return dao.delete(id);
     }
 
@@ -175,6 +210,10 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 14 批量物理删除
      */
     public long batchDel(String... ids) {
+        if(ids==null || ids.length==0){
+            logger.error("batchDel-> ids is null or length=0");
+            return 0;
+        }
         long i = 0;
         for (String id : ids) {
             i += delete(id);
@@ -186,6 +225,10 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 15 批量逻辑删除
      */
     public long batchRm(String... ids) {
+        if(ids==null || ids.length==0){
+            logger.error("batchRm-> ids is null or length=0");
+            return 0;
+        }
         long i = 0;
         for (String id : ids) {
             i += remove(entityClz, id);
@@ -197,17 +240,46 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
 
     /**
      * 16 实体类对象保存
-     * @param t
+     * @param
      * @return
      */
-    public T save(T t) {
-        return saveBean(t, true);
+    public T save(T beanDto) {
+        DataProcess masterProcess =  createProcess(beanDto);
+        return save(beanDto,masterProcess);
+    }
+
+    private <I extends Item >I save(I beanDto,DataProcess masterProcess) {
+        EntityDto entityDto = GlobalData.entityDto((Class<? extends Item>) beanDto.getClass());
+        masterProcess.getColumnValMap().forEach((k, v) -> {
+            ReflectionUtils.setFieldValue(beanDto, k, v);
+        });
+        return dao.save(beanDto,masterProcess);
     }
 
     /**
-     *  17 dto对象保存
-     * 1.保存主类以及关联得外键表，关联表，多对多表，支持递归保存
-     * 2. isFull=true时，会对未提交的关联数据进行逻辑删除
+     * 16-1 实体item保存
+     * @param ignores 必须忽略不处理的字段
+     */
+    public T saveWithIgnore(T t,String ... ignores) {
+        DataProcess masterProcess =  createProcess(t);
+        masterProcess.setIgnores(ignores);
+        return save(t,masterProcess);
+    }
+
+    /**
+     * 16-2 实体item保存
+     * @param assigns 指定保存的字段
+     */
+    public T saveWithAssign(T t,String ... assigns) {
+        DataProcess masterProcess =  createProcess(t);
+        masterProcess.setAssigns(assigns);
+        return save(t,masterProcess);
+    }
+
+    /**
+     *  17 包装复杂dto模型保存(递归)
+     * @param saveBean 复杂模型 模型数据入库(存在有新增与修改删除同时出现的情况)
+     * @param isFull 为TRUE会对未提交的关联数据进行逻辑删除;
      */
     public <E extends SaveBean<T>> E save(E saveBean, boolean isFull) {
         return saveBean(saveBean, isFull);
@@ -249,13 +321,18 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 删除逻辑，递归逻辑
      */
     private long remove(Class<? extends Item> itemClz, String id) {
+        String[] ids= id.split(",");
         EntityDto entityDto = GlobalData.entityDto(itemClz);
         List<Class<? extends Item>> relationClz = entityDto.getRelationTableClz();
         for (Class<? extends Item> clz : relationClz) {
             EntityDto delEntityDto = GlobalData.entityDto(clz);
             QueryWrapper wrapper = new QueryWrapper(clz);
             String fkName = delEntityDto.getFkMap().get(itemClz);
-            wrapper.eq(fkName, id);
+            if(ids.length>1){
+                wrapper.in(fkName,ids);
+            }else{
+                wrapper.eq(fkName, id);
+            }
             List<? extends Item> data = dao.query(clz, wrapper, null);
             if (data != null && data.size() > 0) {
                 String deltype = delRelation(entityDto, delEntityDto);
@@ -269,12 +346,23 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                 }
             }
         }
-        return dao.remove(itemClz, id);
+        if(ids.length>1){
+            int num=0;
+            for(String i:ids){
+                num+=dao.remove(itemClz, i);
+            }
+            return num;
+        }else{
+            return dao.remove(itemClz, id);
+        }
     }
 
 
     /**
      * 保存递归的核心逻辑处理
+     *   1. 保存本表的外键表
+     *   2. 保存本表
+     *   3. 保存关联表
      */
     private <E extends IdBean> E saveBean(final E beanDto, Class<? extends Item> fkItemClz, String fkItemId, UnaryOperator<DataProcess> callBackMethod, boolean subIsFull) {
         DataProcess masterProcess = callBackMethod == null ? createProcess(beanDto) : callBackMethod.apply(createProcess(beanDto));
@@ -287,6 +375,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                 masterProcess.setVal(entityDto.getFkMap().get(fkItemClz), fkItemId);
             }
             SaveDto saveDto = GlobalData.saveDto(saveBean.getClass());
+            //1.外键表
             saveDto.filter(ITEM_TYPE.ENTITY, ITEM_TYPE.SAVE).stream().filter(
                     fieldDto -> {
                         Class fkClz = fieldDto.getEntityClz();
@@ -300,7 +389,9 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                 String fkIdName = entityDto.getFkMap().get(dto.getEntityClz());
                 masterProcess.setVal(fkIdName, bean.getId());
             });
+            //2. 本表保存
             String masterId = dao.save(saveBean, masterProcess.getColumnValMap()).getId();
+            //3. 关联数据保存
             saveDto.filter(ITEM_TYPE.ENTITY, ITEM_TYPE.VO, ITEM_TYPE.LIST).stream().filter(
                     fieldDto -> {
                         Class fkClz = fieldDto.getEntityClz();
@@ -324,8 +415,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                             Class saveClz = fieldDto.getEntityClz();
                             EntityDto itemDto = GlobalData.entityDto(saveClz);
                             if (itemDto.isM2M()) {
-
-
                                 Item m2mItem = null;
                                 QueryWrapper req = QueryWrapper.of(saveClz);
                                 req.eq(itemDto.getFkMap().get(entityClz), masterId);
@@ -354,6 +443,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                     }
                 }
             });
+            //多对多保存
             List<Class<? extends Item>> relationItems = entityDto.getRelationTableClz();
             saveDto.filter(ITEM_TYPE.LIST).stream().filter(
                     fieldDto -> {
@@ -406,10 +496,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
             if (fkItemClz != null) {
                 ReflectionUtils.setFieldValue(beanDto, entityDto.getFkMap().get(fkItemClz), fkItemId);
             }
-            masterProcess.getColumnValMap().forEach((k, v) -> {
-                ReflectionUtils.setFieldValue(beanDto, k, v);
-            });
-            dao.save((Item) beanDto);
+            save((Item)beanDto,masterProcess);
         }
         return beanDto;
     }
@@ -427,14 +514,12 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      */
     private void removeRelationEntity(FieldDto fieldDto, EntityDto entityDto, SaveBean saveBean) {
         Object bean = ReflectionUtils.getFieldValue(saveBean, fieldDto.getFieldName());
-
         QueryWrapper wrapper = new QueryWrapper(fieldDto.getEntityClz());
         Class<? extends Item> subItemClz = fieldDto.getEntityClz();
         EntityDto subEntityDto = GlobalData.entityDto(fieldDto.getEntityClz());
         String fkName = subEntityDto.getFkMap().get(entityClz);
         wrapper.eq(fkName, saveBean.getId());
         List<? extends Item> existDb = dao.query(subItemClz, wrapper, null);
-
         final List<String> thisCommitIds = new ArrayList<>();
         if (bean != null) {
             if (bean instanceof IdBean) {
@@ -491,7 +576,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         return delType;
     }
 
-    private DataProcess createProcess(IdBean bean) {
+    protected DataProcess createProcess(IdBean bean) {
         return new HealthDataProcess(bean);
     }
 

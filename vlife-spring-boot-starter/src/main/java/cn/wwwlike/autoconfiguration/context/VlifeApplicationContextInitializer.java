@@ -18,23 +18,40 @@
 
 package cn.wwwlike.autoconfiguration.context;
 
-import cn.wwwlike.autoconfiguration.init.LoadRelation;
+import cn.wwwlike.vlife.objship.read.ModelReadCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.ExitCodeGenerator;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.annotation.Order;
 
+/**
+ * 容器启动初始化
+ * 1. 模型分析异常会启动失败（待注解分析，如果异常也启动失败）
+ * 2. queryDsl 生成类监测；(待完善)
+ */
 @Order(123)
 public class VlifeApplicationContextInitializer implements ApplicationContextInitializer {
-
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        String packroot = applicationContext.getEnvironment().getProperty("vlife.packroot");
-        new LoadRelation().load(packroot);
-        logger.info("初始化类关系完毕");
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Integer errNum=new ModelReadCheck().load(loader);
+        if(errNum>0){
+            logger.info("[vlife] 容器初始化失败，请按照规范编写各类模型，注意逻辑关系");
+            exitApplication(applicationContext);
+        }
+        logger.info("[vlife] 模型关系读取完毕");
+    }
 
+    /**
+     * 退出容器
+     * @param context
+     */
+    public static void exitApplication(ConfigurableApplicationContext context) {
+        int exitCode = SpringApplication.exit(context, (ExitCodeGenerator) () -> 0);
+        System.exit(exitCode);
     }
 }

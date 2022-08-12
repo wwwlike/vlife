@@ -24,8 +24,23 @@ import cn.wwwlike.vlife.dict.Constants;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
+import cn.wwwlike.vlife.objship.read.tag.ClzTag;
+import cn.wwwlike.vlife.utils.FileUtil;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,20 +53,27 @@ import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.ENTITY;
  * 数据库实体类读取
  */
 public class EntityRead extends ItemReadTemplate<EntityDto> {
-    private String model = "publish";
-
+    private static String model = "publish";
     public static EntityRead getInstance() {
-        return EntityReadInstance
+        EntityRead read= EntityReadInstance
                 .INSTANCE;
+        read.readTitleJson(model);
+        return read;
     }
 
     public static EntityRead getPluginInstance() {
         EntityRead read = EntityReadPluginInstance
                 .INSTANCE;
         read.model = "plugin";
+        read.readTitleJson(model);
         return read;
     }
 
+    /**
+     * 基本信息读取
+     * @param s
+     * @return
+     */
     public EntityDto readInfo(Class s) {
         if (Item.class.isAssignableFrom(s) && s != Item.class) {
             EntityDto dto = new EntityDto();
@@ -86,17 +108,12 @@ public class EntityRead extends ItemReadTemplate<EntityDto> {
         return null;
     }
 
-    public EntityDto finished(EntityDto entityDto) {
-        return null;
-    }
-
     public void relation() {
         for (EntityDto item : readAll) {
             List<FieldDto> fkFields = new ArrayList<>();
             if (!item.getState().equals(VCT.ITEM_STATE.ERROR)) {
                 for (FieldDto fieldDto : item.getFields()) {
                     if (fieldDto.getPathName().endsWith("Id")) {
-
                         String type = fieldDto.getPathName().substring(0, fieldDto.getPathName().length() - 2);
                         readAll.forEach(entityDto -> {
                             if (entityDto.getType().equalsIgnoreCase(type)) {
@@ -132,16 +149,14 @@ public class EntityRead extends ItemReadTemplate<EntityDto> {
                     }
                 }
             }
-            finished(item);
         }
+        super.infos=readAll;
     }
 
     private static class EntityReadInstance {
         private static final EntityRead INSTANCE = new EntityRead();
     }
-
     private static class EntityReadPluginInstance {
         private static EntityRead INSTANCE = new EntityRead();
-
     }
 }

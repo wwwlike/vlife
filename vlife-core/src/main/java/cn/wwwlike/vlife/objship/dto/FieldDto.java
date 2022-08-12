@@ -18,14 +18,15 @@
 
 package cn.wwwlike.vlife.objship.dto;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.annotation.VField;
-import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.objship.base.FieldInfo;
 import cn.wwwlike.vlife.objship.base.ISort;
 import cn.wwwlike.vlife.query.DataExpressTran;
 import cn.wwwlike.vlife.utils.VlifeUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,32 +41,37 @@ public class FieldDto<T extends BeanDto> extends FieldInfo implements ISort {
     /**
      * 字段所在item类信息 parent信息
      */
+    @JsonIgnore
     public T itemDto;
     /**
      * 字段类型 type的clz list的存放的是里面泛型的clazz
      */
+    @JsonIgnore
     public Class clz;
     /**
      * 字段所属 item的 Clazz 字段所在item的类clz itemInfoType的clz
      */
+    @JsonIgnore
     public Class<? extends IdBean> itemClz;
     /**
      * 字段所在实体类的clazz,这里不是item对应的entity,例如ITEM是VO，那么可能放的是其他关联表的字段
      */
+    @JsonIgnore
     public Class<? extends Item> entityClz;
     /**
      * 打平字段的查询路径 有下划线多层打平 && 驼峰命名字段间接一层注入
      */
+    @JsonIgnore
     public List queryPath;
-
+    @JsonIgnore
     public Object value;
-
+    @JsonIgnore
     public String orders;
-
+    @JsonIgnore
     public Opt opt;
-
+    @JsonIgnore
     public VField vField;
-
+    @JsonIgnore
     public DataExpressTran tran;
 
     public static void main(String[] args) {
@@ -137,6 +143,7 @@ public class FieldDto<T extends BeanDto> extends FieldInfo implements ISort {
      *
      * @return
      */
+    @JsonIgnore
     public List getSubPath() {
         if (getQueryPath() != null) {
             for (Object obj : getQueryPath()) {

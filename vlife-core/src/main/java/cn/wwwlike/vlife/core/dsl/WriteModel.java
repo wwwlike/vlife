@@ -18,12 +18,12 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
-import cn.wwwlike.vlife.base.IdBean;
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.dict.VCT;
+import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
-import cn.wwwlike.vlife.objship.dto.SaveDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
@@ -34,20 +34,26 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static cn.wwwlike.vlife.core.dsl.QueryHelper.getItemEntityPath;
 
 @Getter
 public class WriteModel<T extends Item> implements WModel<T> {
 
-    /**
-     * dsl的jpa查询factory
-     */
-    private JPAUpdateClause updateClause;
+    private JPAQueryFactory factory;
+
+    public JPAUpdateClause updateClause;
+
+    public void resetClause() {
+        this.updateClause =factory.update(main);
+    }
+
     /**
      * 查询结果vo的clz类型
      */
@@ -59,15 +65,18 @@ public class WriteModel<T extends Item> implements WModel<T> {
      */
     private EntityPathBase main;
 
-    private SaveDto saveDto;
+    private BeanDto saveDto;
 
     public WriteModel(JPAQueryFactory factory, Class<? extends SaveBean> saveBeanClz) {
-        this.entityClz = GenericsUtils.getGenericType(saveBeanClz);
+        this.factory=factory;
+        this.entityClz = Item.class.isAssignableFrom(saveBeanClz)?(Class<T>) saveBeanClz :GenericsUtils.getGenericType(saveBeanClz);
         main = getItemEntityPath(entityClz);
         this.saveClz = saveBeanClz;
         this.updateClause = factory.update(main);
-        this.saveDto = GlobalData.saveDto(saveBeanClz);
+        this.saveDto =Item.class.isAssignableFrom(saveBeanClz)?GlobalData.entityDto(entityClz): GlobalData.saveDto(saveBeanClz);
     }
+
+
 
     @Override
     public JPAUpdateClause getUpdateClause() {
@@ -111,19 +120,48 @@ public class WriteModel<T extends Item> implements WModel<T> {
         return this;
     }
 
-    @Override
-    public <E extends IdBean> WModel setVal(E bean) {
+
+    private <E extends IdBean> WModel setVals(E bean, boolean fieldsIsIgnore,String... fields) {
         List<FieldDto> basic = saveDto.filter(VCT.ITEM_TYPE.BASIC);
         Map<Path, Object> map = new HashMap<>();
+        boolean isItem=bean instanceof Item?true:false;
         for (FieldDto fieldDto : basic) {
-            if (!fieldDto.getEntityFieldName().equals("id")) {
-                map.put(getPath(fieldDto.getEntityFieldName()),
+            String entityName=isItem?fieldDto.getFieldName():fieldDto.getEntityFieldName();
+            Boolean isIgnore=fields==null?false:(Arrays.stream(fields).filter(str->{
+                return entityName.equals(str);
+            }).count()>0);
+            if (!entityName.equals("id")&&isIgnore==!fieldsIsIgnore) {
+                map.put(getPath(entityName),
                         ReflectionUtils.getFieldValue(bean, fieldDto.getFieldName())
                 );
             }
         }
-        setVal(map);
+        if(bean.getId()!=null){
+            setUpdateClauseVal(map);
+        }else{
+
+        }
         return this;
+    }
+
+    @Override
+    public <E extends IdBean> WModel setValWithAssign(E bean, String... assigns) {
+        return setVals(bean,false,assigns);
+    }
+
+    /**
+     * 将bean里的值取出来设置到map里等待querydsl进行save
+     * bean是item使用fieldName,saveBean使用 entityFieldName
+     * @param ignores 排除不处理的字段
+     */
+    @Override
+    public <E extends IdBean> WModel setVal(E bean, String... ignores) {
+        return setVals(bean,true,ignores);
+    }
+
+    @Override
+    public <E extends IdBean> WModel setVal(E bean) {
+        return setVal(bean,null);
     }
 
     @Override
@@ -139,12 +177,13 @@ public class WriteModel<T extends Item> implements WModel<T> {
      * @return
      */
     @Override
-    public WModel setVal(Map<Path, Object> valMap) {
+    public WModel setUpdateClauseVal(Map<Path, Object> valMap) {
         for (Path key : valMap.keySet()) {
             this.getUpdateClause().set(key, valMap.get(key));
         }
         return this;
     }
+
 
     public Path getPath(Function fieldName) {
         return null;

@@ -18,6 +18,8 @@
 
 package cn.wwwlike.vlife.bean;
 
+import cn.wwwlike.vlife.annotation.VClazz;
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.Item;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.StringUtils;
@@ -27,7 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
-
 
 /**
  * do数据模型继承的对象
@@ -41,7 +42,17 @@ public abstract class DbEntity implements Item {
     /**
      * 实体状态 【1有效 0逻辑删除】
      */
+    @VField(dictCode = "STATUS")
     public String status;
+
+    /**
+     * 创建人
+     */
+    public String createId;
+    /**
+     * 修改人
+     */
+    public String modifyId;
 
     /**
      * 记录创建日期
@@ -51,6 +62,23 @@ public abstract class DbEntity implements Item {
      * 最近修改日期
      */
     public Date modifyDate;
+
+
+    public String getCreateId() {
+        return createId;
+    }
+
+    public void setCreateId(String createId) {
+        this.createId = createId;
+    }
+
+    public String getModifyId() {
+        return modifyId;
+    }
+
+    public void setModifyId(String modifyId) {
+        this.modifyId = modifyId;
+    }
 
     @Id
     @Column(length = 50, nullable = true)
@@ -118,5 +146,6 @@ public abstract class DbEntity implements Item {
     public void setStatus(String status) {
         this.status = status;
     }
+
 
 }

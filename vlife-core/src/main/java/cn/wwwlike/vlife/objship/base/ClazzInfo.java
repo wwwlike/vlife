@@ -19,12 +19,12 @@
 package cn.wwwlike.vlife.objship.base;
 
 import cn.wwwlike.vlife.dict.VCT;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
  * 基础元素的basic信息
  */
-@Data
 public abstract class ClazzInfo {
     /**
      * 元素中文信息
@@ -34,6 +34,30 @@ public abstract class ClazzInfo {
      * 元素类型
      */
     public String type;
-
+    @JsonIgnore
     public String state = VCT.ITEM_STATE.WAIT;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 }

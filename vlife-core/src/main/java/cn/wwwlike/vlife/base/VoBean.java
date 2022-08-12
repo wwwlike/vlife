@@ -17,6 +17,7 @@
  */
 
 package cn.wwwlike.vlife.base;
+import cn.wwwlike.base.model.IdBean;
 
 /**
  * vo视图层模型接口

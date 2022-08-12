@@ -1,0 +1,1520 @@
+[
+  {
+    "entityName": "AdminApplication",
+    "title": "",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "SysGroupApi",
+    "title": "角色聚合组接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "SysResourcesApi",
+    "title": "权限资源接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "SysRoleApi",
+    "title": "用户角色接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "SysRoleGroupApi",
+    "title": "角色聚合组接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "SysUserApi",
+    "title": "用户表接口;",
+    "tags": {}
+  },
+  {
+    "entityName": "AuthDict",
+    "title": "业务字典，用户可以对该字典进行维护",
+    "tags": {}
+  },
+  {
+    "superName": "WebSecurityConfigurerAdapter",
+    "entityName": "SecurityConfig",
+    "tags": {}
+  },
+  {
+    "entityName": "WebMvcConfig",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysGroupDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysResourcesDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysRoleDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysRoleGroupDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysUserDao",
+    "tags": {}
+  },
+  {
+    "entityName": "GroupDto",
+    "title": "角色组dto",
+    "tags": {
+      "name": {
+        "fieldName": "name",
+        "title": "组名称"
+      },
+      "remark": {
+        "fieldName": "remark",
+        "title": "组描述"
+      },
+      "sysRoleId": {
+        "fieldName": "sysRoleId",
+        "title": "角色集合"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "角色组id"
+      }
+    }
+  },
+  {
+    "entityName": "ResourcesDto",
+    "title": "类说明",
+    "tags": {}
+  },
+  {
+    "entityName": "RoleDto",
+    "title": "类说明",
+    "tags": {}
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "SysGroup",
+    "title": "角色聚合组",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "角色组名称"
+      },
+      "remark": {
+        "fieldName": "remark",
+        "title": "描述"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "SysResources",
+    "title": "权限资源",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "title": "资源编码"
+      },
+      "onlyMenu": {
+        "fieldName": "onlyMenu",
+        "title": "菜单使用"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "pcode": {
+        "fieldName": "pcode",
+        "title": "上级编码"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "title": "图标"
+      },
+      "sysRoleId": {
+        "fieldName": "sysRoleId",
+        "title": "归属角色"
+      },
+      "type": {
+        "fieldName": "type",
+        "title": "资源类型"
+      },
+      "url": {
+        "fieldName": "url",
+        "title": "路由地址"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "资源名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "SysRole",
+    "title": "用户角色",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "角色名称"
+      },
+      "remark": {
+        "fieldName": "remark",
+        "title": "描述介绍"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "SysRoleGroup",
+    "title": "角色聚合组",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "sysRoleId": {
+        "fieldName": "sysRoleId",
+        "title": "角色"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "sysGroupId": {
+        "fieldName": "sysGroupId",
+        "title": "角色组"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "SysUser",
+    "title": "用户表",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "idno": {
+        "fieldName": "idno",
+        "title": "证件号"
+      },
+      "password": {
+        "fieldName": "password",
+        "title": "密码"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "姓名"
+      },
+      "tel": {
+        "fieldName": "tel",
+        "title": "电话"
+      },
+      "state": {
+        "fieldName": "state",
+        "title": "启用状态"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "usetype": {
+        "fieldName": "usetype",
+        "title": "用户类型"
+      },
+      "sysGroupId": {
+        "fieldName": "sysGroupId",
+        "title": "权限组"
+      },
+      "username": {
+        "fieldName": "username",
+        "title": "用户名"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "DictPageReq",
+    "title": "类说明",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "title": "编码"
+      },
+      "title": {
+        "fieldName": "title",
+        "title": "名称"
+      },
+      "sys": {
+        "fieldName": "sys",
+        "title": "系统项"
+      },
+      "queryType": {
+        "fieldName": "queryType",
+        "title": "跳过检查"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "ResourcesPageReq",
+    "title": "资源页面",
+    "tags": {
+      "search": {
+        "fieldName": "search",
+        "title": "模糊搜索条件"
+      },
+      "sysRoleId": {
+        "fieldName": "sysRoleId",
+        "title": "资源归属角色"
+      },
+      "type": {
+        "fieldName": "type",
+        "title": "资源类型"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "SysGroupPageReq",
+    "title": "角色组分页查询条件",
+    "tags": {
+      "name": {
+        "fieldName": "name",
+        "title": "组名称"
+      },
+      "sysRoleId": {
+        "fieldName": "sysRoleId",
+        "title": "关联角色"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "SysRolePageReq",
+    "title": "角色查询",
+    "tags": {
+      "ttt": {
+        "fieldName": "ttt",
+        "title": "搜索条件"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "UserPageReq",
+    "title": "用户列表查询",
+    "tags": {
+      "search": {
+        "fieldName": "search",
+        "title": "用户姓名"
+      },
+      "sysGroupId": {
+        "fieldName": "sysGroupId",
+        "title": "权限组"
+      }
+    }
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysGroupService",
+    "tags": {}
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysResourcesService",
+    "tags": {}
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysRoleGroupService",
+    "tags": {}
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysRoleService",
+    "tags": {}
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysUserService",
+    "tags": {}
+  },
+  {
+    "entityName": "ResourcesVo",
+    "title": "类说明",
+    "tags": {
+      "groupIds": {
+        "fieldName": "groupIds",
+        "title": "资源对应的角色组"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "资源id"
+      },
+      "url": {
+        "fieldName": "url",
+        "title": "请求路径"
+      }
+    }
+  },
+  {
+    "entityName": "SysGroupDetailVo",
+    "title": "角色组详情",
+    "tags": {
+      "name": {
+        "fieldName": "name",
+        "title": "组名称"
+      },
+      "remark": {
+        "fieldName": "remark",
+        "title": "组说明"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "组id"
+      }
+    }
+  },
+  {
+    "entityName": "UserDetailVo",
+    "title": "用户详细信息",
+    "tags": {
+      "groupName": {
+        "fieldName": "groupName",
+        "title": "角色组名称"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "用户名"
+      },
+      "menus": {
+        "fieldName": "menus",
+        "title": "menus"
+      },
+      "resourceCodes": {
+        "fieldName": "resourceCodes",
+        "title": "用户有的权限资源代码"
+      },
+      "username": {
+        "fieldName": "username",
+        "title": "账号"
+      }
+    }
+  },
+  {
+    "entityName": "UserVo",
+    "title": "用户列表信息",
+    "tags": {
+      "name": {
+        "fieldName": "name",
+        "title": "用户名"
+      },
+      "tel": {
+        "fieldName": "tel",
+        "title": "联系电话"
+      },
+      "idno": {
+        "fieldName": "idno",
+        "title": "证件号码"
+      },
+      "usetype": {
+        "fieldName": "usetype",
+        "title": "用户类型"
+      },
+      "username": {
+        "fieldName": "username",
+        "title": "账号"
+      }
+    }
+  },
+  {
+    "superName": "VLifeService",
+    "entityName": "BaseService",
+    "tags": {}
+  },
+  {
+    "superName": "DataProcess",
+    "entityName": "VlifeDataProcess",
+    "title": "数据保存之前必须回调的类",
+    "tags": {}
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "VlifeEntity",
+    "title": "类说明",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "最近修改日期"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修改人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "createDate": {
+        "fieldName": "createDate",
+        "title": "记录创建日期"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      }
+    }
+  },
+  {
+    "entityName": "CorsConfig",
+    "title": "解决跨域问题",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "AccountApi",
+    "title": "员工用户接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "DeptApi",
+    "title": "部门接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "Dict1Api",
+    "title": "字典表接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "DictApi",
+    "title": "字典表接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "ProjectAccountApi",
+    "title": "项目人员关系表(分配关系)接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "ProjectApi",
+    "title": "项目表接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "ProjectStepApi",
+    "title": "项目阶段关系表接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "StepApi",
+    "title": "项目阶段接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "TaskApi",
+    "title": "任务表接口;",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "AccountDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "DeptDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "DictDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "ProjectAccountDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "ProjectDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "ProjectStepDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "StepDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "TaskDao",
+    "tags": {}
+  },
+  {
+    "entityName": "AccountDto",
+    "title": "登录元素",
+    "tags": {
+      "projects": {
+        "fieldName": "projects",
+        "title": "项目创建人"
+      },
+      "project_id": {
+        "fieldName": "project_id",
+        "title": "创建人的id"
+      },
+      "projectAccount_projectId": {
+        "fieldName": "projectAccount_projectId",
+        "title": "多对多"
+      },
+      "projectAccount_project": {
+        "fieldName": "projectAccount_project",
+        "title": "多对多的关联关系"
+      }
+    }
+  },
+  {
+    "entityName": "ProjectDto",
+    "title": "项目编辑",
+    "tags": {}
+  },
+  {
+    "entityName": "ProjectPinDto",
+    "title": "收藏",
+    "tags": {
+      "pin": {
+        "fieldName": "pin",
+        "title": "是否收藏"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "项目id"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "Account",
+    "title": "员工用户",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "sex": {
+        "fieldName": "sex",
+        "title": "性别(字典)"
+      },
+      "deptId": {
+        "fieldName": "deptId",
+        "title": "所在部门"
+      },
+      "password": {
+        "fieldName": "password",
+        "title": "密码"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "姓名"
+      },
+      "tel": {
+        "fieldName": "tel",
+        "title": "电话号码"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "account": {
+        "fieldName": "account",
+        "title": "账号"
+      },
+      "age": {
+        "fieldName": "age",
+        "title": "年龄"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "Dept",
+    "title": "部门",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "部门名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "Dict",
+    "title": "字典表",
+    "tags": {
+      "val": {
+        "fieldName": "val",
+        "title": "值"
+      },
+      "code": {
+        "fieldName": "code",
+        "title": "编码"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "del": {
+        "fieldName": "del",
+        "title": "来源于Java里字典定义的则都不能删除"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "title": {
+        "fieldName": "title",
+        "title": "名称"
+      },
+      "sys": {
+        "fieldName": "sys",
+        "title": "管理员不可见"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "Project",
+    "title": "项目表",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "type": {
+        "fieldName": "type",
+        "title": "项目类型"
+      },
+      "planDate": {
+        "fieldName": "planDate",
+        "title": "计划开始日期"
+      },
+      "accountId": {
+        "fieldName": "accountId",
+        "title": "项目负责人"
+      },
+      "totalPoint": {
+        "fieldName": "totalPoint",
+        "title": "项目任务总点数"
+      },
+      "pin": {
+        "fieldName": "pin",
+        "title": "收藏\n暂时所有人公用"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "项目名称"
+      },
+      "state": {
+        "fieldName": "state",
+        "title": "项目状态"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "finishedPoint": {
+        "fieldName": "finishedPoint",
+        "title": "已经完成的任务点数"
+      },
+      "finishedDate": {
+        "fieldName": "finishedDate",
+        "title": "结束日期"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "ProjectAccount",
+    "title": "项目人员关系表(分配关系)",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "ProjectStep",
+    "title": "项目阶段关系表",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "stepId": {
+        "fieldName": "stepId",
+        "title": "项目的阶段"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "projectId": {
+        "fieldName": "projectId",
+        "title": "项目"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "Step",
+    "title": "项目阶段",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "Task",
+    "title": "任务表",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "level": {
+        "fieldName": "level",
+        "title": "紧急程度(字典)"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "stepId": {
+        "fieldName": "stepId",
+        "title": "当前所在阶段"
+      },
+      "sort": {
+        "fieldName": "sort",
+        "title": "排序"
+      },
+      "point": {
+        "fieldName": "point",
+        "title": "任务点数"
+      },
+      "accountId": {
+        "fieldName": "accountId",
+        "title": "任务创建人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "任务名称"
+      },
+      "progress": {
+        "fieldName": "progress",
+        "title": "当前完成进度"
+      },
+      "state": {
+        "fieldName": "state",
+        "title": "任务完成状态"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "projectId": {
+        "fieldName": "projectId",
+        "title": "所属项目"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "AccountPageReq",
+    "title": "查询条件",
+    "tags": {}
+  },
+  {
+    "superName": "VlifeQuery",
+    "entityName": "AccountTestReq",
+    "title": "类说明",
+    "tags": {}
+  },
+  {
+    "superName": "VlifeQuery",
+    "entityName": "LoginReq",
+    "title": "登录入参",
+    "tags": {
+      "password": {
+        "fieldName": "password",
+        "title": "密码"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "用户名"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "ProjectPageReq",
+    "title": "项目分页查询条件",
+    "tags": {
+      "accountId": {
+        "fieldName": "accountId",
+        "title": "根据负责人id查询"
+      },
+      "projectAccount_accountId": {
+        "fieldName": "projectAccount_accountId",
+        "title": "根据参与人Id查询(默认都需要传入)"
+      },
+      "year": {
+        "fieldName": "year",
+        "title": "项目开始年度"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "项目名称"
+      },
+      "state": {
+        "fieldName": "state",
+        "title": "项目状态"
+      },
+      "type": {
+        "fieldName": "type",
+        "title": "项目类型"
+      }
+    }
+  },
+  {
+    "superName": "VlifeQuery",
+    "entityName": "TaskListReq",
+    "title": "任务过滤",
+    "tags": {
+      "name": {
+        "fieldName": "name",
+        "title": "任务名称"
+      },
+      "progress": {
+        "fieldName": "progress",
+        "title": "进度范围"
+      },
+      "state": {
+        "fieldName": "state",
+        "title": "任务状态"
+      },
+      "projectId": {
+        "fieldName": "projectId",
+        "title": "项目id"
+      }
+    }
+  },
+  {
+    "superName": "VLifeService",
+    "entityName": "AccountService",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeService",
+    "entityName": "DeptService",
+    "tags": {}
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "DictService",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeService",
+    "entityName": "ProjectAccountService",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeService",
+    "entityName": "ProjectService",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeService",
+    "entityName": "ProjectStepService",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeService",
+    "entityName": "StepService",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeService",
+    "entityName": "TaskService",
+    "tags": {}
+  },
+  {
+    "entityName": "AccountTestVo",
+    "title": "类说明",
+    "tags": {
+      "projects": {
+        "fieldName": "projects",
+        "title": "查找project的外键是否有当前表，有则把project放入到这里"
+      },
+      "projectAccount_project_name": {
+        "fieldName": "projectAccount_project_name",
+        "title": "路径错误,日志应该报错"
+      },
+      "dept_name": {
+        "fieldName": "dept_name",
+        "title": "数据打平"
+      }
+    }
+  },
+  {
+    "entityName": "AccountVo",
+    "title": "类说明",
+    "tags": {
+      "deptId": {
+        "fieldName": "deptId",
+        "title": "用户组"
+      }
+    }
+  },
+  {
+    "entityName": "ProjectDetailVo",
+    "title": "类说明",
+    "tags": {
+      "totalPoint": {
+        "fieldName": "totalPoint",
+        "title": "项目任务总点数"
+      },
+      "account_name": {
+        "fieldName": "account_name",
+        "title": "项目负责人姓名"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "项目名称"
+      },
+      "state": {
+        "fieldName": "state",
+        "title": "项目状态 project_state"
+      },
+      "type": {
+        "fieldName": "type",
+        "title": "项目类型"
+      },
+      "finishedPoint": {
+        "fieldName": "finishedPoint",
+        "title": "已经完成的任务点数"
+      },
+      "steps": {
+        "fieldName": "steps",
+        "title": "项目的生命周期"
+      },
+      "planDate": {
+        "fieldName": "planDate",
+        "title": "计划开始日期"
+      },
+      "tasks": {
+        "fieldName": "tasks",
+        "title": "项目下的任务"
+      },
+      "finishedDate": {
+        "fieldName": "finishedDate",
+        "title": "结束日期"
+      }
+    }
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "SysAreaApi",
+    "title": "行政区划接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "SysDeptApi",
+    "title": "null接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "SysOrgApi",
+    "title": "null接口;",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysAreaDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysDeptDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysOrgDao",
+    "tags": {}
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "SysArea",
+    "title": "行政区划",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "title": "区划编码"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "pcode": {
+        "fieldName": "pcode",
+        "title": "上级地区编码"
+      },
+      "level": {
+        "fieldName": "level",
+        "title": "地区类型"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "区划名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "SysDept",
+    "title": "科室部门",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "title": "部门编码"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "sysOrgId": {
+        "fieldName": "sysOrgId",
+        "title": "机构"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "部门名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "SysOrg",
+    "title": "机构",
+    "tags": {
+      "enableDate": {
+        "fieldName": "enableDate",
+        "title": "启用日期"
+      },
+      "code": {
+        "fieldName": "code",
+        "title": "机构编码"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "机构名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "type": {
+        "fieldName": "type",
+        "title": "机构分类"
+      },
+      "sysAreaId": {
+        "fieldName": "sysAreaId",
+        "title": "地区"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "SysAreaPageReq",
+    "title": "地区查询条件",
+    "tags": {}
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "SysDeptPageReq",
+    "title": "部门查询条件",
+    "tags": {}
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "SysOrgPageReq",
+    "title": "机构查询条件",
+    "tags": {
+      "sysAreaId": {
+        "fieldName": "sysAreaId",
+        "title": "地区"
+      }
+    }
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysAreaService",
+    "tags": {}
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysDeptService",
+    "tags": {}
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysOrgService",
+    "tags": {}
+  },
+  {
+    "entityName": "WebMvcConfig",
+    "tags": {}
+  }
+]

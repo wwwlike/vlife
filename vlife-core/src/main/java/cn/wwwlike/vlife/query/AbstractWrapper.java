@@ -316,6 +316,18 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
         protected Object val;
         protected DataExpressTran tran;
         protected Object[] vals;
+
+        public Object getVal(){
+            if(opt==Opt.like){
+                return "%"+val+"%";
+            }else if(opt==Opt.startsWith){
+                return val+"%";
+            }else if(opt==Opt.endsWith){
+                return "%"+val;
+            }else{
+                return val;
+            }
+        }
         /**
          * 找到该字段的左查询的全量路径
          * （如果element在子查询里则不包含父查询路径->可以全路径通过getQueryPath获取）

@@ -18,8 +18,8 @@
 
 package cn.wwwlike.vlife.objship.read;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.BaseRequest;
-import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
@@ -40,7 +40,6 @@ import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.REQ;
  */
 public class ReqRead extends ItemReadTemplate<ReqDto> {
     private static ReqRead INSTANCE = null;
-    private List<EntityDto> infos;
 
     private ReqRead(List<EntityDto> info) {
         this.infos = info;
@@ -63,19 +62,15 @@ public class ReqRead extends ItemReadTemplate<ReqDto> {
         ReqDto dto = null;
         if (BaseRequest.class.isAssignableFrom(s) && s != BaseRequest.class) {
             dto = new ReqDto();
-
             superRead(dto, s);
             dto.setItemType(REQ);
             Class entityClz = GenericsUtils.getGenericType(s);
             if (entityClz == null || !Item.class.isAssignableFrom(entityClz)) {
                 dto.setState(VCT.ITEM_STATE.ERROR);
             } else {
-
                 dto.setEntityClz(entityClz);
                 dto.setEntityType(entityClz.getSimpleName());
             }
-
-
         }
         return dto;
     }
@@ -91,22 +86,19 @@ public class ReqRead extends ItemReadTemplate<ReqDto> {
         for (ReqDto item : readAll) {
             EntityDto entityDto = GlobalData.entityDto(item.getEntityClz());
             item.setEntityDto(entityDto);
-
             if (item.getFields() != null) {
                 for (FieldDto fieldDto : item.getFields()) {
-
-
                     if (fieldDto.getEntityFieldName() == null) {
                         if (BASIC.equals(fieldDto.getFieldType())
                                 || !IdBean.class.isAssignableFrom(fieldDto.getClz())) {
-
                             fieldDto.setQueryPath(basicFieldMatch(item, fieldDto));
                         }
                     }
+                    syncDictCode(fieldDto);
                 }
             }
         }
-
+        super.reqDtos=readAll;
     }
 
 }

@@ -20,6 +20,7 @@ package cn.wwwlike.vlife.objship.dto;
 
 
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.objship.base.ClazzInfo;
 
 /**
  * 不是entity类信息应该包含的数据字段

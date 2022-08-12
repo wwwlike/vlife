@@ -30,12 +30,28 @@ import java.util.stream.Collectors;
  *
  * @param <T>
  */
-@Data
+
 public abstract class BeanDto<T> extends ItemInfo {
     /* 当前类对象 */
     public Class<? extends T> clz;
     /* BEAN里面的字段信息*/
     public List<FieldDto> fields;
+
+    public Class<? extends T> getClz() {
+        return clz;
+    }
+
+    public void setClz(Class<? extends T> clz) {
+        this.clz = clz;
+    }
+
+    public List<FieldDto> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<FieldDto> fields) {
+        this.fields = fields;
+    }
 
     /**
      * 过滤初需要类型的字段

@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
-import cn.wwwlike.vlife.base.IdBean;
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.dict.Opt;
@@ -227,9 +227,11 @@ public class QueryHelper {
                     qw.eq(true, reqName, val, tran, leftArray);
                 } else if (opt == Opt.like || opt == Opt.notLike) {
                     qw.like(true, reqName, "%" + val + "%", tran, leftArray);
-                } else if (opt == Opt.isNotNull || opt == Opt.isNull) {
+                } else if (opt == Opt.isNotNull ) {
                     qw.isNotNull((Boolean) val, reqName, leftArray);
-                } else if (opt == Opt.startsWith || opt == Opt.endsWith
+                } else if ( opt == Opt.isNull){
+                    qw.isNull((Boolean) val, reqName, leftArray);
+                }else if (opt == Opt.startsWith || opt == Opt.endsWith
                         || opt == Opt.gt
                         || opt == Opt.goe
                         || opt == Opt.lt

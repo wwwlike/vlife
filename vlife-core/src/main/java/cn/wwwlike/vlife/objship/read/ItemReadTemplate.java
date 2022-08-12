@@ -18,40 +18,99 @@
 
 package cn.wwwlike.vlife.objship.read;
 
-import cn.wwwlike.vlife.base.IdBean;
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.*;
+import cn.wwwlike.vlife.objship.read.tag.ClzTag;
+import cn.wwwlike.vlife.utils.FileUtil;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.PackageUtil;
 import cn.wwwlike.vlife.utils.VlifeUtils;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Data;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLDecoder;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.*;
 
 
 /**
- * item-bean类型对象->vo,save,entity读取的模板模板类
- *
- * @param <T>
+ * 模型元数据信息读取模板类
  */
 @Data
 public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T> {
-
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    /**
+     * title.json注释信息读取
+     */
+    protected static List<ClzTag> clzTags=null;
+    /**
+     * 读取完成后(relation里设置),开放共享的模型信息;
+     */
+    protected static List<EntityDto> infos = null;
+    protected static List<VoDto> voDtos = null;
+    protected static List<ReqDto> reqDtos = null;
+    protected static List<SaveDto> saveDtos=null;
+    /**
+     * 实现类读取的类信息
+     */
     protected List<T> readAll;
+    /**
+     * 类的字段信息
+     */
     protected List<FieldDto> fieldDtoList = null;
     private List<String> ignores = Arrays.asList("groupBys");
+    /**
+     * titleJson信息读取
+     * 1. 默认classPath里查找,发布模式
+     * 2. 没有则根据文件路径查找,插件模式
+     */
+    public void readTitleJson(String model){
+        try{
+            String json =null;
+            Resource resource = new ClassPathResource("title.json");
+            if(resource.isFile()){//classpath查找
+                InputStream is = resource.getInputStream();
+                json = FileUtil.getFileContent(is);
+            }else{
+                File jsonFile =ResourceUtils.getFile("./src/main/resources/title.json");
+                if(jsonFile.isFile()){
+                    json= FileUtils.readFileToString(jsonFile,"UTF-8");
+                }
+            }
+            if(json!=null){
+                clzTags=GSON.fromJson(json, new TypeToken<List<ClzTag>>(){}.getType());
+            } else{
+                logger.warn("no comments,because not created title.json with vlife-plugin");
+            }
+        }catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+    }
 
     public static String getClzType(Class clz) {
         if (clz.isArray()) {
@@ -75,7 +134,6 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
 
     /**
      * 读指定包路径的类路径到列表
-     *
      * @param packageNames 要读取的包路径
      * @return 包路径下的所有类路径放入到集合里
      */
@@ -87,8 +145,6 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                 classStr.addAll(classNames);
             }
         }
-
-
         return classStr;
     }
 
@@ -107,7 +163,14 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                 classStr.addAll(classNames);
             }
         }
-        return classStr;
+        return  classStr.stream().filter(
+                classFullName->(classFullName.indexOf(".entity.")!=-1||
+                        classFullName.indexOf(".req.")!=-1||
+                        classFullName.indexOf(".vo.")!=-1||
+                        classFullName.indexOf(".item.")!=-1||
+                        classFullName.indexOf(".do.")!=-1||
+                        classFullName.indexOf(".dto.")!=-1)
+                        ).collect(Collectors.toList());
     }
 
     /**
@@ -119,8 +182,6 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
      */
     protected T superRead(T dto, Class s) {
         dto.setType(StringUtils.uncapitalize(s.getSimpleName()));
-        dto.setTitle(dto.getType());
-
         dto.setClz(s);
         return dto;
     }
@@ -128,7 +189,6 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
     /**
      * 核心读取方法
      * 读取集合里需要进类进行解析存入到read里
-     *
      * @param clazzPackageUrl 类全量路径
      * @return 返回类信息
      * @throws ClassNotFoundException
@@ -138,20 +198,21 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         for (String url : clazzPackageUrl) {
             Class clazz = null;
             try {
+                if(url.startsWith("BOOT-INF.classes.")){
+                    url=url.substring(17);
+                }
+                logger.info("url:"+url);
                 clazz = loader.loadClass(url);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 continue;
             }
-
             T dto = readInfo(clazz);
-
             if (dto != null) {
-
                 if (!VCT.ITEM_STATE.ERROR.equals(dto.getState())) {
                     fieldDtoList = new ArrayList<>();
-                    Field[] fields = clazz.getDeclaredFields();
-
+                    /* item需要父类属性；其他模型不需要 */
+                    Field[] fields = Item.class.isAssignableFrom(clazz)?clazz.getFields():clazz.getDeclaredFields();
                     for (Field field : fields) {
                         if (!ignores.contains(field.getName())) {
                             FieldDto<T> fieldDto = FieldRead.getInstance().read(field, dto);
@@ -165,28 +226,91 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                     }
                     dto.setFields(fieldDtoList);
                 }
-
                 readAll.add(dto);
             }
-
         }
+        /* 关联信息读取*/
         relation();
-
-
+        /* 注释信息读取*/
+        for(T beanInfo:readAll){
+            if(beanInfo.getType().equals("SysRoleGroup")){
+                System.out.println("111");
+            }
+            //用注释写title
+            commentRead(beanInfo);
+            //用实体类的注释
+            if(beanInfo instanceof NotEntityDto ){
+                commentPerfect(beanInfo);
+            }
+        }
         return readAll;
     }
 
-    @Override
-    public T finished(T t) {
-        return null;
+    /**
+     * 用实体类的注释完善其他模型,其他模型字段如果为空就覆盖;
+     * @param beanInfo
+     */
+    private T commentPerfect(T beanInfo){
+        if(StringUtils.isEmpty(beanInfo.getTitle())){
+            beanInfo.setTitle(((NotEntityDto)beanInfo).getEntityDto().getTitle() + "(视图)");
+        }
+        List<FieldDto> fieldDtos = beanInfo.getFields();
+        /* 所有字段找对应的实体的字段title,字段是对象则找对象, vo save 存在嵌套注入的情况*/
+        fieldDtos.stream().forEach(modelField -> {
+            infos.stream().forEach(entityDto -> {
+                if (modelField.getEntityClz() != null && entityDto.getClz() == modelField.getEntityClz()) {
+                    if (modelField.getEntityFieldName() != null) {
+                        //1：在对应实体类找字段
+                        Optional<FieldDto> optionalFieldDto = entityDto.getFields().stream().filter(ff -> {
+                            return ff.getFieldName().equals(modelField.getEntityFieldName()) && ff.getItemClz() == modelField.getEntityClz();
+                        }).findFirst();
+
+                        if (optionalFieldDto.isPresent()&&modelField.getTitle()==null) {
+                            modelField.setTitle(optionalFieldDto.get().getTitle());
+                        }
+                    } else if(modelField.getTitle()==null){
+                        modelField.setTitle(entityDto.getTitle());
+                    }
+                }
+            });
+        });
+        return beanInfo;
     }
 
     /**
-     * 可变参数方式读取
+     * 注释读取
      */
-    public List<T> read(ClassLoader loader, String... clazzPackageUrl) throws ClassNotFoundException {
-        return read(loader, Arrays.asList(clazzPackageUrl));
+    @Override
+    public T commentRead(T beanInfo) {
+        if(clzTags!=null) {
+            Optional<ClzTag> optional = clzTags.stream().filter(tag ->
+                    tag.getEntityName()!=null&&
+                    tag.getEntityName().equalsIgnoreCase(beanInfo.getType())
+            ).findFirst();
+            if(optional.isPresent()){
+                ClzTag tag=optional.get();
+                if (tag.getTitle() != null) {
+                    beanInfo.setTitle(tag.getTitle());
+                }
+                if (tag.getTags().size() > 0) {
+                    List<FieldDto> fieldDtos = beanInfo.getFields();
+                    fieldDtos.stream().forEach(field -> {
+                        if (tag.getTags().get(field.getFieldName()) != null) {
+                            field.setTitle(tag.getTags().get(field.getFieldName()).getTitle());
+                        }
+                    });
+                }
+            }
+        }
+        return beanInfo;
     }
+
+//    /**
+//     * 多包路径读取
+//     */
+//    public List<T> read(ClassLoader loader, String... clazzPackageUrl) throws ClassNotFoundException {
+//        return read(loader, Arrays.asList(clazzPackageUrl));
+//    }
 
     /**
      * 路径查找
@@ -270,45 +394,43 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         if (has_index == -1) {
             for (Class<? extends Item> inItemClz : lefts) {
                 matchf = FieldRead.match(inItemClz, voFieldName);
-
                 if (matchf != null) {
                     fieldDto.setEntityClz(inItemClz);
-
                     fieldDto.setEntityType(inItemClz.getSimpleName());
                     fieldDto.setEntityFieldName(matchf.getName());
-
                     fieldDto.setState(VCT.ITEM_STATE.NORMAL);
                     return Arrays.asList(entityDto.getClz(), inItemClz);
                 }
             }
-
             for (Class<? extends Item> outItemClz : rights) {
                 matchf = FieldRead.match(outItemClz, voFieldName);
                 if (matchf != null) {
                     fieldDto.setEntityClz(outItemClz);
-
                     fieldDto.setEntityType(outItemClz.getSimpleName());
                     fieldDto.setEntityFieldName(matchf.getName());
-
                     fieldDto.setState(VCT.ITEM_STATE.NORMAL);
-
                     return Arrays.asList(entityDto.getClz(), Arrays.asList(outItemClz));
                 }
             }
         } else {
             String[] path = voFieldName.split("_");
-
-            Class itemClz = _MatchAndSetEntityPath(fieldDto, BASIC.equals(fieldDto.getFieldType()) ? true : false);
+            /*
+             * 查询(注入)queryPath路径顺序，
+             * 1. 基础类型字段都是从左到右 true
+             * 2. VO类型的对象是注入-false
+             * 3. Req类型的List<String> 也应该是true
+             */
+            Boolean leftToRight=item instanceof ReqDto?true:(
+                    BASIC.equals(fieldDto.getFieldType()) ? true : false);
+            /** 找到字段所在的实体模型 **/
+            Class itemClz = _MatchAndSetEntityPath(fieldDto, leftToRight);
             if (itemClz != null) {
                 matchf = FieldRead.match(itemClz, path[path.length - 1]);
             }
             if (matchf != null) {
-
-
                 fieldDto.setEntityClz(itemClz);
                 fieldDto.setEntityFieldName(matchf.getName());
                 fieldDto.setEntityType(itemClz.getSimpleName());
-
                 fieldDto.setState(VCT.ITEM_STATE.NORMAL);
                 return fieldDto.getQueryPath();
             }
@@ -321,40 +443,39 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
 
 
     /**
-     * 复杂的五类对象设置 fieldDto里的相关信息
-     * 查询结果集(VODTO)和保存的结果集里(saveDto)的以下务类对象在read的relation里会触发该方法的调用
-     * list<VO>,
-     * LIST<ITEM>,
-     * List<String>, —>可能取不到entity
-     * vo,
-     * entity, 类型对象注入进行匹配，
-     *
+     *  字段作为voBean,saveBean的注入对象(复杂)时，fieldDto里缺失信息的计算和写入；
+     *  五类复杂对象注入：List<VO>,LIST<ITEM>,List<String>,vo,entity
      * @param fieldDto     VO里注入的对象字段信息
-     * @param iocEntityDto 被注入实体类VO对象信息
+     * @param voEntityDto 被注入实体类VO对象信息
      * @param <T>
      * @return 对匹配信息进行设置到 fieldDto里，state =-1则匹配失败
      */
-    protected <T extends ReqVoDto> FieldDto iocReverseMatch(FieldDto fieldDto, EntityDto iocEntityDto) {
-        String fieldType = fieldDto.getFieldType();
-        String voFieldName = fieldDto.getPathName();
-        Class fieldClz = fieldDto.getClz();
-
-        Class<? extends Item> entityClz = Item.class.isAssignableFrom(fieldClz) ? fieldClz : GenericsUtils.getGenericType(fieldClz);
+    protected <T extends ReqVoDto> FieldDto iocReverseMatch(FieldDto fieldDto, EntityDto voEntityDto) {
+        String fieldType = fieldDto.getFieldType();/*字段分类 list basic, vo*/
+        String voFieldName = fieldDto.getPathName();/*字段路径名称*/
+        Class fieldClz = fieldDto.getClz(); /* 字段类型*/
+        if(voFieldName.equals("groupIds")||voFieldName.equals("sysRole_SysRoleGroup_sysGroup")){
+            System.out.println("1");
+        }
+        Class<? extends Item> entityClz =  /* 字段对应的实体类型*/
+                Item.class.isAssignableFrom(fieldClz) ? fieldClz : GenericsUtils.getGenericType(fieldClz);
 
         if (voFieldName.indexOf("_") != -1) {
-            entityClz = _MatchAndSetEntityPath(fieldDto, false);
+           Class pathNameLastElementEntityClz = _MatchAndSetEntityPath(fieldDto, false);
+           if(pathNameLastElementEntityClz!=entityClz){
+               fieldDto.queryPath=null;
+               return fieldDto;
+           }
         } else {
-            Class fieldEntityClz = fieldDto.getItemClz();
-            if (!Item.class.isAssignableFrom(fieldEntityClz)) {
-                fieldEntityClz = GenericsUtils.getGenericType(fieldEntityClz);
-            }
-
-            if (LIST.equals(fieldType) && iocEntityDto.getFkMap().get(fieldEntityClz) == null) {
-                fieldDto.setQueryPath(entityClz, fieldEntityClz);
-
-            } else if (!LIST.equals(fieldType) && iocEntityDto.getFkMap().get(entityClz) != null) {
+//            Class fieldEntityClz = fieldDto.getClz();
+//            if (!Item.class.isAssignableFrom(fieldEntityClz)) {
+//                fieldEntityClz = GenericsUtils.getGenericType(fieldEntityClz);
+//            }
+            if (LIST.equals(fieldType) && voEntityDto.getRelationTableClz().contains(entityClz)) {
+                fieldDto.setQueryPath(entityClz, voEntityDto.getClz());
+            } else if (!LIST.equals(fieldType) && voEntityDto.getFkMap().get(entityClz) != null) {
                 List list = new ArrayList<>();
-                list.add(fieldEntityClz);
+                list.add(entityClz);
                 fieldDto.setQueryPath(entityClz, list);
             }
         }
@@ -369,7 +490,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
     /**
      * 返回字段所在的实体类;
      * VO类型的对象查找IOC注入的匹配(主要是要找到查询到这个对象，相对于 item的实体类的路径)
-     *
+     * 路径是对的，VO时注入的对象的类型匹配需要判断；(在modelReadCheck里把关)
      * @param fieldDto    对有下划线的字段信息进行匹配找到他的路径    注入的字段信息(vo or entity)
      * @param leftToRight 查询顺序，字段是从左往右(查询条件req)， 对象注入(ioc)是从右往左(vo,save)
      *                    这里可以改为判断字段类型，来决定是true of false
@@ -382,42 +503,44 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
             return null;
         }
         String[] _entityNames = voFieldName.split("_");
-
         String fieldType = fieldDto.getFieldType();
+        /* step1 如果是简单类型，或者是List<String> _entityNames数组的最后一个要去掉 */
         if (BASIC.equals(fieldType) || !IdBean.class.isAssignableFrom(fieldDto.getClz())) {
             _entityNames = Arrays.copyOfRange(_entityNames, 0, _entityNames.length - 1);
         }
-
         if (!leftToRight) {
             _entityNames = VlifeUtils.reverseArray(_entityNames);
         }
         List entityNameList = Arrays.asList(_entityNames);
-
         List<Class> entityClzPaths = (List<Class>) entityNameList.stream().map(s -> {
             if (s.getClass() == String.class) {
-                return GlobalData.entityDto((String) s).clz;
+                EntityDto entityDto=GlobalData.entityDto((String) s);
+                if(entityDto!=null){
+                    return entityDto.clz;
+                }else{
+                    return null;
+                }
             } else {
                 return s;
             }
         }).collect(Collectors.toList());
 
-        Class itemEntityClz = ((NotEntityDto) fieldDto.getItemDto()).getEntityClz();
+        if(entityClzPaths.contains(null)){
+            return null;
+        }
 
+        Class itemEntityClz = ((NotEntityDto) fieldDto.getItemDto()).getEntityClz();
         if (leftToRight) {
             entityClzPaths.add(0, itemEntityClz);
         } else {
             entityClzPaths.add(itemEntityClz);
         }
-
         List queryPath = createQueryPath(entityClzPaths);
         fieldDto.setQueryPath(queryPath);
-
-
         if (leftToRight)
             return entityClzPaths.get(entityClzPaths.size() - 1);
         else
             return entityClzPaths.get(0);
-
     }
 
     /**
@@ -518,4 +641,37 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         return 0;
     }
 
+
+    /**
+     * Gson Object
+     */
+    public final static Gson GSON = new GsonBuilder().addDeserializationExclusionStrategy(new ExclusionStrategy() {
+        @Override
+        public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+            return false;
+        }
+        @Override
+        public boolean shouldSkipClass(Class aClass) {
+            return false;
+        }
+    }).create();
+
+    /**
+     * req,saveBean,voBean的dict如为空，对应的实体类字段不为空则进行同步和Entity里的一致
+     */
+    public void syncDictCode(FieldDto field){
+        if(field.getEntityFieldName()!=null&& field.getDictCode()==null){
+            infos.forEach(item->{
+                if(item.getClz()==field.getEntityClz()){
+                    item.getFields().forEach(f->{
+                        if(f.getFieldName().equals(field.getEntityFieldName())){
+                            if(f.getDictCode()!=null){
+                                field.setDictCode(f.getDictCode());
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
 }

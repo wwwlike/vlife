@@ -1,0 +1,145 @@
+# 共有8个级别，按照从低到高为：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
+Configuration:
+  status: warn
+  monitorInterval: 30
+  Properties: # 定义全局变量
+    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
+      #测试：-Dlog.level.console=warn -Dlog.level.xjj=trace
+      #生产：-Dlog.level.console=warn -Dlog.level.xjj=info
+      - name: log.level.console
+        value: info
+      - name: log.path
+        value: logs/${project.name}_log
+      - name: project.name
+        value: opendoc
+      - name: log.pattern
+        value: "%d{yyyy-MM-dd HH:mm:ss.SSS} -%5p ${PID:-} [%15.15t] %-30.30C{1.} : %m%n"
+
+  Appenders:
+    Console:  #输出到控制台
+      name: CONSOLE
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: ${log.pattern}
+    #   启动日志
+    RollingFile:
+      - name: ROLLING_FILE
+        fileName: ${log.path}/${project.name}.log
+        filePattern: "${log.path}/historyRunLog/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+        PatternLayout:
+          pattern: ${log.pattern}
+        Filters:
+          #        一定要先去除不接受的日志级别，然后获取需要接受的日志级别
+          ThresholdFilter:
+            - level: error
+              onMatch: DENY
+              onMismatch: NEUTRAL
+            - level: info
+              onMatch: ACCEPT
+              onMismatch: DENY
+        Policies:
+          TimeBasedTriggeringPolicy:  # 按天分类
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:     # 文件最多100个
+          max: 100
+      #   平台日志
+      - name: PLATFORM_ROLLING_FILE
+        ignoreExceptions: false
+        fileName: ${log.path}/platform/${project.name}_platform.log
+        filePattern: "${log.path}/platform/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+        PatternLayout:
+          pattern: ${log.pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:  # 按天分类
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:     # 文件最多100个
+          max: 100
+      #   业务日志
+      - name: BUSSINESS_ROLLING_FILE
+        ignoreExceptions: false
+        fileName: ${log.path}/bussiness/${project.name}_bussiness.log
+        filePattern: "${log.path}/bussiness/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+        PatternLayout:
+          pattern: ${log.pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:  # 按天分类
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:     # 文件最多100个
+          max: 100
+      #   错误日志
+      - name: EXCEPTION_ROLLING_FILE
+        ignoreExceptions: false
+        fileName: ${log.path}/exception/${project.name}_exception.log
+        filePattern: "${log.path}/exception/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+        ThresholdFilter:
+          level: error
+          onMatch: ACCEPT
+          onMismatch: DENY
+        PatternLayout:
+          pattern: ${log.pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:  # 按天分类
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:     # 文件最多100个
+          max: 100
+      #   DB 日志
+      - name: DB_ROLLING_FILE
+        ignoreExceptions: false
+        fileName: ${log.path}/db/${project.name}_db.log
+        filePattern: "${log.path}/db/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+        PatternLayout:
+          pattern: ${log.pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:  # 按天分类
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:     # 文件最多100个
+          max: 100
+
+
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: ROLLING_FILE
+        - ref: EXCEPTION_ROLLING_FILE
+    Logger:
+      - name: platform
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: CONSOLE
+          - ref: PLATFORM_ROLLING_FILE
+
+      - name: bussiness
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: BUSSINESS_ROLLING_FILE
+
+      - name: exception
+        level: debug
+        additivity: true
+        AppenderRef:
+          - ref: EXCEPTION_ROLLING_FILE
+
+      - name: db
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: DB_ROLLING_FILE
+
+
+  #    监听具体包下面的日志
+  #    Logger: # 为com.xjj包配置特殊的Log级别，方便调试
+  #      - name: com.xjj
+  #        additivity: false
+  #        level: ${sys:log.level.xjj}
+  #        AppenderRef:
+  #          - ref: CONSOLE
+  #          - ref: ROLLING_FILE

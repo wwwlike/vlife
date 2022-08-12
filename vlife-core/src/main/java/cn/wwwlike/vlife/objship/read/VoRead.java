@@ -18,9 +18,10 @@
 
 package cn.wwwlike.vlife.objship.read;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.annotation.VClazz;
-import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.dict.Constants;
 import cn.wwwlike.vlife.dict.VCT;
@@ -31,7 +32,6 @@ import cn.wwwlike.vlife.objship.dto.VoDto;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.BASIC;
@@ -43,7 +43,6 @@ import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.VO;
  */
 public class VoRead extends ItemReadTemplate<VoDto> {
     private static VoRead INSTANCE = null;
-    private final List<EntityDto> infos;
 
     private VoRead(List<EntityDto> info) {
         this.infos = info;
@@ -61,7 +60,8 @@ public class VoRead extends ItemReadTemplate<VoDto> {
      */
     public VoDto readInfo(Class s) {
         VoDto dto = null;
-        if (VoBean.class.isAssignableFrom(s) && s != VoBean.class) {
+        // savebean其实也是voBean
+        if (VoBean.class.isAssignableFrom(s) && s != VoBean.class&& s != SaveBean.class) {
             dto = new VoDto();
             superRead(dto, s);
             dto.setItemType(VO);
@@ -84,35 +84,15 @@ public class VoRead extends ItemReadTemplate<VoDto> {
         return dto;
     }
 
-    @Override
-    public VoDto finished(VoDto voDto) {
-        voDto.setTitle(voDto.getEntityDto().getTitle() + "VO");
-        voDto.getFields().stream().forEach(f -> {
-            infos.stream().forEach(entityDto -> {
-                if (f.getEntityClz() != null && entityDto.getClz() == f.getEntityClz()) {
-                    if (f.getEntityFieldName() != null) {
-                        Optional<FieldDto> optionalFieldDto = entityDto.getFields().stream().filter(ff -> {
-                            return ff.getEntityFieldName().equals(f.getEntityFieldName()) && ff.getEntityClz() == f.getEntityClz();
-                        }).findFirst();
-                        if (optionalFieldDto.isPresent()) {
-                            f.setTitle(optionalFieldDto.get().getTitle());
-                        }
-                    } else {
-                        f.setTitle(entityDto.getTitle());
-                    }
-                }
-            });
-        });
-        return voDto;
-    }
-
     /**
-     * 对VO类field字段无对应关系的字段进行处理
+     * 1. 对VO类field字段无对应关系的字段进行关系查找
      * <p>
      * 1. 打平字段的查找
      * -  外键对象直接打平
      * -  外键对象的关联直接打平
      * 2. 注入对象查找
+     * 3. VField里的dictCode同步
+     * 4. VObean里关联查询必要字段缺失分析，写入到lose里
      */
     public void relation() {
         for (VoDto item : readAll) {
@@ -122,7 +102,8 @@ public class VoRead extends ItemReadTemplate<VoDto> {
             List<Class<? extends Item>> in = entityDto.getFkTableClz();
             for (FieldDto fieldDto : item.getFields()) {
                 if (fieldDto.getEntityFieldName() == null) {
-                    if (BASIC.equals(fieldDto.getFieldType()) || !IdBean.class.isAssignableFrom(fieldDto.getClz())) {
+                    if (BASIC.equals(fieldDto.getFieldType())
+                            || !IdBean.class.isAssignableFrom(fieldDto.getClz())) {
                         List queryPath = basicFieldMatch(item, fieldDto);
                         if (queryPath != null) {
                             fieldDto.setQueryPath(queryPath);
@@ -131,6 +112,7 @@ public class VoRead extends ItemReadTemplate<VoDto> {
                         iocReverseMatch(fieldDto, entityDto);
                     }
                 }
+                syncDictCode(fieldDto);
             }
             List<String> loseStr = fkFields.stream().filter(fieldDto -> {
                 return item.getFields().stream().filter(voField -> {
@@ -140,8 +122,7 @@ public class VoRead extends ItemReadTemplate<VoDto> {
             for (int i = 0; i < loseStr.size(); i++) {
                 item.getLoseIds().put(loseStr.get(i), i);
             }
-            finished(item);
         }
+        super.voDtos=readAll;
     }
-
 }

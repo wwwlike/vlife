@@ -38,8 +38,8 @@ public class PageVo<T> {
         this.page = page;
         this.total = total;
         this.totalPage = total / size + ((total % size == 0) ? 0 : 1);
-        this.first = page == 0;
-        this.last = page == totalPage - 1;
+        this.first = page == 1;
+        this.last = page == totalPage;
     }
 
     public PageVo() {

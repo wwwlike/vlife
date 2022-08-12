@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   ~  vlife http://github.com/wwwlike/vlife
   ~
@@ -31,9 +32,13 @@
         <version>2.4.3</version>
     </parent>
     <modules>
+        <module>vlife-base</module>
         <module>vlife-core</module>
         <module>vlife-plugin</module>
         <module>vlife-spring-boot-starter</module>
+        <module>vlife-boot-starter-web</module>
+        <!--project -->
+        <module>vlife-admin</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

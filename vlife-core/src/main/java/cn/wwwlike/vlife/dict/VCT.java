@@ -25,10 +25,9 @@ import javax.inject.Named;
  */
 public class VCT {
 
-
     @Named("业务状态")
     public static final class ITEM_STATE {
-        @Named("通过")
+        @Named("正常")
         public final static String NORMAL = "1";
         @Named("异常")
         public final static String ERROR = "-1";
@@ -68,5 +67,13 @@ public class VCT {
         public final static String CLEAR = "clear";
         @Named("不关联操作")
         public final static String NOTHING = "nothing";
+    }
+
+    @Named("资源类型")
+    public static final class SYSRESOURCES_TYPE {
+        @Named("菜单")
+        public final static String MENU = "1";
+        @Named("接口")
+        public final static String API = "2";
     }
 }

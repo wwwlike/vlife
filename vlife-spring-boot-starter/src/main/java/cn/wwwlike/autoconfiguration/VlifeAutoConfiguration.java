@@ -38,6 +38,7 @@ public class VlifeAutoConfiguration {
     private VlifeProperties properties;
 
     public VlifeAutoConfiguration() {
+
     }
 
 

@@ -24,8 +24,19 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * 类级别元素的基础字段信息
  */
-@Data
 public class ItemInfo extends ClazzInfo {
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = StringUtils.uncapitalize(entityType);
+    }
+
     public String itemType;
     public String entityType;
 

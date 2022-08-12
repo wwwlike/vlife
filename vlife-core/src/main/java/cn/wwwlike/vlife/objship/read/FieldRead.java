@@ -96,7 +96,6 @@ public class FieldRead implements Read {
         dto.setFieldType(ItemReadTemplate.getClzType(field.getType()));
         dto.setFieldName(field.getName());
         if (!LIST.equals(dto.getFieldType())) {
-            dto.setTitle(field.getName());
             dto.setType(StringUtils.uncapitalize(field.getType().getSimpleName()));
             dto.setClz(field.getType());
             dto.setItemClz(itemDto.getClz());
@@ -105,7 +104,6 @@ public class FieldRead implements Read {
             dto.setClz(clz);
             dto.setItemClz(itemDto.getClz());
             if (Object.class != clz) {
-                dto.setTitle(clz.getName());
                 dto.setType(StringUtils.uncapitalize(clz.getSimpleName()));
             } else {
                 dto.setState(VCT.ITEM_STATE.ERROR);
@@ -136,6 +134,9 @@ public class FieldRead implements Read {
             }
             if (f.opt() != Opt.VOID) {
                 dto.setOpt(f.opt());
+            }
+            if (StringUtils.isNotBlank(f.dictCode())) {
+                dto.setDictCode(f.dictCode());
             }
             if (f.orders() != null) {
                 dto.setOrders(f.orders());

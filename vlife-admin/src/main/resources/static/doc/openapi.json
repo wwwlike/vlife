@@ -1,0 +1,3155 @@
+{
+  "components": {
+    "schemas": {
+      "ProjectDto": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "accountId": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
+      "Account": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "password": {
+            "format": "string",
+            "description": "密码",
+            "type": "string"
+          },
+          "account": {
+            "format": "string",
+            "description": "账号",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "姓名",
+            "type": "string"
+          },
+          "tel": {
+            "format": "string",
+            "description": "电话号码",
+            "type": "string"
+          },
+          "age": {
+            "format": "int32",
+            "description": "年龄",
+            "type": "integer"
+          },
+          "sex": {
+            "format": "string",
+            "description": "性别(字典)",
+            "type": "string"
+          },
+          "deptId": {
+            "format": "string",
+            "description": "所在部门",
+            "type": "string"
+          }
+        }
+      },
+      "ProjectStep": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "string",
+            "description": "项目",
+            "type": "string"
+          },
+          "stepId": {
+            "format": "string",
+            "description": "项目的阶段",
+            "type": "string"
+          }
+        }
+      },
+      "Task": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "string",
+            "description": "所属项目",
+            "type": "string"
+          },
+          "point": {
+            "format": "int32",
+            "description": "任务点数",
+            "type": "integer"
+          },
+          "progress": {
+            "format": "double",
+            "description": "当前完成进度",
+            "type": "number"
+          },
+          "state": {
+            "format": "string",
+            "description": "任务完成状态",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "任务名称",
+            "type": "string"
+          },
+          "sort": {
+            "format": "int32",
+            "description": "排序",
+            "type": "integer"
+          },
+          "level": {
+            "format": "string",
+            "description": "紧急程度(字典)",
+            "type": "string"
+          },
+          "stepId": {
+            "format": "string",
+            "description": "当前所在阶段",
+            "type": "string"
+          },
+          "accountId": {
+            "format": "string",
+            "description": "任务创建人",
+            "type": "string"
+          }
+        }
+      },
+      "SysUser": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "姓名",
+            "type": "string"
+          },
+          "username": {
+            "format": "string",
+            "description": "用户名",
+            "type": "string"
+          },
+          "password": {
+            "format": "string",
+            "description": "密码",
+            "type": "string"
+          },
+          "sysGroupId": {
+            "format": "string",
+            "description": "角色权限组",
+            "type": "string"
+          },
+          "idno": {
+            "format": "string",
+            "description": "证件号码",
+            "type": "string"
+          },
+          "tel": {
+            "format": "string",
+            "description": "联系电话",
+            "type": "string"
+          },
+          "usetype": {
+            "format": "string",
+            "description": "用户类型",
+            "type": "string"
+          },
+          "state": {
+            "format": "string",
+            "description": "用户状态 1启用 0停用",
+            "type": "string"
+          }
+        }
+      },
+      "Dept": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "部门名称",
+            "type": "string"
+          }
+        }
+      },
+      "Step": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          }
+        }
+      },
+      "ProjectAccount": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "accountId": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
+      "SysResources": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "url": {
+            "format": "string",
+            "description": "路由路径",
+            "type": "string"
+          },
+          "code": {
+            "format": "string",
+            "description": "资源编码",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "资源名称",
+            "type": "string"
+          },
+          "icon": {
+            "format": "string",
+            "description": "图标",
+            "type": "string"
+          },
+          "type": {
+            "format": "string",
+            "description": "资源类型  1菜单 2接口",
+            "type": "string"
+          },
+          "requestType": {
+            "format": "string",
+            "description": "请求方式",
+            "type": "string"
+          },
+          "sysRoleId": {
+            "format": "string",
+            "description": "所属角色ID",
+            "type": "string"
+          },
+          "pcode": {
+            "format": "string",
+            "description": "上级资源code(一级菜单没有上级资源)",
+            "type": "string"
+          }
+        }
+      },
+      "TypeVariable": {
+        "properties": {
+          "name": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "bounds": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Type"
+            }
+          },
+          "annotatedBounds": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnnotatedType"
+            }
+          },
+          "genericDeclaration": {
+            "description": "No comments found.(object)",
+            "type": "object",
+            "$ref": "#/components/schemas/GenericDeclaration"
+          },
+          "typeName": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "annotations": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "declaredAnnotations": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
+      "PageVoProject": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          }
+        }
+      },
+      "SysRole": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "角色名称",
+            "type": "string"
+          }
+        }
+      },
+      "ClassE": {
+        "properties": {
+          "typeParameters": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TypeVariable"
+            }
+          },
+          "annotations": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "declaredAnnotations": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "typeName": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
+      "Order": {
+        "properties": {
+          "property": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "direction": {
+            "format": "enum",
+            "description": "null(See: Enumeration for sort directions.)",
+            "type": "string"
+          }
+        }
+      },
+      "OrderRequest": {
+        "properties": {
+          "orders": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "orderReqList": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            }
+          }
+        }
+      },
+      "ProjectPinDto": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "项目id",
+            "type": "string"
+          },
+          "pin": {
+            "format": "boolean",
+            "description": "是否收藏",
+            "type": "boolean"
+          }
+        }
+      },
+      "SysRoleGroup": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "sysRoleId": {
+            "format": "string",
+            "description": "角色id",
+            "type": "string"
+          },
+          "sysGroupId": {
+            "format": "string",
+            "description": "组id",
+            "type": "string"
+          }
+        }
+      },
+      "AccountVo": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "token": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "password": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "deptId": {
+            "format": "string",
+            "description": "用户组",
+            "type": "string"
+          }
+        }
+      },
+      "GenericDeclaration": {
+        "properties": {
+          "typeParameters": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TypeVariable"
+            }
+          },
+          "annotations": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "declaredAnnotations": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
+      "Project": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "项目名称",
+            "type": "string"
+          },
+          "pin": {
+            "format": "boolean",
+            "description": "是否被收藏\r\n暂时所有人公用",
+            "type": "boolean"
+          },
+          "accountId": {
+            "format": "string",
+            "description": "项目负责人",
+            "type": "string"
+          },
+          "planDate": {
+            "format": "string",
+            "description": "计划开始日期",
+            "type": "string"
+          },
+          "finishedDate": {
+            "format": "string",
+            "description": "结束日期",
+            "type": "string"
+          },
+          "state": {
+            "format": "string",
+            "description": "项目状态 project_state",
+            "type": "string"
+          },
+          "type": {
+            "format": "string",
+            "description": "项目类型",
+            "type": "string"
+          },
+          "totalPoint": {
+            "format": "int32",
+            "description": "项目任务总点数",
+            "type": "integer"
+          },
+          "finishedPoint": {
+            "format": "int32",
+            "description": "已经完成的任务点数",
+            "type": "integer"
+          }
+        }
+      },
+      "Type": {
+        "properties": {
+          "typeName": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
+      "AnnotatedType": {
+        "properties": {
+          "type": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "annotations": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "declaredAnnotations": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
+      "ProjectDetailVo": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "项目名称",
+            "type": "string"
+          },
+          "account_name": {
+            "format": "string",
+            "description": "项目负责人姓名",
+            "type": "string"
+          },
+          "planDate": {
+            "format": "string",
+            "description": "计划开始日期",
+            "type": "string"
+          },
+          "finishedDate": {
+            "format": "string",
+            "description": "结束日期",
+            "type": "string"
+          },
+          "state": {
+            "format": "string",
+            "description": "项目状态 project_state",
+            "type": "string"
+          },
+          "type": {
+            "format": "string",
+            "description": "项目类型",
+            "type": "string"
+          },
+          "totalPoint": {
+            "format": "int32",
+            "description": "项目任务总点数",
+            "type": "integer"
+          },
+          "finishedPoint": {
+            "format": "int32",
+            "description": "已经完成的任务点数",
+            "type": "integer"
+          },
+          "steps": {
+            "description": "项目的生命周期",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Step"
+            }
+          },
+          "accountName": {
+            "format": "string",
+            "description": "项目参与人姓名",
+            "type": "string"
+          },
+          "tasks": {
+            "description": "项目下的任务",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            }
+          }
+        }
+      },
+      "Dict": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "dictCode": {
+            "format": "string",
+            "description": "字典编码",
+            "type": "string"
+          },
+          "dictKey": {
+            "format": "string",
+            "description": "字典值",
+            "type": "string"
+          },
+          "dictVal": {
+            "format": "string",
+            "description": "字典中文名称",
+            "type": "string"
+          },
+          "fromSys": {
+            "format": "boolean",
+            "description": "是否系统设置",
+            "type": "boolean"
+          }
+        }
+      },
+      "SysGroup": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "角色组名称",
+            "type": "string"
+          }
+        }
+      },
+      "AccountDto": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "username": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "password": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "group": {
+            "description": "No comments found.(object)",
+            "type": "object",
+            "$ref": "#/components/schemas/Dept"
+          },
+          "project_id": {
+            "format": "string",
+            "description": "创建人的id",
+            "type": "string"
+          },
+          "project_name": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "projects": {
+            "description": "项目创建人",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            }
+          },
+          "projectAccount_projectId": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "projectAccount_project": {
+            "description": "多对多的关联关系",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            }
+          },
+          "projectAccount_project_name": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
+      "PageVoAccountVo": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountVo"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          }
+        }
+      },
+      "LoginReq": {
+        "properties": {
+          "entity": {
+            "description": "返回泛型里的对应的实体类clz信息(object)",
+            "type": "object",
+            "$ref": "#/components/schemas/ClassE"
+          },
+          "order": {
+            "description": "No comments found.(object)",
+            "type": "object",
+            "$ref": "#/components/schemas/OrderRequest"
+          },
+          "name": {
+            "format": "string",
+            "description": "用户名",
+            "type": "string"
+          },
+          "password": {
+            "format": "string",
+            "description": "密码",
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8088"
+    }
+  ],
+  "openapi": "3.0.3",
+  "paths": {
+    "/projectStep/detail/{id}": {
+      "get": {
+        "summary": "明细查询项目阶段关系表;",
+        "deprecated": false,
+        "description": "明细查询项目阶段关系表;",
+        "tags": [
+          "项目阶段关系表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectStep"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"k5vl8g\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"stepId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/task/list": {
+      "get": {
+        "summary": "列表查询任务表;",
+        "deprecated": false,
+        "description": "列表查询任务表;",
+        "tags": [
+          "任务表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "[\n  {\n    \"id\": \"108\",\n    \"status\": \"6mvtwj\",\n    \"createDate\": \"2022-07-11\",\n    \"modifyDate\": \"2022-07-11\",\n    \"projectId\": \"108\",\n    \"point\": 544,\n    \"progress\": 67.40,\n    \"state\": \"jo2oeg\",\n    \"name\": \"leeanna.kreiger\",\n    \"sort\": 816,\n    \"level\": \"byjx91\",\n    \"stepId\": \"108\",\n    \"accountId\": \"108\"\n  }\n]"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "list",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "项目id",
+            "required": false,
+            "example": "108",
+            "name": "projectId"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {}
+            },
+            "in": "query",
+            "description": "进度范围",
+            "required": false,
+            "example": "46.63,3.70",
+            "name": "progress"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "任务名称",
+            "required": false,
+            "example": "leeanna.kreiger",
+            "name": "name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "任务状态",
+            "required": false,
+            "example": "evgib8",
+            "name": "state"
+          }
+        ]
+      }
+    },
+    "/step/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "项目阶段接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "272"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/project/page": {
+      "get": {
+        "summary": "分页查询项目表;",
+        "deprecated": false,
+        "description": "分页查询项目表;",
+        "tags": [
+          "项目表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoProject"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"2n7s2b\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"kff5xw\",\n      \"type\": \"0724lx\",\n      \"totalPoint\": 584,\n      \"finishedPoint\": 528\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 68,\n  \"totalPage\": 672,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "108",
+            "name": "account_deptId"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {}
+            },
+            "in": "query",
+            "description": "项目类型",
+            "required": false,
+            "example": "flxxku,xxmp4b",
+            "name": "type"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "根据负责人id查询",
+            "required": false,
+            "example": "108",
+            "name": "accountId"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "根据参与人Id查询(默认都需要传入)",
+            "required": false,
+            "example": "108",
+            "name": "projectAccount_accountId"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "项目状态",
+            "required": false,
+            "example": "erpxrf",
+            "name": "state"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "项目名称",
+            "required": false,
+            "example": "leeanna.kreiger",
+            "name": "name"
+          },
+          {
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "项目开始年度",
+            "required": false,
+            "example": "283",
+            "name": "year"
+          }
+        ]
+      }
+    },
+    "/sysRole/save": {
+      "post": {
+        "summary": "保存用户角色;",
+        "deprecated": false,
+        "description": "保存用户角色;",
+        "tags": [
+          "用户角色接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysRole"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"jnwk32\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysRole"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"wq3x7a\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/sysRoleGroup/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "角色聚合组接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "249"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/projectStep/save": {
+      "post": {
+        "summary": "保存项目阶段关系表;",
+        "deprecated": false,
+        "description": "保存项目阶段关系表;",
+        "tags": [
+          "项目阶段关系表接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectStep"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"ooeapj\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"stepId\": \"108\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectStep"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"4034sx\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"stepId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/project/detail/{id}": {
+      "get": {
+        "summary": "明细查询类说明;",
+        "deprecated": false,
+        "description": "明细查询类说明;",
+        "tags": [
+          "项目表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetailVo"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"account_name\": \"leeanna.kreiger\",\n  \"planDate\": \"2022-07-11\",\n  \"finishedDate\": \"2022-07-11\",\n  \"state\": \"br3t44\",\n  \"type\": \"p7inei\",\n  \"totalPoint\": 426,\n  \"finishedPoint\": 323,\n  \"steps\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"45dalu\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\"\n    }\n  ],\n  \"accountName\": [\n    \"xpu40f\"\n  ],\n  \"tasks\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"yluq2m\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"projectId\": \"108\",\n      \"point\": 400,\n      \"progress\": 56.36,\n      \"state\": \"kah2un\",\n      \"name\": \"leeanna.kreiger\",\n      \"sort\": 182,\n      \"level\": \"5uqn0t\",\n      \"stepId\": \"108\",\n      \"accountId\": \"108\"\n    }\n  ]\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/dept/detail/{id}": {
+      "get": {
+        "summary": "明细查询部门;",
+        "deprecated": false,
+        "description": "明细查询部门;",
+        "tags": [
+          "部门接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dept"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"30l1r5\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/dept/save": {
+      "post": {
+        "summary": "保存部门;",
+        "deprecated": false,
+        "description": "保存部门;",
+        "tags": [
+          "部门接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Dept"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"1ekij3\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dept"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"0f0lb1\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/sysRoleGroup/save": {
+      "post": {
+        "summary": "保存角色聚合组;",
+        "deprecated": false,
+        "description": "保存角色聚合组;",
+        "tags": [
+          "角色聚合组接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysRoleGroup"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"dapuyq\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"sysRoleId\": \"108\",\n  \"sysGroupId\": \"108\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysRoleGroup"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"fbm5ug\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"sysRoleId\": \"108\",\n  \"sysGroupId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/sysRole/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "用户角色接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "165"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysResources/save": {
+      "post": {
+        "summary": "保存权限资源;",
+        "deprecated": false,
+        "description": "保存权限资源;",
+        "tags": [
+          "权限资源接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysResources"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"miux7s\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"url\": \"www.wilfredo-rogahn.net\",\n  \"code\": \"9229\",\n  \"name\": \"leeanna.kreiger\",\n  \"icon\": \"79ods7\",\n  \"type\": \"exu66o\",\n  \"requestType\": \"1sskgj\",\n  \"sysRoleId\": \"108\",\n  \"pcode\": \"9229\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysResources"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"wubq30\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"url\": \"www.wilfredo-rogahn.net\",\n  \"code\": \"9229\",\n  \"name\": \"leeanna.kreiger\",\n  \"icon\": \"taly0e\",\n  \"type\": \"e3tuzk\",\n  \"requestType\": \"tx876i\",\n  \"sysRoleId\": \"108\",\n  \"pcode\": \"9229\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/projectAccount/detail/{id}": {
+      "get": {
+        "summary": "明细查询项目人员关系表(分配关系);",
+        "deprecated": false,
+        "description": "明细查询项目人员关系表(分配关系);",
+        "tags": [
+          "项目人员关系表(分配关系)接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectAccount"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"xt6sl3\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysUser/save": {
+      "post": {
+        "summary": "保存用户表;",
+        "deprecated": false,
+        "description": "保存用户表;",
+        "tags": [
+          "用户表接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysUser"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"hdp0eo\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"l1f83a\",\n  \"sysGroupId\": \"108\",\n  \"idno\": \"tub98i\",\n  \"tel\": \"gvfkzf\",\n  \"usetype\": \"0wz0jc\",\n  \"state\": \"d1md0w\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysUser"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"8mq2k1\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"1ff68p\",\n  \"sysGroupId\": \"108\",\n  \"idno\": \"fx2wyw\",\n  \"tel\": \"d52f4w\",\n  \"usetype\": \"il00jw\",\n  \"state\": \"51611e\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/sysResources/detail/{id}": {
+      "get": {
+        "summary": "明细查询权限资源;",
+        "deprecated": false,
+        "description": "明细查询权限资源;",
+        "tags": [
+          "权限资源接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysResources"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"nskxwi\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"url\": \"www.wilfredo-rogahn.net\",\n  \"code\": \"9229\",\n  \"name\": \"leeanna.kreiger\",\n  \"icon\": \"ngfttt\",\n  \"type\": \"2jrkla\",\n  \"requestType\": \"iel48v\",\n  \"sysRoleId\": \"108\",\n  \"pcode\": \"9229\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/step/save": {
+      "post": {
+        "summary": "保存项目阶段;",
+        "deprecated": false,
+        "description": "保存项目阶段;",
+        "tags": [
+          "项目阶段接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Step"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"kx5i7z\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Step"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"9q8n07\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/account/page": {
+      "get": {
+        "summary": "分页查询类说明;",
+        "deprecated": false,
+        "description": "分页查询类说明;",
+        "tags": [
+          "员工用户接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoAccountVo"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"108\",\n      \"name\": \"leeanna.kreiger\",\n      \"token\": \"ni0m37\",\n      \"password\": \"lbeo2w\",\n      \"deptId\": \"108\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 670,\n  \"totalPage\": 393,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "leeanna.kreiger",
+            "name": "name"
+          }
+        ]
+      }
+    },
+    "/dict/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "字典表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "99"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/account/detail/{id}": {
+      "get": {
+        "summary": "明细查询类说明;",
+        "deprecated": false,
+        "description": "明细查询类说明;",
+        "tags": [
+          "员工用户接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountVo"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"token\": \"zzdlip\",\n  \"password\": \"fuyskd\",\n  \"deptId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/dict/detail/{id}": {
+      "get": {
+        "summary": "明细查询字典表;",
+        "deprecated": false,
+        "description": "明细查询字典表;",
+        "tags": [
+          "字典表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dict"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"1s1z1t\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"dictCode\": \"9229\",\n  \"dictKey\": \"wmc73g\",\n  \"dictVal\": \"5rw3cj\",\n  \"fromSys\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysGroup/detail/{id}": {
+      "get": {
+        "summary": "明细查询角色聚合组;",
+        "deprecated": false,
+        "description": "明细查询角色聚合组;",
+        "tags": [
+          "角色聚合组接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysGroup"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"0r2iya\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysGroup/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "角色聚合组接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "974"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/account/list/test": {
+      "get": {
+        "summary": "列表查询员工用户;",
+        "deprecated": false,
+        "description": "列表查询员工用户;",
+        "tags": [
+          "员工用户接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "[\n  {\n    \"id\": \"108\",\n    \"status\": \"baka6m\",\n    \"createDate\": \"2022-07-11\",\n    \"modifyDate\": \"2022-07-11\",\n    \"password\": \"brsz7u\",\n    \"account\": \"4nlshh\",\n    \"name\": \"leeanna.kreiger\",\n    \"tel\": \"d9rkgn\",\n    \"age\": 8,\n    \"sex\": \"1qqeee\",\n    \"deptId\": \"108\"\n  }\n]"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "listTest",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "leeanna.kreiger",
+            "name": "username"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "leeanna.kreiger",
+            "name": "dept_name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "108",
+            "name": "projectAccount_projectId"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "leeanna.kreiger",
+            "name": "projectAccount_project_name"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {}
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "nv32jk,vpqrs5",
+            "name": "projects"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "leeanna.kreiger",
+            "name": "project_name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "o6iz3s",
+            "name": "search"
+          }
+        ]
+      }
+    },
+    "/project/save": {
+      "post": {
+        "summary": "保存项目编辑;",
+        "deprecated": false,
+        "description": "保存项目编辑;",
+        "tags": [
+          "项目表接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDto"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"accountId\": \"108\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDto"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"accountId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/sysGroup/save": {
+      "post": {
+        "summary": "保存角色聚合组;",
+        "deprecated": false,
+        "description": "保存角色聚合组;",
+        "tags": [
+          "角色聚合组接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysGroup"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"qddv4s\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysGroup"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"y2dahy\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/step/detail/{id}": {
+      "get": {
+        "summary": "明细查询项目阶段;",
+        "deprecated": false,
+        "description": "明细查询项目阶段;",
+        "tags": [
+          "项目阶段接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Step"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"wjg8pm\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/account/login": {
+      "post": {
+        "summary": "类说明;",
+        "deprecated": false,
+        "description": "类说明;",
+        "tags": [
+          "员工用户接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginReq"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"entity\": {\n    \"typeParameters\": [\n      {\n        \"name\": \"leeanna.kreiger\",\n        \"bounds\": [\n          {\n            \"typeName\": \"leeanna.kreiger\"\n          }\n        ],\n        \"annotatedBounds\": [\n          {\n            \"type\": {\n              \"typeName\": \"leeanna.kreiger\"\n            },\n            \"annotations\": [\n              {}\n            ],\n            \"declaredAnnotations\": [\n              {}\n            ]\n          }\n        ],\n        \"genericDeclaration\": {\n          \"typeParameters\": [\n            {\n              \"name\": \"leeanna.kreiger\",\n              \"bounds\": [\n                {\n                  \"typeName\": \"leeanna.kreiger\"\n                }\n              ],\n              \"annotatedBounds\": [\n                {\n                  \"type\": {\n                    \"typeName\": \"leeanna.kreiger\"\n                  },\n                  \"annotations\": [\n                    {}\n                  ],\n                  \"declaredAnnotations\": [\n                    {}\n                  ]\n                }\n              ],\n              \"genericDeclaration\": {\n                \"typeParameters\": [\n                  {\n                    \"name\": \"leeanna.kreiger\",\n                    \"bounds\": [\n                      {\n                        \"typeName\": \"leeanna.kreiger\"\n                      }\n                    ],\n                    \"annotatedBounds\": [\n                      {\n                        \"type\": {\n                          \"$ref\": \"...\"\n                        },\n                        \"annotations\": [\n                          {\n                            \"$ref\": \"...\"\n                          }\n                        ],\n                        \"declaredAnnotations\": [\n                          {\n                            \"$ref\": \"...\"\n                          }\n                        ]\n                      }\n                    ],\n                    \"genericDeclaration\": {\n                      \"typeParameters\": [\n                        {\n                          \"$ref\": \"...\"\n                        }\n                      ],\n                      \"annotations\": [\n                        {\n                          \"$ref\": \"...\"\n                        }\n                      ],\n                      \"declaredAnnotations\": [\n                        {\n                          \"$ref\": \"...\"\n                        }\n                      ]\n                    },\n                    \"typeName\": \"leeanna.kreiger\",\n                    \"annotations\": [\n                      {}\n                    ],\n                    \"declaredAnnotations\": [\n                      {}\n                    ]\n                  }\n                ],\n                \"annotations\": [\n                  {}\n                ],\n                \"declaredAnnotations\": [\n                  {}\n                ]\n              },\n              \"typeName\": \"leeanna.kreiger\",\n              \"annotations\": [\n                {}\n              ],\n              \"declaredAnnotations\": [\n                {}\n              ]\n            }\n          ],\n          \"annotations\": [\n            {}\n          ],\n          \"declaredAnnotations\": [\n            {}\n          ]\n        },\n        \"typeName\": \"leeanna.kreiger\",\n        \"annotations\": [\n          {}\n        ],\n        \"declaredAnnotations\": [\n          {}\n        ]\n      }\n    ],\n    \"annotations\": [\n      {}\n    ],\n    \"declaredAnnotations\": [\n      {}\n    ],\n    \"typeName\": \"leeanna.kreiger\"\n  },\n  \"order\": {\n    \"orders\": \"814all\",\n    \"orderReqList\": [\n      {\n        \"property\": \"s6tlkr\",\n        \"direction\": \"ASC\"\n      }\n    ]\n  },\n  \"name\": \"leeanna.kreiger\",\n  \"password\": \"05ovjf\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountVo"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"token\": \"sqkcdi\",\n  \"password\": \"nvun46\",\n  \"deptId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "login",
+        "parameters": []
+      }
+    },
+    "/projectAccount/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "项目人员关系表(分配关系)接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "236"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysRoleGroup/detail/{id}": {
+      "get": {
+        "summary": "明细查询角色聚合组;",
+        "deprecated": false,
+        "description": "明细查询角色聚合组;",
+        "tags": [
+          "角色聚合组接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysRoleGroup"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"yntrtz\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"sysRoleId\": \"108\",\n  \"sysGroupId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysUser/detail/{id}": {
+      "get": {
+        "summary": "明细查询用户表;",
+        "deprecated": false,
+        "description": "明细查询用户表;",
+        "tags": [
+          "用户表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysUser"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"gshm7t\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"i4yc6h\",\n  \"sysGroupId\": \"108\",\n  \"idno\": \"d0v5x2\",\n  \"tel\": \"ump5nh\",\n  \"usetype\": \"00lhbp\",\n  \"state\": \"fjk52e\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/projectAccount/save": {
+      "post": {
+        "summary": "保存项目人员关系表(分配关系);",
+        "deprecated": false,
+        "description": "保存项目人员关系表(分配关系);",
+        "tags": [
+          "项目人员关系表(分配关系)接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectAccount"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"p9kzka\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectAccount"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"3ik7ym\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/sysResources/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "权限资源接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "741"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/project/save/pin": {
+      "post": {
+        "summary": "保存收藏;",
+        "deprecated": false,
+        "description": "保存收藏;",
+        "tags": [
+          "项目表接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPinDto"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"pin\": true\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectPinDto"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"pin\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "savePin",
+        "parameters": []
+      }
+    },
+    "/task/detail/{id}": {
+      "get": {
+        "summary": "明细查询任务表;",
+        "deprecated": false,
+        "description": "明细查询任务表;",
+        "tags": [
+          "任务表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"d9myxr\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"point\": 372,\n  \"progress\": 87.06,\n  \"state\": \"y8wlwb\",\n  \"name\": \"leeanna.kreiger\",\n  \"sort\": 406,\n  \"level\": \"y3rdej\",\n  \"stepId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/account/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "员工用户接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "91"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/account/save": {
+      "post": {
+        "summary": "保存登录元素;",
+        "deprecated": false,
+        "description": "保存登录元素;",
+        "tags": [
+          "员工用户接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountDto"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"jtef9w\",\n  \"group\": {\n    \"id\": \"108\",\n    \"status\": \"353br1\",\n    \"createDate\": \"2022-07-11\",\n    \"modifyDate\": \"2022-07-11\",\n    \"name\": \"leeanna.kreiger\"\n  },\n  \"project_id\": [\n    \"h2xux6\"\n  ],\n  \"project_name\": [\n    \"798ghn\"\n  ],\n  \"projects\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"g3w0a7\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"8lbxeb\",\n      \"type\": \"ovfdo8\",\n      \"totalPoint\": 244,\n      \"finishedPoint\": 477\n    }\n  ],\n  \"projectAccount_projectId\": [\n    \"k9r4qv\"\n  ],\n  \"projectAccount_project\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"yzh1j0\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"on55xp\",\n      \"type\": \"rkq1pn\",\n      \"totalPoint\": 550,\n      \"finishedPoint\": 558\n    }\n  ],\n  \"projectAccount_project_name\": [\n    \"0fl88b\"\n  ]\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDto"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"gzodn4\",\n  \"group\": {\n    \"id\": \"108\",\n    \"status\": \"uvlrww\",\n    \"createDate\": \"2022-07-11\",\n    \"modifyDate\": \"2022-07-11\",\n    \"name\": \"leeanna.kreiger\"\n  },\n  \"project_id\": [\n    \"ajjisg\"\n  ],\n  \"project_name\": [\n    \"iow3zw\"\n  ],\n  \"projects\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"6fym1u\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"vtfkvs\",\n      \"type\": \"pk22lo\",\n      \"totalPoint\": 243,\n      \"finishedPoint\": 881\n    }\n  ],\n  \"projectAccount_projectId\": [\n    \"pgny0w\"\n  ],\n  \"projectAccount_project\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"az0fby\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"4na3xq\",\n      \"type\": \"15s8kx\",\n      \"totalPoint\": 198,\n      \"finishedPoint\": 670\n    }\n  ],\n  \"projectAccount_project_name\": [\n    \"kcrp1i\"\n  ]\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/dict/save": {
+      "post": {
+        "summary": "保存字典表;",
+        "deprecated": false,
+        "description": "保存字典表;",
+        "tags": [
+          "字典表接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Dict"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"jfht67\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"dictCode\": \"9229\",\n  \"dictKey\": \"85j6e2\",\n  \"dictVal\": \"j7hn6x\",\n  \"fromSys\": true\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dict"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"hv57om\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"dictCode\": \"9229\",\n  \"dictKey\": \"4eq78c\",\n  \"dictVal\": \"hu2cwb\",\n  \"fromSys\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/sysRole/detail/{id}": {
+      "get": {
+        "summary": "明细查询用户角色;",
+        "deprecated": false,
+        "description": "明细查询用户角色;",
+        "tags": [
+          "用户角色接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysRole"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"2b3gkf\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/task/save": {
+      "post": {
+        "summary": "保存任务表;",
+        "deprecated": false,
+        "description": "保存任务表;",
+        "tags": [
+          "任务表接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"gef7km\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"point\": 276,\n  \"progress\": 16.26,\n  \"state\": \"o9bojz\",\n  \"name\": \"leeanna.kreiger\",\n  \"sort\": 20,\n  \"level\": \"aq28to\",\n  \"stepId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"hshiih\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"point\": 660,\n  \"progress\": 65.90,\n  \"state\": \"gsd4es\",\n  \"name\": \"leeanna.kreiger\",\n  \"sort\": 628,\n  \"level\": \"zmcmj6\",\n  \"stepId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/dept/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "部门接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "165"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysUser/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "用户表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "846"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/projectStep/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "项目阶段关系表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "550"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/task/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "任务表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "220"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/project/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "项目表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "227"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "108",
+            "name": "id"
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "test",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "角色聚合组接口;",
+      "description": "角色聚合组接口;"
+    },
+    {
+      "name": "用户角色接口;",
+      "description": "用户角色接口;"
+    },
+    {
+      "name": "项目人员关系表(分配关系)接口;",
+      "description": "项目人员关系表(分配关系)接口;"
+    },
+    {
+      "name": "项目表接口;",
+      "description": "项目表接口;"
+    },
+    {
+      "name": "用户表接口;",
+      "description": "用户表接口;"
+    },
+    {
+      "name": "项目阶段关系表接口;",
+      "description": "项目阶段关系表接口;"
+    },
+    {
+      "name": "项目阶段接口;",
+      "description": "项目阶段接口;"
+    },
+    {
+      "name": "权限资源接口;",
+      "description": "权限资源接口;"
+    },
+    {
+      "name": "字典表接口;",
+      "description": "字典表接口;"
+    },
+    {
+      "name": "任务表接口;",
+      "description": "任务表接口;"
+    },
+    {
+      "name": "员工用户接口;",
+      "description": "员工用户接口;"
+    },
+    {
+      "name": "部门接口;",
+      "description": "部门接口;"
+    },
+    {
+      "name": "角色聚合组接口;",
+      "description": "角色聚合组接口;"
+    }
+  ]
+}

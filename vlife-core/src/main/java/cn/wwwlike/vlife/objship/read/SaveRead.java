@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.objship.read;
 
-import cn.wwwlike.vlife.base.IdBean;
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.dict.VCT;
@@ -37,7 +37,6 @@ import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.SAVE;
  */
 public class SaveRead extends ItemReadTemplate<SaveDto> {
     private static SaveRead INSTANCE = null;
-    private List<EntityDto> infos;
 
     private SaveRead(List<EntityDto> info) {
         this.infos = info;
@@ -60,14 +59,12 @@ public class SaveRead extends ItemReadTemplate<SaveDto> {
         SaveDto dto = null;
         if (SaveBean.class.isAssignableFrom(s) && s != SaveBean.class) {
             dto = new SaveDto();
-
             superRead(dto, s);
             dto.setItemType(SAVE);
             Class entityClz = GenericsUtils.getGenericType(s);
             if (entityClz == null || !Item.class.isAssignableFrom(entityClz)) {
                 dto.setState(VCT.ITEM_STATE.ERROR);
             } else {
-
                 dto.setEntityClz(entityClz);
                 dto.setEntityType(entityClz.getSimpleName());
             }
@@ -76,7 +73,8 @@ public class SaveRead extends ItemReadTemplate<SaveDto> {
     }
 
     /**
-     * save里注入的对象，要么是 save对象，要么是基础数据对象
+     * save里注入的对象
+     * 要么是 save对象，要么是基础数据对象,打平类型的不行
      */
     public void relation() {
         for (SaveDto item : readAll) {
@@ -85,12 +83,9 @@ public class SaveRead extends ItemReadTemplate<SaveDto> {
             List<FieldDto> fkFields = entityDto.getFkFields();
             List<Class<? extends Item>> in = entityDto.getFkTableClz();
             for (FieldDto fieldDto : item.getFields()) {
-
-
                 if (fieldDto.getEntityFieldName() == null) {
                     if (!BASIC.equals(fieldDto.getFieldType())) {
                         if (!IdBean.class.isAssignableFrom(fieldDto.getClz())) {
-
                             List queryPath = basicFieldMatch(item, fieldDto);
                             if (queryPath != null) {
                                 fieldDto.setQueryPath(queryPath);
@@ -100,8 +95,10 @@ public class SaveRead extends ItemReadTemplate<SaveDto> {
                         }
                     }
                 }
+                syncDictCode(fieldDto);
             }
         }
+        super.saveDtos=readAll;
     }
 
 }

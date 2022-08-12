@@ -19,6 +19,4 @@
 package cn.wwwlike.vlife.objship.read;
 
 public interface Read {
-
-
 }

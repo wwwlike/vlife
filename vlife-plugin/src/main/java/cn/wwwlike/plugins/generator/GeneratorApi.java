@@ -25,6 +25,7 @@ import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.objship.dto.*;
 import cn.wwwlike.vlife.query.req.PageQuery;
+import cn.wwwlike.vlife.query.req.VlifeQuery;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,9 @@ public class GeneratorApi {
 
     /**
      * api生成
+     * 查询方法：有一个req就对应产生一个查询方法
+     * saveDto: 有一个dto就产生一个save方法(出参yu)
+     *
      *
      * @param itemDto
      * @param vos
@@ -54,16 +58,9 @@ public class GeneratorApi {
             return vo.getEntityClz() == item;
         }).collect(Collectors.toList());
 
-
         List<ReqDto> pageReqDtos = reqs.stream().filter(req -> {
             return req.getEntityClz() == item && PageQuery.class.isAssignableFrom(req.getClz());
         }).collect(Collectors.toList());
-
-
-        List<ReqDto> listReqDtos = reqs.stream().filter(req -> {
-            return req.getEntityClz() == item && !PageQuery.class.isAssignableFrom(req.getClz());
-        }).collect(Collectors.toList());
-
 
         List<SaveDto> saveDtos = saves.stream().filter(save -> {
             return save.getEntityClz() == item;
@@ -108,6 +105,10 @@ public class GeneratorApi {
         } else {
             methodSpecs.add(detail(itemDto));
         }
+
+        List<ReqDto> listReqDtos = reqs.stream().filter(req -> {
+            return req.getEntityClz() == item &&VlifeQuery.class.isAssignableFrom(req.getClz());
+        }).collect(Collectors.toList());
 
         voDtos.stream().filter(voDto -> {
             return voDto.getType().indexOf("List") != -1;

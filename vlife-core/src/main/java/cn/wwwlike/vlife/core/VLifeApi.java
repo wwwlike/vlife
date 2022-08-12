@@ -18,8 +18,21 @@
 
 package cn.wwwlike.vlife.core;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.objship.dto.BeanDto;
+import cn.wwwlike.vlife.objship.dto.FieldDto;
+import cn.wwwlike.vlife.objship.read.GlobalData;
+import cn.wwwlike.vlife.query.CustomQuery;
+import cn.wwwlike.vlife.utils.GenericsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 接口实现的基础类
@@ -31,4 +44,101 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class VLifeApi<T extends Item, S extends VLifeService> {
     @Autowired
     public S service;
+    public Class<T>  entityClz;
+
+    @PostConstruct
+    public void init() throws ClassNotFoundException {
+        entityClz = GenericsUtils.getSuperClassGenricType(this.getClass());
+    }
+    /**
+     * 返回vo的中文表名
+     * @param voName
+     * @return
+     */
+    @GetMapping("/tableInfo/{voName}")
+    public List<FieldDto> tableInfo(@PathVariable String voName){
+        BeanDto<T> dto=null;
+        if(voName.equalsIgnoreCase(entityClz.getSimpleName())){
+            dto= (BeanDto<T>) GlobalData.entityDto(entityClz);
+        }else{
+           Optional<Class> t= GlobalData.getVoDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(voName)).findAny();
+            if(t.isPresent()){
+                dto= (BeanDto)GlobalData.getVoDtos().get(t.get());
+            }
+           t= GlobalData.getReqDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(voName)).findAny();
+            if(t.isPresent()){
+                dto= (BeanDto)GlobalData.getReqDtos().get(t.get());
+            }
+            t= GlobalData.getSaveDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(voName)).findAny();
+            if(t.isPresent()){
+                dto= (BeanDto)GlobalData.getSaveDtos().get(t.get());
+            }
+        }
+       return dto.getFields();
+    }
+
+    /**
+     * 模型信息
+     * 未指定模型类ing，当前按entity,dto,vo,req顺序进行模型匹配
+     * @param modelName 模型名称
+     * @return
+     */
+    @GetMapping("/modelInfo/{modelName}")
+    public BeanDto modelInfo(@PathVariable String modelName){
+        BeanDto<T> dto=null;
+        Optional<Class> t= GlobalData.getEntityDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
+        if(t.isPresent()) {
+             dto = (BeanDto<T>) GlobalData.entityDto(t.get());
+             return dto;
+        }
+        t= GlobalData.getSaveDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
+        if(t.isPresent()){
+            dto= (BeanDto)GlobalData.getSaveDtos().get(t.get());
+            return dto;
+        }
+        t= GlobalData.getVoDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
+        if(t.isPresent()){
+            dto= (BeanDto)GlobalData.getVoDtos().get(t.get());
+            return dto;
+        }
+        t= GlobalData.getReqDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
+        if(t.isPresent()){
+            dto= (BeanDto)GlobalData.getReqDtos().get(t.get());
+            return dto;
+        }
+        return dto;
+    }
+
+    /**
+     * 明细查询通用方法
+     * @param modelName
+     * @param id
+     * @return
+     */
+    @GetMapping("/view/{modelName}/{id}")
+    public IdBean view(@PathVariable String modelName,@PathVariable String id){
+        BeanDto btn=modelInfo(modelName);
+        if(Item.class.isAssignableFrom(btn.getClz())){
+            return service.findOne(id);
+        }else{
+            return service.queryOne(btn.getClz(),id);
+        }
+    }
+
+
+    /**
+     * 明细查询通用方法(外键批量翻译)
+     * @param modelName
+     * @param ids
+     * @return
+     */
+    @GetMapping("/views/{modelName}")
+    public List<IdBean> view(@PathVariable String modelName, String...ids){
+        BeanDto btn=modelInfo(modelName);
+        if(Item.class.isAssignableFrom(btn.getClz())){
+            return service.findByIds(ids);
+        }else{
+            return service.queryByIds(btn.getClz(),ids);
+        }
+    }
 }

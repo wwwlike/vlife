@@ -18,10 +18,11 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.BaseRequest;
-import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.dict.Join;
 import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.dict.VCT;
@@ -137,7 +138,6 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             addJoin(main);
             return factory.from(this.main);
         } else {
-
             VoDto voDto = GlobalData.voDto((Class<? extends VoBean>) vo);
             return joinByVo(voDto.getLeftPathClz());
         }
@@ -273,8 +273,8 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
     }
 
     public <W extends AbstractWrapper<T, String, QueryWrapper<T>>> BooleanBuilder whereByWrapper(W wrapper) {
+        wrapper.eq("status", CT.STATUS.NORMAL);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-
         for (AbstractWrapper.Element element : wrapper.getElements()) {
             EntityPathBase path = alljoin.get(getPrefix() + element.queryPathNames());
             BooleanExpression filterExp = filter(path, (String) element.getColumn(), element);
@@ -365,13 +365,18 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         return jpaQuery;
     }
 
-
-    public <R extends AbstractWrapper> JPAQuery fromWhere(R request) {
-        filterQuery = (JPAQuery) getVoFromQuery().clone();
+    /**
+     * synchronized ->处理连续2次查询查询条件覆盖的问题
+     */
+    public synchronized <R extends AbstractWrapper> JPAQuery fromWhere(R wrapper) {
+        // step1 query init
+        filterQuery = (JPAQuery) getVoFromQuery().clone();// filterQuery 克隆赋值 初始化
         alljoin.clear();
-        alljoin.putAll(voJoin);
-        filterQuery = addQueryFilterJoin(filterQuery, request);
-        filterQuery.where(whereByWrapper(request));
+        alljoin.putAll(voJoin); //map恢复到vo初始化完成后的状态（select里会用到的join）
+        // step2 add  leftjoin
+        filterQuery = addQueryFilterJoin(filterQuery, wrapper); //添加查询条件里需要做查询的leftPath到joins里
+        // step3 filter(sub filter)
+        filterQuery.where(whereByWrapper(wrapper));
         return filterQuery;
     }
 

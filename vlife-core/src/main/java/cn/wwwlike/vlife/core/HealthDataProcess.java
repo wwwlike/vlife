@@ -18,9 +18,8 @@
 
 package cn.wwwlike.vlife.core;
 
-import cn.wwwlike.vlife.base.IdBean;
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.dict.CT;
-
 import java.util.Date;
 import java.util.Map;
 
@@ -33,14 +32,30 @@ public class HealthDataProcess extends DataProcess {
     }
 
     /**
-     * 本业务场景里，保存新增通用字段值设置
+     * 本业务场景里，保存新增通用字段值设置;
+     * 如果在排除字段里则将它们去掉
      */
     @Override
     public void commonDataSet(IdBean bean, Map<String, Object> mm) {
+
         if (bean.getId() == null) {
+            if(getIgnores()!=null) {
+                this.ignores.remove("status");
+                this.ignores.remove("createDate");
+            }
+            if(getAssigns()!=null) {
+                this.assigns.add("status");
+                this.assigns.add("createDate");
+            }
             mm.put("createDate", new Date());
             mm.put("status", CT.STATUS.NORMAL);
         } else {
+            if(getIgnores()!=null) {
+                this.ignores.remove("modifyDate");
+            }
+            if(getAssigns()!=null) {
+                this.assigns.add("modifyDate");
+            }
             mm.put("modifyDate", new Date());
         }
     }

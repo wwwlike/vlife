@@ -18,19 +18,33 @@
 
 package cn.wwwlike.vlife.objship.base;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 字段类型元素基础类型字段的信息
  */
 @Data
 public class FieldInfo extends ClazzInfo {
+    @JsonProperty("dataIndex")
     public String fieldName;
+
     public String pathName;
+
     public String fieldType;
+
     public String entityType;
+
     public String entityFieldName;
+    @JsonIgnore
     public String state;
+    /**
+     * 字典的coden
+     */
+    public String dictCode;
 
     public String getPathName() {
         if (this.pathName == null) {
@@ -39,6 +53,13 @@ public class FieldInfo extends ClazzInfo {
         return this.pathName;
     }
 
+    public void setEntityType(String entityType){
+        this.entityType= StringUtils.uncapitalize(entityType);
+    }
+
+    public String getEntityType(){
+        return StringUtils.uncapitalize(entityType);
+    }
 }
 
 

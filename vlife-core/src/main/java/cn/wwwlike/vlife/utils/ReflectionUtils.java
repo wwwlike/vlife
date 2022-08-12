@@ -107,11 +107,9 @@ public class ReflectionUtils {
      */
     public static Object getFieldValue(final Object obj, final String fieldName) {
         Field field = getAccessibleField(obj, fieldName);
-
         if (field == null) {
             throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
         }
-
         Object result = null;
         try {
             result = field.get(obj);

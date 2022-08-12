@@ -25,8 +25,8 @@ import lombok.Data;
  */
 @Data
 public class PageableRequest {
-    public int page = 0;
-    public int size = 10;
+    public int page = 1;
+    public int size = 5;
 
     public PageableRequest() {
 

@@ -17,33 +17,66 @@
  */
 
 package cn.wwwlike.vlife.core;
-
-import cn.wwwlike.vlife.base.IdBean;
+import cn.wwwlike.base.model.IdBean;
 import lombok.Getter;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
- * 数据处理，扩展dto数据保存其他数值信息
- * dao回调给值；API里能够获得bean，信息后然后
- * 设置的coulmn是否需要校验
+ * 数据处理 dto,item需要保存的值存在map里；
  */
 @Getter
 public abstract class DataProcess {
+
+    /**
+     * 需略的字段
+     */
+    protected Set<String> ignores;
+    /**
+     * 指定的字段
+     */
+    protected Set<String> assigns;
+
+    /**
+     * 需要排除保存的
+     * @param ignores
+     */
+    public void setIgnores(String... ignores) {
+        if(this.ignores==null){
+            this.ignores=new HashSet();
+        }
+        if(ignores!=null){
+            Arrays.stream(ignores).forEach(s -> {this.ignores.add(s);});
+        }
+        //从新计算
+        commonDataSet(this.getBean(), this.getColumnValMap());
+    }
+    /**
+     * 只保存的
+     * @param assigns
+     */
+    public void setAssigns(String[] assigns) {
+        if(this.assigns==null){
+            this.assigns=new HashSet();
+        }
+        if(assigns!=null){
+            Arrays.stream(assigns).forEach(s -> {this.assigns.add(s);});
+        }
+        commonDataSet(this.getBean(), this.getColumnValMap());
+    }
+
     /**
      * 回调给的要保存的bean值
      */
     private IdBean bean;
     /**
-     * 字段值设置存储
+     * 字段值存储（预设值以及bean的转换值）
      */
     private Map<String, Object> columnValMap = new HashMap();
 
-
     public DataProcess(IdBean bean) {
         this.bean = bean;
+        setIgnores(new String[]{"status","createDate","modifyDate","createId","modifyId"});
         commonDataSet(this.getBean(), this.getColumnValMap());
     }
 
@@ -78,6 +111,6 @@ public abstract class DataProcess {
     /**
      * 默认值的设置
      */
-    public abstract void commonDataSet(IdBean bean, Map<String, Object> mm);
+    public  abstract void commonDataSet(IdBean bean, Map<String, Object> mm);
 
 }

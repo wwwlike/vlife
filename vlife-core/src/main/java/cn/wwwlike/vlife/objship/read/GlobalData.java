@@ -18,6 +18,7 @@
 
 package cn.wwwlike.vlife.objship.read;
 
+import cn.wwwlike.base.model.IModel;
 import cn.wwwlike.vlife.base.BaseRequest;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
@@ -45,9 +46,19 @@ public class GlobalData {
     public static Map<Class, EntityDto> getEntityDtos() {
         return entitys;
     }
+    public static Map<Class, VoDto> getVoDtos() {
+        return vos;
+    }
+    public static Map<Class, ReqDto> getReqDtos() {
+        return reqs;
+    }
 
-    public static <T extends BeanDto> void save(List<? extends BeanDto> dtos) {
-        for (BeanDto dto : dtos) {
+    public static Map<Class, SaveDto> getSaveDtos() {
+        return saves;
+    }
+
+    public static <T extends BeanDto> void save(List<T> dtos) {
+        for (T dto : dtos) {
             if (dto instanceof SaveDto) {
                 saves.put(dto.getClz(), (SaveDto) dto);
             } else if (dto instanceof VoDto) {
@@ -59,6 +70,20 @@ public class GlobalData {
             }
         }
     }
+
+    public static <T extends IModel,D extends BeanDto<T>> D get(Class<T> clazz) {
+        if (SaveBean.class.isAssignableFrom(clazz)) {
+            return (D) saveDto((Class<? extends SaveBean>) clazz);
+        } else if (VoBean.class.isAssignableFrom(clazz)) {
+            return (D) voDto((Class<? extends VoBean>) clazz);
+        } else if (BaseRequest.class.isAssignableFrom(clazz)) {
+            return (D) reqDto((Class<? extends BaseRequest>) clazz);
+        } else if (Item.class.isAssignableFrom(clazz)) {
+            return (D) entityDto((Class<? extends Item>) clazz);
+        }
+        return null;
+    }
+
 
     public static EntityDto entityDto(Class<? extends Item> entityClz) {
         EntityDto entityDto = entitys.get(entityClz);

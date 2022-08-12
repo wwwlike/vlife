@@ -27,7 +27,14 @@ import lombok.Data;
  * 前台传入req需要叠加程序传参则继承它
  */
 @Data
-public class VlifeQuery<T extends Item> extends CustomQuery<T, QueryWrapper<T>> {
+public class VlifeQuery<T extends Item> extends CustomQuery<T, QueryWrapper<T>>  {
+
+    public VlifeQuery() {}
+
+    public VlifeQuery(Class entityClz) {
+        this.entityClz = entityClz;
+    }
+
     @Override
     public QueryWrapper<T> instance() {
         return new QueryWrapper<>(getEntityClz());

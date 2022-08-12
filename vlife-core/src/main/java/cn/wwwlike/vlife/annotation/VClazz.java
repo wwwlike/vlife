@@ -18,7 +18,10 @@
 
 package cn.wwwlike.vlife.annotation;
 
+import cn.wwwlike.base.common.RequestTypeEnum;
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.base.SaveBean;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -49,7 +52,29 @@ public @interface VClazz {
     Class<? extends Item>[] nothing() default {};
 
     /**
+     * req查询的默认请求方式,如果是post，则方法名称里没有list,page,
+     * @return
+     */
+    RequestTypeEnum requestType() default RequestTypeEnum.NULL;
+
+    /**
+     * 注解所在类作为入参，那么希望返回的数据类型是
+     * VoBean上部能有该注解
+     * req\dto\item上可以有该注解
+     * Class执行类型的去做查询
+     * Integer.class返回执行的数量；
+     * @return
+     */
+    Class returnType() default Object.class;
+
+    /**
      * 默认实体类的排序方式
      **/
     String orders() default DEFAULT_ORDER_TYPE;
+
+    /**
+     * page查询对象
+     * @return
+     */
+    Class<? extends IdBean> pageVoClz() default Item.class;
 }

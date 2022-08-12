@@ -18,6 +18,9 @@
 
 package cn.wwwlike.vlife.utils;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -28,17 +31,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class PackageUtil {
-
-    public static void main(String[] args) throws Exception {
-        String packageName = "com.cxl";
-
-        List<String> classNames = getClassName(packageName, true);
-        if (classNames != null) {
-            for (String className : classNames) {
-                System.out.println(className);
-            }
-        }
-    }
 
     /**
      * 获取某包下（包括该包的所有子包）所有类
@@ -62,11 +54,13 @@ public class PackageUtil {
         String packagePath = packageName.replace(".", "/");
         URL url = loader.getResource(packagePath);
         if (url != null) {
+            String path=url.getPath();
+            path=path.replace("test-","");
             String type = url.getProtocol();
             if (type.equals("file")) {
-                fileNames = getClassNameByFile(url.getPath(), null, childPackage);
+                fileNames = getClassNameByFile(path, null, childPackage);
             } else if (type.equals("jar")) {
-                fileNames = getClassNameByJar(url.getPath(), childPackage);
+                fileNames = getClassNameByJar(path, childPackage);
             }
         } else {
             fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
@@ -82,21 +76,8 @@ public class PackageUtil {
      * @return 类的完整名称
      */
     public static List<String> getClassName(String packageName, boolean childPackage) {
-        List<String> fileNames = null;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        String packagePath = packageName.replace(".", "/");
-        URL url = loader.getResource(packagePath);
-        if (url != null) {
-            String type = url.getProtocol();
-            if (type.equals("file")) {
-                fileNames = getClassNameByFile(url.getPath(), null, childPackage);
-            } else if (type.equals("jar")) {
-                fileNames = getClassNameByJar(url.getPath(), childPackage);
-            }
-        } else {
-            fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
-        }
-        return fileNames;
+       return getClassName(loader,packageName,childPackage);
     }
 
     /**

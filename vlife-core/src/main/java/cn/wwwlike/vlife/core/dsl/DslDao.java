@@ -18,8 +18,10 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.*;
 import cn.wwwlike.vlife.bean.PageVo;
+import cn.wwwlike.vlife.core.DataProcess;
 import cn.wwwlike.vlife.core.VLifeDao;
 import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.dict.Opt;
@@ -50,10 +52,8 @@ import org.springframework.data.domain.Sort;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -116,6 +116,8 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     private WModel edit(Class<? extends IdBean> dto) {
         if (wModels.get(dto) == null) {
             wModels.put(dto, new WriteModel(factory, dto));
+        }else{
+            wModels.get(dto).resetClause();
         }
         return wModels.get(dto);
     }
@@ -131,7 +133,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     protected <E extends IdBean> JPAQuery dslQuery(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, PageableRequest page, OrderRequest order) {
         QModel model = select(entityVoClz);
-        wrapper.eq("status", "1");
         JPAQuery query = model.fromWhere(wrapper);
         if (page != null) {
             query = page(query, page);
@@ -282,6 +283,70 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
+     * 实体对象数据保存，
+     * 支持保存之前设置默认值，只对固定字段进行保存；排除部分字段进行保存
+     */
+    @Override
+    public <E extends Item> E save(E item, DataProcess dataProcess) {
+        WModel wmodel = edit(item.getClass());
+        EntityPathBase<? extends Item> saveEntityPath = getItemEntityPath(item.getClass());
+        if (item.getId() == null) {
+           if(dataProcess.getAssigns()!=null){ //指定
+               Arrays.stream(item.getClass().getFields()).map(Field::getName).filter(name->{
+                   return !dataProcess.getAssigns().contains(name);
+               }).forEach(name->{
+                   ReflectionUtils.setFieldValue(item,name,null);
+               });
+           }else if(dataProcess.getIgnores()!=null){ //排除
+               Arrays.stream(item.getClass().getFields()).map(Field::getName).filter(name->{
+                   return dataProcess.getIgnores().contains(name);
+               }).forEach(name->{
+                   ReflectionUtils.setFieldValue(item,name,null);
+               });
+           }
+            em.persist(item);
+        } else {
+            StringPath idPath = (StringPath) ReflectionUtils.getFieldValue(saveEntityPath, "id");
+            wmodel.where(idPath.eq(item.getId()));
+            if(dataProcess.getAssigns()!=null){
+                wmodel.setValWithAssign(item,dataProcess.getAssigns().toArray(new String[dataProcess.getAssigns().size()]));
+            }else{
+                wmodel.setVal(item,dataProcess.getIgnores().toArray(new String[dataProcess.getIgnores().size()]));
+            }
+            Map<String,Object> columnValMap=dataProcess.getColumnValMap();
+            columnValMap.forEach((k, v) -> {
+                Path fnNameDsl = (Path) ReflectionUtils.getFieldValue(saveEntityPath, k);
+                wmodel.getUpdateClause().set(fnNameDsl, v);
+            });
+            wmodel.getUpdateClause().execute();
+        }
+        return item;
+    }
+
+    /**
+     * 实体类数据保存。采用querydsl方式保存
+     * 其中实体类修改；status和creteDate不能修改或者清空
+     */
+
+    public <E extends Item> E save(E item, Map<String, Object> fkMap) {
+        if (item.getId() == null) {
+            em.persist(item);
+        } else { //这里可以和saveBean
+            WModel wmodel = edit(item.getClass());
+            EntityPathBase<? extends Item> saveEntityPath = getItemEntityPath(item.getClass());
+            StringPath idPath = (StringPath) ReflectionUtils.getFieldValue(saveEntityPath, "id");
+            wmodel.where(idPath.eq(item.getId()))
+                    .setVal(item,"status","createDate");
+            fkMap.forEach((k, v) -> {
+                Path fnNameDsl = (Path) ReflectionUtils.getFieldValue(saveEntityPath, k);
+                wmodel.getUpdateClause().set(fnNameDsl, v);
+            });
+            wmodel.getUpdateClause().execute();
+        }
+        return item;
+    }
+
+    /**
      * SaveDto数据保存
      * @param saveBean  保存的dto数据
      * @param fkMap 可以写入到saveBean对应DO里的外键map集合
@@ -350,7 +415,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      * (私)分页过滤条件注入到jpaQuery里
      */
     private JPAQuery page(JPAQuery jQuery, PageableRequest pageRequest) {
-        jQuery.offset(pageRequest.getPage() * pageRequest.getSize());
+        jQuery.offset((pageRequest.getPage()-1) * pageRequest.getSize());
         jQuery.limit(pageRequest.getSize());
         return jQuery;
     }

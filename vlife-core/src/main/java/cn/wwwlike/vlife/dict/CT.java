@@ -27,6 +27,7 @@ import javax.inject.Named;
  */
 @Data
 public class CT {
+    //逻辑删除使用
     @Named("数据状态")
     public static final class STATUS {
         @Named("删除")
@@ -35,7 +36,7 @@ public class CT {
         public final static String NORMAL = "1";
     }
 
-    @Named("业务状态(通用)")
+    @Named("业务状态")
     public static final class STATE {
         @Named("作废")
         public final static String DROP = "0";

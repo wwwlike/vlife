@@ -45,6 +45,10 @@ import java.util.stream.Collectors;
 @Data
 public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> implements BaseRequest<T> {
     /**
+     * input(字符串类型的)联合搜索条件,不和某一具体字段对应
+     */
+//    public String search;
+    /**
      * 自定义参数传入
      *
      * @ignore
@@ -70,7 +74,6 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
 
     public Q qw(Class<T> clz) {
         if (Item.class.isAssignableFrom(clz)) {
-
         }
         this.entityClz = clz;
         if (this.queryWrapper == null) {
@@ -80,7 +83,9 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     }
 
     public Q qw() {
-        return qw(getEntity());
+        return qw(
+                entityClz!=null&&Item.class.isAssignableFrom(entityClz)?
+                        entityClz:getEntity());
     }
 
     /**
@@ -96,7 +101,9 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
             List<FieldDto> fields = reqDto.getFields();
 
             for (FieldDto fieldDto : fields) {
-                if (ReflectionUtils.getFieldValue(this, fieldDto.getFieldName()) != null) {
+                if (ReflectionUtils.getFieldValue(this, fieldDto.getFieldName()) != null
+                &&(fieldDto.getVField()==null|| fieldDto.getVField().skip()==false)
+                ) {
                     Object val = ReflectionUtils.getFieldValue(this, fieldDto.getFieldName());
                     wrapper = createWrapperFromQueryPath(wrapper, fieldDto, val);
                 }
@@ -191,7 +198,7 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
      *
      * @param field
      */
-    protected CustomQuery addOrder(String... field) {
+    public CustomQuery addOrder(String... field) {
         for (String f : field) {
             if (getOrder() == null) {
                 order = new OrderRequest(f, Sort.Direction.ASC);
@@ -207,7 +214,7 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
      *
      * @param field
      */
-    protected CustomQuery addDescOrder(String... field) {
+    public CustomQuery addDescOrder(String... field) {
         for (String f : field) {
             if (getOrder() == null) {
                 order = new OrderRequest(f, Sort.Direction.DESC);

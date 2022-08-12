@@ -18,12 +18,13 @@
 
 package cn.wwwlike.vlife.base;
 
+import cn.wwwlike.base.model.IModel;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 
 /**
  * 查询条件Query的模型的接口，支持排序
  */
-public interface BaseRequest<E extends Item> extends IOrder {
+public interface BaseRequest<E extends Item> extends IOrder  , IModel {
     /**
      * 返回泛型里的对应的实体类clz信息
      *

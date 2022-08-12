@@ -44,7 +44,7 @@ public @interface VField {
      *
      * @return
      */
-    Opt opt() default Opt.eq;
+    Opt opt() default  Opt.VOID;
 
     /**
      * 注入字段设置它的排序规则->可覆盖实体类和VO上设置的排序规则，
@@ -74,4 +74,17 @@ public @interface VField {
      * @return
      */
     String[] orReqFields() default {};
+
+    /**
+     * 如字段取自字典则进行设置，不设置可后期通过plus版本进行数据库设置;
+     * @return
+     */
+    String dictCode() default "";
+
+    /**
+     * 字段跳过不扫描，（8/8）
+     * 一般作为实现特定逻辑的判断条件使用
+     * @return
+     */
+    boolean skip() default false;
 }

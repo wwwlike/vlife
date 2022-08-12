@@ -33,12 +33,9 @@ public interface ClazzRead<T extends BeanDto> extends Read {
     public T readInfo(Class item);
 
     /**
-     * 单个类读完后续处理
-     *
-     * @param t
-     * @return
+     * 注释信息读取
      */
-    public T finished(T t);
+    public T commentRead(T t);
 
     /**
      * 回调方法最后处理类之间的关系

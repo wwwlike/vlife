@@ -41,6 +41,10 @@ public class QDbEntity extends EntityPathBase<DbEntity> {
 
     public final StringPath id = createString("id");
 
+    public final StringPath createId = createString("createId");
+
+    public final StringPath modifyId = createString("modifyId");
+
     public final DateTimePath<java.util.Date> modifyDate = createDateTime("modifyDate", java.util.Date.class);
 
     public final StringPath status = createString("status");
