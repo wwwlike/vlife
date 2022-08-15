@@ -18,10 +18,10 @@
 
 package cn.wwwlike.auth.config;
 
+import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.auth.vo.ResourcesVo;
-import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import cn.wwwlike.web.security.core.*;
 import cn.wwwlike.web.security.filter.MyUsernamePasswordAuthenticationFilter;
@@ -134,7 +134,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //需要权限的资源配置??? 权限设置后这里需要重启
         //permissionVoList: 绑定了角色的资源
         VlifeQuery<SysResources> req=new VlifeQuery<SysResources>(SysResources.class);
-        req.qw().isNotNull("sysRoleId");
+        //仅和菜单或者和角色关联的接口资源进行拦截
+        req.qw().or(qw->qw.isNotNull("sysRoleId").eq("onlyMenu",true));
         List<ResourcesVo> permissionVoList=resourcesService.query(ResourcesVo.class,req);
         for(ResourcesVo vo:permissionVoList){
             // 资源路径与角色组绑定

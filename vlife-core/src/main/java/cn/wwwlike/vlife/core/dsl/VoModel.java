@@ -159,19 +159,14 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      */
     private BooleanExpression subQueryFilter(String prefix, StringPath mainId, AbstractWrapper wrapper) {
         List<Class<? extends Item>> ls = (List) wrapper.allLeftPath().get(0);
-
         JPAQuery subMainQuery = joinByVo(null, null, prefix + "_", ls);
-
         BooleanBuilder subBuilder = whereByWrapper(wrapper);
         Class<? extends Item> mainClz = (Class<? extends Item>) wrapper.getMainClzPath().get(wrapper.getMainClzPath().size() - 1);
         Class subMain = wrapper.getEntityClz();
         String entityAlias = prefix + "__" + uncapitalize(subMain.getSimpleName());
         EntityPathBase subMainPath = getAlljoin().get(entityAlias);
         EntityDto subMainDto = GlobalData.entityDto(subMain);
-
-
         StringPath subId = (StringPath) ReflectionUtils.getFieldValue(subMainPath, subMainDto.getFkMap().get(mainClz));
-
         if (false) {
             if (subBuilder.hasValue()) {
                 subMainQuery.where(mainId.eq(subId).and(subBuilder));
@@ -219,7 +214,11 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
                 StringPath rightId = (StringPath) ReflectionUtils.getFieldValue(rightPath, "id");
                 fromQuery.leftJoin(rightPath).on(leftId.eq(rightId));
             }
-
+            //给VO查询结果需要左关联的表含本表都加上status过滤,
+            //屏蔽原因：左查询不应该关联status,如果status无效则也不会体现在 外键字段上
+//            StringPath statusPath =(StringPath) ReflectionUtils.getFieldValue(rightPath, "status");
+//            BooleanExpression expression=statusPath.eq(CT.STATUS.NORMAL);
+//            fromQuery.where(expression);
             if (left.size() > 1) {
                 fromQuery = joinByVo(fromQuery, GlobalData.entityDto(mainClz), entityAlias, left.subList(1, left.size()));
             }
@@ -273,7 +272,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
     }
 
     public <W extends AbstractWrapper<T, String, QueryWrapper<T>>> BooleanBuilder whereByWrapper(W wrapper) {
-        wrapper.eq("status", CT.STATUS.NORMAL);
+//         wrapper.eq("status", CT.STATUS.NORMAL);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         for (AbstractWrapper.Element element : wrapper.getElements()) {
             EntityPathBase path = alljoin.get(getPrefix() + element.queryPathNames());
@@ -288,12 +287,10 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         }
 
         for (QueryWrapper subQueryWrapper : wrapper.getSubQuery()) {
-
             String mainLeftJoinName = subQueryWrapper.lethJoinName();
             EntityPathBase leftDslPath = alljoin.get(mainLeftJoinName);
             BooleanExpression booleanExpression = subQueryFilter(
                     mainLeftJoinName,
-
                     (StringPath) ReflectionUtils.getFieldValue(leftDslPath, "id"),
                     subQueryWrapper);
             if (wrapper.getJoin() == Join.and) {
@@ -369,10 +366,20 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      * synchronized ->处理连续2次查询查询条件覆盖的问题
      */
     public synchronized <R extends AbstractWrapper> JPAQuery fromWhere(R wrapper) {
+        //主表需要有status
+        wrapper.eq("status",CT.STATUS.NORMAL);
         // step1 query init
         filterQuery = (JPAQuery) getVoFromQuery().clone();// filterQuery 克隆赋值 初始化
         alljoin.clear();
         alljoin.putAll(voJoin); //map恢复到vo初始化完成后的状态（select里会用到的join）
+
+//        alljoin.keySet().forEach((String a)->{
+//            if(a.indexOf("_")!=-1){
+////                wrapper.eq(a+"_status",CT.STATUS.NORMAL);
+//            }else{
+//                wrapper.eq("status",CT.STATUS.NORMAL);
+//            }
+//        });
         // step2 add  leftjoin
         filterQuery = addQueryFilterJoin(filterQuery, wrapper); //添加查询条件里需要做查询的leftPath到joins里
         // step3 filter(sub filter)

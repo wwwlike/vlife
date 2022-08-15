@@ -67,4 +67,9 @@ public class SysUser extends DbEntity implements IUser {
      */
     @VField(dictCode = "STATE")
     public String state;
+
+    /**
+     * 单位
+     */
+    public String sysOrgId;
 }

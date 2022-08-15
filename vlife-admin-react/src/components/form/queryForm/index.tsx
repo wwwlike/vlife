@@ -5,16 +5,19 @@
  * 使用formliy + semi联合打造的动态表单
  * 考虑使用reactQuery,从后台取得表单信息，然后缓存起来。
  */
- import React, { useCallback, useMemo } from 'react';
- import { createForm, onFormInit,onFormValuesChange } from '@formily/core';
+ import React, { useCallback, useEffect, useMemo, useState } from 'react';
+ import { createForm, onFormInit,onFormMount,onFormValuesChange } from '@formily/core';
  import { createSchemaField,  FormProvider, observer, Schema, useFieldSchema, useForm } from '@formily/react';
- import { FormItem, Input ,FormGrid,GridColumn,Select,ArrayItems,ArrayTable,FormTab,DatePicker} from '@formily/semi';
+ import { FormItem, Input ,FormGrid,GridColumn,ArrayItems,ArrayTable,FormTab,DatePicker} from '@formily/semi';
  import { fieldInfo, ModelInfo, TranDict } from '@src/types/vlife';
  import RelationInput from '@src/components/form/comp/RelationInput'
  import SearchInput from '@src/components/form/comp/SearchInput'
  import DictSelectTag from '@src/components/form/comp/DictSelectTag'
+import Search from './search';
+import { Select } from '@formily/antd';
+import { FormProps } from '..';
 
- 
+
  /**
   * 表单布局展示，需要固定卸载函数式组件之外
   */
@@ -26,28 +29,31 @@
      DictSelectTag
    },
  })
-  //表信息
- export interface FormProps {
-   formData?:any, // form初始数据
-   setFormData:(data:any)=>void //修改数据传出去
-   setError?: () => void; //校验错误信息
-   hideColumns?: string[]; //需要隐藏的不显示的列
-   read?: boolean; //只读模式
-   dicts?: TranDict[]; //字典信息
-   layout?:string,// [] 横/纵布局
-   modelInfo:ModelInfo|undefined;
-   maxColumns?: number[];//列信息
-   fkMap?:any;
+//   //表信息
+//  export interface FormProps {
+//    entityName:string,
+//    formData?:any, // form初始数据
+//    setFormData:(data:any)=>void //修改数据传出去
+//    setError?: () => void; //校验错误信息
+//    hideColumns?: string[]; //需要隐藏的不显示的列
+//    read?: boolean; //只读模式
+//    dicts?: TranDict[]; //字典信息
+//    layout?:string,// [] 横/纵布局
+//    modelInfo:ModelInfo|undefined;
+//    maxColumns?: number[];//列信息
+//    fkMap?:any;
    
- }
+//  }
 
- export default ({maxColumns=[2,2,2],dicts,formData,setFormData,fkMap,modelInfo}:FormProps) => {
-   /**
+ export default ({entityName,maxColumns=[2,2,2],dicts,formData,onDataChange,fkMap,modelInfo}:FormProps) => {
+   
+  // const [schema,setSchema]=useState<any>({});
+  /**
     * 动态表单数据初始化
     */
    const form = useMemo(
-     () =>
-       createForm({
+     () =>{
+       return createForm({
          readPretty: false,
          initialValues: {
           ...formData
@@ -56,24 +62,14 @@
            onFormInit((form)=>{
            }),
            onFormValuesChange((form) => {
-             if(setFormData)
-               setFormData({...form.values})
+             if(onDataChange)
+             onDataChange({...form.values})
            })
          },
-       }),
-     []
+       })},
+     [modelInfo]
    )
 
-   /**
-    * 排序后字段信息
-    * 1. 搜索框最前面
-    * 2. 字典，选项
-    * 3. 日期过滤
-    * 4. 排序
-    */
-   const sortFields=useMemo(()=>{
-    return modelInfo?.fields||[];
-   },[modelInfo?.fields])
 
    /**
     * 字典数据提取(字典显示有抖动这里需要测试)
@@ -81,78 +77,75 @@
    const fieldEnum=useCallback((dictCode:string)=>{
      const dictEnum:{label:string,value:any}[]=[];
      if(dicts){
-       const array=dicts.filter((dict)=>{
-         //console.log(dict.column.toLowerCase()+"_"+dictCode.toLowerCase())
-         if(dict.column.toLowerCase()===dictCode.toLowerCase()){
+       const array=dicts.filter((sysDict)=>{
+         //console.log(sysDict.column.toLowerCase()+"_"+dictCode.toLowerCase())
+         if(sysDict.column.toLowerCase()===dictCode.toLowerCase()){
              return true;
          }
        })
        if(array){
-         array[0].dict.forEach(d=>{
+         array[0].sysDict.forEach(d=>{
            dictEnum.push({label:d.title,value:d.val});
          })
        }
      }
-     // console.log(dictEnum)
      return dictEnum;
    },[dicts])
  
-    /**
-     * 动态表单formily的properties
-     */
-    const schemaProperties= useMemo(()=>{
+
+ 
+
+   const schema= useMemo(()=>{
     const pp:any={};
-    sortFields.forEach((f)=>{
+    modelInfo?.fields.forEach((f)=>{
     const prop:any=pp[f.dataIndex]={};
     prop.title=f.title;
     prop['x-decorator']= 'FormItem';
-
-    if(f.dictCode||f.type==='boolean'){
-      prop['x-component']='DictSelectTag'
-      if(f.dictCode)
-        prop.enum=fieldEnum(f.dictCode);
-      else
-        prop.enum=[{label:'是',value:true},{label:'否',value:false}]
-      prop['x-component-props']=f;
-    }else if (f.dataIndex!=='id'&&
-    (f.pathName.endsWith('Id')||f.pathName.endsWith('_id'))){
-      // &&f.entityType!==modelInfo?.entityType 对应问题20
-      prop['x-component']='RelationInput';
-      prop['x-component-props']={...prop['x-component-props'],'fkMap':fkMap,...f};
-    }else if (f.type==='date'){
-      prop['x-component']='DatePicker';
-      if(f.fieldType==='list'){
-        prop['x-component-props']={...prop['x-component-props'],type:'dateRange','format':"yyyy/MM/dd"};
+      if(f.dictCode||f.type==='boolean'){
+        prop['x-component']='DictSelectTag'
+        if(f.dictCode)
+          prop.enum=fieldEnum(f.dictCode);
+        else
+          prop.enum=[{label:'是',value:true},{label:'否',value:false}]
+        prop['x-component-props']=f;
+      }else if (f.dataIndex!=='id'&&
+      (f.pathName.endsWith('Id')||f.pathName.endsWith('_id'))){
+        // &&f.entityType!==modelInfo?.entityType 对应问题20
+        prop['x-component']='RelationInput';
+        prop['x-component-props']={...prop['x-component-props'],'fkMap':fkMap,...f};
+      }else if (f.type==='date'){
+        prop['x-component']='DatePicker';
+        if(f.fieldType==='list'){
+          prop['x-component-props']={...prop['x-component-props'],type:'dateRange','format':"yyyy/MM/dd"};
+        }else{
+          prop['x-component-props']={...prop['x-component-props'],'format':"yyyy/MM/dd"};
+        }
       }else{
-        prop['x-component-props']={...prop['x-component-props'],'format':"yyyy/MM/dd"};
+        prop['x-component']='SearchInput';
       }
-    }else{
-      prop['x-component']='SearchInput';
-    }
-    // layout?: 'vertical' | 'horizontal' | 'inline';
-    prop[' x-decorator-props']={layout:'vertical',labelAlign:'left'};
-    prop.type='string';
-    })
-    return pp;
-   },[sortFields])
- 
-   const schema = {
-     type: 'object',
-     properties: {
-       grid: {
-         type: 'void',
-         'x-component': 'FormGrid',
-         'x-component-props': {
-           maxColumns: maxColumns, //
-         },
-         properties:schemaProperties
-       }
-     },
-   }
+      // layout?: 'vertical' | 'horizontal' | 'inline';
+      prop[' x-decorator-props']={layout:'vertical',labelAlign:'left'};
+      prop.type='string';
+      })
+      return {
+        type: 'object',
+        properties: {
+          grid: {
+            type: 'void',
+            'x-component': 'FormGrid',
+            'x-component-props': {
+              maxColumns: maxColumns, //
+            },
+            properties:pp
+          }
+        },
+      }
+    },[modelInfo,fkMap])
+   
+  
    return (
      <div>
        <FormProvider form={form}>
-         {/* {JSON.stringify(maxColumns)} */}
          <SchemaField schema={schema}></SchemaField>
        </FormProvider>
      </div>

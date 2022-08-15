@@ -19,7 +19,6 @@
 package cn.wwwlike.oa.dto;
 
 import cn.wwwlike.oa.entity.Project;
-import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 

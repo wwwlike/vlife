@@ -5,6 +5,7 @@
  import React, { useCallback, useMemo, useState } from 'react';
  import {BaseRequest, IdBean } from '@src/types/vlife';
  import FormPage, { FormPageProps } from './formPage';
+import { Select } from '@douyinfe/semi-ui';
  
   /**
     * 1. 动态取数据，页面提供配置，然后存到前端 reactQuery方式缓存
@@ -34,7 +35,7 @@
    }, [saveFun]);
  
    return (
-   <NiceModal id="confirmModal" title={'确认删除'} width={350} onOk={handleSubmit}>
+   <NiceModal id="confirmModal" title={'删除确认'} width={350} onOk={handleSubmit}>
       <p>{title}</p>
    </NiceModal>)
  })

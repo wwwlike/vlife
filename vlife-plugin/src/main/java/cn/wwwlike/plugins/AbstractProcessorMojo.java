@@ -36,7 +36,7 @@ import org.sonatype.plexus.build.incremental.BuildContext;
  * @author tiwe
  * 
  */
-@Mojo(name = "abcd")
+//@Mojo(name = "abcd")
 public  class AbstractProcessorMojo extends AbstractMojo {
 
     private static final String JAVA_FILE_FILTER = "/*.java";

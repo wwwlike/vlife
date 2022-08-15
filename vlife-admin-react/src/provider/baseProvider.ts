@@ -4,7 +4,7 @@ import { Options } from "ahooks/lib/useRequest/src/types";
 import { useEffect, useMemo, useState } from "react";
 import { useRequest } from "ahooks";
 import { TablePagination } from "@douyinfe/semi-ui/lib/es/table";
-import useUrlState from "@ahooksjs/use-url-state";
+
 import qs from "qs";
 import { arrayToStr } from "@src/utils/utils";
 import SizeContext from "antd/lib/config-provider/SizeContext";
@@ -244,10 +244,10 @@ export const useDetails = ({
     (
       modelName: string,
       baseName: string = entityName,
-      ...ids: (string | number)[]
+      ids: (string | number)[]
     ): Promise<Result<any[]>> => {
       return apiClient.get(
-        `/${baseName}/views/${modelName}?ids=${arrayToStr(ids, ",")}`,
+        `/${baseName}/views/${modelName}?ids=${ids.join(",")}}`,
         {
           params: {},
         }
@@ -255,3 +255,22 @@ export const useDetails = ({
     },
     { manual, ...options }
   );
+
+/**
+ * 外键信息拆线呢
+ * @param entityName 模块
+ * @param ids 主键id
+ * @returns
+ */
+export const getFkInfo = (
+  entityName: string,
+  ids: (string | number)[]
+): Promise<Result<any[]>> => {
+  // alert(`${arrayToStr(ids, ",")}`);
+  return apiClient.get(
+    `/${entityName}/views/${entityName}?ids=${ids.join(",")}`,
+    {
+      params: {},
+    }
+  );
+};

@@ -43,15 +43,19 @@ export const subset = <
   return Object.fromEntries(filteredEntries) as Pick<O, K>;
 };
 
-export const arrayToStr = (arr: any[], ss: string = ",") => {
-  let fh = ",";
-  return arr
-    .map((s, index) => {
-      if (s) {
-        return s;
-      } else {
-        fh = "";
-      }
-    })
-    .join(fh);
-};
+// export const arrayToStr = (arr: any[], ss: string = ",") => {
+//   let fh = ",";
+//   let str = arr;
+//   alert(arr.join(","));
+//   arr
+//     .map((s, index) => {
+//       if (s) {
+//         return s;
+//       } else {
+//         fh = "";
+//       }
+//     })
+//     .join(fh);
+
+//   return str;
+// };

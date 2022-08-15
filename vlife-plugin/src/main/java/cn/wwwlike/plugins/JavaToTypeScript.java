@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-@Mojo(name = "toTypeScript", defaultPhase = LifecyclePhase.NONE)
+//@Mojo(name = "toTypeScript", defaultPhase = LifecyclePhase.NONE)
 public class JavaToTypeScript extends AbstractMojo {
 
     //class加载器

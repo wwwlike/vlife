@@ -40,7 +40,7 @@ function showModal(modalId: string, args:any) {
   return {
     type: "nice-modal/show",
     payload: {
-      modalId,
+      'modalId':modalId,
       args,
     },
   };
@@ -58,12 +58,12 @@ function hideModal(modalId: string, force: any) {
 
 export const useNiceModal = (modalId: string) => {
   const dispatch = useDispatch();
-    //当前活动的modalid
+    //从store里读取活动的modal层ID
   const activeModalId=useSelector((state: any) => state.activeModalId);
     //上一层modal的信息
   // const [pModal,setPmodal]=useState<{id:string,callback?:()=>void}>();
 
-  let pModal:{id:string,callback?:()=>void};
+  let pModal:{id:string,args:any,callback?:()=>void};
   // const o= useNiceModal(activeModalId);
   // const cloadPrv=useCallback(()=>{//在当前页面之上在弹出一个modal
   //     o.hide();
@@ -79,6 +79,23 @@ export const useNiceModal = (modalId: string) => {
     },
     [dispatch, modalId]
   );
+  /**
+   * 作为子模态窗口显示，
+   * 关闭之前的，并记录，子模关闭的时候再次调出父模态窗口
+   */
+  const showAsSub= useCallback(
+    (force?:any) => {
+      if(activeModalId){
+        dispatch(hideModal(activeModalId, force));     //关闭父窗口
+        //父窗口数据信息保存
+        pModal={id:activeModalId,args:null,callback:modalCallbacks[activeModalId]}
+        delete modalCallbacks[activeModalId];
+      }
+      return show(force);//调用show方法
+    },
+    [dispatch, activeModalId]
+  );
+
   //点ok执行的方法
   const resolve = useCallback(
     (args:any) => {
@@ -101,37 +118,25 @@ export const useNiceModal = (modalId: string) => {
     [dispatch, activeModalId]
   );
 
-  /**
-   * 作为子模态窗口显示，
-   * 关闭之前的，并记录，子模关闭的时候再次调出父模态窗口
-   */
-  const showAsSub= useCallback(
-    (force?:any) => {
-      if(activeModalId){
-        dispatch(hideModal(activeModalId, force));
-        pModal={id:activeModalId,callback:modalCallbacks[activeModalId]}
-        delete modalCallbacks[activeModalId];
-      }
-      return show(force);
-    },
-    [dispatch, activeModalId]
-  );
   
   /**
    * 关闭当前的，打开父类的
    */
   const hideAndOpenParent= useCallback(
     (force?:any) => {
-      console.log('pModal',pModal)
-         hide();
+      hide()
+      setTimeout(()=>{
+        return new Promise((resolve) => {
+          modalCallbacks[pModal?.id] =pModal.callback;//找回当时show()方法then调用时候传入的函数
+          dispatch(showModal(pModal.id, {...force})); 
+        });
+      },500)
+        //  hide();
         // 显示对话框时，返回 promise 并且将resolve方法临时存起来
         // if(pModal&& pModal.id){
        
         // }
-        return new Promise((resolve) => {
-          modalCallbacks[pModal?.id] =pModal.callback;// show()方法then调用时候传入的函数
-          dispatch(showModal(pModal.id, {...force})); 
-        });
+        
     },
     [dispatch, modalId]
   );

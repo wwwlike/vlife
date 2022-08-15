@@ -16,23 +16,26 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.auth.dto;
+package cn.wwwlike.auth.req;
 
-import cn.wwwlike.auth.entity.SysRole;
+import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.vlife.annotation.VField;
-import cn.wwwlike.vlife.base.SaveBean;
+import cn.wwwlike.vlife.dict.Opt;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
 /**
- * 类说明
- *
- * @author xiaoyu
- * @date 2022/7/12
+ * 用户列表查询
  */
 @Data
-public class RoleDto implements SaveBean<SysRole> {
-    public String id;
-
-    @VField(pathName = "name")
-    public String roleName;
+public class SysUserPageReq extends PageQuery<SysUser> {
+    /**
+     * 姓名/手机号/证件号
+     */
+    @VField(pathName = "name",opt = Opt.like,orReqFields = {"tel","idno"})
+    public String search;
+    public String sysGroupId;
+    public String sysOrgId;
+    @VField(pathName = "sysOrg_sysAreaId")
+    public String area;
 }

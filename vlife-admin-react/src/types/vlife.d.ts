@@ -69,7 +69,7 @@ export interface Result<D> {
 
 export interface TranDict {
   column: string;
-  dict: { val?: string | undefined; title: string }[];
+  sysDict: { val?: string | undefined; title: string }[];
 }
 
 /**

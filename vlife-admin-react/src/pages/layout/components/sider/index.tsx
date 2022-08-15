@@ -37,6 +37,7 @@ function findMenuByPath(menus: MenuItem[], path: string, keys: any[]): any {
 const Index: FC = () => {
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
+	const [allMenuList,setMenuList]=useState(menuList);
 	// const { formatMessage } = useLocale()
 	const [openKeys, setOpenKeys] = useState<string[]>([])
 	const [selectedKeys, setSelectedKeys] = useState<string[]>([])
@@ -44,26 +45,28 @@ const Index: FC = () => {
 	const {user } =useAuth();
 	const navList = useMemo(() => {
 		let mList:MenuItem[]=[];
-
 		if(user&&user.menus){
-			mList=menuList.filter((e)=>{
+			console.log("allMenuList",allMenuList[0],allMenuList[1],allMenuList[2])
+			mList=	[...allMenuList].filter((e)=>{
 			//e的子菜单用户是否有权限，如果有一个，则e也能加入进去
 			let subs=e.items;
+			let filterSubItems;
 			if(subs){
-				e.items=subs.filter((sub)=>{
+				filterSubItems=subs.filter((sub)=>{
 					if(sub.code){
-						return user.menus.includes(sub.code);
+						console.log("权限：",user?.menus?.includes(sub.code))
+						return user?.menus?.includes(sub.code);
 					}
 					return true
 				})
 			}
-			if(e.items&& e.items.length>0){
+			if(filterSubItems&& filterSubItems.length>0){
 				return true
 			}else{
 				return false
 			}
 		})
-		return menuList.map((e) => {
+		return mList.map((e) => {
 			return {
 				...e,
 				text: e.text,
@@ -80,7 +83,7 @@ const Index: FC = () => {
 			}
 		})
 	}
-	}, [menuList])
+	}, [allMenuList])
 
 	const onSelect = (data) => {
 		setSelectedKeys([...data.selectedKeys])
@@ -96,10 +99,9 @@ const Index: FC = () => {
 		setSelectedKeys([keys.pop() as string])
 		setOpenKeys(Array.from(new Set([...openKeys, ...keys])))
 	}, [pathname])
-	
 
+	{console.log('navList',allMenuList)}
 	return (
-	
 			<Sider className='shadow-lg'  style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
 				<Nav 
 					items={navList}

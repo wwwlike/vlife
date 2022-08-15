@@ -7,9 +7,19 @@ const SearchInput=observer((props:SearchInput)=>{
   const field = useField()
   const form = useForm()
   const fieldName=field.path.entire.toString();
+  useEffect(()=>{
+    alert(field.title)
+  },[])
+
+  // useFormEffects(() => {
+  //   alert("aa")
+  // })
   return(
    <Observer>
-      <Search placeholder={field.title} paramName={fieldName} params={form.values} setParams={form.setValues}  /> 
+    <div>
+    {JSON.stringify(field.title)}
+    </div>
+      {/* <Search placeholder={field.title} paramName={fieldName} params={form.values} setParams={form.setValues}  />  */}
    </Observer>)
 }) 
 export default SearchInput;

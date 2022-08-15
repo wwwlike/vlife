@@ -1,17 +1,9 @@
 package cn.wwwlike.auth.api;
 
-import cn.wwwlike.auth.service.SysRoleGroupService;
 import cn.wwwlike.auth.entity.SysRoleGroup;
+import cn.wwwlike.auth.service.SysRoleGroupService;
 import cn.wwwlike.vlife.core.VLifeApi;
-import java.lang.Long;
-import java.lang.String;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 角色聚合组接口;

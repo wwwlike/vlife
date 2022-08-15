@@ -310,6 +310,10 @@
         "fieldName": "createId",
         "title": "创建人"
       },
+      "sysOrgId": {
+        "fieldName": "sysOrgId",
+        "title": "单位"
+      },
       "name": {
         "fieldName": "name",
         "title": "姓名"
@@ -350,30 +354,22 @@
   },
   {
     "superName": "PageQuery",
-    "entityName": "DictPageReq",
-    "title": "类说明",
+    "entityName": "SysGroupPageReq",
+    "title": "角色组分页查询条件",
     "tags": {
-      "code": {
-        "fieldName": "code",
-        "title": "编码"
+      "name": {
+        "fieldName": "name",
+        "title": "组名称"
       },
-      "title": {
-        "fieldName": "title",
-        "title": "名称"
-      },
-      "sys": {
-        "fieldName": "sys",
-        "title": "系统项"
-      },
-      "queryType": {
-        "fieldName": "queryType",
-        "title": "跳过检查"
+      "sysRoleId": {
+        "fieldName": "sysRoleId",
+        "title": "关联角色"
       }
     }
   },
   {
     "superName": "PageQuery",
-    "entityName": "ResourcesPageReq",
+    "entityName": "SysResourcesPageReq",
     "title": "资源页面",
     "tags": {
       "search": {
@@ -392,42 +388,27 @@
   },
   {
     "superName": "PageQuery",
-    "entityName": "SysGroupPageReq",
-    "title": "角色组分页查询条件",
-    "tags": {
-      "name": {
-        "fieldName": "name",
-        "title": "组名称"
-      },
-      "sysRoleId": {
-        "fieldName": "sysRoleId",
-        "title": "关联角色"
-      }
-    }
-  },
-  {
-    "superName": "PageQuery",
     "entityName": "SysRolePageReq",
     "title": "角色查询",
     "tags": {
       "ttt": {
         "fieldName": "ttt",
-        "title": "搜索条件"
+        "title": "权限组"
+      },
+      "vvv": {
+        "fieldName": "vvv",
+        "title": "权限组"
       }
     }
   },
   {
     "superName": "PageQuery",
-    "entityName": "UserPageReq",
+    "entityName": "SysUserPageReq",
     "title": "用户列表查询",
     "tags": {
       "search": {
         "fieldName": "search",
-        "title": "用户姓名"
-      },
-      "sysGroupId": {
-        "fieldName": "sysGroupId",
-        "title": "权限组"
+        "title": "姓名/手机号/证件号"
       }
     }
   },
@@ -605,18 +586,6 @@
   },
   {
     "superName": "VLifeApi",
-    "entityName": "Dict1Api",
-    "title": "字典表接口;",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeApi",
-    "entityName": "DictApi",
-    "title": "字典表接口;",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeApi",
     "entityName": "ProjectAccountApi",
     "title": "项目人员关系表(分配关系)接口;",
     "tags": {}
@@ -653,11 +622,6 @@
   {
     "superName": "DslDao",
     "entityName": "DeptDao",
-    "tags": {}
-  },
-  {
-    "superName": "DslDao",
-    "entityName": "DictDao",
     "tags": {}
   },
   {
@@ -809,57 +773,6 @@
       "id": {
         "fieldName": "id",
         "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "title": "创建时间"
-      }
-    }
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "Dict",
-    "title": "字典表",
-    "tags": {
-      "val": {
-        "fieldName": "val",
-        "title": "值"
-      },
-      "code": {
-        "fieldName": "code",
-        "title": "编码"
-      },
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "title": "创建人"
-      },
-      "del": {
-        "fieldName": "del",
-        "title": "来源于Java里字典定义的则都不能删除"
-      },
-      "id": {
-        "fieldName": "id",
-        "title": "主键id"
-      },
-      "title": {
-        "fieldName": "title",
-        "title": "名称"
-      },
-      "sys": {
-        "fieldName": "sys",
-        "title": "管理员不可见"
       },
       "status": {
         "fieldName": "status",
@@ -1198,11 +1111,6 @@
     "tags": {}
   },
   {
-    "superName": "BaseService",
-    "entityName": "DictService",
-    "tags": {}
-  },
-  {
     "superName": "VLifeService",
     "entityName": "ProjectAccountService",
     "tags": {}
@@ -1315,6 +1223,12 @@
   },
   {
     "superName": "VLifeApi",
+    "entityName": "SysDictApi",
+    "title": "字典表接口;",
+    "tags": {}
+  },
+  {
+    "superName": "VLifeApi",
     "entityName": "SysOrgApi",
     "title": "null接口;",
     "tags": {}
@@ -1327,6 +1241,11 @@
   {
     "superName": "DslDao",
     "entityName": "SysDeptDao",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "SysDictDao",
     "tags": {}
   },
   {
@@ -1426,6 +1345,57 @@
   },
   {
     "superName": "DbEntity",
+    "entityName": "SysDict",
+    "title": "字典表",
+    "tags": {
+      "val": {
+        "fieldName": "val",
+        "title": "选项值"
+      },
+      "code": {
+        "fieldName": "code",
+        "title": "编码"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "title": "创建人"
+      },
+      "del": {
+        "fieldName": "del",
+        "title": "可删除"
+      },
+      "id": {
+        "fieldName": "id",
+        "title": "主键id"
+      },
+      "title": {
+        "fieldName": "title",
+        "title": "选项名"
+      },
+      "sys": {
+        "fieldName": "sys",
+        "title": "系统项"
+      },
+      "status": {
+        "fieldName": "status",
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "title": "创建时间"
+      }
+    }
+  },
+  {
+    "superName": "DbEntity",
     "entityName": "SysOrg",
     "title": "机构",
     "tags": {
@@ -1489,6 +1459,29 @@
   },
   {
     "superName": "PageQuery",
+    "entityName": "SysDictPageReq",
+    "title": "类说明",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "title": "编码"
+      },
+      "title": {
+        "fieldName": "title",
+        "title": "名称"
+      },
+      "sys": {
+        "fieldName": "sys",
+        "title": "系统项"
+      },
+      "queryType": {
+        "fieldName": "queryType",
+        "title": "跳过检查"
+      }
+    }
+  },
+  {
+    "superName": "PageQuery",
     "entityName": "SysOrgPageReq",
     "title": "机构查询条件",
     "tags": {
@@ -1506,6 +1499,11 @@
   {
     "superName": "BaseService",
     "entityName": "SysDeptService",
+    "tags": {}
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "SysDictService",
     "tags": {}
   },
   {

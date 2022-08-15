@@ -16,38 +16,44 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.auth.req;
+package cn.wwwlike.sys.entity;
 
-import cn.wwwlike.auth.entity.SysResources;
-import cn.wwwlike.vlife.annotation.VField;
-import cn.wwwlike.vlife.query.req.PageQuery;
+import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
- * 资源页面
+ * 字典表
+ * 所有字典大类来源于CT及子类里的定义；
+ * 字典
+ * @author xiaoyu
+ * @date 2022/6/17
  */
 @Data
-public class ResourcesPageReq extends PageQuery<SysResources> {
+@Table(name = "sys_dict")
+@Entity
+public class SysDict extends DbEntity {
     /**
-     * 资源类型
+     *编码
      */
-    public String type;
-
+    public String code;
     /**
-     * 资源归属角色
+     *选项值
      */
-    public String sysRoleId;
-
+    public String val;
     /**
-     * 模糊搜索条件
+     *选项名
      */
-    @VField(pathName = "name",orReqFields = {"code","url"})
-    public String search;
-    public Boolean onlyMenu;
-
-    public List<Date> createDate;
+    public String title;
+    /**
+     * 系统项
+     */
+    public Boolean sys;
+    /**
+     * 可删除
+     */
+    public Boolean del;
 
 }

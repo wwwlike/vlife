@@ -21,10 +21,7 @@ package cn.wwwlike.auth.vo;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.VoBean;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * 用户列表信息

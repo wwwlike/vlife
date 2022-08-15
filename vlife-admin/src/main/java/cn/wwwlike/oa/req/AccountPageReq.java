@@ -19,10 +19,8 @@
 package cn.wwwlike.oa.req;
 
 import cn.wwwlike.oa.entity.Account;
-import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * 查询条件

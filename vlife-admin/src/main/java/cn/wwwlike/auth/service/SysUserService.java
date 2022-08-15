@@ -3,7 +3,6 @@ package cn.wwwlike.auth.service;
 import cn.wwwlike.auth.dao.SysUserDao;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.common.BaseService;
-import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.web.security.filter.PehrSecurityUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

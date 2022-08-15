@@ -20,6 +20,47 @@
           }
         }
       },
+      "PageVoSysRole": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysRole"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          }
+        }
+      },
       "Account": {
         "properties": {
           "id": {
@@ -221,17 +262,17 @@
           },
           "sysGroupId": {
             "format": "string",
-            "description": "角色权限组",
+            "description": "权限组",
             "type": "string"
           },
           "idno": {
             "format": "string",
-            "description": "证件号码",
+            "description": "证件号",
             "type": "string"
           },
           "tel": {
             "format": "string",
-            "description": "联系电话",
+            "description": "电话",
             "type": "string"
           },
           "usetype": {
@@ -241,7 +282,7 @@
           },
           "state": {
             "format": "string",
-            "description": "用户状态 1启用 0停用",
+            "description": "启用状态",
             "type": "string"
           }
         }
@@ -275,6 +316,113 @@
           }
         }
       },
+      "SysDept": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "部门名称",
+            "type": "string"
+          },
+          "code": {
+            "format": "string",
+            "description": "部门编码",
+            "type": "string"
+          },
+          "sysOrgId": {
+            "format": "string",
+            "description": "机构",
+            "type": "string"
+          }
+        }
+      },
+      "GroupDto": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "角色组id",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "组名称",
+            "type": "string"
+          },
+          "remark": {
+            "format": "string",
+            "description": "组描述",
+            "type": "string"
+          },
+          "sysRoleId": {
+            "format": "string",
+            "description": "角色集合",
+            "type": "string"
+          }
+        }
+      },
+      "SysArea": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "区划名称",
+            "type": "string"
+          },
+          "code": {
+            "format": "string",
+            "description": "区划编码",
+            "type": "string"
+          },
+          "pcode": {
+            "format": "string",
+            "description": "上级地区编码",
+            "type": "string"
+          },
+          "level": {
+            "format": "string",
+            "description": "地区类型",
+            "type": "string"
+          }
+        }
+      },
       "Step": {
         "properties": {
           "id": {
@@ -296,6 +444,88 @@
             "format": "string",
             "description": "最近修改日期",
             "type": "string"
+          }
+        }
+      },
+      "PageVoUserVo": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserVo"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          }
+        }
+      },
+      "PageVoSysOrg": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysOrg"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
           }
         }
       },
@@ -333,6 +563,91 @@
           }
         }
       },
+      "PageVoDict": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Dict"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          }
+        }
+      },
+      "UserVo": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "用户名",
+            "type": "string"
+          },
+          "username": {
+            "format": "string",
+            "description": "账号",
+            "type": "string"
+          },
+          "groupName": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "idno": {
+            "format": "string",
+            "description": "证件号码",
+            "type": "string"
+          },
+          "tel": {
+            "format": "string",
+            "description": "联系电话",
+            "type": "string"
+          },
+          "usetype": {
+            "format": "string",
+            "description": "用户类型",
+            "type": "string"
+          },
+          "state": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          }
+        }
+      },
       "SysResources": {
         "properties": {
           "id": {
@@ -357,7 +672,7 @@
           },
           "url": {
             "format": "string",
-            "description": "路由路径",
+            "description": "路由地址",
             "type": "string"
           },
           "code": {
@@ -377,23 +692,23 @@
           },
           "type": {
             "format": "string",
-            "description": "资源类型  1菜单 2接口",
-            "type": "string"
-          },
-          "requestType": {
-            "format": "string",
-            "description": "请求方式",
+            "description": "资源类型",
             "type": "string"
           },
           "sysRoleId": {
             "format": "string",
-            "description": "所属角色ID",
+            "description": "归属角色",
             "type": "string"
           },
           "pcode": {
             "format": "string",
-            "description": "上级资源code(一级菜单没有上级资源)",
+            "description": "上级编码",
             "type": "string"
+          },
+          "onlyMenu": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
           }
         }
       },
@@ -403,6 +718,11 @@
             "format": "string",
             "description": "No comments found.",
             "type": "string"
+          },
+          "genericDeclaration": {
+            "description": "No comments found.(object)",
+            "type": "object",
+            "$ref": "#/components/schemas/GenericDeclaration"
           },
           "bounds": {
             "description": "No comments found.",
@@ -417,11 +737,6 @@
             "items": {
               "$ref": "#/components/schemas/AnnotatedType"
             }
-          },
-          "genericDeclaration": {
-            "description": "No comments found.(object)",
-            "type": "object",
-            "$ref": "#/components/schemas/GenericDeclaration"
           },
           "typeName": {
             "format": "string",
@@ -507,6 +822,11 @@
             "format": "string",
             "description": "角色名称",
             "type": "string"
+          },
+          "remark": {
+            "format": "string",
+            "description": "描述介绍",
+            "type": "string"
           }
         }
       },
@@ -547,6 +867,47 @@
             "format": "enum",
             "description": "null(See: Enumeration for sort directions.)",
             "type": "string"
+          }
+        }
+      },
+      "PageVoSysArea": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysArea"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
           }
         }
       },
@@ -604,13 +965,54 @@
           },
           "sysRoleId": {
             "format": "string",
-            "description": "角色id",
+            "description": "角色",
             "type": "string"
           },
           "sysGroupId": {
             "format": "string",
-            "description": "组id",
+            "description": "角色组",
             "type": "string"
+          }
+        }
+      },
+      "PageVoSysUser": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysUser"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
           }
         }
       },
@@ -693,7 +1095,7 @@
           },
           "pin": {
             "format": "boolean",
-            "description": "是否被收藏\r\n暂时所有人公用",
+            "description": "收藏\r\n暂时所有人公用",
             "type": "boolean"
           },
           "accountId": {
@@ -713,7 +1115,7 @@
           },
           "state": {
             "format": "string",
-            "description": "项目状态 project_state",
+            "description": "项目状态",
             "type": "string"
           },
           "type": {
@@ -745,9 +1147,9 @@
       "AnnotatedType": {
         "properties": {
           "type": {
-            "format": "string",
-            "description": "No comments found.",
-            "type": "string"
+            "description": "No comments found.(object)",
+            "type": "object",
+            "$ref": "#/components/schemas/Type"
           },
           "annotations": {
             "format": "string",
@@ -758,6 +1160,88 @@
             "format": "string",
             "description": "No comments found.",
             "type": "string"
+          }
+        }
+      },
+      "PageVoSysResources": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysResources"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          }
+        }
+      },
+      "PageVoSysGroup": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysGroup"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
           }
         }
       },
@@ -815,11 +1299,6 @@
               "$ref": "#/components/schemas/Step"
             }
           },
-          "accountName": {
-            "format": "string",
-            "description": "项目参与人姓名",
-            "type": "string"
-          },
           "tasks": {
             "description": "项目下的任务",
             "type": "array",
@@ -851,24 +1330,119 @@
             "description": "最近修改日期",
             "type": "string"
           },
-          "dictCode": {
+          "code": {
             "format": "string",
-            "description": "字典编码",
+            "description": "编码",
             "type": "string"
           },
-          "dictKey": {
+          "val": {
             "format": "string",
-            "description": "字典值",
+            "description": "值",
             "type": "string"
           },
-          "dictVal": {
+          "title": {
             "format": "string",
-            "description": "字典中文名称",
+            "description": "名称",
             "type": "string"
           },
-          "fromSys": {
+          "sys": {
             "format": "boolean",
-            "description": "是否系统设置",
+            "description": "系统级",
+            "type": "boolean"
+          },
+          "del": {
+            "format": "boolean",
+            "description": "删除标志",
+            "type": "boolean"
+          }
+        }
+      },
+      "SysOrg": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "主键id",
+            "type": "string"
+          },
+          "status": {
+            "format": "string",
+            "description": "实体状态 【1有效 0逻辑删除】",
+            "type": "string"
+          },
+          "createDate": {
+            "format": "string",
+            "description": "记录创建日期",
+            "type": "string"
+          },
+          "modifyDate": {
+            "format": "string",
+            "description": "最近修改日期",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "机构名称",
+            "type": "string"
+          },
+          "code": {
+            "format": "string",
+            "description": "机构编码",
+            "type": "string"
+          },
+          "type": {
+            "format": "string",
+            "description": "机构分类",
+            "type": "string"
+          },
+          "sysAreaId": {
+            "format": "string",
+            "description": "地区",
+            "type": "string"
+          },
+          "enableDate": {
+            "format": "string",
+            "description": "启用日期",
+            "type": "string"
+          }
+        }
+      },
+      "PageVoSysDept": {
+        "properties": {
+          "result": {
+            "description": "No comments found.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysDept"
+            }
+          },
+          "size": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int32",
+            "description": "No comments found.",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "totalPage": {
+            "format": "int64",
+            "description": "No comments found.",
+            "type": "number"
+          },
+          "first": {
+            "format": "boolean",
+            "description": "No comments found.",
+            "type": "boolean"
+          },
+          "last": {
+            "format": "boolean",
+            "description": "No comments found.",
             "type": "boolean"
           }
         }
@@ -898,6 +1472,11 @@
           "name": {
             "format": "string",
             "description": "角色组名称",
+            "type": "string"
+          },
+          "remark": {
+            "format": "string",
+            "description": "描述",
             "type": "string"
           }
         }
@@ -1024,6 +1603,40 @@
             "type": "string"
           }
         }
+      },
+      "UserDetailVo": {
+        "properties": {
+          "id": {
+            "format": "string",
+            "description": "No comments found.",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "description": "用户名",
+            "type": "string"
+          },
+          "username": {
+            "format": "string",
+            "description": "账号",
+            "type": "string"
+          },
+          "groupName": {
+            "format": "string",
+            "description": "角色组名称",
+            "type": "string"
+          },
+          "resourceCodes": {
+            "format": "string",
+            "description": "用户有的权限资源代码",
+            "type": "string"
+          },
+          "menus": {
+            "format": "string",
+            "description": "menus",
+            "type": "string"
+          }
+        }
       }
     }
   },
@@ -1053,7 +1666,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"k5vl8g\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"stepId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"goe233\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"stepId\": \"144\"\n}"
                   }
                 }
               }
@@ -1069,7 +1682,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -1094,7 +1707,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "[\n  {\n    \"id\": \"108\",\n    \"status\": \"6mvtwj\",\n    \"createDate\": \"2022-07-11\",\n    \"modifyDate\": \"2022-07-11\",\n    \"projectId\": \"108\",\n    \"point\": 544,\n    \"progress\": 67.40,\n    \"state\": \"jo2oeg\",\n    \"name\": \"leeanna.kreiger\",\n    \"sort\": 816,\n    \"level\": \"byjx91\",\n    \"stepId\": \"108\",\n    \"accountId\": \"108\"\n  }\n]"
+                    "value": "[\n  {\n    \"id\": \"144\",\n    \"status\": \"vdt985\",\n    \"createDate\": \"2022-08-13\",\n    \"modifyDate\": \"2022-08-13\",\n    \"projectId\": \"144\",\n    \"point\": 830,\n    \"progress\": 28.83,\n    \"state\": \"0ns1bd\",\n    \"name\": \"ellie.kuphal\",\n    \"sort\": 636,\n    \"level\": \"7vcp83\",\n    \"stepId\": \"144\",\n    \"accountId\": \"144\"\n  }\n]"
                   }
                 }
               }
@@ -1110,7 +1723,7 @@
             "in": "query",
             "description": "项目id",
             "required": false,
-            "example": "108",
+            "example": "144",
             "name": "projectId"
           },
           {
@@ -1121,7 +1734,7 @@
             "in": "query",
             "description": "进度范围",
             "required": false,
-            "example": "46.63,3.70",
+            "example": "94.38,97.97",
             "name": "progress"
           },
           {
@@ -1131,7 +1744,7 @@
             "in": "query",
             "description": "任务名称",
             "required": false,
-            "example": "leeanna.kreiger",
+            "example": "ellie.kuphal",
             "name": "name"
           },
           {
@@ -1141,8 +1754,90 @@
             "in": "query",
             "description": "任务状态",
             "required": false,
-            "example": "evgib8",
+            "example": "543kga",
             "name": "state"
+          }
+        ]
+      }
+    },
+    "/sysOrg/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "null接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "869"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "144",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysArea/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "行政区划接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "160"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "144",
+            "name": "id"
           }
         ]
       }
@@ -1166,7 +1861,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "272"
+                    "value": "411"
                   }
                 }
               }
@@ -1182,8 +1877,121 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysDept/page": {
+      "get": {
+        "summary": "分页查询null;",
+        "deprecated": false,
+        "description": "分页查询null;",
+        "tags": [
+          "null接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoSysDept"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"tazpkw\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"code\": \"75559\",\n      \"sysOrgId\": \"144\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 361,\n  \"totalPage\": 769,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "144",
+            "name": "sysOrgId"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {}
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "9eesbf,54798v",
+            "name": "type"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "ellie.kuphal",
+            "name": "name"
+          }
+        ]
+      }
+    },
+    "/sysGroup/page": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "角色聚合组接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoSysGroup"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"0di74f\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"remark\": \"07qlzg\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 452,\n  \"totalPage\": 947,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "组名称",
+            "required": false,
+            "example": "ellie.kuphal",
+            "name": "name"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {}
+            },
+            "in": "query",
+            "description": "关联角色",
+            "required": false,
+            "example": "x8krw0,tx7uv0",
+            "name": "sysRoleId"
           }
         ]
       }
@@ -1207,7 +2015,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"2n7s2b\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"kff5xw\",\n      \"type\": \"0724lx\",\n      \"totalPoint\": 584,\n      \"finishedPoint\": 528\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 68,\n  \"totalPage\": 672,\n  \"first\": true,\n  \"last\": true\n}"
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"gtwgw6\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"pin\": true,\n      \"accountId\": \"144\",\n      \"planDate\": \"2022-08-13\",\n      \"finishedDate\": \"2022-08-13\",\n      \"state\": \"vhffen\",\n      \"type\": \"8ppef5\",\n      \"totalPoint\": 165,\n      \"finishedPoint\": 179\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 786,\n  \"totalPage\": 994,\n  \"first\": true,\n  \"last\": true\n}"
                   }
                 }
               }
@@ -1223,7 +2031,7 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "108",
+            "example": "144",
             "name": "account_deptId"
           },
           {
@@ -1234,7 +2042,7 @@
             "in": "query",
             "description": "项目类型",
             "required": false,
-            "example": "flxxku,xxmp4b",
+            "example": "uboqv9,90l2nk",
             "name": "type"
           },
           {
@@ -1244,7 +2052,7 @@
             "in": "query",
             "description": "根据负责人id查询",
             "required": false,
-            "example": "108",
+            "example": "144",
             "name": "accountId"
           },
           {
@@ -1254,7 +2062,7 @@
             "in": "query",
             "description": "根据参与人Id查询(默认都需要传入)",
             "required": false,
-            "example": "108",
+            "example": "144",
             "name": "projectAccount_accountId"
           },
           {
@@ -1264,7 +2072,7 @@
             "in": "query",
             "description": "项目状态",
             "required": false,
-            "example": "erpxrf",
+            "example": "aom12m",
             "name": "state"
           },
           {
@@ -1274,7 +2082,7 @@
             "in": "query",
             "description": "项目名称",
             "required": false,
-            "example": "leeanna.kreiger",
+            "example": "ellie.kuphal",
             "name": "name"
           },
           {
@@ -1285,7 +2093,7 @@
             "in": "query",
             "description": "项目开始年度",
             "required": false,
-            "example": "283",
+            "example": "860",
             "name": "year"
           }
         ]
@@ -1308,7 +2116,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"jnwk32\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"vbr98q\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"remark\": \"cu3n6t\"\n}"
                 }
               }
             }
@@ -1325,7 +2133,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"wq3x7a\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"risvdj\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"remark\": \"ypesjn\"\n}"
                   }
                 }
               }
@@ -1355,7 +2163,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "249"
+                    "value": "389"
                   }
                 }
               }
@@ -1371,7 +2179,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -1394,7 +2202,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"ooeapj\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"stepId\": \"108\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"lcc6s9\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"stepId\": \"144\"\n}"
                 }
               }
             }
@@ -1411,7 +2219,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"4034sx\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"stepId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"y5f0dn\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"stepId\": \"144\"\n}"
                   }
                 }
               }
@@ -1441,7 +2249,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"account_name\": \"leeanna.kreiger\",\n  \"planDate\": \"2022-07-11\",\n  \"finishedDate\": \"2022-07-11\",\n  \"state\": \"br3t44\",\n  \"type\": \"p7inei\",\n  \"totalPoint\": 426,\n  \"finishedPoint\": 323,\n  \"steps\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"45dalu\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\"\n    }\n  ],\n  \"accountName\": [\n    \"xpu40f\"\n  ],\n  \"tasks\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"yluq2m\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"projectId\": \"108\",\n      \"point\": 400,\n      \"progress\": 56.36,\n      \"state\": \"kah2un\",\n      \"name\": \"leeanna.kreiger\",\n      \"sort\": 182,\n      \"level\": \"5uqn0t\",\n      \"stepId\": \"108\",\n      \"accountId\": \"108\"\n    }\n  ]\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"account_name\": \"ellie.kuphal\",\n  \"planDate\": \"2022-08-13\",\n  \"finishedDate\": \"2022-08-13\",\n  \"state\": \"ai7vkf\",\n  \"type\": \"uxhpr2\",\n  \"totalPoint\": 244,\n  \"finishedPoint\": 526,\n  \"steps\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"n71t4f\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\"\n    }\n  ],\n  \"tasks\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"bjtpye\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"projectId\": \"144\",\n      \"point\": 715,\n      \"progress\": 44.70,\n      \"state\": \"3l9a3j\",\n      \"name\": \"ellie.kuphal\",\n      \"sort\": 418,\n      \"level\": \"rp0mi7\",\n      \"stepId\": \"144\",\n      \"accountId\": \"144\"\n    }\n  ]\n}"
                   }
                 }
               }
@@ -1457,7 +2265,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -1482,7 +2290,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"30l1r5\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"9obkdq\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\"\n}"
                   }
                 }
               }
@@ -1498,7 +2306,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -1521,7 +2329,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"1ekij3\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"xzgwo2\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\"\n}"
                 }
               }
             }
@@ -1538,7 +2346,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"0f0lb1\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"clpsie\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\"\n}"
                   }
                 }
               }
@@ -1566,7 +2374,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"dapuyq\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"sysRoleId\": \"108\",\n  \"sysGroupId\": \"108\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"wxfflb\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"sysRoleId\": \"144\",\n  \"sysGroupId\": \"144\"\n}"
                 }
               }
             }
@@ -1583,7 +2391,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"fbm5ug\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"sysRoleId\": \"108\",\n  \"sysGroupId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"usranm\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"sysRoleId\": \"144\",\n  \"sysGroupId\": \"144\"\n}"
                   }
                 }
               }
@@ -1613,7 +2421,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "165"
+                    "value": "827"
                   }
                 }
               }
@@ -1629,7 +2437,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -1641,7 +2449,7 @@
         "deprecated": false,
         "description": "保存权限资源;",
         "tags": [
-          "权限资源接口;"
+          "权限资源接口;\n1. 实现从前端菜单json读取菜单信息\n2. 实现从api里能自动读取所有操作接口信息\n3. 在页面能对这些信息进行CRUD操作"
         ],
         "requestBody": {
           "content": {
@@ -1652,7 +2460,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"miux7s\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"url\": \"www.wilfredo-rogahn.net\",\n  \"code\": \"9229\",\n  \"name\": \"leeanna.kreiger\",\n  \"icon\": \"79ods7\",\n  \"type\": \"exu66o\",\n  \"requestType\": \"1sskgj\",\n  \"sysRoleId\": \"108\",\n  \"pcode\": \"9229\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"i06ulu\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"url\": \"www.minta-kreiger.info\",\n  \"code\": \"75559\",\n  \"name\": \"ellie.kuphal\",\n  \"icon\": \"gsq8m4\",\n  \"type\": \"64vzkx\",\n  \"sysRoleId\": \"144\",\n  \"pcode\": \"75559\",\n  \"onlyMenu\": true\n}"
                 }
               }
             }
@@ -1669,7 +2477,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"wubq30\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"url\": \"www.wilfredo-rogahn.net\",\n  \"code\": \"9229\",\n  \"name\": \"leeanna.kreiger\",\n  \"icon\": \"taly0e\",\n  \"type\": \"e3tuzk\",\n  \"requestType\": \"tx876i\",\n  \"sysRoleId\": \"108\",\n  \"pcode\": \"9229\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"xvaofq\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"url\": \"www.minta-kreiger.info\",\n  \"code\": \"75559\",\n  \"name\": \"ellie.kuphal\",\n  \"icon\": \"slh7nc\",\n  \"type\": \"7rz73t\",\n  \"sysRoleId\": \"144\",\n  \"pcode\": \"75559\",\n  \"onlyMenu\": true\n}"
                   }
                 }
               }
@@ -1699,7 +2507,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"xt6sl3\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"fj8ggz\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"accountId\": \"144\"\n}"
                   }
                 }
               }
@@ -1715,7 +2523,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -1738,7 +2546,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"hdp0eo\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"l1f83a\",\n  \"sysGroupId\": \"108\",\n  \"idno\": \"tub98i\",\n  \"tel\": \"gvfkzf\",\n  \"usetype\": \"0wz0jc\",\n  \"state\": \"d1md0w\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"yfey4t\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"username\": \"ellie.kuphal\",\n  \"password\": \"d3zwyj\",\n  \"sysGroupId\": \"144\",\n  \"idno\": \"fa7btc\",\n  \"tel\": \"hzsgoq\",\n  \"usetype\": \"e7hnot\",\n  \"state\": \"tk6309\"\n}"
                 }
               }
             }
@@ -1755,7 +2563,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"8mq2k1\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"1ff68p\",\n  \"sysGroupId\": \"108\",\n  \"idno\": \"fx2wyw\",\n  \"tel\": \"d52f4w\",\n  \"usetype\": \"il00jw\",\n  \"state\": \"51611e\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"tr5t8b\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"username\": \"ellie.kuphal\",\n  \"password\": \"qmdg4n\",\n  \"sysGroupId\": \"144\",\n  \"idno\": \"4hff29\",\n  \"tel\": \"k8gydq\",\n  \"usetype\": \"w4j71e\",\n  \"state\": \"f830nx\"\n}"
                   }
                 }
               }
@@ -1766,13 +2574,115 @@
         "parameters": []
       }
     },
+    "/sysUser/currUser": {
+      "get": {
+        "summary": "返回当前用户信息",
+        "deprecated": false,
+        "description": "返回当前用户信息",
+        "tags": [
+          "用户表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailVo"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"username\": \"ellie.kuphal\",\n  \"groupName\": \"ellie.kuphal\",\n  \"resourceCodes\": [\n    \"1g4do0\"\n  ],\n  \"menus\": [\n    \"9k5w92\"\n  ]\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "currUser",
+        "parameters": []
+      }
+    },
+    "/sysOrg/page": {
+      "get": {
+        "summary": "分页查询null;",
+        "deprecated": false,
+        "description": "分页查询null;",
+        "tags": [
+          "null接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoSysOrg"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"oy6u6q\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"code\": \"75559\",\n      \"type\": \"7d07yt\",\n      \"sysAreaId\": \"144\",\n      \"enableDate\": \"2022-08-13\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 450,\n  \"totalPage\": 288,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "地区",
+            "required": false,
+            "example": "144",
+            "name": "sysAreaId"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {}
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "2022-08-13 00:45:10,2022-08-13 00:45:10",
+            "name": "enableDate"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "ellie.kuphal",
+            "name": "name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "chkn00",
+            "name": "type"
+          }
+        ]
+      }
+    },
     "/sysResources/detail/{id}": {
       "get": {
         "summary": "明细查询权限资源;",
         "deprecated": false,
         "description": "明细查询权限资源;",
         "tags": [
-          "权限资源接口;"
+          "权限资源接口;\n1. 实现从前端菜单json读取菜单信息\n2. 实现从api里能自动读取所有操作接口信息\n3. 在页面能对这些信息进行CRUD操作"
         ],
         "responses": {
           "200": {
@@ -1785,7 +2695,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"nskxwi\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"url\": \"www.wilfredo-rogahn.net\",\n  \"code\": \"9229\",\n  \"name\": \"leeanna.kreiger\",\n  \"icon\": \"ngfttt\",\n  \"type\": \"2jrkla\",\n  \"requestType\": \"iel48v\",\n  \"sysRoleId\": \"108\",\n  \"pcode\": \"9229\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"c4ksnt\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"url\": \"www.minta-kreiger.info\",\n  \"code\": \"75559\",\n  \"name\": \"ellie.kuphal\",\n  \"icon\": \"e6aufa\",\n  \"type\": \"ugobnx\",\n  \"sysRoleId\": \"144\",\n  \"pcode\": \"75559\",\n  \"onlyMenu\": true\n}"
                   }
                 }
               }
@@ -1801,8 +2711,59 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysArea/page": {
+      "get": {
+        "summary": "分页查询行政区划;",
+        "deprecated": false,
+        "description": "分页查询行政区划;",
+        "tags": [
+          "行政区划接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoSysArea"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"v0gchx\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"code\": \"75559\",\n      \"pcode\": \"75559\",\n      \"level\": \"0mgbei\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 20,\n  \"totalPage\": 797,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "ellie.kuphal",
+            "name": "name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "o441m6",
+            "name": "level"
           }
         ]
       }
@@ -1824,7 +2785,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"kx5i7z\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"pnoey6\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\"\n}"
                 }
               }
             }
@@ -1841,7 +2802,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"9q8n07\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"3yjvir\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\"\n}"
                   }
                 }
               }
@@ -1871,7 +2832,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"108\",\n      \"name\": \"leeanna.kreiger\",\n      \"token\": \"ni0m37\",\n      \"password\": \"lbeo2w\",\n      \"deptId\": \"108\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 670,\n  \"totalPage\": 393,\n  \"first\": true,\n  \"last\": true\n}"
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"name\": \"ellie.kuphal\",\n      \"token\": \"levu4t\",\n      \"password\": \"y7kbks\",\n      \"deptId\": \"144\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 24,\n  \"totalPage\": 903,\n  \"first\": true,\n  \"last\": true\n}"
                   }
                 }
               }
@@ -1887,8 +2848,80 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "leeanna.kreiger",
+            "example": "ellie.kuphal",
             "name": "name"
+          }
+        ]
+      }
+    },
+    "/dict/page": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "字典表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoDict"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"2e6jn9\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"code\": \"75559\",\n      \"val\": \"y869oo\",\n      \"title\": \"em72le\",\n      \"sys\": true,\n      \"del\": true\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 255,\n  \"totalPage\": 893,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "编码",
+            "required": false,
+            "example": "75559",
+            "name": "code"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "名称",
+            "required": false,
+            "example": "bziugw",
+            "name": "title"
+          },
+          {
+            "schema": {
+              "format": "boolean",
+              "type": "boolean"
+            },
+            "in": "query",
+            "description": "系统项",
+            "required": false,
+            "example": "true",
+            "name": "sys"
+          },
+          {
+            "schema": {
+              "format": "boolean",
+              "type": "boolean"
+            },
+            "in": "query",
+            "description": "跳过检查",
+            "required": false,
+            "example": "true",
+            "name": "queryType"
           }
         ]
       }
@@ -1912,7 +2945,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "99"
+                    "value": "365"
                   }
                 }
               }
@@ -1928,7 +2961,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -1953,7 +2986,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"token\": \"zzdlip\",\n  \"password\": \"fuyskd\",\n  \"deptId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"token\": \"ms3d71\",\n  \"password\": \"hroym7\",\n  \"deptId\": \"144\"\n}"
                   }
                 }
               }
@@ -1969,10 +3002,39 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
+      }
+    },
+    "/dict/all": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "字典表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dict"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "[\n  {\n    \"id\": \"144\",\n    \"status\": \"tnnd60\",\n    \"createDate\": \"2022-08-13\",\n    \"modifyDate\": \"2022-08-13\",\n    \"code\": \"75559\",\n    \"val\": \"m8uqjb\",\n    \"title\": \"n4ppmw\",\n    \"sys\": true,\n    \"del\": true\n  }\n]"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "all",
+        "parameters": []
       }
     },
     "/dict/detail/{id}": {
@@ -1994,7 +3056,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"1s1z1t\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"dictCode\": \"9229\",\n  \"dictKey\": \"wmc73g\",\n  \"dictVal\": \"5rw3cj\",\n  \"fromSys\": true\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"m9e9n9\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"code\": \"75559\",\n  \"val\": \"ilhq1h\",\n  \"title\": \"jl9sqh\",\n  \"sys\": true,\n  \"del\": true\n}"
                   }
                 }
               }
@@ -2010,7 +3072,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -2035,7 +3097,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"0r2iya\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"ogrnrb\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"remark\": \"ijnyh6\"\n}"
                   }
                 }
               }
@@ -2051,7 +3113,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -2076,7 +3138,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "974"
+                    "value": "298"
                   }
                 }
               }
@@ -2092,7 +3154,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -2117,7 +3179,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "[\n  {\n    \"id\": \"108\",\n    \"status\": \"baka6m\",\n    \"createDate\": \"2022-07-11\",\n    \"modifyDate\": \"2022-07-11\",\n    \"password\": \"brsz7u\",\n    \"account\": \"4nlshh\",\n    \"name\": \"leeanna.kreiger\",\n    \"tel\": \"d9rkgn\",\n    \"age\": 8,\n    \"sex\": \"1qqeee\",\n    \"deptId\": \"108\"\n  }\n]"
+                    "value": "[\n  {\n    \"id\": \"144\",\n    \"status\": \"4xpzhy\",\n    \"createDate\": \"2022-08-13\",\n    \"modifyDate\": \"2022-08-13\",\n    \"password\": \"g8v3vw\",\n    \"account\": \"6uba0r\",\n    \"name\": \"ellie.kuphal\",\n    \"tel\": \"amte3t\",\n    \"age\": 49,\n    \"sex\": \"cdffu3\",\n    \"deptId\": \"144\"\n  }\n]"
                   }
                 }
               }
@@ -2133,7 +3195,7 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "leeanna.kreiger",
+            "example": "ellie.kuphal",
             "name": "username"
           },
           {
@@ -2143,7 +3205,7 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "leeanna.kreiger",
+            "example": "ellie.kuphal",
             "name": "dept_name"
           },
           {
@@ -2153,7 +3215,7 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "108",
+            "example": "144",
             "name": "projectAccount_projectId"
           },
           {
@@ -2163,7 +3225,7 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "leeanna.kreiger",
+            "example": "ellie.kuphal",
             "name": "projectAccount_project_name"
           },
           {
@@ -2174,7 +3236,7 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "nv32jk,vpqrs5",
+            "example": "ktminw,nz97ev",
             "name": "projects"
           },
           {
@@ -2184,7 +3246,7 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "leeanna.kreiger",
+            "example": "ellie.kuphal",
             "name": "project_name"
           },
           {
@@ -2194,10 +3256,96 @@
             "in": "query",
             "description": "No comments found.",
             "required": false,
-            "example": "o6iz3s",
+            "example": "lf62oo",
             "name": "search"
           }
         ]
+      }
+    },
+    "/sysOrg/detail/{id}": {
+      "get": {
+        "summary": "明细查询null;",
+        "deprecated": false,
+        "description": "明细查询null;",
+        "tags": [
+          "null接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysOrg"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"sdool2\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"type\": \"wf0ady\",\n  \"sysAreaId\": \"144\",\n  \"enableDate\": \"2022-08-13\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "144",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysDept/save": {
+      "post": {
+        "summary": "保存null;",
+        "deprecated": false,
+        "description": "保存null;",
+        "tags": [
+          "null接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysDept"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"n9w5hz\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"sysOrgId\": \"144\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysDept"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"yqekpi\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"sysOrgId\": \"144\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
       }
     },
     "/project/save": {
@@ -2217,7 +3365,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"accountId\": \"108\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"accountId\": \"144\"\n}"
                 }
               }
             }
@@ -2234,7 +3382,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"accountId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"accountId\": \"144\"\n}"
                   }
                 }
               }
@@ -2262,7 +3410,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"qddv4s\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"k6rjif\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"remark\": \"rs6b8e\"\n}"
                 }
               }
             }
@@ -2279,7 +3427,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"y2dahy\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"gzy79o\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"remark\": \"s1axb2\"\n}"
                   }
                 }
               }
@@ -2288,6 +3436,47 @@
         },
         "operationId": "save",
         "parameters": []
+      }
+    },
+    "/sysDept/remove/{id}": {
+      "delete": {
+        "summary": "逻辑删除;",
+        "deprecated": false,
+        "description": "逻辑删除;",
+        "tags": [
+          "null接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "number"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "365"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "remove",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "144",
+            "name": "id"
+          }
+        ]
       }
     },
     "/step/detail/{id}": {
@@ -2309,7 +3498,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"wjg8pm\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"uug4k2\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\"\n}"
                   }
                 }
               }
@@ -2325,8 +3514,79 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysRole/page": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户角色接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoSysRole"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"iq8jya\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"remark\": \"3udzd8\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 252,\n  \"totalPage\": 447,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "ellie.kuphal",
+            "name": "name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "t0y7al",
+            "name": "vvv"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {}
+            },
+            "in": "query",
+            "description": "搜索条件",
+            "required": false,
+            "example": "tm5640,o1muhw",
+            "name": "ttt"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "ellie.kuphal",
+            "name": "groupName"
           }
         ]
       }
@@ -2348,7 +3608,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"entity\": {\n    \"typeParameters\": [\n      {\n        \"name\": \"leeanna.kreiger\",\n        \"bounds\": [\n          {\n            \"typeName\": \"leeanna.kreiger\"\n          }\n        ],\n        \"annotatedBounds\": [\n          {\n            \"type\": {\n              \"typeName\": \"leeanna.kreiger\"\n            },\n            \"annotations\": [\n              {}\n            ],\n            \"declaredAnnotations\": [\n              {}\n            ]\n          }\n        ],\n        \"genericDeclaration\": {\n          \"typeParameters\": [\n            {\n              \"name\": \"leeanna.kreiger\",\n              \"bounds\": [\n                {\n                  \"typeName\": \"leeanna.kreiger\"\n                }\n              ],\n              \"annotatedBounds\": [\n                {\n                  \"type\": {\n                    \"typeName\": \"leeanna.kreiger\"\n                  },\n                  \"annotations\": [\n                    {}\n                  ],\n                  \"declaredAnnotations\": [\n                    {}\n                  ]\n                }\n              ],\n              \"genericDeclaration\": {\n                \"typeParameters\": [\n                  {\n                    \"name\": \"leeanna.kreiger\",\n                    \"bounds\": [\n                      {\n                        \"typeName\": \"leeanna.kreiger\"\n                      }\n                    ],\n                    \"annotatedBounds\": [\n                      {\n                        \"type\": {\n                          \"$ref\": \"...\"\n                        },\n                        \"annotations\": [\n                          {\n                            \"$ref\": \"...\"\n                          }\n                        ],\n                        \"declaredAnnotations\": [\n                          {\n                            \"$ref\": \"...\"\n                          }\n                        ]\n                      }\n                    ],\n                    \"genericDeclaration\": {\n                      \"typeParameters\": [\n                        {\n                          \"$ref\": \"...\"\n                        }\n                      ],\n                      \"annotations\": [\n                        {\n                          \"$ref\": \"...\"\n                        }\n                      ],\n                      \"declaredAnnotations\": [\n                        {\n                          \"$ref\": \"...\"\n                        }\n                      ]\n                    },\n                    \"typeName\": \"leeanna.kreiger\",\n                    \"annotations\": [\n                      {}\n                    ],\n                    \"declaredAnnotations\": [\n                      {}\n                    ]\n                  }\n                ],\n                \"annotations\": [\n                  {}\n                ],\n                \"declaredAnnotations\": [\n                  {}\n                ]\n              },\n              \"typeName\": \"leeanna.kreiger\",\n              \"annotations\": [\n                {}\n              ],\n              \"declaredAnnotations\": [\n                {}\n              ]\n            }\n          ],\n          \"annotations\": [\n            {}\n          ],\n          \"declaredAnnotations\": [\n            {}\n          ]\n        },\n        \"typeName\": \"leeanna.kreiger\",\n        \"annotations\": [\n          {}\n        ],\n        \"declaredAnnotations\": [\n          {}\n        ]\n      }\n    ],\n    \"annotations\": [\n      {}\n    ],\n    \"declaredAnnotations\": [\n      {}\n    ],\n    \"typeName\": \"leeanna.kreiger\"\n  },\n  \"order\": {\n    \"orders\": \"814all\",\n    \"orderReqList\": [\n      {\n        \"property\": \"s6tlkr\",\n        \"direction\": \"ASC\"\n      }\n    ]\n  },\n  \"name\": \"leeanna.kreiger\",\n  \"password\": \"05ovjf\"\n}"
+                  "value": "{\n  \"entity\": {\n    \"typeParameters\": [\n      {\n        \"name\": \"ellie.kuphal\",\n        \"genericDeclaration\": {\n          \"typeParameters\": [\n            {\n              \"name\": \"ellie.kuphal\",\n              \"genericDeclaration\": {\n                \"$ref\": \"...\"\n              },\n              \"bounds\": [\n                {\n                  \"typeName\": \"ellie.kuphal\"\n                }\n              ],\n              \"annotatedBounds\": [\n                {\n                  \"type\": {\n                    \"typeName\": \"ellie.kuphal\"\n                  },\n                  \"annotations\": [\n                    {}\n                  ],\n                  \"declaredAnnotations\": [\n                    {}\n                  ]\n                }\n              ],\n              \"typeName\": \"ellie.kuphal\",\n              \"annotations\": [\n                {}\n              ],\n              \"declaredAnnotations\": [\n                {}\n              ]\n            }\n          ],\n          \"annotations\": [\n            {}\n          ],\n          \"declaredAnnotations\": [\n            {}\n          ]\n        },\n        \"bounds\": [\n          {\n            \"typeName\": \"ellie.kuphal\"\n          }\n        ],\n        \"annotatedBounds\": [\n          {\n            \"type\": {\n              \"typeName\": \"ellie.kuphal\"\n            },\n            \"annotations\": [\n              {}\n            ],\n            \"declaredAnnotations\": [\n              {}\n            ]\n          }\n        ],\n        \"typeName\": \"ellie.kuphal\",\n        \"annotations\": [\n          {}\n        ],\n        \"declaredAnnotations\": [\n          {}\n        ]\n      }\n    ],\n    \"annotations\": [\n      {}\n    ],\n    \"declaredAnnotations\": [\n      {}\n    ],\n    \"typeName\": \"ellie.kuphal\"\n  },\n  \"order\": {\n    \"orders\": \"3ig8fa\",\n    \"orderReqList\": [\n      {\n        \"property\": \"l8c2ew\",\n        \"direction\": \"ASC\"\n      }\n    ]\n  },\n  \"name\": \"ellie.kuphal\",\n  \"password\": \"3xufof\"\n}"
                 }
               }
             }
@@ -2365,7 +3625,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"name\": \"leeanna.kreiger\",\n  \"token\": \"sqkcdi\",\n  \"password\": \"nvun46\",\n  \"deptId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"token\": \"apvn75\",\n  \"password\": \"a67dbg\",\n  \"deptId\": \"144\"\n}"
                   }
                 }
               }
@@ -2395,7 +3655,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "236"
+                    "value": "299"
                   }
                 }
               }
@@ -2411,10 +3671,55 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
+      }
+    },
+    "/sysGroup/save/groupDto": {
+      "post": {
+        "summary": "保存角色聚合组;",
+        "deprecated": false,
+        "description": "保存角色聚合组;",
+        "tags": [
+          "角色聚合组接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupDto"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"remark\": \"lp14th\",\n  \"sysRoleId\": [\n    \"t43cbt\"\n  ]\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDto"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"remark\": \"k2lrb8\",\n  \"sysRoleId\": [\n    \"2yxsss\"\n  ]\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
       }
     },
     "/sysRoleGroup/detail/{id}": {
@@ -2436,7 +3741,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"yntrtz\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"sysRoleId\": \"108\",\n  \"sysGroupId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"goujwz\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"sysRoleId\": \"144\",\n  \"sysGroupId\": \"144\"\n}"
                   }
                 }
               }
@@ -2452,17 +3757,151 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysOrg/save": {
+      "post": {
+        "summary": "保存null;",
+        "deprecated": false,
+        "description": "保存null;",
+        "tags": [
+          "null接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysOrg"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"a1rj5l\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"type\": \"89gwdb\",\n  \"sysAreaId\": \"144\",\n  \"enableDate\": \"2022-08-13\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysOrg"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"29cqiy\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"type\": \"8a1aba\",\n  \"sysAreaId\": \"144\",\n  \"enableDate\": \"2022-08-13\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
+      }
+    },
+    "/dict/all1": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "字典表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dict"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "[\n  {\n    \"id\": \"144\",\n    \"status\": \"30k1ao\",\n    \"createDate\": \"2022-08-13\",\n    \"modifyDate\": \"2022-08-13\",\n    \"code\": \"75559\",\n    \"val\": \"b1im7u\",\n    \"title\": \"75rl0g\",\n    \"sys\": true,\n    \"del\": true\n  }\n]"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "all1",
+        "parameters": []
+      }
+    },
+    "/sysUser/page": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoSysUser"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"ikjlc0\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"username\": \"ellie.kuphal\",\n      \"password\": \"qqdyzn\",\n      \"sysGroupId\": \"144\",\n      \"idno\": \"iymviz\",\n      \"tel\": \"smxwe8\",\n      \"usetype\": \"v80ixm\",\n      \"state\": \"talort\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 12,\n  \"totalPage\": 296,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "用户姓名",
+            "required": false,
+            "example": "fm1cok",
+            "name": "search"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "角色组名称",
+            "required": false,
+            "example": "ellie.kuphal",
+            "name": "sysGroup_name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "hdsga0",
+            "name": "state"
           }
         ]
       }
     },
     "/sysUser/detail/{id}": {
       "get": {
-        "summary": "明细查询用户表;",
+        "summary": "明细查询用户表(视图);",
         "deprecated": false,
-        "description": "明细查询用户表;",
+        "description": "明细查询用户表(视图);",
         "tags": [
           "用户表接口;"
         ],
@@ -2477,7 +3916,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"gshm7t\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"i4yc6h\",\n  \"sysGroupId\": \"108\",\n  \"idno\": \"d0v5x2\",\n  \"tel\": \"ump5nh\",\n  \"usetype\": \"00lhbp\",\n  \"state\": \"fjk52e\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"kme14d\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"username\": \"ellie.kuphal\",\n  \"password\": \"tbzl08\",\n  \"sysGroupId\": \"144\",\n  \"idno\": \"fchimn\",\n  \"tel\": \"oigh6f\",\n  \"usetype\": \"mdqvhl\",\n  \"state\": \"cbivqw\"\n}"
                   }
                 }
               }
@@ -2493,10 +3932,121 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
+      }
+    },
+    "/sysResources/page": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "权限资源接口;\n1. 实现从前端菜单json读取菜单信息\n2. 实现从api里能自动读取所有操作接口信息\n3. 在页面能对这些信息进行CRUD操作"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoSysResources"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"mntezw\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"url\": \"www.minta-kreiger.info\",\n      \"code\": \"75559\",\n      \"name\": \"ellie.kuphal\",\n      \"icon\": \"oqms3z\",\n      \"type\": \"gfvajr\",\n      \"sysRoleId\": \"144\",\n      \"pcode\": \"75559\",\n      \"onlyMenu\": true\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 352,\n  \"totalPage\": 464,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "page",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "资源类型",
+            "required": false,
+            "example": "9byqik",
+            "name": "type"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "资源归属角色",
+            "required": false,
+            "example": "144",
+            "name": "sysRoleId"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "模糊搜索条件",
+            "required": false,
+            "example": "1lcqa9",
+            "name": "search"
+          },
+          {
+            "schema": {
+              "format": "boolean",
+              "type": "boolean"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "true",
+            "name": "onlyMenu"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {}
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "2022-08-13 00:45:09,2022-08-13 00:45:09",
+            "name": "createDate"
+          }
+        ]
+      }
+    },
+    "/dict/sync": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "字典表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dict"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "[\n  {\n    \"id\": \"144\",\n    \"status\": \"iysnn1\",\n    \"createDate\": \"2022-08-13\",\n    \"modifyDate\": \"2022-08-13\",\n    \"code\": \"75559\",\n    \"val\": \"yl32zs\",\n    \"title\": \"uc2sw3\",\n    \"sys\": true,\n    \"del\": true\n  }\n]"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "sync",
+        "parameters": []
       }
     },
     "/projectAccount/save": {
@@ -2516,7 +4066,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"p9kzka\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"roh6wd\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"accountId\": \"144\"\n}"
                 }
               }
             }
@@ -2533,7 +4083,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"3ik7ym\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"t81e2d\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"accountId\": \"144\"\n}"
                   }
                 }
               }
@@ -2544,13 +4094,94 @@
         "parameters": []
       }
     },
+    "/sysUser/detail/userDetailVo/{id}": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailVo"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"name\": \"ellie.kuphal\",\n  \"username\": \"ellie.kuphal\",\n  \"groupName\": \"ellie.kuphal\",\n  \"resourceCodes\": [\n    \"w35zkj\"\n  ],\n  \"menus\": [\n    \"w0dpw5\"\n  ]\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "usesrDetailVoDetail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "No comments found.",
+            "required": true,
+            "example": "144",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysArea/detail/{id}": {
+      "get": {
+        "summary": "明细查询行政区划;",
+        "deprecated": false,
+        "description": "明细查询行政区划;",
+        "tags": [
+          "行政区划接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysArea"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"2bs5dh\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"pcode\": \"75559\",\n  \"level\": \"43p9kt\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "144",
+            "name": "id"
+          }
+        ]
+      }
+    },
     "/sysResources/remove/{id}": {
       "delete": {
         "summary": "逻辑删除;",
         "deprecated": false,
         "description": "逻辑删除;",
         "tags": [
-          "权限资源接口;"
+          "权限资源接口;\n1. 实现从前端菜单json读取菜单信息\n2. 实现从api里能自动读取所有操作接口信息\n3. 在页面能对这些信息进行CRUD操作"
         ],
         "responses": {
           "200": {
@@ -2563,7 +4194,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "741"
+                    "value": "545"
                   }
                 }
               }
@@ -2579,7 +4210,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -2602,7 +4233,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"pin\": true\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"pin\": true\n}"
                 }
               }
             }
@@ -2619,7 +4250,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"pin\": true\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"pin\": true\n}"
                   }
                 }
               }
@@ -2649,7 +4280,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"d9myxr\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"point\": 372,\n  \"progress\": 87.06,\n  \"state\": \"y8wlwb\",\n  \"name\": \"leeanna.kreiger\",\n  \"sort\": 406,\n  \"level\": \"y3rdej\",\n  \"stepId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"929aou\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"point\": 785,\n  \"progress\": 12.27,\n  \"state\": \"d70abn\",\n  \"name\": \"ellie.kuphal\",\n  \"sort\": 227,\n  \"level\": \"f55he8\",\n  \"stepId\": \"144\",\n  \"accountId\": \"144\"\n}"
                   }
                 }
               }
@@ -2665,10 +4296,55 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
+      }
+    },
+    "/sysArea/save": {
+      "post": {
+        "summary": "保存行政区划;",
+        "deprecated": false,
+        "description": "保存行政区划;",
+        "tags": [
+          "行政区划接口;"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysArea"
+              },
+              "examples": {
+                "json": {
+                  "summary": "test data",
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"iulg8m\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"pcode\": \"75559\",\n  \"level\": \"3xd5jv\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysArea"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"9r9shf\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"pcode\": \"75559\",\n  \"level\": \"woluny\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "save",
+        "parameters": []
       }
     },
     "/account/remove/{id}": {
@@ -2690,7 +4366,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "91"
+                    "value": "998"
                   }
                 }
               }
@@ -2706,7 +4382,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -2729,7 +4405,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"jtef9w\",\n  \"group\": {\n    \"id\": \"108\",\n    \"status\": \"353br1\",\n    \"createDate\": \"2022-07-11\",\n    \"modifyDate\": \"2022-07-11\",\n    \"name\": \"leeanna.kreiger\"\n  },\n  \"project_id\": [\n    \"h2xux6\"\n  ],\n  \"project_name\": [\n    \"798ghn\"\n  ],\n  \"projects\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"g3w0a7\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"8lbxeb\",\n      \"type\": \"ovfdo8\",\n      \"totalPoint\": 244,\n      \"finishedPoint\": 477\n    }\n  ],\n  \"projectAccount_projectId\": [\n    \"k9r4qv\"\n  ],\n  \"projectAccount_project\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"yzh1j0\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"on55xp\",\n      \"type\": \"rkq1pn\",\n      \"totalPoint\": 550,\n      \"finishedPoint\": 558\n    }\n  ],\n  \"projectAccount_project_name\": [\n    \"0fl88b\"\n  ]\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"username\": \"ellie.kuphal\",\n  \"password\": \"extsb3\",\n  \"group\": {\n    \"id\": \"144\",\n    \"status\": \"t2a505\",\n    \"createDate\": \"2022-08-13\",\n    \"modifyDate\": \"2022-08-13\",\n    \"name\": \"ellie.kuphal\"\n  },\n  \"project_id\": [\n    \"azijts\"\n  ],\n  \"project_name\": [\n    \"uuvqr9\"\n  ],\n  \"projects\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"ufzlg4\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"pin\": true,\n      \"accountId\": \"144\",\n      \"planDate\": \"2022-08-13\",\n      \"finishedDate\": \"2022-08-13\",\n      \"state\": \"v0ln68\",\n      \"type\": \"8ucmpk\",\n      \"totalPoint\": 940,\n      \"finishedPoint\": 923\n    }\n  ],\n  \"projectAccount_projectId\": [\n    \"h9dl9l\"\n  ],\n  \"projectAccount_project\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"x8su1b\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"pin\": true,\n      \"accountId\": \"144\",\n      \"planDate\": \"2022-08-13\",\n      \"finishedDate\": \"2022-08-13\",\n      \"state\": \"l1xcek\",\n      \"type\": \"k9crbh\",\n      \"totalPoint\": 309,\n      \"finishedPoint\": 251\n    }\n  ],\n  \"projectAccount_project_name\": [\n    \"e7ln2z\"\n  ]\n}"
                 }
               }
             }
@@ -2746,7 +4422,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"username\": \"leeanna.kreiger\",\n  \"password\": \"gzodn4\",\n  \"group\": {\n    \"id\": \"108\",\n    \"status\": \"uvlrww\",\n    \"createDate\": \"2022-07-11\",\n    \"modifyDate\": \"2022-07-11\",\n    \"name\": \"leeanna.kreiger\"\n  },\n  \"project_id\": [\n    \"ajjisg\"\n  ],\n  \"project_name\": [\n    \"iow3zw\"\n  ],\n  \"projects\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"6fym1u\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"vtfkvs\",\n      \"type\": \"pk22lo\",\n      \"totalPoint\": 243,\n      \"finishedPoint\": 881\n    }\n  ],\n  \"projectAccount_projectId\": [\n    \"pgny0w\"\n  ],\n  \"projectAccount_project\": [\n    {\n      \"id\": \"108\",\n      \"status\": \"az0fby\",\n      \"createDate\": \"2022-07-11\",\n      \"modifyDate\": \"2022-07-11\",\n      \"name\": \"leeanna.kreiger\",\n      \"pin\": true,\n      \"accountId\": \"108\",\n      \"planDate\": \"2022-07-11\",\n      \"finishedDate\": \"2022-07-11\",\n      \"state\": \"4na3xq\",\n      \"type\": \"15s8kx\",\n      \"totalPoint\": 198,\n      \"finishedPoint\": 670\n    }\n  ],\n  \"projectAccount_project_name\": [\n    \"kcrp1i\"\n  ]\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"username\": \"ellie.kuphal\",\n  \"password\": \"url1nv\",\n  \"group\": {\n    \"id\": \"144\",\n    \"status\": \"v9ygl5\",\n    \"createDate\": \"2022-08-13\",\n    \"modifyDate\": \"2022-08-13\",\n    \"name\": \"ellie.kuphal\"\n  },\n  \"project_id\": [\n    \"q6g64i\"\n  ],\n  \"project_name\": [\n    \"01u7rf\"\n  ],\n  \"projects\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"jcldkf\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"pin\": true,\n      \"accountId\": \"144\",\n      \"planDate\": \"2022-08-13\",\n      \"finishedDate\": \"2022-08-13\",\n      \"state\": \"xqaye3\",\n      \"type\": \"uap0ft\",\n      \"totalPoint\": 326,\n      \"finishedPoint\": 719\n    }\n  ],\n  \"projectAccount_projectId\": [\n    \"a948kc\"\n  ],\n  \"projectAccount_project\": [\n    {\n      \"id\": \"144\",\n      \"status\": \"va3n05\",\n      \"createDate\": \"2022-08-13\",\n      \"modifyDate\": \"2022-08-13\",\n      \"name\": \"ellie.kuphal\",\n      \"pin\": true,\n      \"accountId\": \"144\",\n      \"planDate\": \"2022-08-13\",\n      \"finishedDate\": \"2022-08-13\",\n      \"state\": \"q3k0xq\",\n      \"type\": \"vrejwb\",\n      \"totalPoint\": 593,\n      \"finishedPoint\": 12\n    }\n  ],\n  \"projectAccount_project_name\": [\n    \"32k70k\"\n  ]\n}"
                   }
                 }
               }
@@ -2774,7 +4450,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"jfht67\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"dictCode\": \"9229\",\n  \"dictKey\": \"85j6e2\",\n  \"dictVal\": \"j7hn6x\",\n  \"fromSys\": true\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"lxiyy7\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"code\": \"75559\",\n  \"val\": \"afdz3c\",\n  \"title\": \"3otzwm\",\n  \"sys\": true,\n  \"del\": true\n}"
                 }
               }
             }
@@ -2791,7 +4467,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"hv57om\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"dictCode\": \"9229\",\n  \"dictKey\": \"4eq78c\",\n  \"dictVal\": \"hu2cwb\",\n  \"fromSys\": true\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"71w5pe\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"code\": \"75559\",\n  \"val\": \"f4m2qk\",\n  \"title\": \"8bk2qa\",\n  \"sys\": true,\n  \"del\": true\n}"
                   }
                 }
               }
@@ -2821,7 +4497,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"2b3gkf\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"name\": \"leeanna.kreiger\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"m3dnh9\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"remark\": \"56wbxs\"\n}"
                   }
                 }
               }
@@ -2837,8 +4513,69 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysUser/page/userVo": {
+      "get": {
+        "summary": "分页查询用户表(视图);",
+        "deprecated": false,
+        "description": "分页查询用户表(视图);",
+        "tags": [
+          "用户表接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageVoUserVo"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"result\": [\n    {\n      \"id\": \"144\",\n      \"name\": \"ellie.kuphal\",\n      \"username\": \"ellie.kuphal\",\n      \"groupName\": \"ellie.kuphal\",\n      \"idno\": \"wat37w\",\n      \"tel\": \"llkjmz\",\n      \"usetype\": \"o6w2pg\",\n      \"state\": \"nt4852\"\n    }\n  ],\n  \"size\": 10,\n  \"page\": 1,\n  \"total\": 807,\n  \"totalPage\": 211,\n  \"first\": true,\n  \"last\": true\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "pageUser",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "用户姓名",
+            "required": false,
+            "example": "k794i6",
+            "name": "search"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "角色组名称",
+            "required": false,
+            "example": "ellie.kuphal",
+            "name": "sysGroup_name"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "No comments found.",
+            "required": false,
+            "example": "oddr2h",
+            "name": "state"
           }
         ]
       }
@@ -2860,7 +4597,7 @@
               "examples": {
                 "json": {
                   "summary": "test data",
-                  "value": "{\n  \"id\": \"108\",\n  \"status\": \"gef7km\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"point\": 276,\n  \"progress\": 16.26,\n  \"state\": \"o9bojz\",\n  \"name\": \"leeanna.kreiger\",\n  \"sort\": 20,\n  \"level\": \"aq28to\",\n  \"stepId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                  "value": "{\n  \"id\": \"144\",\n  \"status\": \"y5tvtb\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"point\": 679,\n  \"progress\": 78.69,\n  \"state\": \"s5gsmc\",\n  \"name\": \"ellie.kuphal\",\n  \"sort\": 40,\n  \"level\": \"apxwq0\",\n  \"stepId\": \"144\",\n  \"accountId\": \"144\"\n}"
                 }
               }
             }
@@ -2877,7 +4614,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "{\n  \"id\": \"108\",\n  \"status\": \"hshiih\",\n  \"createDate\": \"2022-07-11\",\n  \"modifyDate\": \"2022-07-11\",\n  \"projectId\": \"108\",\n  \"point\": 660,\n  \"progress\": 65.90,\n  \"state\": \"gsd4es\",\n  \"name\": \"leeanna.kreiger\",\n  \"sort\": 628,\n  \"level\": \"zmcmj6\",\n  \"stepId\": \"108\",\n  \"accountId\": \"108\"\n}"
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"49j9gg\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"projectId\": \"144\",\n  \"point\": 42,\n  \"progress\": 23.34,\n  \"state\": \"qtspsm\",\n  \"name\": \"ellie.kuphal\",\n  \"sort\": 904,\n  \"level\": \"wczmw1\",\n  \"stepId\": \"144\",\n  \"accountId\": \"144\"\n}"
                   }
                 }
               }
@@ -2907,7 +4644,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "165"
+                    "value": "560"
                   }
                 }
               }
@@ -2923,7 +4660,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -2948,7 +4685,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "846"
+                    "value": "974"
                   }
                 }
               }
@@ -2964,7 +4701,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -2989,7 +4726,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "550"
+                    "value": "263"
                   }
                 }
               }
@@ -3005,7 +4742,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -3030,7 +4767,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "220"
+                    "value": "146"
                   }
                 }
               }
@@ -3046,7 +4783,7 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
             "name": "id"
           }
         ]
@@ -3071,7 +4808,7 @@
                 "examples": {
                   "json": {
                     "summary": "test data",
-                    "value": "227"
+                    "value": "275"
                   }
                 }
               }
@@ -3087,7 +4824,48 @@
             "in": "path",
             "description": "主键id;",
             "required": true,
-            "example": "108",
+            "example": "144",
+            "name": "id"
+          }
+        ]
+      }
+    },
+    "/sysDept/detail/{id}": {
+      "get": {
+        "summary": "明细查询null;",
+        "deprecated": false,
+        "description": "明细查询null;",
+        "tags": [
+          "null接口;"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SysDept"
+                },
+                "examples": {
+                  "json": {
+                    "summary": "test data",
+                    "value": "{\n  \"id\": \"144\",\n  \"status\": \"ipd9s1\",\n  \"createDate\": \"2022-08-13\",\n  \"modifyDate\": \"2022-08-13\",\n  \"name\": \"ellie.kuphal\",\n  \"code\": \"75559\",\n  \"sysOrgId\": \"144\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "detail",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "主键id;",
+            "required": true,
+            "example": "144",
             "name": "id"
           }
         ]
@@ -3100,6 +4878,42 @@
   },
   "tags": [
     {
+      "name": "项目阶段接口;",
+      "description": "项目阶段接口;"
+    },
+    {
+      "name": "任务表接口;",
+      "description": "任务表接口;"
+    },
+    {
+      "name": "部门接口;",
+      "description": "部门接口;"
+    },
+    {
+      "name": "项目人员关系表(分配关系)接口;",
+      "description": "项目人员关系表(分配关系)接口;"
+    },
+    {
+      "name": "员工用户接口;",
+      "description": "员工用户接口;"
+    },
+    {
+      "name": "项目阶段关系表接口;",
+      "description": "项目阶段关系表接口;"
+    },
+    {
+      "name": "权限资源接口;\n1. 实现从前端菜单json读取菜单信息\n2. 实现从api里能自动读取所有操作接口信息\n3. 在页面能对这些信息进行CRUD操作",
+      "description": "权限资源接口;\n1. 实现从前端菜单json读取菜单信息\n2. 实现从api里能自动读取所有操作接口信息\n3. 在页面能对这些信息进行CRUD操作"
+    },
+    {
+      "name": "null接口;",
+      "description": "null接口;"
+    },
+    {
+      "name": "行政区划接口;",
+      "description": "行政区划接口;"
+    },
+    {
       "name": "角色聚合组接口;",
       "description": "角色聚合组接口;"
     },
@@ -3108,48 +4922,24 @@
       "description": "用户角色接口;"
     },
     {
-      "name": "项目人员关系表(分配关系)接口;",
-      "description": "项目人员关系表(分配关系)接口;"
+      "name": "字典表接口;",
+      "description": "字典表接口;"
     },
     {
       "name": "项目表接口;",
       "description": "项目表接口;"
     },
     {
-      "name": "用户表接口;",
-      "description": "用户表接口;"
-    },
-    {
-      "name": "项目阶段关系表接口;",
-      "description": "项目阶段关系表接口;"
-    },
-    {
-      "name": "项目阶段接口;",
-      "description": "项目阶段接口;"
-    },
-    {
-      "name": "权限资源接口;",
-      "description": "权限资源接口;"
-    },
-    {
-      "name": "字典表接口;",
-      "description": "字典表接口;"
-    },
-    {
-      "name": "任务表接口;",
-      "description": "任务表接口;"
-    },
-    {
-      "name": "员工用户接口;",
-      "description": "员工用户接口;"
-    },
-    {
-      "name": "部门接口;",
-      "description": "部门接口;"
+      "name": "null接口;",
+      "description": "null接口;"
     },
     {
       "name": "角色聚合组接口;",
       "description": "角色聚合组接口;"
+    },
+    {
+      "name": "用户表接口;",
+      "description": "用户表接口;"
     }
   ]
 }

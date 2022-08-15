@@ -30,10 +30,13 @@ import java.util.List;
 @Data
 public class SysRolePageReq extends PageQuery<SysRole> {
    public String name;
+   /**
+    * 权限组
+    */
    @VField(pathName = "sysRoleGroup_sysGroupId")
    public String vvv;
    /**
-    * 搜索条件
+    * 权限组
     */
    @VField(pathName = "sysRoleGroup_sysGroup_id")
    public List<String> ttt;

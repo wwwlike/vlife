@@ -19,8 +19,6 @@
 package cn.wwwlike.auth.vo;
 
 import cn.wwwlike.auth.entity.SysGroup;
-import cn.wwwlike.auth.entity.SysRole;
-import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 

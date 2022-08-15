@@ -16,38 +16,12 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.auth.req;
+package cn.wwwlike.sys.dao;
 
-import cn.wwwlike.oa.entity.Dict;
-import cn.wwwlike.vlife.annotation.VField;
-import cn.wwwlike.vlife.query.req.PageQuery;
-import lombok.Data;
+import cn.wwwlike.sys.entity.SysDict;
+import cn.wwwlike.vlife.core.dsl.DslDao;
+import org.springframework.stereotype.Repository;
 
-/**
- * 类说明
- *
- * @author xiaoyu
- * @date 2022/7/19
- */
-@Data
-public class DictPageReq extends PageQuery<Dict> {
-    /**
-     * 编码
-     */
-    public String code;
-    /**
-     * 名称
-     */
-    public String title;
-    /**
-     * 系统项
-     */
-    public Boolean sys;
-
-    /**
-     * 跳过检查
-     */
-    @VField(skip = true)
-    public Boolean queryType;
-
+@Repository
+public class SysDictDao extends DslDao<SysDict> {
 }

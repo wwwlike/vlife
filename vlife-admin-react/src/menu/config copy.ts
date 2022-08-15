@@ -162,7 +162,7 @@ const MENU_CONFIG: MenuItem[] = [
       {
         itemKey: "3-1",
         text: "参数字典",
-        path: "/dict",
+        path: "/sysDict",
       },
       {
         itemKey: "3-2",

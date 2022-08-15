@@ -43,7 +43,7 @@ export type BtnMemoProp={
     lineClick?:(obj:any)=>void;
     hideColumns?:string[],
     tableBtn?:VfButton[], //列表业务按钮补充
-    dict?:TranDict[], //列转换的
+    sysDict?:TranDict[], //列转换的
     fkMap?:any,//外键数据的键值对
     select_more?:boolean;// undefined|false|true ->无勾选框|单选|多选
     select_show_field?:string;//选中时进行展示的字段，不传则不展示
@@ -55,7 +55,7 @@ type selectType={id:string|number,name?:string};
 export default ({
   lineClick,
   tableBtn,hideColumns,
-  dict,dataSource,columns,fkMap,
+  sysDict,dataSource,columns,fkMap,
   select_more,select_show_field,onSelected,selected,doubleClick,...props }: ListProps)=>{
   //state赋值不支持ifelse,所以写成函数式
   const [selectedRow,setSelectedRow]=useState<selectType[]>(
@@ -70,7 +70,6 @@ export default ({
       onSelected(selectedRow);
     }
   },[selectedRow])
-
 
   //行按钮
   const lineMemoBtns=useMemo<VfButton[]>(()=>{
@@ -109,10 +108,10 @@ export default ({
       })
        // step2 字典转换
        columnshow?.forEach(m=>{
-        dict?.forEach(d=>{
+        sysDict?.forEach(d=>{
           if(m.dictCode?.toLowerCase()===d.column.toLowerCase()){
             m['render']=(text,record,index)=>{
-              return d.dict.find(dd=>{
+              return d.sysDict.find(dd=>{
                   return dd.val===text
               })?.title||'-'
             }
@@ -124,7 +123,7 @@ export default ({
       columnshow?.forEach(m=>{
           if(m.type==='boolean'){
             m['render']=(text,record,index)=>{
-              return text===true?'是':'否'
+              return (text===null?'-':(text?'是':'否'))
             }
           } 
           else if(m.entityFieldName==='id'){
@@ -163,10 +162,6 @@ export default ({
                         }else{
                           return  button
                         }
-                       
-                      
-                      
-                      
                     })
                   }
                 </>
@@ -176,7 +171,7 @@ export default ({
       return columnshow;
     }
     return [];
-  },[columns,lineMemoBtns,hideColumns,dict])
+  },[columns,lineMemoBtns,hideColumns,sysDict])
 
   const onRow = useMemo(
     () => (record:any, index:any) => {
@@ -229,8 +224,7 @@ export default ({
             if(item?.attr){
               prop =item?.attr(...selectedRow)
             }
-
-            const button=<Button loading={item.loading} key={item.entityName+'_'+item.key} onClick={()=>{item.fun(...selectedRow.map(d=>d.id));setSelectedRow([])}} 
+            const button=<Button loading={item.loading} key={item.entityName+'_'+item.key} onClick={()=>{if(item.fun){item.fun(...selectedRow)};setSelectedRow([])}} 
             disabled={prop?.disable}
           >{(!prop.disable&&prop.title)?prop.title:item.title}</Button>
 
@@ -247,6 +241,7 @@ export default ({
       {...props} />
 
     {select_show_field&&selectedRow.map(one=>{
+
         return <Tag key={one.id} avatarShape='circle' size='large' closable={true} onClose={()=>{
           setSelectedRow([...selectedRow.filter(row=>{
             return row.id!==one.id

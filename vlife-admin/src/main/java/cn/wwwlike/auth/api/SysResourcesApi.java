@@ -1,20 +1,11 @@
 package cn.wwwlike.auth.api;
 
-import cn.wwwlike.auth.req.ResourcesPageReq;
-import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.auth.entity.SysResources;
-import cn.wwwlike.auth.vo.ResourcesVo;
+import cn.wwwlike.auth.req.SysResourcesPageReq;
+import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
-import java.lang.Long;
-import java.lang.String;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 权限资源接口;
@@ -56,7 +47,7 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
   }
 
   @GetMapping("/page")
-  public PageVo<SysResources> page(ResourcesPageReq req){
+  public PageVo<SysResources> page(SysResourcesPageReq req){
     return service.findPage(req);
   }
 

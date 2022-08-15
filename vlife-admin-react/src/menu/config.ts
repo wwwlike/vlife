@@ -41,7 +41,7 @@ const MENU_CONFIG: MenuItem[] = [
         text: "权限资源",
         icon: IconTickCircle,
         code: "sysResources",
-        path: "/resources",
+        path: "/auth/resources",
       },
 
       {
@@ -76,30 +76,33 @@ const MENU_CONFIG: MenuItem[] = [
         text: "用户管理",
         icon: IconUser,
         code: "sysUser",
-        path: "/user",
+        path: "/sys/user",
       },
 
       {
         itemKey: "2-2",
         text: "机构管理",
-        path: "/template/sysOrg",
+        code: "sysOrg",
+        path: "/sys/sysOrg",
       },
       {
         itemKey: "2-3",
         icon: IconMember,
         text: "部门管理",
-        path: "/template/sysDept",
+        code: "sysDept",
+        path: "/sys/sysDept",
       },
       {
         itemKey: "2-1",
         text: "地区管理",
-        path: "/template/sysArea",
+        code: "sysArea",
+        path: "/sys/sysArea",
       },
       {
         itemKey: "3-1",
         text: "参数字典",
-        code: "dict",
-        path: "/dict",
+        code: "sysDict",
+        path: "/sys/dict",
       },
     ],
   },

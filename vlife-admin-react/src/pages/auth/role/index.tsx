@@ -20,7 +20,7 @@ export default ()=>{
             <FormPage type='queryForm' 
               maxColumns={[1,1,1]} 
               formData={pageReq} 
-              setFormData={setPageReq} 
+              onDataChange={setPageReq} 
               entityName={entityName}  
               modelName='sysRolePageReq' />
           </Card>

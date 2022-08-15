@@ -147,7 +147,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.3.5.RELEASE</version>
                 <configuration>
-                    <mainClass>cn.wwwlike.oa.OaApplication</mainClass>
+                    <mainClass>cn.wwwlike.AdminApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

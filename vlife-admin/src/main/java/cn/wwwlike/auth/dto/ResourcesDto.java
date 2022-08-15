@@ -19,12 +19,10 @@
 package cn.wwwlike.auth.dto;
 
 import cn.wwwlike.auth.entity.SysResources;
-import cn.wwwlike.auth.entity.SysRole;
 import cn.wwwlike.auth.entity.SysRoleGroup;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 
-import java.security.acl.Group;
 import java.util.List;
 
 /**

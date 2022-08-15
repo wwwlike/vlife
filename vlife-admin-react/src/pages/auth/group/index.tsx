@@ -23,7 +23,7 @@ export default ()=>{
             { <FormPage type='queryForm' 
               maxColumns={[1,1,1]} 
               formData={formData} 
-              setFormData={setFormData} //相应事件。
+              onDataChange={setFormData} //相应事件。
               entityName={entityName}  
               modelName='sysGroupPageReq' /> }
           </Card>

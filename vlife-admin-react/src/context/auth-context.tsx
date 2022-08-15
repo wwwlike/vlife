@@ -63,11 +63,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         codes.forEach((code) => {
           const codeDicts: Pick<Dict,'title'|'val'>[]=[];
            codeDicts.push({val:undefined,title:'全部'})
-           codeDicts.push(...dicts.filter((dict) => {
-            return dict.code === code&& dict.val;
+           codeDicts.push(...dicts.filter((sysDict) => {
+            return sysDict.code === code&& sysDict.val;
           }));
           
-          tranDicts.push({ column: code, dict: codeDicts });
+          tranDicts.push({ column: code, sysDict: codeDicts });
         });
       }
       return tranDicts;
@@ -93,9 +93,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    * @returns 
    */
      const checkBtnPermission=useCallback((btnObj:VfButton):boolean=>{
-      return true;
+      console.log("btnObj.entityName",btnObj)
       if(btnObj.entityName&&btnObj.key){//按钮有模块和key就校验权限
         if(user?.resourceCodes?.includes(btnObj.entityName+":"+btnObj.key)){
+     
           return true;
         }
         return false;

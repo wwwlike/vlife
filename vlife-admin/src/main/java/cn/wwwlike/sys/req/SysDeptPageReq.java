@@ -34,7 +34,7 @@ public class SysDeptPageReq extends PageQuery<SysDept> {
     public String sysOrgId;
     @VField(pathName = "sysOrg_type")
     public List<String> type;
-    @VField(opt = Opt.like,orReqFields = {"code"})
-    public String name;
+    @VField(opt = Opt.like,orReqFields = {"code"},pathName = "name")
+    public String deptName;
 
 }

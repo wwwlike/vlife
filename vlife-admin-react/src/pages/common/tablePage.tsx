@@ -1,11 +1,17 @@
 import {useNiceModal } from '@src/store';
 import React, {useCallback, useEffect, useMemo, useState } from 'react';
-import { useDetail, useDetails, useModelInfo, usePage, useRemove, useSave } from '@src/provider/baseProvider';
+import { getFkInfo, useDetail, useDetails, useModelInfo, usePage, useRemove, useSave } from '@src/provider/baseProvider';
 import Table, { BtnMemoProp, ListProps, VfButton } from '@src/components/table';
 import { useAuth } from '@src/context/auth-context';
-import { Pager } from '@src/types/vlife';
-import { TablePagination } from '@douyinfe/semi-ui/lib/es/table';
+import { reactions } from '@src/components/form';
 
+type editModelProps={
+  name:string,
+  reactions?:Map<string,reactions>,
+  hideCols?:string[], //隐藏字段
+  readonlyCols?:string[], //只读字段
+  requiredCols?:string[],//表单必填字段
+}
 /**
  * 业务融合page模块(模块-> 简化页面调用)
  * 1. 列头信息请求封装
@@ -16,13 +22,14 @@ import { TablePagination } from '@douyinfe/semi-ui/lib/es/table';
  export interface tablePageProps extends ListProps {
     entityName:string,  //实体模型
     listModel?:string,  //列表模型信息,为空则=entityName
-    editModel?:string, // 编辑视图模型，为空则=entityName
+    editModel?:string|editModelProps, // 编辑视图模型，为空则=entityName
     viewModel?:string, //视图查看模型，为空则=entityName
     initData?:object,//新增时初始化的默认数据，不可改
     reload?:boolean,//发生变化则刷新
     req?:any //搜索form待入的条件
     btnEnable?:{read?:boolean,edit?:boolean,add?:boolean,rm?:boolean,batchRm?:boolean,view?:boolean} //默认开放的按钮
-    customBtns?:VfButton[] //页面传入的个性化按钮
+    customBtns?:VfButton[], //页面传入的个性化按钮
+    onGetData?:(datas:any[])=>void//数据加载完成事件
   }
  
 /**
@@ -83,7 +90,9 @@ export const TablePage=({
   editModel=entityName,
   viewModel=entityName,
   req,
+  onGetData,
   reload,
+  initData,
   customBtns,
   btnEnable={read:false,edit:true,add:true,rm:true,batchRm:true,view:true},//read==true,后面都无效
   ...props}:tablePageProps)=>{
@@ -92,7 +101,7 @@ export const TablePage=({
   const formModal = useNiceModal("formModal");
   const confirmModal = useNiceModal("confirmModal");
   const {getDict,user,checkBtnPermission}=useAuth()
-  
+  const [fkMap,setFkMap]=useState<any>({});
 
   /**
    * 校验用户是否能操作这个数据
@@ -121,21 +130,25 @@ export const TablePage=({
     return {disable:false}
   },[]);
 
-
-  
-    // 列头信息
+  // 列头信息
   const {run:titleRun,data:modelInfo}=useModelInfo({entityName});
-    // 列表信息
-  const {run:page,refresh:pageRefresh,data}=usePage({entityName,listModel});
-  const {runAsync:save} =useSave({entityName,modelName:editModel})
+  // 列表信息
+  const {run:page,refresh:pageRefresh,data}=usePage({entityName,listModel,onSuccess:(data)=>{
+    if(onGetData){
+      onGetData(data.data?.result||[]);
+    }
+  }});
+  const {runAsync:save} =useSave({entityName,modelName:typeof editModel=='string'?editModel:editModel.name})
   const {runAsync:getDetail}=useDetail({entityName})
   const {runAsync:rm} =useRemove({entityName})
   // 外键信息提取
-  const {runAsync:views}=useDetails({entityName});
-  const entityRm=(...ids:(string|number)[])=>{
+  const fkInfo=getFkInfo;
+  // const {runAsync:views}=useDetails({entityName});
+  const entityRm=(...data:any)=>{
+    console.log('data',data)
     confirmModal.show({
-      saveFun: ()=>{return rm(ids)},
-      title:`确认删除${ids.length}条记录}`
+      saveFun: ()=>{return rm(data.map((d:any)=>d.id))},
+      title:`确认删除${data.length}条记录`
     }).then(data=>{
       pageRefresh();
     })
@@ -151,26 +164,71 @@ export const TablePage=({
     page({...req})
   },[req,reload])
 
-    // //是实体模型，就需要查询外键 各行的外键数据
-  const fkMap= useMemo(()=>{
-    const fkObj:any={};
-   if(modelInfo&&listModel&&entityName&&listModel===entityName){
-        const fieldInfos=modelInfo?.data?.fields.filter(f=>{
+  /**
+   * 外键信息
+   */
+  const fkInfos=useMemo(()=>{
+    //不是entityName;则去取外键信息
+    if(modelInfo&&listModel&&entityName&&listModel===entityName){
+      return modelInfo?.data?.fields.filter(f=>{
         return f.entityFieldName==="id"&& entityName!==f.entityType && !props.hideColumns?.includes(f.dataIndex)
       });
-      fieldInfos?.forEach(f=>{
-        // page数据里外键id获取
-        const ids=data?.data?.result.map(d=>d[f.dataIndex]);
-        // 调用view方法获得外键name
-        views(f.entityType,f.entityType,ids).then(data=>{
+    }
+    return [];
+  },[modelInfo])
+
+  useEffect(()=>{
+    //step2 找到字段里有字典的数据，并从全局context里得到本次需要的字典数据
+    fkInfos?.forEach( f=>{
+      const ids:string[]=data?.data?.result.map(d=>d[f.dataIndex] as string)||[];
+      if(ids.length>0){
+        fkInfo(f.entityType,ids).then(data=>{
           data.data?.forEach(e=>{
-            fkObj[e.id]=e.name  
+            fkMap[e.id]=e.name
+            setFkMap({...fkMap})      
           })
         })
-      });
-   }
-   return fkObj;
-  },[data,listModel,entityName,modelInfo])
+      }
+    })
+},[fkInfos,data])
+
+    // //是实体模型，就需要查询外键 各行的外键数据
+  // const fkMap= useMemo(()=>{
+  //   const fkObj:any={};
+  //  if(modelInfo&&listModel&&entityName&&listModel===entityName){
+  //       const fieldInfos=modelInfo?.data?.fields.filter(f=>{
+  //       return f.entityFieldName==="id"&& entityName!==f.entityType && !props.hideColumns?.includes(f.dataIndex)
+  //     });
+  //     fieldInfos?.forEach(f=>{
+  //       // page数据里外键id获取
+  //       const ids:string[]=data?.data?.result.map(d=>d[f.dataIndex])||[];
+  //       console.log(f.dataIndex,ids);
+  //       // 调用view方法获得外键name
+  //       fkInfo(f.entityType,[...ids]).then(data=>{
+  //         data.data?.forEach(e=>{
+  //           fkObj[e.id]=e.name  
+  //         })
+  //       })
+  //     });
+  //  }
+  //  return fkObj;
+  // },[data,listModel,entityName,modelInfo])
+
+
+//   useEffect(()=>{
+//     //step2 找到字段里有字典的数据，并从全局context里得到本次需要的字典数据
+//     fkInfos.forEach( f=>{
+//     if(props.formData[f.dataIndex]){
+//       fkInfoFun(f.entityName,props.formData[f.dataIndex]).then(data=>{
+//         data.data?.forEach(e=>{
+//           fkMap[e.id]=e.name
+//           setFkMap({...fkMap})      
+//         })
+//       })
+//     }
+//     })
+// },[fkInfos])
+
 
   
   const setPage=useCallback((pageNo: number)=>{
@@ -207,11 +265,16 @@ export const TablePage=({
   },[modelInfo])
 
   const modalShow=(read:boolean,model:string,record:any,save?:any)=>{
-    formModal.show({ //这里因为是any,所以show无提示，不优雅
+    formModal.show({ //这里因为是any,所以show无提示，不优雅,
       entityName, //voName
       modelName:model,
       initData:record,
       saveFun:save,
+      type:'dataForm',
+      hideCols:typeof editModel!=='string'?editModel.hideCols:undefined, 
+      readonlyCols:typeof editModel!=='string'?editModel.readonlyCols:undefined, 
+      reactions:typeof editModel!=='string'?editModel.reactions:undefined, 
+      requiredCols:typeof editModel!=='string'?editModel.requiredCols:undefined, 
       read
     }).then((saveData) => {
       pageRefresh();
@@ -220,12 +283,12 @@ export const TablePage=({
 
   //触发调用的方法
   const entitySave=(record?:any)=>{
-    if(editModel!==listModel&&record&&record.id){
-        getDetail(record.id,editModel).then(data=>{
-          modalShow(false,editModel,data.data,save);
+    if((typeof editModel=='string'?editModel:editModel.name)!==listModel&&record&&record.id){
+        getDetail(record.id,editModel).then(data=>{// 列表和编辑dto不同，需要加载数据
+          modalShow(false,typeof editModel=='string'?editModel:editModel.name,data.data,save);
         })
       }else{
-        modalShow(false,editModel,record,save);
+        modalShow(false,typeof editModel=='string'?editModel:editModel.name,record?record:initData,save);
       }
    };
    const view=(record?:any)=>{
@@ -240,10 +303,10 @@ export const TablePage=({
      
   const tableBtn=useMemo(():VfButton[]=>{
     const memoBtns:VfButton[]=[];
-    const addDefBtn={title:'新增',tableBtn:true,key:'add',fun:entitySave}
-    const rmDefBtn={title:'删除',tableBtn:false,key:'remove1',fun:entityRm,attr:batchRmCheck}
-    const batchRmDefBtn={title:'删除',tableBtn:true,key:'remove',fun:entityRm,attr:batchRmCheck}
-    const editDefBtn={title:'修改',tableBtn:false,key:'edit',fun:entitySave,attr:editCheck}
+    const addDefBtn={title:'新增',entityName:entityName, tableBtn:true,key:'save',fun:entitySave}
+    const rmDefBtn={title:'删除',entityName:entityName,tableBtn:false,key:'remove',fun:entityRm,attr:batchRmCheck}
+    const batchRmDefBtn={title:'删除',entityName:entityName,tableBtn:true,key:'remove',fun:entityRm,attr:batchRmCheck}
+    const editDefBtn={title:'修改',entityName:entityName,tableBtn:false,key:'save',fun:entitySave,attr:editCheck}
     if(btnEnable.read==false){
       if(btnEnable.add){
         memoBtns.push(addDefBtn)
@@ -263,13 +326,12 @@ export const TablePage=({
     return memoBtns;
   },[customBtns,user?.resourceCodes,btnEnable])
 
-
   return (
     <div>
       <Table 
           columns={modelInfo?.data?.fields}
           hideColumns={['createDate','modifyDate','status','id','createId','modifyId']}
-          dict={getDict(...dictKeys)}
+          sysDict={getDict(...dictKeys)}
           dataSource={data?.data?.result}
           tableBtn={tableBtn}
           fkMap={fkMap}

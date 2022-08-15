@@ -3,8 +3,6 @@ package cn.wwwlike.oa.req;
 import cn.wwwlike.base.common.RequestTypeEnum;
 import cn.wwwlike.oa.entity.Account;
 import cn.wwwlike.vlife.annotation.VClazz;
-import cn.wwwlike.vlife.annotation.VField;
-import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import lombok.Data;
 

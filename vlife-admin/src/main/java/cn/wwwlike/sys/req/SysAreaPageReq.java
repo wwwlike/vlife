@@ -1,14 +1,10 @@
 package cn.wwwlike.sys.req;
 
 import cn.wwwlike.sys.entity.SysArea;
-import cn.wwwlike.sys.entity.SysOrg;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * 地区查询条件

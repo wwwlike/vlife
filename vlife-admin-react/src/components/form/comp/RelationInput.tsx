@@ -26,15 +26,15 @@ interface RelationInputProps{
 }
 
 const RelationInput=observer((props:RelationInputProps)=>{
-
-
-
   const field = useField<ArrayField>()
   const form = useForm()
+  //获得焦点打开的层
   const {show,hide,activeModalId,showAsSub,hideAndOpenParent} = useNiceModal("tableModal");
+  //上一个modal的参数
+  const args = useSelector((state: any) => state[activeModalId]);
   const formModal = useNiceModal("formModal");
-  // const [project,setProject] =useState<string[]>([]);//主题
-  const [project,setProject] =useState<{id:string,name:string}[]>([]);//主题
+  //弹出层table进入时选中的数据
+  const [project,setProject] =useState<{id:string,name:string}[]>([]);
   // 请求主键的名称考虑用reqctQuery缓存起来
   const [entityName,setEntityName]=useState('');
   //字段名
@@ -44,21 +44,28 @@ const RelationInput=observer((props:RelationInputProps)=>{
     return !(field.componentProps['type']==='string'&&field.componentProps['fieldType']==='basic')
   },[field.componentProps])
   
+  
+  /**
+   * input所在的form打开时候调用
+   */
   useEffect(()=>{
     //待优化从form里取
-   const fkmap= field?.componentProps.fkMap;
+   const fkmap= field?.componentProps.fkMap;//所有外键数据
    let temp:{id:string,name:string}[]=[];
    for(const x in fkmap){
     if(typeof field.value==='string'&& x===field.value ){
       temp.push({id:x,name:fkmap[x]})
-    }else{
-      field.value.forEach(id=>{
+    }else if (field.value instanceof Array){//数组字段 关系字段在关联表
+      // 多个选择逻辑，目前在用户模块会报错
+      // console.log('field.value',field.value);
+      field.value?.forEach(id=>{
         if(id===x){
           temp.push({id:x,name:fkmap[x]})
         }
       })
     }
    }
+
    setProject([...temp])
    const names=field.componentProps['pathName'].split('_');
    if(names.length>1&&names[names.length-1]==='id'){
@@ -84,33 +91,28 @@ const RelationInput=observer((props:RelationInputProps)=>{
   //   }
   // },[project])
 
-
+  //全局store
   const gloable=useSelector(state=>state);
   //写成useCallback不在modal时会不弹出来
   //弹出列表
   const onFocus=()=>{
-    // hideActive();
-    // if(activeModalId) {
-    //   formModal.hide();
-    // };
-    //关闭之前的，打开当前sub
     showAsSub({
-      entityName,
-      selected:project,
-      btnEnable:{read:true}, //弹出组件不需要相关按钮
-      select_more:selectMore,//选一个，这个要根据字段类型来决定
-      select_show_field:'name',// 待从tableInfo里取目前写死了
-      }).then((data:any)=>{
-        // data 选中的数据
-        // setTimeout(()=>{
-          if(activeModalId){
-            //弹出层展示->给initData赋值id,然后在请求name
+      entityName,//模块
+      selected:project,//选中项
+      btnEnable:{read:true}, //read->true弹出组件不需要按钮组
+      select_more:selectMore,//selectMore->选不选？选单个多个？
+      select_show_field:'name',// 当前配合后端写死为name
+      }).then((data:any)=>{ //点确认后回调,data=>table返回的数据
+          if(activeModalId){// tue=>  showAsSub之前是弹出框
+            //弹出层展示->给initData赋值id, 在form层请求name
+            //...formModal.args 打开之前的矿口
             if(data.length===0){
-              hideAndOpenParent({...formModal.args,initData:{...form.values,[fieldName]:undefined}});
+              hideAndOpenParent({...args,initData:{...form.values,[fieldName]:undefined}});
             }else if(selectMore){
-              hideAndOpenParent({...formModal.args,initData:{...form.values,[fieldName]:data.map((d:any)=>d.id)}});
+              console.log("map",fieldName,data.map((d:any)=>d.id));
+              hideAndOpenParent({...args,initData:{...form.values,[fieldName]:data.map((d:any)=>d.id)}});
             }else{
-              hideAndOpenParent({...formModal.args,initData:{...form.values,[fieldName]:data.map((d:any)=>d.id)[0]}});
+              hideAndOpenParent({...args,initData:{...form.values,[fieldName]:data.map((d:any)=>d.id)[0]}});
             }
             // setProject(data.map((d:any)=>{d.id,d.name}))
           }else{

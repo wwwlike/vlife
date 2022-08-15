@@ -18,8 +18,17 @@ const Index: React.FC = () => {
 
     //async 意义
     const handelSubmit = async () => {
-       login(values);
+      await login(values);
     };
+    
+    // const handleSubmit = async () => {
+    // try {
+    //     await run(login(values));
+    // } catch (e) {
+    //     onError(e);
+    // }
+    // };
+    
 
 	return (
   <div className="body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0" >

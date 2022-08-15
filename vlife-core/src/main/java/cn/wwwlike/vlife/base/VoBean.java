@@ -23,4 +23,6 @@ import cn.wwwlike.base.model.IdBean;
  * vo视图层模型接口
  */
 public interface VoBean<T extends Item> extends IdBean {
+
+
 }

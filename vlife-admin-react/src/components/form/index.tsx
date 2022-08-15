@@ -3,9 +3,9 @@
  * 考虑使用reactQuery,从后台取得表单信息，然后缓存起来。
  */
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { createForm, onFormInit,onFormValuesChange } from '@formily/core';
-import { createSchemaField, Field, FormProvider, observer, Schema, useFieldSchema, useForm } from '@formily/react';
-import { FormItem, Input ,FormGrid,GridColumn,Select,ArrayItems,ArrayTable, Checkbox,DatePicker} from '@formily/semi';
+import { createForm, Form, IFormFeedback, onFormInit,onFormMount,onFormValuesChange } from '@formily/core';
+import { createSchemaField, Field, FormProvider, mapProps, observer, Schema, useFieldSchema, useForm } from '@formily/react';
+import { FormItem, Input ,FormGrid,GridColumn,Select,ArrayItems,ArrayTable, Checkbox,DatePicker, FormButtonGroup, Submit, Reset} from '@formily/semi';
 import { BaseRequest, fieldInfo, IdBean, ModelInfo, TranDict } from '@src/types/vlife';
 import RelationInput from '@src/components/form/comp/RelationInput'
 import { useSetState } from 'ahooks';
@@ -19,11 +19,27 @@ import { useSetState } from 'ahooks';
     RelationInput//封装关系选择formily组件
   },
 })
+
+/**
+ * 数据联动
+ * https://react.formilyjs.org/zh-CN/api/shared/schema#schemareactions
+ */
+export interface reactions{
+  dependencies:string[],
+  when:string,
+  fulfill:{
+    state:{
+      value:string
+    }
+  }
+}
  //表信息
 export interface FormProps {
+  entityName:string,
   formData?:any, // form初始数据
-  setFormData:(data:any)=>void //修改数据传出去
-  setError?: () => void; //校验错误信息
+  // setFormData:(data:any)=>void //修改数据传出去
+  onDataChange?:(data:any)=>void;
+  onForm?:(form:Form)=>void;
   hideColumns?: string[]; //需要隐藏的不显示的列
   read?: boolean; //只读模式
   dicts?: TranDict[]; //字典信息
@@ -31,10 +47,16 @@ export interface FormProps {
   fkMap?:any; // 外键对象信息{ID,NAME}
   maxColumns?: number[];//列信息
   modelInfo:ModelInfo|undefined;
-
+  onError?:((error:IFormFeedback[])=>void);
+  reactions?:Map<string,reactions>; //联动关系
+  hideCols?:string[]; //表单隐藏字段
+  readonlyCols?:string[]; //表单只读字段
+  requiredCols:string[]; //表单必填字段
 }
 
-export default ({maxColumns=[2,2,2],dicts,formData,setFormData,read,fkMap,modelInfo}:FormProps) => {
+export default ({maxColumns=[2,2,2],dicts,formData,
+  onDataChange,onForm,read,fkMap,modelInfo,reactions,onError,
+  hideCols,requiredCols,readonlyCols}:FormProps) => {
   /**
    * 动态表单数据初始化
    * 使用参考：https://core.formilyjs.org/zh-CN/api/models/form
@@ -43,41 +65,51 @@ export default ({maxColumns=[2,2,2],dicts,formData,setFormData,read,fkMap,modelI
     () =>
       createForm({
         readPretty: read,
+        editable:false,
         initialValues: {
          ...formData
         },
         effects() {
+          onFormMount((form)=>{
+             if(onForm!=undefined){
+               onForm(form);
+            }
+          }),
           onFormInit((form)=>{
+            // alert("21")
+           
           }),
           onFormValuesChange((form) => {
-            if(setFormData)
-              setFormData({...form.values})
+            if(form.errors.length>0&&onError!==undefined){
+              setTimeout(()=>onError(form.errors),200)
+            }
+            if(onDataChange!==undefined){
+              onDataChange(form.values);
+            }
+            if(onForm!=undefined){
+              onForm(form);
+            }
+            // setFormData({...form.values})
           })
         },
       }),
-    [read,formData,fkMap]
+    [modelInfo,formData,fkMap]
   )
 
-  // useEffect(()=>{
-
-
-
-
-  // },[])
   /**
    * 字典数据提取(字典显示有抖动这里需要测试)
    */
   const fieldEnum=useCallback((dictCode:string)=>{
     const dictEnum:{label:string,value:any}[]=[];
     if(dicts){
-      const array=dicts.filter((dict)=>{
-        //console.log(dict.column.toLowerCase()+"_"+dictCode.toLowerCase())
-        if(dict.column.toLowerCase()===dictCode.toLowerCase()){
+      const array=dicts.filter((sysDict)=>{
+        //console.log(sysDict.column.toLowerCase()+"_"+dictCode.toLowerCase())
+        if(sysDict.column.toLowerCase()===dictCode.toLowerCase()){
             return true;
         }
       })
       if(array){
-        array[0].dict.forEach(d=>{
+        array[0].sysDict.forEach(d=>{
           dictEnum.push({label:d.title,value:d.val});
         })
       }
@@ -86,29 +118,33 @@ export default ({maxColumns=[2,2,2],dicts,formData,setFormData,read,fkMap,modelI
     return dictEnum;
   },[dicts])
 
-
-  // const memoFkMap=useMemo(()=>{
-  //   return {fkMap:fkMap}
-  // },[fkMap])
    /**
     * 动态表单formily的properties
-    *   
     */
    const schema= useMemo(()=>{
     const pp:any={};
       modelInfo?.fields.filter(f=>{
-     return ((read&& f.dataIndex!=='id'&&
-     f.dataIndex!=='status')||(f.dataIndex&&
+       const hideFlag= hideCols&&hideCols.includes(f.dataIndex)
+       if(hideFlag){
+        return false;
+       }else{
+        return ((read&& f.dataIndex!=='id'&&f.dataIndex!=='status')||//
+     (f.dataIndex&&
       f.dataIndex!=='id'&&
       f.dataIndex!=='status'&&
       f.dataIndex!=='createId'&&
       f.dataIndex!=='modifyId'&&
       f.dataIndex!=='createDate'&&
       f.dataIndex!=='modifyDate'))
-    }).forEach((f)=>{
+    }}).forEach((f)=>{
       pp[f.dataIndex]={};
       const prop:any=pp[f.dataIndex];
       prop.title=f.title;
+      // prop.required= true;
+      // prop['x-validator']= {
+      //   len: 5,
+      // };
+      // prop.maxLength= 5;
       prop['x-decorator']= 'FormItem';
       if(f.dictCode){
         prop['x-component']='Select';
@@ -125,6 +161,9 @@ export default ({maxColumns=[2,2,2],dicts,formData,setFormData,read,fkMap,modelI
         prop['x-component-props']={...prop['x-component-props'],'format':"yyyy/MM/dd"};
       }else{
         prop['x-component']='Input';
+      }
+      if(reactions?.get(f.dataIndex)){
+        prop['x-reactions']=reactions.get(f.dataIndex);
       }
       prop.type='string'
     })
@@ -143,23 +182,13 @@ export default ({maxColumns=[2,2,2],dicts,formData,setFormData,read,fkMap,modelI
     }
   },[modelInfo,fkMap])
 
-  // const schema = {
-  //   type: 'object',
-  //   properties: {
-  //     grid: {
-  //       type: 'void',
-  //       'x-component': 'FormGrid',
-  //       'x-component-props': {
-  //         maxColumns: maxColumns, //
-  //       },
-  //       properties:schemaProperties
-  //     }
-  //   },
-  // }
   return (
+    <div>
       <FormProvider form={form}>
+        {/* {JSON.stringify(hideCols)} */}
         <SchemaField schema={schema}></SchemaField>
       </FormProvider>
+      </div>
     )
 }
 

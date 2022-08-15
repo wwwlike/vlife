@@ -25,11 +25,11 @@ export interface DictPageReq extends Pager {
  * 字典分类查询
  */
 export const dictPageType = (req: Partial<DictPageReq>) => {
-  return apiClient.get("/dict/pageType");
+  return apiClient.get("/sysDict/pageType");
 };
 
 export const dictAll = (): Promise<Result<Dict[]>> => {
-  return apiClient.get(`/dict/all`);
+  return apiClient.get(`/sysDict/all`);
 };
 
 export const useAllDict = () => {
@@ -45,7 +45,7 @@ export const useDictSync = (
   }
 ) =>
   useRequest((): Promise<Result<Dict[]>> => {
-    return apiClient.get(`/dict/sync`);
+    return apiClient.get(`/sysDict/sync`);
   }, options);
 
 export const useDict = () => {
@@ -72,8 +72,8 @@ export const useDict = () => {
    * 获得单条字典信息
    */
   const getSub = (code: string): Dict[] => {
-    const codeDicts: Dict[] | undefined = dictData.current?.filter((dict) => {
-      return dict.code === code;
+    const codeDicts: Dict[] | undefined = dictData.current?.filter((sysDict) => {
+      return sysDict.code === code;
     });
     if (codeDicts) return codeDicts;
     return [];
@@ -86,7 +86,7 @@ export const useDict = () => {
   const getSubs = (...codes: string[]): TranDict[] => {
     let dicts: TranDict[] = [];
     codes.forEach((code) => {
-      dicts.push({ column: code, dict: getSub(code) });
+      dicts.push({ column: code, sysDict: getSub(code) });
     });
     return dicts;
   };

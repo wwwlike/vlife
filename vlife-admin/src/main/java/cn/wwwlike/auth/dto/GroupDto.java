@@ -21,8 +21,8 @@ package cn.wwwlike.auth.dto;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.SaveBean;
-import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
+
 import java.util.List;
 
 /**

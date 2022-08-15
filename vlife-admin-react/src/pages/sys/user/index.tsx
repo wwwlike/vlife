@@ -37,9 +37,9 @@ export default ()=>{
             <FormPage type='queryForm' 
               maxColumns={[1,1,1]} 
               formData={formData} 
-              setFormData={setFormData} 
+              onDataChange={setFormData} 
               entityName='sysUser'  
-              modelName='userPageReq' />
+              modelName='sysUserPageReq' />
           </Card>
       </div>
       <div className='h-full md:min-w-3/4'>
@@ -48,9 +48,11 @@ export default ()=>{
               bordered={false} className='h-full'>
              <TablePage
                 req={formData}
-                entityName='sysUser' 
-                hideColumns={['createDate','modifyDate']}
-                listModel='userVo'
+                entityName='sysUser'
+                editModel={{name:'sysUser',hideCols:['password']}} 
+                hideColumns={['createDate','password','modifyDate','status','id','createId','modifyId']}
+                // hideColumns={['createDate','modifyDate']}
+                listModel='sysUser'
                 viewModel='userDetailVo'
                 select_more={true}
                 customBtns={customBtns}

@@ -1,12 +1,8 @@
 package cn.wwwlike.oa.dto;
 
 import cn.wwwlike.oa.entity.Project;
-import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * 项目编辑

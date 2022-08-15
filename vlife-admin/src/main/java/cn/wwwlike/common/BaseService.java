@@ -21,7 +21,6 @@ package cn.wwwlike.common;
 import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.core.DataProcess;
-import cn.wwwlike.vlife.core.HealthDataProcess;
 import cn.wwwlike.vlife.core.VLifeDao;
 import cn.wwwlike.vlife.core.VLifeService;
 

@@ -14,17 +14,20 @@ import TablePage, { tablePageProps } from './tablePage';
 export interface TableModalProps  extends tablePageProps {
  width:number
 }
-export const TableModal=createNiceModal("tableModal", ({width=600,selected,...props}:TableModalProps) =>{
+/**
+ * selected ，列表初始选中的数据 仅仅包含name和id
+ */
+export const TableModal=createNiceModal("tableModal", ({width=600,selected:oldSelected,...props}:TableModalProps) =>{
   const modal = useNiceModal("tableModal");
   const [selects,setSelects]=useState<{id:string|number,name?:string}[]>([]);
   const handleSubmit = useCallback(() => { //提交按钮触发的事件
-    modal.resolve(selects);
+    modal.resolve(selects);//谁呼出来的回调
     modal.hide();
   }, [selects]);
-  const onCancel = useCallback(() => { //提交按钮触发的事件
-    modal.resolve(selected);// show时传进来的方法
+  const onCancel = useCallback(() => { //点取消还原之前的选中项
+    modal.resolve(oldSelected);//
     modal.hide();
-  }, [selected]);
+  }, [oldSelected]);
 
   return (
   <NiceModal id="tableModal" title={'列表'}  width={width}
@@ -33,13 +36,12 @@ export const TableModal=createNiceModal("tableModal", ({width=600,selected,...pr
     //   {disabled:selects.length===0}
     // }
   >
-    {/* {JSON.stringify(checkedIds)} */}
+    {/* {JSON.stringify(oldSelected)} */}
     <TablePage 
-       onSelected={(selected:{id:number|string,name?:string}[])=>{
-        console.log('selected',selected)
-        setSelects(selected)
-      }}
-      selected={selected}
+      onSelected={(data)=>{
+        console.log('data222',data)
+        setSelects(data)}} //table的选择事件
+      selected={oldSelected}
       {...props} />
   </NiceModal>)
 })

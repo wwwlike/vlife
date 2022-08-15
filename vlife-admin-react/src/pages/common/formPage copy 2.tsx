@@ -1,9 +1,11 @@
 import { IconAlertCircle } from '@douyinfe/semi-icons';
 import VlifeForm, { FormProps } from '@src/components/form';
-import QueryForm from '@src/components/form/queryForm';
+import SearchForm from '@src/components/form/queryForm';
 import { useAuth } from '@src/context/auth-context';
 import { getFkInfo, useDetails, useModelInfo } from '@src/provider/baseProvider';
 import { fieldInfo, ModelInfo, TranDict } from '@src/types/vlife';
+import { rejects } from 'assert';
+
 import React, { useCallback, useEffect,useMemo,useRef,useState } from 'react';
 
 
@@ -91,15 +93,13 @@ const FormPage=({entityName,modelName,type='dataForm',maxColumns=[2,2,2],...prop
   useEffect(()=>{
     //step1 从数据库里取表单模型信息,判断表单是否是外键，外键是否有值
     run(modelName||entityName);
-  },[entityName,modelName])
+  },[])
 
   useEffect(()=>{
         //step2 找到字段里有字典的数据，并从全局context里得到本次需要的字典数据
         fkInfos.forEach( f=>{
         if(props.formData[f.dataIndex]){
-          const isStr= typeof props.formData[f.dataIndex]==='string'
-          const ids:string[]=isStr?[props.formData[f.dataIndex]]:props.formData[f.dataIndex];
-          fkInfoFun(f.entityName,ids).then(data=>{
+          fkInfoFun(f.entityName,props.formData[f.dataIndex]).then(data=>{
             data.data?.forEach(e=>{
               fkMap[e.id]=e.name
               setFkMap({...fkMap})      
@@ -120,7 +120,6 @@ const FormPage=({entityName,modelName,type='dataForm',maxColumns=[2,2,2],...prop
     return (
       <> 
       <VlifeForm 
-          entityName={entityName}
           modelInfo={modelInfo.data}
           dicts={getDict(...modelDicts)}
           fkMap={fkMap}
@@ -132,14 +131,14 @@ const FormPage=({entityName,modelName,type='dataForm',maxColumns=[2,2,2],...prop
   }else{
     return (
       <>
-      <QueryForm 
+      <SearchForm 
           entityName={entityName}
           modelInfo={modelInfo.data}
           dicts={getDict(...modelDicts)}
           fkMap={{...fkMap}}
           maxColumns={maxColumns}
           {...props}
-        ></QueryForm> 
+        ></SearchForm> 
         </>
     )
   }

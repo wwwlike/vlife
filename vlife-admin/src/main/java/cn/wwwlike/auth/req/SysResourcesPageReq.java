@@ -18,29 +18,36 @@
 
 package cn.wwwlike.auth.req;
 
-import cn.wwwlike.auth.entity.SysUser;
+import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.vlife.annotation.VField;
-import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
- * 用户列表查询
+ * 资源页面
  */
 @Data
-public class UserPageReq extends PageQuery<SysUser> {
+public class SysResourcesPageReq extends PageQuery<SysResources> {
     /**
-     * 用户姓名
+     * 资源类型
      */
-    @VField(pathName = "name",opt = Opt.like,orReqFields = {"tel","idno"})
+    public String type;
+
+    /**
+     * 资源归属角色
+     */
+    public String sysRoleId;
+
+    /**
+     * 模糊搜索条件
+     */
+    @VField(pathName = "name",orReqFields = {"code","url"})
     public String search;
+    public Boolean onlyMenu;
 
-    /**
-     * 权限组
-     */
-    public String sysGroupId;
+    public List<Date> createDate;
 
-    public String state;
 }

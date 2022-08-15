@@ -26,15 +26,15 @@ const routeList: RouteObject[] = [
 		element: <WrapperRouteComponent element={<LayoutPage />} titleId="" auth />,
 		children: [
 			{
-				path: 'user',
+				path: 'sys/user',
 				element: <WrapperRouteComponent element={<UserPage />} titleId="用户管理" auth />
 			},
 			{
-				path: 'dict',
+				path: 'sys/dict',
 				element: <WrapperRouteComponent element={<DictPage />} titleId="字典管理" auth />
 			},
 			{
-				path: 'resources',
+				path: 'auth/resources',
 				element: <WrapperRouteComponent element={<ResourcesPage />} titleId="资源管理" auth />
 			},
 			{
@@ -48,6 +48,19 @@ const routeList: RouteObject[] = [
 			{
 				path: 'template/*',
 				element: <WrapperRouteComponent element={<TemplatePage />} titleId="动态模板" auth />
+			},
+
+			{
+				path: 'sys/sysDept',
+				element: <WrapperRouteComponent element={<TemplatePage />} titleId="部门管理" auth />
+			},
+			{
+				path: 'sys/sysOrg',
+				element: <WrapperRouteComponent element={<TemplatePage />} titleId="机构管理" auth />
+			},
+			{
+				path: 'sys/sysArea',
+				element: <WrapperRouteComponent element={<TemplatePage />} titleId="地区管理" auth />
 			},
 			{
 				path: 'dashboard/workbeach',

@@ -15,10 +15,13 @@ import { useTitle } from 'ahooks';
  */
  export default ()=>{
   const params= useParams()
+  const local=useLocation();
+  
   const [title,setTitle]=useState<string>();
   useTitle(title||'配置表单');
   const entityName=useMemo<string>(()=>{
-    return  params['*']||'';
+    const length=local.pathname.split("/").length;
+    return  local.pathname.split("/")[length-1];
   },[params])
   const {data,runAsync}=useModelInfo({entityName})
   useEffect(()=>{
@@ -38,7 +41,7 @@ import { useTitle } from 'ahooks';
             <FormPage type='queryForm' 
               maxColumns={[1,1,1]} 
               formData={formData} 
-              setFormData={setFormData} 
+              onDataChange={setFormData} 
               entityName={entityName||''}  
               modelName={entityName+'PageReq'} />
           </Card>
