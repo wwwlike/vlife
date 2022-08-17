@@ -87,7 +87,6 @@ public class ApiMethodCreate {
         //方法的注解
         AnnotationSpec.Builder methodAnnotation = AnnotationSpec.builder(methodAnnotation(in,methodEnum));
         methodAnnotation.addMember("value", "\"" + methodEnum.getPath(methodName) + "\"");
-
         MethodContent mtype= methodEnum.getMethodContent();
         if(MethodContent.save==mtype){
             methodSpec.addStatement("return service.save(dto)");

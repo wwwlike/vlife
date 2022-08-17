@@ -10,7 +10,7 @@ spring:
     add-mappings: false
     static-locations: classpath:/static/, classpath:/templates/
   profiles:
-    active: qq
+    active: auth
 #  jackson:
 #    date-format: yyyy-MM-dd HH:mm:ss
 #    time-zone: GMT+

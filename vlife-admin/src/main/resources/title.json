@@ -374,11 +374,15 @@
     "tags": {
       "search": {
         "fieldName": "search",
-        "title": "模糊搜索条件"
+        "title": "名称/编码/地址"
+      },
+      "onlyMenu": {
+        "fieldName": "onlyMenu",
+        "title": "菜单资源"
       },
       "sysRoleId": {
         "fieldName": "sysRoleId",
-        "title": "资源归属角色"
+        "title": "接口角色"
       },
       "type": {
         "fieldName": "type",
@@ -391,10 +395,6 @@
     "entityName": "SysRolePageReq",
     "title": "角色查询",
     "tags": {
-      "ttt": {
-        "fieldName": "ttt",
-        "title": "权限组"
-      },
       "vvv": {
         "fieldName": "vvv",
         "title": "权限组"
@@ -408,7 +408,7 @@
     "tags": {
       "search": {
         "fieldName": "search",
-        "title": "姓名/手机号/证件号"
+        "title": "姓名/手机/证件"
       }
     }
   },
@@ -573,222 +573,14 @@
     "tags": {}
   },
   {
-    "superName": "VLifeApi",
-    "entityName": "AccountApi",
-    "title": "员工用户接口;",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeApi",
-    "entityName": "DeptApi",
-    "title": "部门接口;",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeApi",
-    "entityName": "ProjectAccountApi",
-    "title": "项目人员关系表(分配关系)接口;",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeApi",
-    "entityName": "ProjectApi",
-    "title": "项目表接口;",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeApi",
-    "entityName": "ProjectStepApi",
-    "title": "项目阶段关系表接口;",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeApi",
-    "entityName": "StepApi",
-    "title": "项目阶段接口;",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeApi",
-    "entityName": "TaskApi",
-    "title": "任务表接口;",
-    "tags": {}
-  },
-  {
-    "superName": "DslDao",
-    "entityName": "AccountDao",
-    "tags": {}
-  },
-  {
-    "superName": "DslDao",
-    "entityName": "DeptDao",
-    "tags": {}
-  },
-  {
-    "superName": "DslDao",
-    "entityName": "ProjectAccountDao",
-    "tags": {}
-  },
-  {
-    "superName": "DslDao",
-    "entityName": "ProjectDao",
-    "tags": {}
-  },
-  {
-    "superName": "DslDao",
-    "entityName": "ProjectStepDao",
-    "tags": {}
-  },
-  {
-    "superName": "DslDao",
-    "entityName": "StepDao",
-    "tags": {}
-  },
-  {
-    "superName": "DslDao",
-    "entityName": "TaskDao",
-    "tags": {}
-  },
-  {
-    "entityName": "AccountDto",
-    "title": "登录元素",
-    "tags": {
-      "projects": {
-        "fieldName": "projects",
-        "title": "项目创建人"
-      },
-      "project_id": {
-        "fieldName": "project_id",
-        "title": "创建人的id"
-      },
-      "projectAccount_projectId": {
-        "fieldName": "projectAccount_projectId",
-        "title": "多对多"
-      },
-      "projectAccount_project": {
-        "fieldName": "projectAccount_project",
-        "title": "多对多的关联关系"
-      }
-    }
-  },
-  {
-    "entityName": "ProjectDto",
-    "title": "项目编辑",
-    "tags": {}
-  },
-  {
-    "entityName": "ProjectPinDto",
-    "title": "收藏",
-    "tags": {
-      "pin": {
-        "fieldName": "pin",
-        "title": "是否收藏"
-      },
-      "id": {
-        "fieldName": "id",
-        "title": "项目id"
-      }
-    }
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "Account",
-    "title": "员工用户",
-    "tags": {
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "title": "修订人"
-      },
-      "sex": {
-        "fieldName": "sex",
-        "title": "性别(字典)"
-      },
-      "deptId": {
-        "fieldName": "deptId",
-        "title": "所在部门"
-      },
-      "password": {
-        "fieldName": "password",
-        "title": "密码"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "title": "创建人"
-      },
-      "name": {
-        "fieldName": "name",
-        "title": "姓名"
-      },
-      "tel": {
-        "fieldName": "tel",
-        "title": "电话号码"
-      },
-      "id": {
-        "fieldName": "id",
-        "title": "主键id"
-      },
-      "account": {
-        "fieldName": "account",
-        "title": "账号"
-      },
-      "age": {
-        "fieldName": "age",
-        "title": "年龄"
-      },
-      "status": {
-        "fieldName": "status",
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "title": "创建时间"
-      }
-    }
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "Dept",
-    "title": "部门",
-    "tags": {
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "title": "创建人"
-      },
-      "name": {
-        "fieldName": "name",
-        "title": "部门名称"
-      },
-      "id": {
-        "fieldName": "id",
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "title": "创建时间"
-      }
-    }
-  },
-  {
     "superName": "DbEntity",
     "entityName": "Project",
-    "title": "项目表",
+    "title": "项目管理",
     "tags": {
+      "projectNo": {
+        "fieldName": "projectNo",
+        "title": "项目编号"
+      },
       "modifyDate": {
         "fieldName": "modifyDate",
         "title": "修改时间"
@@ -797,29 +589,13 @@
         "fieldName": "modifyId",
         "title": "修订人"
       },
-      "type": {
-        "fieldName": "type",
-        "title": "项目类型"
-      },
-      "planDate": {
-        "fieldName": "planDate",
-        "title": "计划开始日期"
-      },
-      "accountId": {
-        "fieldName": "accountId",
-        "title": "项目负责人"
-      },
-      "totalPoint": {
-        "fieldName": "totalPoint",
-        "title": "项目任务总点数"
-      },
-      "pin": {
-        "fieldName": "pin",
-        "title": "收藏\n暂时所有人公用"
-      },
       "createId": {
         "fieldName": "createId",
         "title": "创建人"
+      },
+      "sysOrgId": {
+        "fieldName": "sysOrgId",
+        "title": "甲方"
       },
       "name": {
         "fieldName": "name",
@@ -827,19 +603,19 @@
       },
       "state": {
         "fieldName": "state",
-        "title": "项目状态"
+        "title": "当前阶段"
+      },
+      "sysUserId": {
+        "fieldName": "sysUserId",
+        "title": "负责人"
       },
       "id": {
         "fieldName": "id",
         "title": "主键id"
       },
-      "finishedPoint": {
-        "fieldName": "finishedPoint",
-        "title": "已经完成的任务点数"
-      },
-      "finishedDate": {
-        "fieldName": "finishedDate",
-        "title": "结束日期"
+      "startDate": {
+        "fieldName": "startDate",
+        "title": "开始日期"
       },
       "status": {
         "fieldName": "status",
@@ -848,366 +624,14 @@
       "createDate": {
         "fieldName": "status",
         "title": "创建时间"
-      }
-    }
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "ProjectAccount",
-    "title": "项目人员关系表(分配关系)",
-    "tags": {
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "title": "创建人"
-      },
-      "id": {
-        "fieldName": "id",
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "title": "创建时间"
-      }
-    }
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "ProjectStep",
-    "title": "项目阶段关系表",
-    "tags": {
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "title": "创建人"
-      },
-      "stepId": {
-        "fieldName": "stepId",
-        "title": "项目的阶段"
-      },
-      "id": {
-        "fieldName": "id",
-        "title": "主键id"
-      },
-      "projectId": {
-        "fieldName": "projectId",
-        "title": "项目"
-      },
-      "status": {
-        "fieldName": "status",
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "title": "创建时间"
-      }
-    }
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "Step",
-    "title": "项目阶段",
-    "tags": {
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "title": "创建人"
-      },
-      "id": {
-        "fieldName": "id",
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "title": "创建时间"
-      }
-    }
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "Task",
-    "title": "任务表",
-    "tags": {
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "title": "修改时间"
-      },
-      "level": {
-        "fieldName": "level",
-        "title": "紧急程度(字典)"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "title": "修订人"
-      },
-      "stepId": {
-        "fieldName": "stepId",
-        "title": "当前所在阶段"
-      },
-      "sort": {
-        "fieldName": "sort",
-        "title": "排序"
-      },
-      "point": {
-        "fieldName": "point",
-        "title": "任务点数"
-      },
-      "accountId": {
-        "fieldName": "accountId",
-        "title": "任务创建人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "title": "创建人"
-      },
-      "name": {
-        "fieldName": "name",
-        "title": "任务名称"
-      },
-      "progress": {
-        "fieldName": "progress",
-        "title": "当前完成进度"
-      },
-      "state": {
-        "fieldName": "state",
-        "title": "任务完成状态"
-      },
-      "id": {
-        "fieldName": "id",
-        "title": "主键id"
-      },
-      "projectId": {
-        "fieldName": "projectId",
-        "title": "所属项目"
-      },
-      "status": {
-        "fieldName": "status",
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "title": "创建时间"
-      }
-    }
-  },
-  {
-    "superName": "PageQuery",
-    "entityName": "AccountPageReq",
-    "title": "查询条件",
-    "tags": {}
-  },
-  {
-    "superName": "VlifeQuery",
-    "entityName": "AccountTestReq",
-    "title": "类说明",
-    "tags": {}
-  },
-  {
-    "superName": "VlifeQuery",
-    "entityName": "LoginReq",
-    "title": "登录入参",
-    "tags": {
-      "password": {
-        "fieldName": "password",
-        "title": "密码"
-      },
-      "name": {
-        "fieldName": "name",
-        "title": "用户名"
       }
     }
   },
   {
     "superName": "PageQuery",
     "entityName": "ProjectPageReq",
-    "title": "项目分页查询条件",
-    "tags": {
-      "accountId": {
-        "fieldName": "accountId",
-        "title": "根据负责人id查询"
-      },
-      "projectAccount_accountId": {
-        "fieldName": "projectAccount_accountId",
-        "title": "根据参与人Id查询(默认都需要传入)"
-      },
-      "year": {
-        "fieldName": "year",
-        "title": "项目开始年度"
-      },
-      "name": {
-        "fieldName": "name",
-        "title": "项目名称"
-      },
-      "state": {
-        "fieldName": "state",
-        "title": "项目状态"
-      },
-      "type": {
-        "fieldName": "type",
-        "title": "项目类型"
-      }
-    }
-  },
-  {
-    "superName": "VlifeQuery",
-    "entityName": "TaskListReq",
-    "title": "任务过滤",
-    "tags": {
-      "name": {
-        "fieldName": "name",
-        "title": "任务名称"
-      },
-      "progress": {
-        "fieldName": "progress",
-        "title": "进度范围"
-      },
-      "state": {
-        "fieldName": "state",
-        "title": "任务状态"
-      },
-      "projectId": {
-        "fieldName": "projectId",
-        "title": "项目id"
-      }
-    }
-  },
-  {
-    "superName": "VLifeService",
-    "entityName": "AccountService",
+    "title": "项目查询",
     "tags": {}
-  },
-  {
-    "superName": "VLifeService",
-    "entityName": "DeptService",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeService",
-    "entityName": "ProjectAccountService",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeService",
-    "entityName": "ProjectService",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeService",
-    "entityName": "ProjectStepService",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeService",
-    "entityName": "StepService",
-    "tags": {}
-  },
-  {
-    "superName": "VLifeService",
-    "entityName": "TaskService",
-    "tags": {}
-  },
-  {
-    "entityName": "AccountTestVo",
-    "title": "类说明",
-    "tags": {
-      "projects": {
-        "fieldName": "projects",
-        "title": "查找project的外键是否有当前表，有则把project放入到这里"
-      },
-      "projectAccount_project_name": {
-        "fieldName": "projectAccount_project_name",
-        "title": "路径错误,日志应该报错"
-      },
-      "dept_name": {
-        "fieldName": "dept_name",
-        "title": "数据打平"
-      }
-    }
-  },
-  {
-    "entityName": "AccountVo",
-    "title": "类说明",
-    "tags": {
-      "deptId": {
-        "fieldName": "deptId",
-        "title": "用户组"
-      }
-    }
-  },
-  {
-    "entityName": "ProjectDetailVo",
-    "title": "类说明",
-    "tags": {
-      "totalPoint": {
-        "fieldName": "totalPoint",
-        "title": "项目任务总点数"
-      },
-      "account_name": {
-        "fieldName": "account_name",
-        "title": "项目负责人姓名"
-      },
-      "name": {
-        "fieldName": "name",
-        "title": "项目名称"
-      },
-      "state": {
-        "fieldName": "state",
-        "title": "项目状态 project_state"
-      },
-      "type": {
-        "fieldName": "type",
-        "title": "项目类型"
-      },
-      "finishedPoint": {
-        "fieldName": "finishedPoint",
-        "title": "已经完成的任务点数"
-      },
-      "steps": {
-        "fieldName": "steps",
-        "title": "项目的生命周期"
-      },
-      "planDate": {
-        "fieldName": "planDate",
-        "title": "计划开始日期"
-      },
-      "tasks": {
-        "fieldName": "tasks",
-        "title": "项目下的任务"
-      },
-      "finishedDate": {
-        "fieldName": "finishedDate",
-        "title": "结束日期"
-      }
-    }
   },
   {
     "superName": "VLifeApi",
@@ -1360,6 +784,10 @@
         "fieldName": "modifyDate",
         "title": "修改时间"
       },
+      "edit": {
+        "fieldName": "edit",
+        "title": "可维护"
+      },
       "modifyId": {
         "fieldName": "modifyId",
         "title": "修订人"
@@ -1367,10 +795,6 @@
       "createId": {
         "fieldName": "createId",
         "title": "创建人"
-      },
-      "del": {
-        "fieldName": "del",
-        "title": "可删除"
       },
       "id": {
         "fieldName": "id",
@@ -1455,7 +879,12 @@
     "superName": "PageQuery",
     "entityName": "SysDeptPageReq",
     "title": "部门查询条件",
-    "tags": {}
+    "tags": {
+      "deptName": {
+        "fieldName": "deptName",
+        "title": "名称/编码"
+      }
+    }
   },
   {
     "superName": "PageQuery",

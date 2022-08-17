@@ -27,9 +27,11 @@ export default () => {
     },
   });
 
-  return (<div>
-    <h3> 本项目是VLife低代码平台的前端实现</h3>
-  </div>
+  return (
+    <div>
+      <h3> 本项目是VLife低代码平台的前端实现</h3>
+        
+    </div>
 
 );
 };

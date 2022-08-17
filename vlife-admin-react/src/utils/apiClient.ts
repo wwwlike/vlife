@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from "axios";
-import qs from "qs";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 const localStorageKey = "__auth_provider_token__";
 // const { user } = useAuth();

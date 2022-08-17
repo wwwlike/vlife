@@ -61,6 +61,8 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
    */
   @PostMapping("/save")
   public SysDict save(@RequestBody SysDict dto) {
+    dto.setSys(false);
+    dto.setEdit(true);
     return service.save(dto);
   }
 

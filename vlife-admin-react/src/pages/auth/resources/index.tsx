@@ -50,7 +50,8 @@ export default ()=>{
             formData={formData} 
             onDataChange={setFormData} 
             entityName='sysResources'  
-            modelName='sysResourcesPageReq' />
+            modelName='sysResourcesPageReq'
+             />
             {/* <Search paramName='search' params={pageReq} setParams={setPageReq} pageInit="pager.page"/> */}
             <div> {formData?.search} </div> 
           </Card>
@@ -62,7 +63,8 @@ export default ()=>{
              <TablePage
                 req={formData}
                 entityName='sysResources' 
-                editModel={{name:'sysResources',reactions}}
+                editModel={{name:'sysResources'
+                ,reactions,requiredCols:['code','name','type']}}
                 hideColumns={['createDate','modifyDate','sysRoleId','status','createId','modifyId']}
                 select_more={true}
                 />

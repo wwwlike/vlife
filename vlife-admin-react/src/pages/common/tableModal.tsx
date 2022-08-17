@@ -17,7 +17,7 @@ export interface TableModalProps  extends tablePageProps {
 /**
  * selected ，列表初始选中的数据 仅仅包含name和id
  */
-export const TableModal=createNiceModal("tableModal", ({width=600,selected:oldSelected,...props}:TableModalProps) =>{
+export const TableModal=createNiceModal("tableModal", ({width=900,selected:oldSelected,...props}:TableModalProps) =>{
   const modal = useNiceModal("tableModal");
   const [selects,setSelects]=useState<{id:string|number,name?:string}[]>([]);
   const handleSubmit = useCallback(() => { //提交按钮触发的事件
@@ -39,7 +39,6 @@ export const TableModal=createNiceModal("tableModal", ({width=600,selected:oldSe
     {/* {JSON.stringify(oldSelected)} */}
     <TablePage 
       onSelected={(data)=>{
-        console.log('data222',data)
         setSelects(data)}} //table的选择事件
       selected={oldSelected}
       {...props} />

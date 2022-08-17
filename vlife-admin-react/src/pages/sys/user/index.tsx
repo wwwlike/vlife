@@ -49,7 +49,13 @@ export default ()=>{
              <TablePage
                 req={formData}
                 entityName='sysUser'
-                editModel={{name:'sysUser',hideCols:['password']}} 
+                editModel={
+                  {
+                    name:'sysUser',
+                    hideCols:['password'],
+                    requiredCols:['username','name','sysGroupId']
+                    
+                  }} 
                 hideColumns={['createDate','password','modifyDate','status','id','createId','modifyId']}
                 // hideColumns={['createDate','modifyDate']}
                 listModel='sysUser'

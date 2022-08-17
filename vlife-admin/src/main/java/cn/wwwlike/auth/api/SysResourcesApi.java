@@ -23,6 +23,9 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
    */
   @PostMapping("/save")
   public SysResources save(@RequestBody SysResources dto) {
+    if(dto.getOnlyMenu()==null){
+      dto.setOnlyMenu(false);
+    }
     return service.save(dto);
   }
 

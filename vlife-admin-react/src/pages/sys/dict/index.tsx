@@ -31,9 +31,10 @@ export default ()=>{
         fun:()=>sync.runAsync().then(data=>{
           setReload(!reload)
         })
-      }
+      },
     ]
   },[sync])
+
   
   return (
     <div className='h-full overscroll-auto'>
@@ -44,8 +45,9 @@ export default ()=>{
                 key={'queryPage'}
                 req={typeReq}
                 entityName={entityName} 
-                hideColumns={['createDate','modifyDate','id','status','sys','del','val','code','createId','modifyId']}
-                btnEnable={{read:true}}
+                hideColumns={['createDate','modifyDate','id','status','sys','edit','val','code','createId','modifyId']}
+                btnEnable={{read:true}}//不需要默认的 CRUD
+                customBtns={customBtns}
                 reload={reload}
                 onGetData={(data)=>{
                   if(data&&data.length>0)
@@ -66,9 +68,14 @@ export default ()=>{
                 key={'tablePage'}
                 req={pageReq}
                 entityName={entityName} 
+                editModel={{
+                  name:entityName,
+                  hideCols:['sys','edit'],
+                  requiredCols:['code','val','title'],
+                  readonlyCols:['code']
+                }}
                 hideColumns={['createDate','modifyDate','id','status','createId','modifyId']}
                 select_more={true}
-                customBtns={customBtns}
                 />
           </Card>
       </div> 

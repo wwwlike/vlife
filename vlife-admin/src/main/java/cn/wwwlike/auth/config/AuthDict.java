@@ -26,7 +26,9 @@ import javax.inject.Named;
 public class AuthDict {
     @Named("用户类型")
     public static final class USER_TYPE {
-
+    }
+    @Named("项目阶段")
+    public static final class PROJECT_STATE {
     }
 
     @Named("地区类型")

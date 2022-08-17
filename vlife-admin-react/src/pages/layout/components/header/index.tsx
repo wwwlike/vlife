@@ -62,7 +62,7 @@ const Index: FC = () => {
 							}
 						>
 							<Avatar color="orange" size="small">
-								{user?.name.length>3?user?.name:user?.name[0]}
+								{user&&user.name.length>3?user?.name:user?.name[0]}
 							</Avatar>
 						</Dropdown>
 

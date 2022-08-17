@@ -49,7 +49,10 @@ const routeList: RouteObject[] = [
 				path: 'template/*',
 				element: <WrapperRouteComponent element={<TemplatePage />} titleId="动态模板" auth />
 			},
-
+			{
+				path: 'oa/project',
+				element: <WrapperRouteComponent element={<TemplatePage />} titleId="项目管理" auth />
+			},
 			{
 				path: 'sys/sysDept',
 				element: <WrapperRouteComponent element={<TemplatePage />} titleId="部门管理" auth />

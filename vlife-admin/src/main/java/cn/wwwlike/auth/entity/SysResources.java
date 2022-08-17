@@ -54,10 +54,6 @@ public class SysResources  extends DbEntity {
      */
     @VField(dictCode = "SYSRESOURCES_TYPE")
     public String type;
-//    /**
-//     * 请求方式
-//     */
-//    public String requestType;
     /**
      * 归属角色
      */

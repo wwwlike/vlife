@@ -10,7 +10,7 @@ export interface WrapperRouteProps extends RouteProps {
 	auth?: boolean
 }
 
-const PublicRoute = (props) => {
+const PublicRoute = (props:any) => {
 	return props.element
 }
 

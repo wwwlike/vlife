@@ -11,7 +11,7 @@ import { Select } from '@douyinfe/semi-ui';
     * 1. 动态取数据，页面提供配置，然后存到前端 reactQuery方式缓存
     */
  export interface ConfirmModalProps extends Omit<FormPageProps,'setFormData'|'formData'>{
-    saveFun?:(id:string)=>Promise<number>,
+    saveFun?:()=>Promise<number>,
     title?:string,//默认删除的内容
     
  }
@@ -25,9 +25,9 @@ import { Select } from '@douyinfe/semi-ui';
   */
  export const ConfirmModal=createNiceModal("confirmModal", ({saveFun,title="确认删除选中的记录么?"}:ConfirmModalProps) =>{
    const modal = useNiceModal("confirmModal");
-   const handleSubmit = useCallback((id:string) => { //提交按钮触发的事件
+   const handleSubmit = useCallback(() => { //提交按钮触发的事件
    if(saveFun){    //通用保存
-      saveFun(id).then(data=>{
+      saveFun().then(data=>{
         modal.resolve(data);
         modal.hide();
       });

@@ -51,7 +51,7 @@ export interface FormProps {
   reactions?:Map<string,reactions>; //联动关系
   hideCols?:string[]; //表单隐藏字段
   readonlyCols?:string[]; //表单只读字段
-  requiredCols:string[]; //表单必填字段
+  requiredCols?:string[]; //表单必填字段
 }
 
 export default ({maxColumns=[2,2,2],dicts,formData,
@@ -140,11 +140,13 @@ export default ({maxColumns=[2,2,2],dicts,formData,
       pp[f.dataIndex]={};
       const prop:any=pp[f.dataIndex];
       prop.title=f.title;
-      // prop.required= true;
-      // prop['x-validator']= {
-      //   len: 5,
-      // };
-      // prop.maxLength= 5;
+      if(requiredCols&& (requiredCols.length===0||requiredCols.includes(f.dataIndex))){
+         prop.required= true;
+      }
+      if(readonlyCols&&readonlyCols.includes(f.dataIndex)){
+        prop.readPretty= true;
+       }
+      
       prop['x-decorator']= 'FormItem';
       if(f.dictCode){
         prop['x-component']='Select';

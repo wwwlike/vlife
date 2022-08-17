@@ -4,6 +4,7 @@ import { getFkInfo, useDetail, useDetails, useModelInfo, usePage, useRemove, use
 import Table, { BtnMemoProp, ListProps, VfButton } from '@src/components/table';
 import { useAuth } from '@src/context/auth-context';
 import { reactions } from '@src/components/form';
+import { useLocation } from 'react-router-dom';
 
 type editModelProps={
   name:string,
@@ -114,10 +115,24 @@ export const TablePage=({
       ).length===records.length;
   },[user?.id])
 
+
+  
+
   const editCheck=useCallback((...data:any):BtnMemoProp=> {
     if(!checkUser(data)){
       return {disable:true,prompt:'无权修改他人创建的数据'}
-    }
+    }else if('sys' in data[0]&&[...data].filter(d=>{
+      return d.sys===true
+    }).length>0){
+        return {disable:true,prompt:'系统数据不能修改'}
+    } 
+    return {disable:false}
+  },[]);
+
+  /**
+   * 新增按钮的可操作权限和外部数据关联
+   */
+  const addCheck=useCallback((...data:any):BtnMemoProp=> {
     return {disable:false}
   },[]);
 
@@ -126,9 +141,16 @@ export const TablePage=({
       return {disable:true,prompt:'请选中至少一条记录'}
     } else if(!checkUser(data)){
       return {disable:true,prompt:'无权删除他人创建的数据'}
+    } else if('sys' in data[0]&&[...data].filter(d=>{
+      return d.sys===true
+    }).length>0){
+        return {disable:true,prompt:'系统数据不能删除'}
     } 
     return {disable:false}
   },[]);
+
+
+
 
   // 列头信息
   const {run:titleRun,data:modelInfo}=useModelInfo({entityName});
@@ -192,45 +214,7 @@ export const TablePage=({
     })
 },[fkInfos,data])
 
-    // //是实体模型，就需要查询外键 各行的外键数据
-  // const fkMap= useMemo(()=>{
-  //   const fkObj:any={};
-  //  if(modelInfo&&listModel&&entityName&&listModel===entityName){
-  //       const fieldInfos=modelInfo?.data?.fields.filter(f=>{
-  //       return f.entityFieldName==="id"&& entityName!==f.entityType && !props.hideColumns?.includes(f.dataIndex)
-  //     });
-  //     fieldInfos?.forEach(f=>{
-  //       // page数据里外键id获取
-  //       const ids:string[]=data?.data?.result.map(d=>d[f.dataIndex])||[];
-  //       console.log(f.dataIndex,ids);
-  //       // 调用view方法获得外键name
-  //       fkInfo(f.entityType,[...ids]).then(data=>{
-  //         data.data?.forEach(e=>{
-  //           fkObj[e.id]=e.name  
-  //         })
-  //       })
-  //     });
-  //  }
-  //  return fkObj;
-  // },[data,listModel,entityName,modelInfo])
-
-
-//   useEffect(()=>{
-//     //step2 找到字段里有字典的数据，并从全局context里得到本次需要的字典数据
-//     fkInfos.forEach( f=>{
-//     if(props.formData[f.dataIndex]){
-//       fkInfoFun(f.entityName,props.formData[f.dataIndex]).then(data=>{
-//         data.data?.forEach(e=>{
-//           fkMap[e.id]=e.name
-//           setFkMap({...fkMap})      
-//         })
-//       })
-//     }
-//     })
-// },[fkInfos])
-
-
-  
+   
   const setPage=useCallback((pageNo: number)=>{
     page({...req,...{pager:{page:pageNo}}})
   },[req]);
@@ -300,31 +284,35 @@ export const TablePage=({
       modalShow(true,viewModel,record);
     }
    };
-     
+
+   const local=useLocation();
+  
   const tableBtn=useMemo(():VfButton[]=>{
     const memoBtns:VfButton[]=[];
-    const addDefBtn={title:'新增',entityName:entityName, tableBtn:true,key:'save',fun:entitySave}
+    const addDefBtn={title:'新增',entityName:entityName, tableBtn:true,key:'save',fun:entitySave,attr:addCheck}
     const rmDefBtn={title:'删除',entityName:entityName,tableBtn:false,key:'remove',fun:entityRm,attr:batchRmCheck}
     const batchRmDefBtn={title:'删除',entityName:entityName,tableBtn:true,key:'remove',fun:entityRm,attr:batchRmCheck}
     const editDefBtn={title:'修改',entityName:entityName,tableBtn:false,key:'save',fun:entitySave,attr:editCheck}
+    const  fromTmp=local.pathname.includes('/template/');
+    // 是模板页面则不进行权限判断
     if(btnEnable.read==false){
-      if(btnEnable.add){
+      if(btnEnable.add&&(fromTmp||checkBtnPermission(addDefBtn))){
         memoBtns.push(addDefBtn)
       }
-      if(btnEnable.batchRm&&checkBtnPermission(batchRmDefBtn)){
+      if(btnEnable.batchRm&&(fromTmp||checkBtnPermission(batchRmDefBtn))){
         memoBtns.push(rmDefBtn,batchRmDefBtn)
       }
-      if(btnEnable.edit&&checkBtnPermission(editDefBtn)){
+      if(btnEnable.edit&&(fromTmp||checkBtnPermission(editDefBtn))){
         memoBtns.push(editDefBtn)
       }
-      customBtns?.forEach(cus=>{
-        if(checkBtnPermission(cus)){
-          memoBtns.push(cus)
-        }
-      })
     }
+    customBtns?.forEach(cus=>{
+      if(checkBtnPermission(cus)){
+        memoBtns.push(cus)
+      }
+    })
     return memoBtns;
-  },[customBtns,user?.resourceCodes,btnEnable])
+  },[customBtns,user?.resourceCodes,btnEnable,local])
 
   return (
     <div>

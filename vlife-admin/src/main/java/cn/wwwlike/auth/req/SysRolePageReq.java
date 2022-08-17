@@ -19,6 +19,7 @@
 package cn.wwwlike.auth.req;
 import cn.wwwlike.auth.entity.SysRole;
 import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @Data
 public class SysRolePageReq extends PageQuery<SysRole> {
+   @VField(opt = Opt.like)
    public String name;
    /**
     * 权限组
@@ -37,11 +39,11 @@ public class SysRolePageReq extends PageQuery<SysRole> {
    public String vvv;
    /**
     * 权限组
-    */
-   @VField(pathName = "sysRoleGroup_sysGroup_id")
-   public List<String> ttt;
+//    */
+//   @VField(pathName = "sysRoleGroup_sysGroup_id")
+//   public List<String> ttt;
 
-   @VField(pathName = "sysRoleGroup_sysGroup_name")
-   public String groupName;
+//   @VField(pathName = "sysRoleGroup_sysGroup_name")
+//   public String groupName;
 
 }

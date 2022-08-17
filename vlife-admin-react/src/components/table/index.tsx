@@ -96,7 +96,7 @@ export default ({
       // step1 不需要的就隐藏掉
       // hideColumns?.push('id');//id必须不展示
         const size:number=hideColumns?.find(name=>{
-            return name===currentValue.dataIndex
+            return name===currentValue.dataIndex||currentValue.dataIndex==='password'
         })?.length||0;
         if(size>0){
           return false;
@@ -181,39 +181,41 @@ export default ({
               lineClick(record);
             }
       }};}, []);
-  const rowSelection = useMemo(()=>{
-    return {
-    disabled: !select_more, //全局选中按钮
-    selectedRowKeys:selectIds,
-    onSelect: (record:any, selected:any) => {
-      if(select_more==false){
-        if(selected==true){
-        if(select_show_field){
-          setSelectedRow([{id:record.id,name:record[select_show_field]}])
-        }else{
-          setSelectedRow([record])
-        }}else{
-          setSelectedRow([])
+      const rowSelection = useMemo(():RowSelection<any>=>{
+        return {
+        disabled: !select_more, //全局选中按钮
+        selectedRowKeys:selectIds,
+        onSelect: (record:any, selected:any) => {
+          if(select_more==false){
+            if(selected==true){
+            if(select_show_field){
+              setSelectedRow([{id:record.id,name:record[select_show_field]}])
+            }else{
+              setSelectedRow([record])
+            }}else{
+              setSelectedRow([])
+            }
+          }
+           console.log(`select row: ${selected}`, record);
+        },
+        // onSelectAll: (selected:any, selectedRows:any[]) => {
+        //     console.log(`select all rows: ${selected}`, selectedRows);
+        // },
+        onChange: (selectedRowKeys:(string|number)[]|undefined, selectedRows:any[]|undefined) => {
+          if(select_more){
+            if(selectedRows){
+            setSelectedRow([...selectedRows.map(row=>{
+              if(select_show_field){
+                return {id:row.id,name:row[select_show_field]}
+              }else{
+                return row
+              }
+            })])
+            }
+          }
         }
       }
-       console.log(`select row: ${selected}`, record);
-    },
-    onSelectAll: (selected:any, selectedRows:any[]) => {
-        console.log(`select all rows: ${selected}`, selectedRows);
-    },
-    onChange: (selectedRowKeys:string[], selectedRows:any[]) => {
-      if(select_more){
-        setSelectedRow([...selectedRows.map(row=>{
-          if(select_show_field){
-            return {id:row.id,name:row[select_show_field]}
-          }else{
-            return row
-          }
-        })])
-      }
-    }
-  }
-},[selectedRow]);
+    },[selectedRow]);
 
   return (
     <> 

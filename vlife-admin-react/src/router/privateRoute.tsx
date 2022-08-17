@@ -4,9 +4,9 @@ import { RouteProps, useLocation } from 'react-router'
 import Empty from '@src/components/empty'
 // import useStore from '@src/stores/user'
 import { useAuth } from '@src/context/auth-context'
-
-const PrivateRoute: FC<RouteProps> = (props) => {
-	const { login,user } = useAuth();
+const PrivateRoute= ({...props}) => {
+// const PrivateRoute: FC< RouteProps> = (props) => {
+	const { user } = useAuth();
 	const location = useLocation()
 	const { pathname } = location
   // const logged = useStore((state) => state.logged)
@@ -19,7 +19,6 @@ const PrivateRoute: FC<RouteProps> = (props) => {
 			props.element
 		)
 	) : (
-		//存在瞬间没有登录来到这里的情况
 	 <Empty title="没有权限" description="您还没有登录，请先去登录" type="403" />
 	)
 }

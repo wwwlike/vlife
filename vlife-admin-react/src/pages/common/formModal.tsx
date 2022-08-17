@@ -17,7 +17,7 @@ import { Form, IFormFeedback } from '@formily/core';
     */
  export interface FormModalProps extends Omit<FormPageProps,'setFormData'|'formData'>{
     saveFun?: <T extends IdBean>(dto:Partial<T>)=>Promise<T>,
-    initData?:Partial<IdBean>|Partial<BaseRequest>
+    initData?:any
  }
  
  /**
@@ -46,13 +46,12 @@ import { Form, IFormFeedback } from '@formily/core';
     if(saveFun&&form ){    //通用保存
         form.submit().then(data=>{
           saveFun(form.values).then(data=>{
-            // console.log('modal.resolve', modal.resolve);
           modal.resolve(data);
           //  pageRefresh();
           modal.hide();
        })
         }).catch(e=>{
-          // alert(e);
+         
         })
       
     }
@@ -66,7 +65,6 @@ import { Form, IFormFeedback } from '@formily/core';
     //   {disabled:form&&form.errors.length>0}
     // }
      >
-     {/* {JSON.stringify(form?.errors)} */}
       <FormPage 
         onError={setErrors}
         formData={initData} 

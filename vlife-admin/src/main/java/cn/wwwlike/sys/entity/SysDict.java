@@ -52,8 +52,8 @@ public class SysDict extends DbEntity {
      */
     public Boolean sys;
     /**
-     * 可删除
+     * 可维护
      */
-    public Boolean del;
+    public Boolean edit;
 
 }

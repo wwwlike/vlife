@@ -30,7 +30,7 @@ import lombok.Data;
 @Data
 public class SysUserPageReq extends PageQuery<SysUser> {
     /**
-     * 姓名/手机号/证件号
+     * 姓名/手机/证件
      */
     @VField(pathName = "name",opt = Opt.like,orReqFields = {"tel","idno"})
     public String search;

@@ -33,6 +33,9 @@ import java.util.List;
 public class SysDictService extends BaseService<SysDict, SysDictDao> {
     /**
      * 创建所有系统字典项和系统字典值
+     * sys 表示系统导入则不能删除、修改
+     * edit 子类可以新增
+     * insert
      * @return
      */
     public List<SysDict> sync(){
@@ -42,20 +45,20 @@ public class SysDictService extends BaseService<SysDict, SysDictDao> {
         List<DictVo> sysDict = ReadCt.getSysDict();
         saveByDictVo(sysDict,false,true);//是系统级的不可以维护
         List<DictVo> autiDict = ReadCt.read(AuthDict.class);
-        saveByDictVo(autiDict,true,true);//不是系统级的，可以维护
+        saveByDictVo(autiDict,true,true);//导入的，可以维护
         return findAll();
     }
 
     /**
      * 根据dictVO进行批量保存
      * @param dicts
-     * @param del
+     * @param edit
      */
-    public void saveByDictVo(List<DictVo> dicts,Boolean del,Boolean sys){
+    public void saveByDictVo(List<DictVo> dicts,Boolean edit,Boolean sys){
         dicts.forEach(dictVo -> {
             SysDict sysDict =new SysDict();
             BeanUtils.copyProperties(dictVo, sysDict);
-            sysDict.setDel(del);
+            sysDict.setEdit(edit);
             sysDict.setSys(sys);
             save(sysDict);
         });

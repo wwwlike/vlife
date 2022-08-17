@@ -61,23 +61,6 @@ public class GeneratorMaster extends GeneratorUtils {
         return waitCreateFiles;
     }
 
-//    /**
-//     * api自动创建;
-//     * 随着需求变化增量的方法也要能够进入到api里,待实现
-//     */
-//    public List<JavaFile> apiGenerator(ClassLoader loader, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> reqs, List<SaveDto> saves) {
-//        GeneratorAutoApi generatorApi = new GeneratorAutoApi();
-//        List<JavaFile> files=new ArrayList<>();
-//        entitys.forEach(entityDto -> {
-//            if (!sourceClzExist(loader, entityDto.getClz(), CLZ_TYPE.API)) {
-//                files.add(generatorApi.apiGenerator(entityDto, vos, reqs, saves));
-//            }else{/*增量方法*/
-//            }
-//        });
-//        return files;
-//    }
-
-
     /**
      * api自动创建;
      * 随着需求变化增量的方法也要能够进入到api里,待实现

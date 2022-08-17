@@ -93,13 +93,16 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         try{
             String json =null;
             Resource resource = new ClassPathResource("title.json");
-            if(resource.isFile()){//classpath查找
+            if(resource.isFile()){//classpath查找 开发环境
                 InputStream is = resource.getInputStream();
                 json = FileUtil.getFileContent(is);
             }else{
                 File jsonFile =ResourceUtils.getFile("./src/main/resources/title.json");
-                if(jsonFile.isFile()){
+                if(jsonFile.isFile()){//插件使用
                     json= FileUtils.readFileToString(jsonFile,"UTF-8");
+                }else{// jar包使用
+                    InputStream is = ClassPathResource.class.getClassLoader().getResourceAsStream("/title.json");
+                    json = FileUtil.getFileContent(is);
                 }
             }
             if(json!=null){

@@ -85,11 +85,11 @@ const Index: FC = () => {
 	}
 	}, [allMenuList])
 
-	const onSelect = (data) => {
+	const onSelect = (data:any) => {
 		setSelectedKeys([...data.selectedKeys])
 		navigate(data.selectedItems[0].path as string)
 	}
-	const onOpenChange = (data) => {
+	const onOpenChange = (data:any) => {
 		setOpenKeys([...data.openKeys])
 	}
 

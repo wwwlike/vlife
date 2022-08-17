@@ -55,6 +55,7 @@ import { useTitle } from 'ahooks';
                 entityName={entityName||''} 
                 hideColumns={['createDate','modifyDate','status','id','createId','modifyId']}
                 select_more={true}
+                editModel={{name:entityName,requiredCols:[]}}
                 />
           </Card>
       </div> 

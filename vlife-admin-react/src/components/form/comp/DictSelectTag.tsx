@@ -15,7 +15,7 @@ const FormliyDictSelectTag=observer((prop:FormliyDictSelectTagProps)=>{
   const selectMore=useMemo(()=>{
     return !(field.componentProps['type']==='string'&&field.componentProps['fieldType']==='basic')
   },[field.componentProps])
-  const onSelected=useCallback((values:(string|number)[])=>{
+  const onSelected=useCallback((values:(string|number|undefined)[])=>{
     if(values.length>0){
       if(selectMore){
         form.setValuesIn(fieldName,values);
@@ -31,6 +31,7 @@ const FormliyDictSelectTag=observer((prop:FormliyDictSelectTagProps)=>{
     fieldName={fieldName} 
     selectMore={selectMore}
     onSelected={onSelected} 
-    datas={field.dataSource}  />
+    datas={field.dataSource} 
+  />
 }) 
 export default FormliyDictSelectTag;

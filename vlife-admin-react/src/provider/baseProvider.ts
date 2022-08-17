@@ -4,9 +4,7 @@ import { Options } from "ahooks/lib/useRequest/src/types";
 import { useEffect, useMemo, useState } from "react";
 import { useRequest } from "ahooks";
 import { TablePagination } from "@douyinfe/semi-ui/lib/es/table";
-
 import qs from "qs";
-import { arrayToStr } from "@src/utils/utils";
 import SizeContext from "antd/lib/config-provider/SizeContext";
 
 /**

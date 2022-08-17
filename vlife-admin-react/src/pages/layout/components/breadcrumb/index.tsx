@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Breadcrumb } from '@douyinfe/semi-ui'
-import menuList, { MenuItem } from '@src/menus/config'
+import menuList, { MenuItem } from '@src/menu/config'
 import { useLocation } from 'react-router-dom'
-import { useLocale } from '@src/locales'
+// import { useLocale } from '@src/locales'
 
 interface BreadcrumbItem {
 	key: string
@@ -37,7 +37,7 @@ const getBreadcrumbByPathName = (menuList: MenuItem[], pathname: string, breadcr
 
 const Index: React.FC = () => {
 	const { pathname } = useLocation()
-	const { formatMessage } = useLocale()
+	// const { formatMessage } = useLocale()
 	const [_, setState] = useState(1)
 
 	useEffect(() => {
@@ -50,7 +50,7 @@ const Index: React.FC = () => {
 	return (
 		<Breadcrumb>
 			{breadcrumbList.map((e) => {
-				return <Item key={e.key}>{formatMessage({ id: e.title })}</Item>
+				return <Item key={e.key}>{ e.title}</Item>
 			})}
 		</Breadcrumb>
 	)

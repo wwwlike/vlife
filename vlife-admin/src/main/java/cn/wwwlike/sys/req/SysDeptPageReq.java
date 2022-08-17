@@ -31,10 +31,14 @@ import java.util.List;
  */
 @Data
 public class SysDeptPageReq extends PageQuery<SysDept> {
-    public String sysOrgId;
-    @VField(pathName = "sysOrg_type")
-    public List<String> type;
+    /**
+     * 名称/编码
+     */
     @VField(opt = Opt.like,orReqFields = {"code"},pathName = "name")
     public String deptName;
+    public String sysOrgId;
+//    @VField(pathName = "sysOrg_type")
+//    public List<String> type;
+
 
 }

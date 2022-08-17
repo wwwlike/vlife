@@ -129,7 +129,7 @@ import java.util.stream.Collectors;
             }else{
                 switch (vClazz.requestType()){
                     /*把默认查询list,查询page get方式的查询，支持注解改成post查询并仅返回一条记录 ,这里绑定了MethodTypeEnum 不优雅*/
-                    case POST_ONE:method=MethodTypeEnum.post_one;break;
+                    case POST_ONE:method=MethodTypeEnum.post_one;break;//类似登录提交，路径和查询的有区别
                     case GET_ONE:method=MethodTypeEnum.get_one;break;
                     default:
                         method=pageQuery?MethodTypeEnum.page:MethodTypeEnum.list;

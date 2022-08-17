@@ -20,6 +20,7 @@ package cn.wwwlike.auth.req;
 
 import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
@@ -32,22 +33,21 @@ import java.util.List;
 @Data
 public class SysResourcesPageReq extends PageQuery<SysResources> {
     /**
+     * 名称/编码/地址
+     */
+    @VField(opt= Opt.like,pathName = "name",orReqFields = {"code","url"})
+    public String search;
+    /**
      * 资源类型
      */
     public String type;
-
     /**
-     * 资源归属角色
+     * 接口角色
      */
     public String sysRoleId;
-
     /**
-     * 模糊搜索条件
+     * 菜单资源
      */
-    @VField(pathName = "name",orReqFields = {"code","url"})
-    public String search;
     public Boolean onlyMenu;
-
-    public List<Date> createDate;
 
 }

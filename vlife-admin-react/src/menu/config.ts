@@ -12,7 +12,8 @@ export interface MenuItem {
   itemKey: string;
   text: string;
   code?: string;
-  icon?: React.ReactNode;
+  // icon?: React.ReactNode;
+  icon?: any;
   path?: string;
   items?: MenuItem[];
   component?: React.ComponentType<any>;
@@ -60,12 +61,6 @@ const MENU_CONFIG: MenuItem[] = [
       },
     ],
   },
-  // {
-  //   itemKey: "2",
-  //   text: "组织管理",
-  //   icon: IconEdit,
-  //   items: [],
-  // },
   {
     itemKey: "3",
     text: "系统管理",
@@ -105,6 +100,12 @@ const MENU_CONFIG: MenuItem[] = [
         path: "/sys/dict",
       },
     ],
+  },
+  {
+    itemKey: "8",
+    text: "OA系统",
+    icon: IconEdit,
+    items: [],
   },
 ];
 

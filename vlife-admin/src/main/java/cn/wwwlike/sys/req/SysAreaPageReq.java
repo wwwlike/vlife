@@ -6,6 +6,8 @@ import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 地区查询条件
  */
@@ -13,5 +15,5 @@ import lombok.Data;
 public class SysAreaPageReq extends PageQuery<SysArea> {
     @VField(opt = Opt.like,orReqFields = {"code"})
     public String name;
-    public String level;
+    public List<String> level;
 }
