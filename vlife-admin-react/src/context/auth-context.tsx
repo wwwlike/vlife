@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    * @returns 
    */
      const checkBtnPermission=useCallback((btnObj:VfButton):boolean=>{
-      console.log("btnObj.entityName",btnObj)
+      //console.log("btnObj.entityName",btnObj)
       if(btnObj.entityName&&btnObj.key){//按钮有模块和key就校验权限
         if(user?.resourceCodes?.includes(btnObj.entityName+":"+btnObj.key)){
      

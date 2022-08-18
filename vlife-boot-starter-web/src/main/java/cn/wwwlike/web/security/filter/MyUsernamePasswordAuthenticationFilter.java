@@ -4,6 +4,9 @@ import cn.wwwlike.vlife.base.bean.Result;
 import cn.wwwlike.web.security.core.SecurityUser;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,8 +23,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Date;
+
 //拦截url为 "/login" 的POST请求
 public class MyUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    public String getIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     public MyUsernamePasswordAuthenticationFilter(String urlMapping, AuthenticationManager authenticationManager) {
         super(new AntPathRequestMatcher(urlMapping));
         setAuthenticationManager(authenticationManager);//设置用户信息管理的对象
@@ -63,6 +88,7 @@ public class MyUsernamePasswordAuthenticationFilter extends AbstractAuthenticati
         password = password.trim();
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
                 username, password);
+        logger.info(" IP:"+getIpAddress(request)+" Login at："+DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 

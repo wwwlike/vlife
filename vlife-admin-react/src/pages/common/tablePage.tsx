@@ -167,7 +167,7 @@ export const TablePage=({
   const fkInfo=getFkInfo;
   // const {runAsync:views}=useDetails({entityName});
   const entityRm=(...data:any)=>{
-    console.log('data',data)
+    //console.log('data',data)
     confirmModal.show({
       saveFun: ()=>{return rm(data.map((d:any)=>d.id))},
       title:`确认删除${data.length}条记录`
@@ -180,7 +180,7 @@ export const TablePage=({
     titleRun(listModel) //列头数据
   },[listModel])
     //监听组件外部查询条件的变化
-  useEffect(()=>{
+  useEffect(()=>{req
     // console.log('req-> search组件会引起req搜索两次，第一次search空，第二次 undefiend，需要解决',req);
     // 弹出table目前没有做搜索条件,故无req入参
     page({...req})

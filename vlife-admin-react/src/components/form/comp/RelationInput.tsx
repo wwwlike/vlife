@@ -109,7 +109,7 @@ const RelationInput=observer((props:RelationInputProps)=>{
             if(data.length===0){
               hideAndOpenParent({...args,initData:{...form.values,[fieldName]:undefined}});
             }else if(selectMore){
-              console.log("map",fieldName,data.map((d:any)=>d.id));
+              // console.log("map",fieldName,data.map((d:any)=>d.id));
               hideAndOpenParent({...args,initData:{...form.values,[fieldName]:data.map((d:any)=>d.id)}});
             }else{
               hideAndOpenParent({...args,initData:{...form.values,[fieldName]:data.map((d:any)=>d.id)[0]}});

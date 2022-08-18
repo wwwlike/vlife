@@ -77,7 +77,7 @@ import { Select } from '@formily/antd';
     * 4. 排序
     */
    const sortFields=useMemo(()=>{
-    console.log("modelInfo?.fields",modelInfo?.fields)
+    //console.log("modelInfo?.fields",modelInfo?.fields)
     return modelInfo?.fields||[];
    },[modelInfo?.fields])
 

@@ -196,7 +196,7 @@ export default ({
               setSelectedRow([])
             }
           }
-           console.log(`select row: ${selected}`, record);
+           //console.log(`select row: ${selected}`, record);
         },
         // onSelectAll: (selected:any, selectedRows:any[]) => {
         //     console.log(`select all rows: ${selected}`, selectedRows);

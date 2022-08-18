@@ -37,7 +37,7 @@ import { useTitle } from 'ahooks';
   return (
     <div className='h-full overscroll-auto'>
     <div  className='h-full w-72 float-left ' >
-          <Card  title={title+'管理'}  bordered={true} className='h-full' headerLine={false} headerStyle={{fontSize:'small'}}>
+          <Card  title={title+(title.endsWith('管理')?'':'管理')}  bordered={true} className='h-full' headerLine={false} headerStyle={{fontSize:'small'}}>
             <FormPage type='queryForm' 
               maxColumns={[1,1,1]} 
               formData={formData} 

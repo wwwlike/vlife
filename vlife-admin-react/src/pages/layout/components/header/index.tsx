@@ -28,7 +28,7 @@ const Index: FC = () => {
 			<Nav mode="horizontal" header={
 				<>
 					<IconApps />
-					<div>&nbsp;&nbsp;&nbsp;V-LIFE快速开发平台</div>
+					<div>&nbsp;&nbsp;&nbsp;VLife-Admin</div>
 				</>}
 				footer={
 					<>

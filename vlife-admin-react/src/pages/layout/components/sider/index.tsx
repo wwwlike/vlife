@@ -46,7 +46,7 @@ const Index: FC = () => {
 	const navList = useMemo(() => {
 		let mList:MenuItem[]=[];
 		if(user&&user.menus){
-			console.log("allMenuList",allMenuList[0],allMenuList[1],allMenuList[2])
+			//("allMenuList",allMenuList[0],allMenuList[1],allMenuList[2])
 			mList=	[...allMenuList].filter((e)=>{
 			//e的子菜单用户是否有权限，如果有一个，则e也能加入进去
 			let subs=e.items;
@@ -54,7 +54,7 @@ const Index: FC = () => {
 			if(subs){
 				filterSubItems=subs.filter((sub)=>{
 					if(sub.code){
-						console.log("权限：",user?.menus?.includes(sub.code))
+						//console.log("权限：",user?.menus?.includes(sub.code))
 						return user?.menus?.includes(sub.code);
 					}
 					return true

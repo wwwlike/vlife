@@ -26,9 +26,15 @@ const MENU_CONFIG: MenuItem[] = [
     items: [
       {
         itemKey: "1-2",
-        text: "首页",
+        text: "平台介绍",
         icon: IconHome,
         path: "/dashboard/workbeach",
+      },
+      {
+        itemKey: "1-3",
+        text: "快速入门",
+        icon: IconHome,
+        path: "/guide/quickStart",
       },
     ],
   },
@@ -105,7 +111,13 @@ const MENU_CONFIG: MenuItem[] = [
     itemKey: "8",
     text: "OA系统",
     icon: IconEdit,
-    items: [],
+    items: [
+      {
+        itemKey: "8-1",
+        text: "项目管理",
+        path: "/template/project",
+      },
+    ],
   },
 ];
 

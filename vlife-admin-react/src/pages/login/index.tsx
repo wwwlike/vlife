@@ -33,11 +33,11 @@ const Index: React.FC = () => {
 	return (
   <div className="body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0" >
       <div className="max-w-lg mx-auto pt-2">
-          <h1 className="text-5xl font-bold text-white text-center">VLIFE快速开发平台</h1>
+          <h1 className="text-5xl font-bold text-white text-center">VLIFE-ADMIN</h1>
       </div>
       <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
         <section>
-            <h3 className="font-bold text-2xl">欢迎你体验VLIFE平台</h3>
+            <h3 className="font-bold text-2xl">欢迎你体验VLIFE平台快速开发能力</h3>
             <p className="text-gray-600 pt-2">请输入账号信息.</p>
         </section>
 
@@ -68,13 +68,13 @@ const Index: React.FC = () => {
 
      {/* <div className="max-w-lg mx-auto text-center mt-12 mb-6">
         <p className="text-white">没有账号? <a href="#" className="font-bold hover:underline">Sign up</a>.</p>
-    </div>
+    </div> */}
 
     <div className="max-w-lg mx-auto flex justify-center text-white">
-        <a href="#" className="hover:underline">联系我们</a>
-        <span className="mx-3">•</span>
-        <a href="#" className="hover:underline">感谢使用</a>
-    </div> */}
+        {/* <a href="#" className="hover:underline">联系我们</a>
+        <span className="mx-3">•</span> */}
+        <a href="#" className="hover:underline">鄂ICP备2022008507号</a>
+    </div>
   </div>)
 }
 

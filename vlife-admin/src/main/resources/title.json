@@ -573,6 +573,17 @@
     "tags": {}
   },
   {
+    "superName": "VLifeApi",
+    "entityName": "ProjectApi",
+    "title": "项目管理接口;",
+    "tags": {}
+  },
+  {
+    "superName": "DslDao",
+    "entityName": "ProjectDao",
+    "tags": {}
+  },
+  {
     "superName": "DbEntity",
     "entityName": "Project",
     "title": "项目管理",
@@ -603,7 +614,7 @@
       },
       "state": {
         "fieldName": "state",
-        "title": "当前阶段"
+        "title": "项目阶段"
       },
       "sysUserId": {
         "fieldName": "sysUserId",
@@ -615,7 +626,7 @@
       },
       "startDate": {
         "fieldName": "startDate",
-        "title": "开始日期"
+        "title": "启动日期"
       },
       "status": {
         "fieldName": "status",
@@ -630,7 +641,33 @@
   {
     "superName": "PageQuery",
     "entityName": "ProjectPageReq",
-    "title": "项目查询",
+    "title": "类说明",
+    "tags": {
+      "sysOrgId": {
+        "fieldName": "sysOrgId",
+        "title": "甲方"
+      },
+      "name": {
+        "fieldName": "name",
+        "title": "项目名称"
+      },
+      "state": {
+        "fieldName": "state",
+        "title": "项目阶段"
+      },
+      "sysUserId": {
+        "fieldName": "sysUserId",
+        "title": "负责人"
+      },
+      "startDate": {
+        "fieldName": "startDate",
+        "title": "启动日期"
+      }
+    }
+  },
+  {
+    "superName": "BaseService",
+    "entityName": "ProjectService",
     "tags": {}
   },
   {

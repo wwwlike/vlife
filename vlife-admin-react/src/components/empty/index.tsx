@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { Empty, Button } from '@douyinfe/semi-ui'
 import { useNavigate } from 'react-router-dom'
 import { IllustrationNoAccess, IllustrationConstruction } from '@douyinfe/semi-illustrations'
@@ -11,6 +11,10 @@ interface Iprops {
 
 const Result: FC<Iprops> = ({ title, description, type }) => {
 	const navigate = useNavigate()
+	useEffect(()=>{
+		if(type==='403'){
+			navigate(`/login${'?from=' + encodeURIComponent(location.pathname)}`, { replace: true })		}
+	},[])
 	return (
 
 		<Empty
