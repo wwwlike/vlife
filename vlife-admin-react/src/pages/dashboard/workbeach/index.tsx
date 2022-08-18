@@ -34,7 +34,7 @@ export default () => {
     <div >
        <Card className='text-xl'  title='vlife-admin是基于vlife前后端组件封装能力打造的管理端业务应用开发平台' >
            <p className='text-xl' style={{ lineHeight: 1.8 }}>
-            区别于其他的快速开发平台，V-LIFE以用数据模型为中心，制定小而美的约定规则、简单简约人性化的设计理念，降低研发门槛，可提升数倍研发效能。
+            区别于其他的快速开发平台，V-LIFE以数据模型为中心，制定小而美的约定规则、简单简约人性化的设计理念，降低研发门槛，可提升数倍研发效能。
           </p>
           <p className='text-xl' style={{ lineHeight: 1.8 }}>
             【技&nbsp;&nbsp;术&nbsp;&nbsp;栈】： 前端react  后端：springboot
