@@ -23,7 +23,7 @@
     <parent>
         <groupId>io.github.wwwlike</groupId>
         <artifactId>vlife</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>vlife-core</artifactId>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>io.github.wwwlike</groupId>
             <artifactId>vlife-base</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
 
         <dependency>

@@ -47,6 +47,10 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
    */
   @PostMapping("/save")
   public SysUser save(@RequestBody SysUser dto) {
+    if(dto.getPassword()==null&&dto.getId()==null){
+      //初始化123456密码
+      dto.setPassword("{F4T9t2BE3HCvD9khLCxL/nyib/AdM1WqR/tMx5eJJ2k=}f0afa783ba7607063606fdb43c2e55fb");
+    }
     return service.save(dto);
   }
 

@@ -14,13 +14,13 @@
         <dependency>
             <groupId>io.github.wwwlike</groupId>
             <artifactId>vlife-spring-boot-starter</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.wwwlike</groupId>
             <artifactId>vlife-boot-starter-web</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
 
 
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>io.github.wwwlike</groupId>
             <artifactId>vlife-plugin</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>com.github.shalousun</groupId>
@@ -111,7 +111,7 @@
             <plugin>
                 <groupId>io.github.wwwlike</groupId>
                 <artifactId>vlife-plugin</artifactId>
-                <version>1.0.3</version>
+                <version>1.0.4</version>
                 <configuration>
                 </configuration>
                     <executions>
