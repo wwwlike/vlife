@@ -158,6 +158,8 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      * @return
      */
     private BooleanExpression subQueryFilter(String prefix, StringPath mainId, AbstractWrapper wrapper) {
+        //子查询也需要查询状态有效的数据
+        wrapper.eq("status",CT.STATUS.NORMAL);
         List<Class<? extends Item>> ls = (List) wrapper.allLeftPath().get(0);
         JPAQuery subMainQuery = joinByVo(null, null, prefix + "_", ls);
         BooleanBuilder subBuilder = whereByWrapper(wrapper);
@@ -179,6 +181,8 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             if (subBuilder.hasValue()) {
                 subMainQuery.where(subBuilder);
             }
+//            subMainQuery.where(subBuilder.and())
+////            subMainQuery.eq("status",CT.STATUS.NORMAL);
             return mainId.in(subMainQuery);
         }
     }
@@ -186,7 +190,6 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
 
     /**
      * 表左连接组装
-     *
      * @param fromQuery 查询语句（为空说明不是递归）
      * @param entityDto 实体类info信息
      * @param lefts     字段左查询CLz数组（可能不同字段来源不同的左关联表）

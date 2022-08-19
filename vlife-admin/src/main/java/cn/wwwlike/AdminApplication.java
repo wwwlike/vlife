@@ -8,7 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author xiaoyu
  * @date 2022/6/17
  */
-@EnableRespWrap//引入了该starter应该来说不需要这个开关，待把类改造成
+//打开出参数据包装
+@EnableRespWrap
 @SpringBootApplication(scanBasePackages ={ "cn.wwwlike.auth","cn.wwwlike.oa","cn.wwwlike.sys"})
 public class AdminApplication {
     public static void main(String[] args) {

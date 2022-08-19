@@ -281,7 +281,14 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
         return typedThis;
     }
 
-
+    /**
+     * 子查询里的搜索条件
+     * @param condition   执行条件
+     * @param subMainClz  创建子查询的 主表entityClz
+     * @param consumer    子查询语句
+     * @param leftPathClz 子查询主表id所在类的路径，数组最后一个就是mainId 所在的类
+     * @return
+     */
     @Override
     public Children andSub(boolean condition, Class<? extends Item> subMainClz, Consumer<Children> consumer, Class<? extends Item>... leftPathClz) {
         Children children = this.instance(typedThis);

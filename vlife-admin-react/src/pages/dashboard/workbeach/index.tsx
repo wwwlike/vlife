@@ -34,7 +34,7 @@ export default () => {
     <div >
        <Card className='text-xl'  title='vlife-admin是基于vlife前后端组件封装能力打造的管理端业务应用开发平台' >
            <p className='text-xl' style={{ lineHeight: 1.8 }}>
-            区别于其他的快速开发平台，V-LIFE以数据模型为中心，制定小而美的约定规则、简单简约人性化的设计理念，降低研发门槛，可提升数倍研发效能。
+            V-LIFE以数据模型为中心，制定小而美的约定规则、简单简约人性化的设计理念，降低研发门槛，可提升数倍研发效能。
           </p>
           <p className='text-xl' style={{ lineHeight: 1.8 }}>
             【技&nbsp;&nbsp;术&nbsp;&nbsp;栈】： 前端react  后端：springboot
@@ -61,14 +61,6 @@ export default () => {
           <Steps.Step title="前端配置" description="菜单添加、字典同步" onClick={()=>setCurrNum(2)} />
           </Steps>
         </Card>
-
-        {/* <JolPlayer
-  option={{
-    videoSrc:"https://tb-video.bdstatic.com/tieba-smallvideo-transcode-crf/230661707_7e0cc1f0351cc0d53ecf659aa1d6f107_6d9962da49ce_0.mp4?vt=1&pt=3&ver=&cr=2&cd=0&sid=&ft=8&tbau=2022-08-20_c4fe828f4736c91112dedbd61afd444cdbeb6dc9285e1b8bcffee980a1436e4f&ptid=7981090581",
-    width: 1300,
-    height: 768,
-  }}
-/> */}
     </div>
 );
 };
