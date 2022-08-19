@@ -43,8 +43,15 @@ export default () => {
             【使用指南】 <a target={'_blank'} href='http://vlife.wwwlike.cn'>http://vlife.wwwlike.cn</a>
           </p>
           <p className='text-xl' style={{ lineHeight: 1.8 }}>
-            【开源地址】<a target={'_blank'} href='https://github.com/wwwlike/vlife'>https://github.com/wwwlike/vlife</a> (项目全部源码已开源)
+            【github】<a target={'_blank'} href='https://github.com/wwwlike/vlife'>https://github.com/wwwlike/vlife</a> 
           </p>
+          <p className='text-xl' style={{ lineHeight: 1.8 }}>
+            【gitee】<a target={'_blank'} href='https://gitee.com/wwwlike/vlife'>https://github.com/wwwlike/vlife</a>
+          </p>
+          <p className='text-xl' style={{ lineHeight: 1.8 }}>
+            【视频介绍】<a target={'_blank'} href='https://www.bilibili.com/video/BV1sT411c71v/?vd_source=4c025d49e1ac4adb74b6dd2a39ce185e&t=119.6'>五分钟了解vlife快速开发</a> 
+          </p>
+
         </Card>
         <br></br>
         <Card className='text-xl'  title='一个CRUD单表操作的迭代步骤' >
@@ -54,6 +61,14 @@ export default () => {
           <Steps.Step title="前端配置" description="菜单添加、字典同步" onClick={()=>setCurrNum(2)} />
           </Steps>
         </Card>
+
+        {/* <JolPlayer
+  option={{
+    videoSrc:"https://tb-video.bdstatic.com/tieba-smallvideo-transcode-crf/230661707_7e0cc1f0351cc0d53ecf659aa1d6f107_6d9962da49ce_0.mp4?vt=1&pt=3&ver=&cr=2&cd=0&sid=&ft=8&tbau=2022-08-20_c4fe828f4736c91112dedbd61afd444cdbeb6dc9285e1b8bcffee980a1436e4f&ptid=7981090581",
+    width: 1300,
+    height: 768,
+  }}
+/> */}
     </div>
 );
 };
