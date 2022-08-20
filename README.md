@@ -44,8 +44,8 @@
 - vlife-boot-starter-web    将vlife的web数据出参封装、异常处理、权限控制封装的starter,需要使用这些附加能力引入即可
 
 ## 应用示例
-- vlife-admin 基于vlife核心数据处理与web权限控制能力打造的权限管理骨架的后端接口层，包含了数据逻辑处理的大量应用示例。
-- vlife-admin-react vlife整个系统的reacts+ts4实现的前端应用，包含了大量封装的通用业务级组件和权限管理的模块
+- [vlife-admin https://github.com/wwwlike/vlife-admin](https://github.com/wwwlike/vlife-admin) 基于vlife核心数据处理与web权限控制能力打造的权限管理骨架的后端接口层，包含了数据逻辑处理的大量应用示例。
+- [vlife-admin-react https://github.com/wwwlike/vlife-admin-react](https://github.com/wwwlike/vlife-admin-react) vlife整个系统的reacts+ts4实现的前端应用，包含了大量封装的通用业务级组件和权限管理的模块
 
 ## 联系帮助
 - QQ讨论群：786134846
