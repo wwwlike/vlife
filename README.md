@@ -3,8 +3,10 @@
 # V-LIFE是为全面提升研发效能而生的平台级全栈解决方案。
 
 - [使用指南] [http://vlife.wwwlike.cn](http://vlife.wwwlike.cn)
-- [示例骨架] [http://oa.wwwlike.cn](http://oa.wwwlike.cn)
 - [入门视频] [5分钟快速体验入门](https://www.bilibili.com/video/BV1sT411c71v/?vd_source=4c025d49e1ac4adb74b6dd2a39ce185e&t=119.6)
+- [示例骨架] [http://oa.wwwlike.cn](http://oa.wwwlike.cn) 
+- [权限管理骨架应用服务端] [https://github.com/wwwlike/vlife-admin](https://github.com/wwwlike/vlife-admin)
+- [权限管理骨架应用web端] [https://github.com/wwwlike/vlife-admin-react](https://github.com/wwwlike/vlife-admin-react)
 
 ## 特点
 - 前后端全栈低代码解决方案，数分钟即可完成一个模块的业务场景功能开发
@@ -12,6 +14,17 @@
 - 全场景CRUD接口封装 常规需求无需写SQL代码
 - 写POJO数据模型就是V-LIFE里开发要做的主要工作，降低了研发门槛
 - 全量代码生成、功能页面通过模板渲染，注释内容亦可提取到多场景应用
+
+## 模块介绍 (最新版本1.0.4)
+- vlife-base vlife平台的公用基础类库
+- vlife-core 数据逻辑处理的核心类库
+- vlife-plugin maven插件，包括代码生成和注释提取
+- vlife-spring-boot-starter 将vlife核心数据逻辑处理封装成starter,项目引入它即可，减少开发配置
+- vlife-boot-starter-web    将vlife的web数据出参封装、异常处理、权限控制封装的starter,需要使用这些附加能力引入即可
+
+## 应用示例
+- [vlife-admin](https://github.com/wwwlike/vlife-admin) 基于vlife核心数据处理与web权限控制能力打造的权限管理骨架的后端接口层，包含了数据逻辑处理的大量应用示例。
+- [vlife-admin-react](https://github.com/wwwlike/vlife-admin-react) vlife整个系统的reacts+ts4实现的前端应用，包含了大量封装的通用业务级组件和权限管理的模块
 
 ## 主要技术栈
 - springboot
@@ -36,16 +49,6 @@
 ![](http://vlife.wwwlike.cn/static/img/relation.png)
 * V-LIFE在JPA与QueryDsl基础上封装了能够处理复杂数据逻辑场景的CRUD接口。重复繁琐数据逻辑操作交给vlife完成，可显著降低研发难度。
 
-## 模块介绍 (最新版本1.0.4)
-- vlife-base vlife平台的公用基础类库
-- vlife-core 数据逻辑处理的核心类库
-- vlife-plugin maven插件，包括代码生成和注释提取
-- vlife-spring-boot-starter 将vlife核心数据逻辑处理封装成starter,项目引入它即可，减少开发配置
-- vlife-boot-starter-web    将vlife的web数据出参封装、异常处理、权限控制封装的starter,需要使用这些附加能力引入即可
-
-## 应用示例
-- [vlife-admin https://github.com/wwwlike/vlife-admin](https://github.com/wwwlike/vlife-admin) 基于vlife核心数据处理与web权限控制能力打造的权限管理骨架的后端接口层，包含了数据逻辑处理的大量应用示例。
-- [vlife-admin-react https://github.com/wwwlike/vlife-admin-react](https://github.com/wwwlike/vlife-admin-react) vlife整个系统的reacts+ts4实现的前端应用，包含了大量封装的通用业务级组件和权限管理的模块
 
 ## 联系帮助
 - QQ讨论群：786134846
