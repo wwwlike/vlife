@@ -19,9 +19,11 @@
 package cn.wwwlike.plugins;
 
 import cn.wwwlike.plugins.constant.comment.CommentParser;
+import cn.wwwlike.plugins.utils.ClassLoaderUtil;
 import cn.wwwlike.plugins.utils.FileUtil;
 import cn.wwwlike.plugins.utils.JsonUtil;
 import cn.wwwlike.vlife.objship.read.ItemReadTemplate;
+import cn.wwwlike.vlife.objship.read.ModelReadCheck;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 import cn.wwwlike.vlife.objship.read.tag.FieldTag;
 import org.apache.commons.lang3.StringUtils;
@@ -69,81 +71,110 @@ public class TitleJsonCreateMojo extends AbstractMojo {
 //
 //                List<String> list = ItemReadTemplate.readPackage(loader,rootPackage);
 //                entityPackages.stream().forEach(path -> {
-                try {
+
+            ClassLoader loader= ClassLoaderUtil.getRuntimeClassLoader(project);
+            ModelReadCheck modelReadCheck= new ModelReadCheck();
+            int errorNum=modelReadCheck.load(loader);
+        if(errorNum==0) {
+            try {
 //                        String srcPath = path.replace(".", "/");
-                    String srcPath = "";
-                    files.addAll(FileUtils.getFiles(new File(project.getBasedir() + "/src/main/java" + srcPath), null, null));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                String srcPath = "";
+                files.addAll(FileUtils.getFiles(new File(project.getBasedir() + "/src/main/java" + srcPath), null, null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 //                });
 //            }
-        /* 写死，因为目前实体类父类都在class里。*/
-        List<ClzTag> tags = new ArrayList<>();
-        Map<String, FieldTag> dbEntityFieldTag=new HashMap<>();
-        FieldTag idTag=new FieldTag();
-        idTag.setTitle("主键id");
-        idTag.setFieldName("id");
-        dbEntityFieldTag.put("id",idTag);
-        FieldTag statusTag=new FieldTag();
-        statusTag.setTitle("删除状态");
-        statusTag.setFieldName("status");
-        dbEntityFieldTag.put("status",statusTag);
-        FieldTag createDateTag=new FieldTag();
-        createDateTag.setTitle("创建时间");
-        createDateTag.setFieldName("status");
-        dbEntityFieldTag.put("createDate",createDateTag);
-        FieldTag modifyDateTag=new FieldTag();
-        modifyDateTag.setTitle("修改时间");
-        modifyDateTag.setFieldName("modifyDate");
-        dbEntityFieldTag.put("modifyDate",modifyDateTag);
-
-        FieldTag modifyIdTag=new FieldTag();
-        modifyIdTag.setTitle("修订人");
-        modifyIdTag.setFieldName("modifyId");
-        dbEntityFieldTag.put("modifyId",modifyIdTag);
-
-        FieldTag createIdTag=new FieldTag();
-        createIdTag.setTitle("创建人");
-        createIdTag.setFieldName("createId");
-        dbEntityFieldTag.put("createId",createIdTag);
-
-
-        for (File path : files) {
-            ClzTag tag=CommentParser.parser(path);
-            tags.add(tag);//字段
-        }
-        /* 继承的属性 加入*/
-        for(ClzTag tag:tags){
-//            for(ClzTag parent:tags){
-//                if(tag.getSuperName()!=null&& tag.getSuperName().equalsIgnoreCase(parent.getEntityName())){
-//                    parent.getTags().forEach((key,val)->{
-//                        if(tag.getTags().get(key)==null){
-//                            tag.getTags().put(key,val);
-//                        }
-//                    });
-//                }
-//            }
-
-            if("DbEntity".equals(tag.getSuperName())){
-                if(tag.getTags()==null){
-                    tag.setTags(dbEntityFieldTag);
-                }else{
-                    dbEntityFieldTag.forEach((key,val)->{
-                        if(tag.getTags().get(key)==null){
-                            tag.getTags().put(key,val);
-                        }
-                    });
+            /* 写死，因为目前实体类父类都在class里。*/
+            List<ClzTag> tags = new ArrayList<>();
+            Map<String, FieldTag> dbEntityFieldTag = new HashMap<>();
+            FieldTag idTag = new FieldTag();
+            idTag.setTitle("主键id");
+            idTag.setFieldName("id");
+            idTag.setFieldType("string");
+            idTag.setExtendsField(true);
+            dbEntityFieldTag.put("id", idTag);
+            FieldTag statusTag = new FieldTag();
+            statusTag.setTitle("删除状态");
+            statusTag.setExtendsField(true);
+            statusTag.setFieldName("status");
+            statusTag.setFieldType("string");
+            dbEntityFieldTag.put("status", statusTag);
+            FieldTag createDateTag = new FieldTag();
+            createDateTag.setExtendsField(true);
+            createDateTag.setTitle("创建时间");
+            createDateTag.setFieldName("status");
+            createDateTag.setFieldType("Date");
+            dbEntityFieldTag.put("createDate", createDateTag);
+            FieldTag modifyDateTag = new FieldTag();
+            modifyDateTag.setExtendsField(true);
+            modifyDateTag.setTitle("修改时间");
+            modifyDateTag.setFieldName("modifyDate");
+            modifyDateTag.setFieldType("Date");
+            dbEntityFieldTag.put("modifyDate", modifyDateTag);
+            FieldTag modifyIdTag = new FieldTag();
+            modifyIdTag.setExtendsField(true);
+            modifyIdTag.setTitle("修订人");
+            modifyIdTag.setFieldType("string");
+            modifyIdTag.setFieldName("modifyId");
+            dbEntityFieldTag.put("modifyId", modifyIdTag);
+            FieldTag createIdTag = new FieldTag();
+            createIdTag.setExtendsField(true);
+            createIdTag.setTitle("创建人");
+            createIdTag.setFieldName("createId");
+            createIdTag.setFieldType("string");
+            dbEntityFieldTag.put("createId", createIdTag);
+            //解析字段
+            for (File path : files) {
+                ClzTag tag = CommentParser.parserField(path,modelReadCheck);
+                if("DbEntity".equals(tag.getSuperName())||
+                        "VLifeApi".equals(tag.getSuperName())||
+                        "DbEntity".equals(tag.getSuperName())||
+                        "SaveBean".equals(tag.getSuperName())||
+                        "VoBean".equals(tag.getSuperName())||
+                        "PageQuery".equals(tag.getSuperName())||
+                        "VlifeQuery".equals(tag.getSuperName())){
+                    tags.add(tag);//字段
                 }
             }
-        }
-
-        String filePath = project.getBasedir() + "/src/main/resources/";
-        filePath = filePath + "/title.json";
-        String data = JsonUtil.toPrettyJson(tags);
-        FileUtil.nioWriteFile(data, filePath);
-//        } catch (Exception e) {
-//            e.printStackTrace();
+            /* entity的继承的属性 加入*/
+            for (ClzTag tag : tags) {
+                if ("DbEntity".equals(tag.getSuperName())) {
+                    if (tag.getTags() == null) {
+                        tag.setTags(dbEntityFieldTag);
+                    } else {
+                        dbEntityFieldTag.forEach((key, val) -> {
+                            if (tag.getTags().get(key) == null) {
+                                tag.getTags().put(key, val);
+                            }
+                        });
+                    }
+                }
+            }
+            //api解析
+            for (ClzTag tag : tags) {
+                if ("VLifeApi".equals(tag.getSuperName())) {
+                    for (File path : files) {
+                        if (path.getName().equals(tag.getEntityName() + ".java")) {
+                            CommentParser.parserApi(path, tag);
+                        }
+                        ;
+                    }
+                }
+            }
+//        //api解析
+//        for (File path : files) {
+//            for()
+////            ClzTag tag=CommentParser.parser(path);
+////            tags.add(tag);//字段
 //        }
+
+            String filePath = project.getBasedir() + "/src/main/resources/";
+            filePath = filePath + "/title.json";
+            String data = JsonUtil.toPrettyJson(tags);
+            FileUtil.nioWriteFile(data, filePath);
+        }else{
+            modelReadCheck.getLogger().error("模型信息读取存在错误,title不能生成");
+        }
     }
 }

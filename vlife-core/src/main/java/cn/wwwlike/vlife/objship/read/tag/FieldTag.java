@@ -25,12 +25,22 @@ import lombok.Data;
  */
 @Data
 public class FieldTag {
-
     /**
      * 字段名
      */
     public String fieldName;
-
+    /**
+     * 字段类型
+     */
+    public String fieldType;
+    /**
+     * 继承的字段
+     */
+    public Boolean extendsField;
+    /**
+     * 包装类型
+     */
+    public String warperType;
     /**
      * 说明
      */

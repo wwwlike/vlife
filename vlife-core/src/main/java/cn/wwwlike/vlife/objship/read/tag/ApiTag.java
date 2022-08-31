@@ -20,41 +20,50 @@ package cn.wwwlike.vlife.objship.read.tag;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * 类注释信息
+ * 类说明
+ *
+ * @author xiaoyu
+ * @date 2022/8/26
  */
 @Data
-public class ClzTag {
+public class ApiTag {
     /**
-     * 父类
-     */
-    public String superName;
-    /**
-     * 类名(名字起的不好，应该是clz)
-     */
-    public String entityName;
-    /**
-     * 实体分类
-     */
-    public String typeName;
-
-    /**
-     * 类名称
+     * 函数名
      */
     public String title;
     /**
-     * 类字段信息
+     * 接口路径
      */
-    public Map<String, FieldTag> tags;
+    public String path;
 
-    public List<ApiTag> apiTagList=new ArrayList<>();
+    /**
+     * 入参包装类型
+     */
+    public String paramWrapper;
 
-    public ClzTag() {
-        this.tags = new HashMap<String, FieldTag>();
-    }
+    /**
+     * 入参名称
+     */
+    public String param;
+    /**
+     * 出参包装类型
+     */
+    public String returnWrapper;
+    /**
+     * 出参类型
+     */
+    public String returnClz;
+    /**
+     * 请求方式
+     */
+    public String methodType;
+    /**
+     * 入参是否存在于path里
+     */
+    public Boolean pathParams;
+    /**
+     * 方法名称
+     */
+    public String methodName;
 }

@@ -42,6 +42,36 @@ public class ModelReadCheck {
     private  List<VoDto> voDtos = null;
     private  List<ReqDto> reqDtos = null;
     private  List<SaveDto> saveDtos=null;
+
+
+    public BeanDto find(String beanName){
+        if(itemDtos!=null){
+           Optional obj=itemDtos.stream().filter(t->t.getType().equals(beanName)).findFirst();
+           if(obj.isPresent()){
+               return (BeanDto) obj.get();
+           }
+        }
+        if(voDtos!=null){
+            Optional obj=voDtos.stream().filter(t->t.getType().equals(beanName)).findFirst();
+            if(obj.isPresent()){
+                return (BeanDto) obj.get();
+            }
+        }
+        if(reqDtos!=null){
+            Optional obj=reqDtos.stream().filter(t->t.getType().equals(beanName)).findFirst();
+            if(obj.isPresent()){
+                return (BeanDto) obj.get();
+            }
+        }
+        if(saveDtos!=null){
+            Optional obj=saveDtos.stream().filter(t->t.getType().equals(beanName)).findFirst();
+            if(obj.isPresent()){
+                return (BeanDto) obj.get();
+            }
+        }
+        return null;
+    }
+
     /**
      * 从项目根路径开始读取类信息
      */

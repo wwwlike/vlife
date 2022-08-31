@@ -325,15 +325,16 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
         protected Object[] vals;
 
         public Object getVal(){
-            if(opt==Opt.like){
-                return "%"+val+"%";
-            }else if(opt==Opt.startsWith){
-                return val+"%";
-            }else if(opt==Opt.endsWith){
-                return "%"+val;
-            }else{
-                return val;
-            }
+           return val;
+//            if(opt==Opt.like){
+//                return "%"+val+"%";
+//            }else if(opt==Opt.startsWith){
+//                return val+"%";
+//            }else if(opt==Opt.endsWith){
+//                return "%"+val;
+//            }else{
+//                return val;
+//            }
         }
         /**
          * 找到该字段的左查询的全量路径

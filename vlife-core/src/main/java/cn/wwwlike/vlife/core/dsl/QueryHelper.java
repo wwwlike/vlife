@@ -219,25 +219,38 @@ public class QueryHelper {
         Class<? extends Item>[] leftArray = leftClz.toArray(new Class[leftClz.size()]);
         for (String reqName : lastQueryPathFieldName) {
             if (queryPath.get(queryPath.size() - 1) instanceof Class) {
-                if (opt == Opt.in || opt == Opt.notIn) {
+                if (opt == Opt.in ) {
                     qw.in(true, reqName, (val instanceof List ? ((List) val).toArray() : (Object[]) val), tran, leftArray);
-                } else if (opt == Opt.between || opt == Opt.notBetween) {
+                }else if ( opt == Opt.notIn) {
+                    qw.notIn(true, reqName, (val instanceof List ? ((List) val).toArray() : (Object[]) val), tran, leftArray);
+                }else if (opt == Opt.between ) {
                     qw.between(true, reqName, ((List) val).get(0), ((List) val).get(1), tran, leftArray);
-                } else if (opt == Opt.eq || opt == Opt.ne) {
+                } else if (opt == Opt.notBetween) {
+                    qw.notBetween(true, reqName, ((List) val).get(0), ((List) val).get(1), tran, leftArray);
+                } else if (opt == Opt.eq) {
                     qw.eq(true, reqName, val, tran, leftArray);
-                } else if (opt == Opt.like || opt == Opt.notLike) {
+                } else if ( opt == Opt.ne) {
+                    qw.ne(true, reqName, val, tran, leftArray);
+                } else if (opt == Opt.like ) {
                     qw.like(true, reqName, "%" + val + "%", tran, leftArray);
-                } else if (opt == Opt.isNotNull ) {
+                } else if ( opt == Opt.notLike) {
+                    qw.notLike(true, reqName, "%" + val + "%", tran, leftArray);
+                }else if (opt == Opt.isNotNull ) {
                     qw.isNotNull((Boolean) val, reqName, leftArray);
                 } else if ( opt == Opt.isNull){
                     qw.isNull((Boolean) val, reqName, leftArray);
-                }else if (opt == Opt.startsWith || opt == Opt.endsWith
-                        || opt == Opt.gt
-                        || opt == Opt.goe
-                        || opt == Opt.lt
-                        || opt == Opt.loe
-                ) {
+                }else if (opt == Opt.startsWith) {
                     qw.startsWith(true, reqName, val, tran, leftArray);
+                }else if (opt == Opt.endsWith) {
+                    qw.endsWith(true, reqName, val, tran, leftArray);
+                }else if (opt == Opt.gt) {
+                    qw.gt(true, reqName, val, tran, leftArray);
+                }else if (opt == Opt.goe) {
+                    qw.goe(true, reqName, val, tran, leftArray);
+                }else if (opt == Opt.lt) {
+                    qw.lt(true, reqName, val, tran, leftArray);
+                }else if (opt == Opt.loe) {
+                    qw.loe(true, reqName, val, tran, leftArray);
                 }
             }
         }

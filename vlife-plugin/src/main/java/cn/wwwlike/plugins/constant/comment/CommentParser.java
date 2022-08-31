@@ -21,6 +21,10 @@ package cn.wwwlike.plugins.constant.comment;
 import cn.wwwlike.plugins.utils.CommentUtils;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.bean.DbEntity;
+import cn.wwwlike.vlife.objship.dto.BeanDto;
+import cn.wwwlike.vlife.objship.dto.FieldDto;
+import cn.wwwlike.vlife.objship.read.ModelReadCheck;
+import cn.wwwlike.vlife.objship.read.tag.ApiTag;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 import cn.wwwlike.vlife.objship.read.tag.FieldTag;
 import com.github.javaparser.JavaParser;
@@ -28,11 +32,16 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 实体类注释解析
@@ -44,27 +53,41 @@ public class CommentParser {
         return "src/main/java/" + path + ".java";
     }
 
-    public static ClzTag parser(Class clz) {
-        return parser(clz.getName());
+    public static ClzTag parser(Class clz,ModelReadCheck modelReadCheck) {
+        return parserField(clz.getName(),modelReadCheck);
     }
 
-    public static ClzTag parser(String clzStr) {
+    public static ClzTag parserField(String clzStr,ModelReadCheck modelReadCheck) {
         String FILE_PATH = clzStrToFilePath(clzStr);
-        return parser(new File(FILE_PATH));
+        return parserField(new File(FILE_PATH),modelReadCheck);
     }
 
-    public static ClzTag parser(File file) {
+    public static ClzTag parserField(File file, ModelReadCheck modelReadCheck) {
         ClzTag clzTag = new ClzTag();
         try {
             CompilationUnit cu = new JavaParser().parse(file).getResult().get();
             TypeDeclaration typeDeclaration = cu.getTypes().get(0);
             /* 设置父类 */
-            if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes()!=null&&((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().size()>0)
+            if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes()!=null&&
+                    ((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().size()>0) {
                 clzTag.setSuperName(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getName().asString());
-
+                if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getTypeArguments().isPresent()){
+                    clzTag.setTypeName(
+                    ((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getTypeArguments().get().get(0).asString()
+                    );
+                }
+            }else if(((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes()!=null&&
+                    ((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().size()>0) {
+                clzTag.setSuperName(((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().get(0).getName().asString());
+                if(((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().get(0).getTypeArguments().isPresent()){
+                    clzTag.setTypeName(
+                            ((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().get(0).getTypeArguments().get().get(0).asString()
+                    );
+                }
+            }
             clzTag.setEntityName(file.getName().replace(".java",""));
-
-            if (typeDeclaration.getComment().isPresent()) {
+            BeanDto beanDto= modelReadCheck.find(StringUtils.uncapitalize(clzTag.getEntityName()));
+            if (typeDeclaration.getComment().isPresent()) {//有注释
                 String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().get().getContent());
                 commentText = commentText.split("\n")[0].split("\r")[0];
                 clzTag.setTitle(commentText);
@@ -75,16 +98,68 @@ public class CommentParser {
                 if (o instanceof FieldDeclaration) {
                     fieldTag = new FieldTag();
                     fieldTag.setFieldName(((FieldDeclaration) o).getVariables().get(0).toString());
+                    if(fieldTag.getFieldName().equals("id")){
+                        fieldTag.setExtendsField(true);
+                    }
                     if (((FieldDeclaration) o).getComment().isPresent()) {
                         String comment = ((FieldDeclaration) o).getComment().get().getContent();
                         fieldTag.setTitle(CommentUtils.parseCommentText(comment));
-                        clzTag.getTags().put(fieldTag.getFieldName(), fieldTag);
+                    }else{
+                       List<FieldDto> fields=beanDto.getFields();
+                        for(FieldDto fieldDto:fields){
+                           if(fieldDto.getFieldName().equals(fieldTag.getFieldName())){
+                               fieldTag.setTitle(fieldDto.getTitle());
+                           }
+                        }
                     }
+                    fieldTag.setFieldType(((FieldDeclaration) o).getElementType().asString());
+//                        fieldTag.setFieldType(((FieldDeclaration) o).getVariables().get(0).getChildNodes().get(0).name);
+                    clzTag.getTags().put(fieldTag.getFieldName(), fieldTag);
+
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return clzTag;
+    }
+
+
+    /**
+     * 解析a'pi
+     * @param file
+     * @return
+     */
+    public static ClzTag parserApi(File file,ClzTag tag) {
+        CompilationUnit cu = null;
+        try {
+            cu = new JavaParser().parse(file).getResult().get();
+            TypeDeclaration typeDeclaration = cu.getTypes().get(0);
+            NodeList list = typeDeclaration.getMembers();
+            /*过滤接口*/
+            List<MethodDeclaration> methodDeclarations= (List<MethodDeclaration>) typeDeclaration
+                    .getMembers().stream().filter(t->(t instanceof MethodDeclaration)).collect(Collectors.toList());
+            ApiTag apiTag = null;
+            for (MethodDeclaration method : methodDeclarations) {
+                apiTag=new ApiTag();
+                apiTag.setTitle(method.getComment().isPresent()?method.getComment().get().getContent():"");
+                apiTag.setMethodName(method.getNameAsString());
+                apiTag.setReturnClz(method.getTypeAsString());
+                apiTag.setPath(((StringLiteralExpr)(method.getAnnotation(0).getChildNodes().get(1))).getValue());
+                apiTag.setMethodType(method.getAnnotation(0).getChildNodes().get(0).toString());
+                if(method.getParameters().size()>0){
+                    apiTag.setParam(method.getParameter(0).getNameAsString());
+                    apiTag.setParamWrapper(method.getParameter(0).getTypeAsString());
+                }
+                tag.getApiTagList().add(apiTag);
+                System.out.println(method.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        System.out.println(tag.entityName);
+        return tag;
     }
 }

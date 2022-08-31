@@ -236,9 +236,6 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         relation();
         /* 注释信息读取*/
         for(T beanInfo:readAll){
-            if(beanInfo.getType().equals("SysRoleGroup")){
-                System.out.println("111");
-            }
             //用注释写title
             commentRead(beanInfo);
             //用实体类的注释
@@ -268,7 +265,9 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                             return ff.getFieldName().equals(modelField.getEntityFieldName()) && ff.getItemClz() == modelField.getEntityClz();
                         }).findFirst();
 
-                        if (optionalFieldDto.isPresent()&&modelField.getTitle()==null) {
+                        if (optionalFieldDto.isPresent()&&
+                                (modelField.getTitle()==null||
+                                        modelField.getTitle().equals(modelField.getFieldName()))) {
                             modelField.setTitle(optionalFieldDto.get().getTitle());
                         }
                     } else if(modelField.getTitle()==null){
