@@ -45,13 +45,6 @@
 2. 在semi,formily原子组件基础之上封装了常用的模块级的列表、搜索、表单等组件，让后端也能从容应对。
 3. 提供了模板组件，不用写前端代码即可实现前端一般CRUD业务场景功能页面的渲染
 
-
-## 功能介绍
-1. 后端代码通过运行插件生成
-
-2. 生成前端模型和接口访问代码
-
-![](http://vlife.wwwlike.cn/static/img/relation.png)
 ## 反馈与共建
 - QQ讨论群：786134846
   ![](http://vlife.wwwlike.cn/static/img/qq_qun_786134846.png)
