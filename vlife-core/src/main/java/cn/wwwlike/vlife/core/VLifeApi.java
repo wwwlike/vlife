@@ -50,32 +50,6 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
     public void init() throws ClassNotFoundException {
         entityClz = GenericsUtils.getSuperClassGenricType(this.getClass());
     }
-    /**
-     * 返回vo的中文表名
-     * @param voName
-     * @return
-     */
-    @GetMapping("/tableInfo/{voName}")
-    public List<FieldDto> tableInfo(@PathVariable String voName){
-        BeanDto<T> dto=null;
-        if(voName.equalsIgnoreCase(entityClz.getSimpleName())){
-            dto= (BeanDto<T>) GlobalData.entityDto(entityClz);
-        }else{
-           Optional<Class> t= GlobalData.getVoDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(voName)).findAny();
-            if(t.isPresent()){
-                dto= (BeanDto)GlobalData.getVoDtos().get(t.get());
-            }
-           t= GlobalData.getReqDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(voName)).findAny();
-            if(t.isPresent()){
-                dto= (BeanDto)GlobalData.getReqDtos().get(t.get());
-            }
-            t= GlobalData.getSaveDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(voName)).findAny();
-            if(t.isPresent()){
-                dto= (BeanDto)GlobalData.getSaveDtos().get(t.get());
-            }
-        }
-       return dto.getFields();
-    }
 
     /**
      * 模型信息
@@ -110,7 +84,7 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
     }
 
     /**
-     * 明细查询通用方法
+     * 明细查询通用方法 支持saveBean数据查询
      * @param modelName
      * @param id
      * @return
@@ -124,7 +98,6 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
             return service.queryOne(btn.getClz(),id);
         }
     }
-
 
     /**
      * 明细查询通用方法(外键批量翻译)

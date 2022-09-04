@@ -127,15 +127,18 @@ public class TitleJsonCreateMojo extends AbstractMojo {
             //解析字段
             for (File path : files) {
                 ClzTag tag = CommentParser.parserField(path,modelReadCheck);
-                if("DbEntity".equals(tag.getSuperName())||
-                        "VLifeApi".equals(tag.getSuperName())||
-                        "DbEntity".equals(tag.getSuperName())||
-                        "SaveBean".equals(tag.getSuperName())||
-                        "VoBean".equals(tag.getSuperName())||
-                        "PageQuery".equals(tag.getSuperName())||
-                        "VlifeQuery".equals(tag.getSuperName())){
-                    tags.add(tag);//字段
+                if(tag!=null){
+                    tags.add(tag);
                 }
+//                if("DbEntity".equals(tag.getSuperName())||
+//                        "VLifeApi".equals(tag.getSuperName())||
+//                        "DbEntity".equals(tag.getSuperName())||
+//                        "SaveBean".equals(tag.getSuperName())||
+//                        "VoBean".equals(tag.getSuperName())||
+//                        "PageQuery".equals(tag.getSuperName())||
+//                        "VlifeQuery".equals(tag.getSuperName())){
+
+//                }
             }
             /* entity的继承的属性 加入*/
             for (ClzTag tag : tags) {

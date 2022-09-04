@@ -42,11 +42,14 @@ public class ClzTag {
      * 实体分类
      */
     public String typeName;
-
     /**
      * 类名称
      */
     public String title;
+    /**
+     * 访问路径
+     */
+    public String path;
     /**
      * 类字段信息
      */

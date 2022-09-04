@@ -19,8 +19,6 @@
 package cn.wwwlike.plugins.constant.comment;
 
 import cn.wwwlike.plugins.utils.CommentUtils;
-import cn.wwwlike.vlife.base.Item;
-import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.ModelReadCheck;
@@ -34,6 +32,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.apache.commons.lang3.StringUtils;
 
@@ -64,6 +63,9 @@ public class CommentParser {
 
     public static ClzTag parserField(File file, ModelReadCheck modelReadCheck) {
         ClzTag clzTag = new ClzTag();
+        clzTag.setEntityName(file.getName().replace(".java",""));
+
+
         try {
             CompilationUnit cu = new JavaParser().parse(file).getResult().get();
             TypeDeclaration typeDeclaration = cu.getTypes().get(0);
@@ -85,8 +87,13 @@ public class CommentParser {
                     );
                 }
             }
-            clzTag.setEntityName(file.getName().replace(".java",""));
+
             BeanDto beanDto= modelReadCheck.find(StringUtils.uncapitalize(clzTag.getEntityName()));
+            //不是模型，不是接口层的则排除
+            if(beanDto==null&&!"VLifeApi".equals(clzTag.getSuperName())){
+                return null;
+            }
+
             if (typeDeclaration.getComment().isPresent()) {//有注释
                 String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().get().getContent());
                 commentText = commentText.split("\n")[0].split("\r")[0];
@@ -104,7 +111,7 @@ public class CommentParser {
                     if (((FieldDeclaration) o).getComment().isPresent()) {
                         String comment = ((FieldDeclaration) o).getComment().get().getContent();
                         fieldTag.setTitle(CommentUtils.parseCommentText(comment));
-                    }else{
+                    }else if(beanDto!=null){
                        List<FieldDto> fields=beanDto.getFields();
                         for(FieldDto fieldDto:fields){
                            if(fieldDto.getFieldName().equals(fieldTag.getFieldName())){
@@ -135,6 +142,17 @@ public class CommentParser {
         try {
             cu = new JavaParser().parse(file).getResult().get();
             TypeDeclaration typeDeclaration = cu.getTypes().get(0);
+            NodeList<AnnotationExpr> annos= typeDeclaration.getAnnotations();
+            if(annos!=null&&annos.size()>0){
+                for(AnnotationExpr anno:annos){
+                    if(anno.getName().asString().equals("RequestMapping")){
+                        tag.setPath(((StringLiteralExpr)(anno.getChildNodes().get(1))).getValue());
+                        break;
+                    }
+                }
+            }
+
+
             NodeList list = typeDeclaration.getMembers();
             /*过滤接口*/
             List<MethodDeclaration> methodDeclarations= (List<MethodDeclaration>) typeDeclaration
