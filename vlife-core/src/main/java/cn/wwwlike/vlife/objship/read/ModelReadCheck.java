@@ -86,6 +86,7 @@ public class ModelReadCheck {
         logger.info("读取Java类数量："+list.size());
         Integer errorNum=0;
         try {
+            GlobalData.clear();
             /** step1 模型信息读取 */
             EntityRead read = EntityRead.getInstance();
             itemDtos = read.read(loader, list);
@@ -243,7 +244,6 @@ public class ModelReadCheck {
                     }
                 }
                 if(beanDto instanceof VoDto){
-//                    errorNum+=checkVoRepeat((VoDto) beanDto);
                 }
             }
         }

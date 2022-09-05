@@ -62,29 +62,17 @@ public class TitleJsonCreateMojo extends AbstractMojo {
     private MavenProject project;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-//        try {
         List<File> files = new ArrayList<>();
-//            if (entityPackages == null || entityPackages.size() == 0) {
-//                throw new MojoFailureException("entityPackages没有设置");
-//            } else {
-//                String path = entity.substring(0, StringUtils.lastIndexOf(entity, "."));
-//
-//                List<String> list = ItemReadTemplate.readPackage(loader,rootPackage);
-//                entityPackages.stream().forEach(path -> {
-
-            ClassLoader loader= ClassLoaderUtil.getRuntimeClassLoader(project);
-            ModelReadCheck modelReadCheck= new ModelReadCheck();
-            int errorNum=modelReadCheck.load(loader);
+        ClassLoader loader= ClassLoaderUtil.getRuntimeClassLoader(project);
+        ModelReadCheck modelReadCheck= new ModelReadCheck();
+        int errorNum=modelReadCheck.load(loader);
         if(errorNum==0) {
             try {
-//                        String srcPath = path.replace(".", "/");
                 String srcPath = "";
                 files.addAll(FileUtils.getFiles(new File(project.getBasedir() + "/src/main/java" + srcPath), null, null));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//                });
-//            }
             /* 写死，因为目前实体类父类都在class里。*/
             List<ClzTag> tags = new ArrayList<>();
             Map<String, FieldTag> dbEntityFieldTag = new HashMap<>();
@@ -130,15 +118,6 @@ public class TitleJsonCreateMojo extends AbstractMojo {
                 if(tag!=null){
                     tags.add(tag);
                 }
-//                if("DbEntity".equals(tag.getSuperName())||
-//                        "VLifeApi".equals(tag.getSuperName())||
-//                        "DbEntity".equals(tag.getSuperName())||
-//                        "SaveBean".equals(tag.getSuperName())||
-//                        "VoBean".equals(tag.getSuperName())||
-//                        "PageQuery".equals(tag.getSuperName())||
-//                        "VlifeQuery".equals(tag.getSuperName())){
-
-//                }
             }
             /* entity的继承的属性 加入*/
             for (ClzTag tag : tags) {

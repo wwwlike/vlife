@@ -52,9 +52,15 @@ public class GlobalData {
     public static Map<Class, ReqDto> getReqDtos() {
         return reqs;
     }
-
     public static Map<Class, SaveDto> getSaveDtos() {
         return saves;
+    }
+
+    public static void clear(){
+        saves.clear();
+        entitys.clear();
+        vos.clear();
+        reqs.clear();
     }
 
     public static <T extends BeanDto> void save(List<T> dtos) {
