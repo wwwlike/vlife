@@ -16,34 +16,15 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.vlife.dict;
-
-import lombok.Data;
-
-import javax.inject.Named;
+package cn.wwwlike.vlife.base;
 
 /**
- * 系统字典
+ * 树型关系实体
+ * 规范：
+ * 下级code以上级开头，以下划线分隔如：
+ * 42->42_01->42_01_06
  */
-@Data
-public class CT {
-    //逻辑删除使用
-    @Named("数据状态")
-    public static final class STATUS {
-        @Named("删除")
-        public final static String REMOVE = "0";
-        @Named("正常")
-        public final static String NORMAL = "1";
-    }
-
-    @Named("业务状态")
-    public static final class STATE {
-        @Named("作废")
-        public final static String DROP = "0";
-        @Named("正常")
-        public final static String NORMAL = "1";
-        @Named("停用")
-        public static final String DISABLE = "2";
-    }
-
+public interface ITree {
+  public String getTreeCode();
+  public void setTreeCode(String treeCode);
 }

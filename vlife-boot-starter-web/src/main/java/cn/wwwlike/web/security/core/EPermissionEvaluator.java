@@ -35,7 +35,7 @@ public class EPermissionEvaluator implements PermissionEvaluator {
             return false;
         }
        SecurityUser user=(SecurityUser)authentication.getDetails();
-       if(permission.toString().indexOf(user.getAuthoritie())!=-1){
+       if(permission.toString().indexOf(user.getGroupId())!=-1){
            return true;
        }
         return false;

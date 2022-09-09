@@ -9,16 +9,24 @@ import lombok.Data;
  */
 @Data
 public class PehrSecurityUser extends SecurityUser {
-    public String groupId;//角色组
-    public String orgcode;//所在医疗机构
-    public String orgtype;//机构类型
-    public String usertype;//用户类型
-    public String orgId;
-    public String areacode;//机构所在地区编码
+//    public String groupId; //权限id 父类有了
+    public String orgId;   //用户机构的id
+    public String areaId;  //用户地区id
+    public String deptId;  // 部门id
+    public String codeOrg;// 机构编号
+    public String codeDept; //部门编号
+    public String codeArea;//地区编号
+
+
+//    public String orgcode;//所在医疗机构
+//    public String orgtype;//机构类型
+//    public String usertype;//用户类型
+//    public String areacode;//机构所在地区编码
+
     public PehrSecurityUser(){
     }
 
-    public PehrSecurityUser(String id,String username,String password, String authorities){
-        super(id,username,password, authorities);
+    public PehrSecurityUser(String id,String username,String password, String groupId){
+        super(id,username,password, groupId);
     }
 }

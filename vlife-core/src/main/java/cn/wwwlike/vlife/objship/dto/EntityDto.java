@@ -73,14 +73,11 @@ public class EntityDto extends BeanDto<Item> implements ISort {
 
     /**
      * 查找符合的字段信息
-     *
      * @param fieldName
      * @return
      */
     public Optional<FieldDto> find(String fieldName) {
-        return getFields().stream().filter(field -> {
-            return true;
-        }).findFirst();
+        return getFields().stream().filter(f->f.getFieldName().equals(fieldName)).findAny();
     }
 
     /**

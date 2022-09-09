@@ -30,7 +30,15 @@ import java.io.Serializable;
  * @param <R>
  */
 public interface Compare<Children, R> extends Serializable {
-
+    /**
+     * 以eq进行手工过滤介绍
+     * @param condition 查询执行的先决条件
+     * @param column 查询匹配字段
+     * @param val 查询匹配值
+     * @param tran 字段转换接口
+     * @param leftClz 查询column是外键表上的字段，那么这里写做关联class集合
+     * @return
+     */
     Children eq(boolean condition, R column, Object val, DataExpressTran tran, Class<? extends Item>... leftClz);
 
     default Children eq(R column, Object val) {

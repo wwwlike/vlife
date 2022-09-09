@@ -83,6 +83,9 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     }
 
     public Q qw() {
+        if(this.queryWrapper!=null){
+            return this.queryWrapper;
+        }
         return qw(
                 entityClz!=null&&Item.class.isAssignableFrom(entityClz)?
                         entityClz:getEntity());

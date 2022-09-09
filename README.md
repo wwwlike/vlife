@@ -46,8 +46,5 @@
 3. 提供了模板组件，不用写前端代码即可实现前端一般CRUD业务场景功能页面的渲染
 
 ## 反馈与共建
-- QQ讨论群：786134846
-  ![](http://vlife.wwwlike.cn/static/img/qq_qun_786134846.png)
+![](http://vlife.wwwlike.cn/static/image/linkme.png)
 
-- 微信：vlifeBoot
-  ![](http://admin.wwwlike.cn/wx.jpg)

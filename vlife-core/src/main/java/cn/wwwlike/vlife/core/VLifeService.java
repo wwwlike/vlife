@@ -25,6 +25,7 @@ import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.SaveDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
+import cn.wwwlike.vlife.query.AbstractWrapper;
 import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.PageQuery;
@@ -67,6 +68,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
     /**----------------------------实体类查询(单体数据逻辑查询)--------------------------*/
+    // ？id查询是否也应该addQueryFilter 根据用户的查询权限组进行一层过滤？，目前没有
     /**
      * 1.根据id查询单个实体
      */
@@ -100,6 +102,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      */
     public List<T> findAll() {
         QueryWrapper<T> wrapper = QueryWrapper.of(entityClz);
+        wrapper=addQueryFilter(wrapper);
         return dao.find(wrapper);
     }
 
@@ -109,6 +112,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      */
     public List<T> findAll(OrderRequest order) {
         QueryWrapper<T> wrapper = QueryWrapper.of(entityClz);
+        wrapper=addQueryFilter(wrapper);
         return dao.query(entityClz, wrapper, order);
     }
 
@@ -116,13 +120,16 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 5.单个属性查询实体列表
      */
     public List<T> find(String property, Object val) {
-        return dao.find(QueryWrapper.of(entityClz).eq(property, val));
+        QueryWrapper queryWrapper=QueryWrapper.of(entityClz).eq(property, val);
+        queryWrapper=addQueryFilter(queryWrapper);
+        return dao.find(queryWrapper);
     }
 
     /**
      * 6.条件包装对象查询实体列表
      */
     public <S extends QueryWrapper, E extends CustomQuery<T, S>> List<T> find(E request) {
+        request=addQueryFilter(request);
         return dao.find(request);
     }
 
@@ -137,6 +144,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 8.条件包装对象实体分页查询
      */
     public <E extends PageQuery<T>> PageVo<T> findPage(E pageRequest) {
+        pageRequest=addQueryFilter(pageRequest);
         return dao.findPage(pageRequest);
     }
 
@@ -171,6 +179,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 10. 根据条件包装对象和Vo类信息来查询List<Vo>的集合数据
      */
     public <D extends VoBean<T>, S extends QueryWrapper, E extends CustomQuery<T, S>> List<D> query(Class<D> vo, E request) {
+        request=addQueryFilter(request);
         return dao.query(vo, request.qw(entityClz), request.getOrder());
     }
 
@@ -178,6 +187,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      *11. 根据条件分页包装对象和Vo类信息来查询PageVO<Vo>的分页数据
      */
     public <E extends VoBean<T>, N extends PageQuery<T>> PageVo<E> queryPage(Class<E> vo, N request) {
+        request=addQueryFilter(request);
         return dao.queryPage(vo, request);
     }
 
@@ -507,6 +517,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
 
     /**
      * step1 将本次提交的子表数据与库里存在的数据进行分析，本次没提交但是又存在数据库里的将要被删除
+     * 修改问题：不在saveBean里的子表，关联表数据不能删除
      * step2 调用删除方法->   remove(subItem, db2.getId());
      * @param fieldDto
      * @param entityDto
@@ -578,6 +589,23 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
 
     protected DataProcess createProcess(IdBean bean) {
         return new HealthDataProcess(bean);
+    }
+
+
+    /**
+     * 加入查询过滤条件，待改成抽象类
+     */
+    public < S extends QueryWrapper, E extends CustomQuery<T, S>> E addQueryFilter(E request){
+        addQueryFilter(request.qw(entityClz));
+//        request.setQueryWrapper(addQueryFilter(request.getQueryWrapper()));
+        return request;
+    }
+
+    /**
+     * 加入查询过滤的条件
+     */
+    public < S extends QueryWrapper> S addQueryFilter(S queryWrapper){
+        return queryWrapper;
     }
 
 }

@@ -80,7 +80,7 @@ public class FieldDto<T extends BeanDto> extends FieldInfo implements ISort {
     }
 
     public String leftJoinName() {
-        List<Class> clz = leftJoinPath();
+        List<Class<? extends Item>> clz = leftJoinPath();
         if (clz == null || clz.size() == 0)
             return null;
         String all = "";
@@ -112,7 +112,7 @@ public class FieldDto<T extends BeanDto> extends FieldInfo implements ISort {
      *
      * @return
      */
-    public List leftJoinPath() {
+    public List<Class<? extends Item>> leftJoinPath() {
         return VlifeUtils.leftJoinPathByQueryPath(getQueryPath());
     }
 

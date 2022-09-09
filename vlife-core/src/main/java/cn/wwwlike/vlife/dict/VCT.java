@@ -76,4 +76,13 @@ public class VCT {
         @Named("接口")
         public final static String API = "2";
     }
+
+    @Named("过滤方式")
+    public static final class DATA_FILTER_TYPE{
+        @Named("本级")
+        public final static String THIS = "1";
+        @Named("本级下级")
+        public final static String SUB = "2";
+
+    }
 }
