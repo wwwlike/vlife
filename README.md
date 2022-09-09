@@ -46,5 +46,5 @@
 3. 提供了模板组件，不用写前端代码即可实现前端一般CRUD业务场景功能页面的渲染
 
 ## 反馈与共建
-![](http://admin.wwwlike.cc/image/linkme.png)
+![](http://admin.vlife.cc/image/linkme.png)
 
