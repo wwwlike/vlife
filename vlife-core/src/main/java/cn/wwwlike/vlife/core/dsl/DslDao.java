@@ -283,14 +283,17 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     }
 
     /**
-     * 实体对象数据保存，
-     * 支持保存之前设置默认值，只对固定字段进行保存；排除部分字段进行保存
+     * 实体对象数据保存（需要数据加工处理的形式）
+     * 通过dataProcess来实现下面三种
+     * 1支持保存之前设置默认值;
+     * 2可只对固定字段进行保存；
+     * 3可排除部分字段进行保存
      */
     @Override
     public <E extends Item> E save(E item, DataProcess dataProcess) {
         WModel wmodel = edit(item.getClass());
         EntityPathBase<? extends Item> saveEntityPath = getItemEntityPath(item.getClass());
-        if (item.getId() == null) {
+        if (item.getId() == null) { //新增则过滤掉不参与到保存的字段
            if(dataProcess.getAssigns()!=null){ //指定
                Arrays.stream(item.getClass().getFields()).map(Field::getName).filter(name->{
                    return !dataProcess.getAssigns().contains(name);
@@ -305,7 +308,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
                });
            }
             em.persist(item);
-        } else {
+        } else {// 修改则直接对参与的字段拼接成querydsl语法保存
             StringPath idPath = (StringPath) ReflectionUtils.getFieldValue(saveEntityPath, "id");
             wmodel.where(idPath.eq(item.getId()));
             if(dataProcess.getAssigns()!=null){
@@ -323,28 +326,27 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         return item;
     }
 
-    /**
-     * 实体类数据保存。采用querydsl方式保存
-     * 其中实体类修改；status和creteDate不能修改或者清空
-     */
-
-    public <E extends Item> E save(E item, Map<String, Object> fkMap) {
-        if (item.getId() == null) {
-            em.persist(item);
-        } else { //这里可以和saveBean
-            WModel wmodel = edit(item.getClass());
-            EntityPathBase<? extends Item> saveEntityPath = getItemEntityPath(item.getClass());
-            StringPath idPath = (StringPath) ReflectionUtils.getFieldValue(saveEntityPath, "id");
-            wmodel.where(idPath.eq(item.getId()))
-                    .setVal(item,"status","createDate");
-            fkMap.forEach((k, v) -> {
-                Path fnNameDsl = (Path) ReflectionUtils.getFieldValue(saveEntityPath, k);
-                wmodel.getUpdateClause().set(fnNameDsl, v);
-            });
-            wmodel.getUpdateClause().execute();
-        }
-        return item;
-    }
+//    /**
+//     * 实体类数据保存。采用querydsl方式保存
+//     * 其中实体类修改；status和creteDate不能修改或者清空
+//     */
+//    public <E extends Item> E save(E item, Map<String, Object> fkMap) {
+//        if (item.getId() == null) {
+//            em.persist(item);
+//        } else { //这里可以和saveBean
+//            WModel wmodel = edit(item.getClass());
+//            EntityPathBase<? extends Item> saveEntityPath = getItemEntityPath(item.getClass());
+//            StringPath idPath = (StringPath) ReflectionUtils.getFieldValue(saveEntityPath, "id");
+//            wmodel.where(idPath.eq(item.getId()))
+//                    .setVal(item,"status","createDate");
+//            fkMap.forEach((k, v) -> {
+//                Path fnNameDsl = (Path) ReflectionUtils.getFieldValue(saveEntityPath, k);
+//                wmodel.getUpdateClause().set(fnNameDsl, v);
+//            });
+//            wmodel.getUpdateClause().execute();
+//        }
+//        return item;
+//    }
 
     /**
      * SaveDto数据保存

@@ -18,19 +18,14 @@
 
 package cn.wwwlike.vlife.base;
 
-import cn.wwwlike.base.model.IdBean;
-
 /**
- * 树型关系实体
- * 规范：
- * 下级code以上级开头，以下划线分隔如：
- * 42->42_01->42_01_06
+ * bussiess 业务实体实现该接口，
+ * 则拥有机构、地区、部门
+ * 创建记时候记录这些信息
+ * 需要数据隔离（租户）的业务实现该接口
  */
-public interface ITree extends IdBean {
-  public String getName();
-  public void setName(String name);
-  public String getCode();
-  public String getPcode();
-  public void setCode(String code);
-  public void setPcode(String pcode);
+public interface IBus {
+    public String getSysAreaId();
+    public String getSysOrgId();
+    public String getSysDeptId();
 }

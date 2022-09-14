@@ -2,11 +2,11 @@
 
 # V-LIFE是为全面提升研发效能而生的平台级全栈解决方案。
 
-- [使用指南] [http://vlife.wwwlike.cn](http://vlife.wwwlike.cn)
+- [使用指南] <http://vlife.cc>
 - [入门视频] [5分钟快速体验入门](https://www.bilibili.com/video/BV1sT411c71v/?vd_source=4c025d49e1ac4adb74b6dd2a39ce185e&t=119.6)
-- [示例骨架] [http://oa.wwwlike.cn](http://oa.wwwlike.cn) 
-- [权限管理骨架应用服务端] [https://github.com/wwwlike/vlife-admin](https://github.com/wwwlike/vlife-admin)
-- [权限管理骨架应用web端] [https://github.com/wwwlike/vlife-admin-react](https://github.com/wwwlike/vlife-admin-react)
+- [骨架示例] <http://admin.vlife.cc> 
+- [权限管理骨架应用服务端] <https://github.com/wwwlike/vlife-admin>
+- [权限管理骨架应用web端] <https://github.com/wwwlike/vlife-admin-react>
 
 ## 特点
 - 前后端全栈低代码解决方案，数分钟即可完成一个模块的业务场景功能开发

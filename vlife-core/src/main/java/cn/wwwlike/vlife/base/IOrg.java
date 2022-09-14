@@ -18,19 +18,11 @@
 
 package cn.wwwlike.vlife.base;
 
-import cn.wwwlike.base.model.IdBean;
-
 /**
- * 树型关系实体
- * 规范：
- * 下级code以上级开头，以下划线分隔如：
- * 42->42_01->42_01_06
+ * 类说明
+ *
+ * @author xiaoyu
+ * @date 2022/9/13
  */
-public interface ITree extends IdBean {
-  public String getName();
-  public void setName(String name);
-  public String getCode();
-  public String getPcode();
-  public void setCode(String code);
-  public void setPcode(String pcode);
+public interface IOrg {
 }

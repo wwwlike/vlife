@@ -76,6 +76,9 @@ public abstract class DataProcess {
 
     public DataProcess(IdBean bean) {
         this.bean = bean;
+        /**
+         * 前端给的值都不能要
+         */
         setIgnores(new String[]{"status","createDate","modifyDate","createId","modifyId"});
         commonDataSet(this.getBean(), this.getColumnValMap());
     }

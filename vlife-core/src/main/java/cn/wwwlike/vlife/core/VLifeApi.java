@@ -20,11 +20,13 @@ package cn.wwwlike.vlife.core;
 
 import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.base.MainTable;
 import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.CustomQuery;
+import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -100,18 +102,14 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
     }
 
     /**
-     * 明细查询通用方法(外键批量翻译)
-     * @param modelName
+     * 通过字段批量查询数据只包含查询字段和name的数据
+     *
      * @param ids
      * @return
      */
-    @GetMapping("/views/{modelName}")
-    public List<IdBean> view(@PathVariable String modelName, String...ids){
-        BeanDto btn=modelInfo(modelName);
-        if(Item.class.isAssignableFrom(btn.getClz())){
-            return service.findByIds(ids);
-        }else{
-            return service.queryByIds(btn.getClz(),ids);
-        }
+    @GetMapping("/find/{field}")
+    public List<T> find(@PathVariable String field, String...ids){
+        QueryWrapper<T> qw=QueryWrapper.of(entityClz).in(field,ids);
+        return service.find(qw);
     }
 }

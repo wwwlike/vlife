@@ -29,6 +29,7 @@ import cn.wwwlike.vlife.query.AbstractWrapper;
 import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.PageQuery;
+import cn.wwwlike.vlife.query.tran.LengthTran;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
 import org.slf4j.Logger;
@@ -131,6 +132,13 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     public <S extends QueryWrapper, E extends CustomQuery<T, S>> List<T> find(E request) {
         request=addQueryFilter(request);
         return dao.find(request);
+    }
+
+    /**
+     * 根据包装对象查询实体
+     */
+    public List<T> find(QueryWrapper<T> qw){
+        return dao.find(qw);
     }
 
     /**
@@ -258,13 +266,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         return save(beanDto,masterProcess);
     }
 
-    private <I extends Item >I save(I beanDto,DataProcess masterProcess) {
-        EntityDto entityDto = GlobalData.entityDto((Class<? extends Item>) beanDto.getClass());
-        masterProcess.getColumnValMap().forEach((k, v) -> {
-            ReflectionUtils.setFieldValue(beanDto, k, v);
-        });
-        return dao.save(beanDto,masterProcess);
-    }
 
     /**
      * 16-1 实体item保存
@@ -278,7 +279,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
 
     /**
      * 16-2 实体item保存
-     * @param assigns 指定保存的字段
+     * @param assigns 指定保存的字段，指定之外的不需要处理
      */
     public T saveWithAssign(T t,String ... assigns) {
         DataProcess masterProcess =  createProcess(t);
@@ -367,14 +368,25 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         }
     }
 
-
+    /**
+     * 实体类保存
+     * 保存之前将数据处理类的设置关属值补充上去
+     */
+    protected  <I extends Item >I save(I beanDto,DataProcess masterProcess) {
+        EntityDto entityDto = GlobalData.entityDto((Class<? extends Item>) beanDto.getClass());
+        masterProcess.getColumnValMap().forEach((k, v) -> {
+            ReflectionUtils.setFieldValue(beanDto, k, v);
+        });
+        dao.save(beanDto,masterProcess);
+        return beanDto;
+    }
     /**
      * 保存递归的核心逻辑处理
      *   1. 保存本表的外键表
      *   2. 保存本表
      *   3. 保存关联表
      */
-    private <E extends IdBean> E saveBean(final E beanDto, Class<? extends Item> fkItemClz, String fkItemId, UnaryOperator<DataProcess> callBackMethod, boolean subIsFull) {
+    protected  <E extends IdBean> E saveBean(final E beanDto, Class<? extends Item> fkItemClz, String fkItemId, UnaryOperator<DataProcess> callBackMethod, boolean subIsFull) {
         DataProcess masterProcess = callBackMethod == null ? createProcess(beanDto) : callBackMethod.apply(createProcess(beanDto));
         if (beanDto instanceof SaveBean) {
             boolean editModel = beanDto.getId() == null ? false : true;
@@ -501,9 +513,9 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                     }
                 });
             });
-        } else if (beanDto instanceof Item) {
+        } else if (beanDto instanceof Item) {//递归进来的是实体模型
             EntityDto entityDto = GlobalData.entityDto((Class<? extends Item>) beanDto.getClass());
-            if (fkItemClz != null) {
+            if (fkItemClz != null) {//递归时候外键设置
                 ReflectionUtils.setFieldValue(beanDto, entityDto.getFkMap().get(fkItemClz), fkItemId);
             }
             save((Item)beanDto,masterProcess);
@@ -605,6 +617,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 加入查询过滤的条件
      */
     public < S extends QueryWrapper> S addQueryFilter(S queryWrapper){
+        //该方法由继承类来实现
         return queryWrapper;
     }
 

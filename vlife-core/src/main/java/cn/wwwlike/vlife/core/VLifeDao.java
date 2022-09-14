@@ -50,7 +50,7 @@ public interface VLifeDao<T extends Item> {
     /**
      * 包装条件进行实体对象<T>列表数据的过滤
      */
-    public List<T> find(QueryWrapper<T> wq);
+    public List<T > find(QueryWrapper<T> wq);
 
     /**
      * 通过终端入参的分页查询对象进行实体分页查询

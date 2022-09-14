@@ -23,6 +23,7 @@ import lombok.Data;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -67,6 +68,15 @@ public abstract class BeanDto<T> extends ItemInfo {
             }).collect(Collectors.toList());
         }
         return filters;
+    }
+
+    /**
+     * 查找符合的字段信息
+     * @param fieldName
+     * @return
+     */
+    public Optional<FieldDto> find(String fieldName) {
+        return getFields().stream().filter(f->f.getFieldName().equals(fieldName)).findAny();
     }
 }
 
