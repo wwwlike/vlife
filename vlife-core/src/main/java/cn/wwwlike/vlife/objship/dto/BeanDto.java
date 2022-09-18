@@ -28,16 +28,13 @@ import java.util.stream.Collectors;
 
 /**
  * bean类型的DTO基类
- *
- * @param <T>
  */
-
 public abstract class BeanDto<T> extends ItemInfo {
     /* 当前类对象 */
     public Class<? extends T> clz;
     /* BEAN里面的字段信息*/
     public List<FieldDto> fields;
-
+    /*是否业务类*/
     public Class<? extends T> getClz() {
         return clz;
     }

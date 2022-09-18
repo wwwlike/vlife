@@ -60,6 +60,11 @@ public class FieldInfo extends ClazzInfo {
     public String getEntityType(){
         return StringUtils.uncapitalize(entityType);
     }
-}
 
+    /**
+     * 字段在页面显示状态1不显示，2只读， 3可写
+     */
+    public String uiState;
+
+}
 

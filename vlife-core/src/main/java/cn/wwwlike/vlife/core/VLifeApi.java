@@ -61,28 +61,7 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
      */
     @GetMapping("/modelInfo/{modelName}")
     public BeanDto modelInfo(@PathVariable String modelName){
-        BeanDto<T> dto=null;
-        Optional<Class> t= GlobalData.getEntityDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
-        if(t.isPresent()) {
-             dto = (BeanDto<T>) GlobalData.entityDto(t.get());
-             return dto;
-        }
-        t= GlobalData.getSaveDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
-        if(t.isPresent()){
-            dto= (BeanDto)GlobalData.getSaveDtos().get(t.get());
-            return dto;
-        }
-        t= GlobalData.getVoDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
-        if(t.isPresent()){
-            dto= (BeanDto)GlobalData.getVoDtos().get(t.get());
-            return dto;
-        }
-        t= GlobalData.getReqDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
-        if(t.isPresent()){
-            dto= (BeanDto)GlobalData.getReqDtos().get(t.get());
-            return dto;
-        }
-        return dto;
+        return service.modelInfo(modelName);
     }
 
     /**

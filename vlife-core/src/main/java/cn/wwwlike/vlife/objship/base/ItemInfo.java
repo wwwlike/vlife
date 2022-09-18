@@ -28,18 +28,14 @@ public class ItemInfo extends ClazzInfo {
     public String getItemType() {
         return itemType;
     }
-
     public void setItemType(String itemType) {
         this.itemType = itemType;
     }
-
     public void setEntityType(String entityType) {
         this.entityType = StringUtils.uncapitalize(entityType);
     }
-
     public String itemType;
     public String entityType;
-
     public String getEntityType() {
         if (this.entityType != null)
             return StringUtils.uncapitalize(this.entityType);

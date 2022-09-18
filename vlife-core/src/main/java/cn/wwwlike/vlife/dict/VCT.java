@@ -56,9 +56,10 @@ public class VCT {
         public final static String API = "api";
     }
 
-
     @Named("删除方式")
     public static final class DELETE_TYPE {
+        @Named("禁止删除")
+        public final static String UNABLE = "unable";
         @Named("物理删除")
         public final static String DELETE = "delete";
         @Named("逻辑删除")
@@ -77,12 +78,13 @@ public class VCT {
         public final static String API = "2";
     }
 
-    @Named("过滤方式")
-    public static final class DATA_FILTER_TYPE{
-        @Named("本级")
-        public final static String THIS = "1";
-        @Named("本级下级")
-        public final static String SUB = "2";
-
+    @Named("资源类型")
+    public static final class FIELD_UISTATE {
+        @Named("显示")
+        public final static String SHOW = "show";
+        @Named("隐藏")
+        public final static String HIDE = "hide";
+        @Named("读写")
+        public final static String WRITE = "write";
     }
 }

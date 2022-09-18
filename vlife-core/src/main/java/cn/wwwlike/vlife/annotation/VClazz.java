@@ -51,6 +51,12 @@ public @interface VClazz {
      */
     Class<? extends Item>[] nothing() default {};
 
+
+    /**
+     * 禁止删除
+     */
+    Class<? extends Item>[] unableRm() default {};
+
     /**
      * req查询的默认请求方式,如果是post，则方法名称里没有list,page,
      * @return

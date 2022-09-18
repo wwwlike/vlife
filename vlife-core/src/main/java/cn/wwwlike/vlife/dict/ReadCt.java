@@ -32,6 +32,28 @@ public class ReadCt {
     public static List<DictVo> getSysDict(){
         return read(CT.class,VCT.class);
     }
+
+    /**
+     * 通过类和值返回中文名称
+     * @param value
+     * @return
+     */
+    public static String getLabel(Class outer,Class inner,String value){
+        try{
+        Object sub=Class.forName(outer.getName()+"$"+inner.getSimpleName()).newInstance();
+        Field[] dictDetail=sub.getClass().getFields();
+        for(Field field:dictDetail){
+            Named temp=field.getAnnotation(Named.class);
+            Object val=  ReflectionUtils.getFieldValue(sub,field.getName());
+            if(val.equals(value)){
+                return temp.value();
+            }
+        }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return "";
+    }
     /**
      * 根据class读字典类的信息
      * @param clazz

@@ -99,6 +99,11 @@ public class EntityRead extends ItemReadTemplate<EntityDto> {
                         dto.deleteMap.put(clz, VCT.DELETE_TYPE.NOTHING);
                     });
                 }
+                if (f.unableRm() != null) {
+                    Arrays.stream(f.unableRm()).forEach(clz -> {
+                        dto.deleteMap.put(clz, VCT.DELETE_TYPE.UNABLE);
+                    });
+                }
                 if (f.orders() != null) {
                     dto.setOrders(f.orders());
                 }

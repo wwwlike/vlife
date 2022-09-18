@@ -21,6 +21,7 @@ package cn.wwwlike.vlife.core;
 import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.*;
 import cn.wwwlike.vlife.bean.PageVo;
+import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.SaveDto;
@@ -36,12 +37,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -67,6 +66,34 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     public void init() throws ClassNotFoundException {
         entityClz = GenericsUtils.getSuperClassGenricType(this.getClass());
     }
+
+    //模型信息返回
+    public BeanDto modelInfo(String modelName){
+        BeanDto<T> dto=null;
+        Optional<Class> t= GlobalData.getEntityDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
+        if(t.isPresent()) {
+            dto = (BeanDto<T>) GlobalData.entityDto(t.get());
+            return dto;
+        }
+        t= GlobalData.getSaveDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
+        if(t.isPresent()){
+            dto= (BeanDto)GlobalData.getSaveDtos().get(t.get());
+            return dto;
+        }
+        t= GlobalData.getVoDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
+        if(t.isPresent()){
+            dto= (BeanDto)GlobalData.getVoDtos().get(t.get());
+            return dto;
+        }
+        t= GlobalData.getReqDtos().keySet().stream().filter(clz->clz.getSimpleName().equalsIgnoreCase(modelName)).findAny();
+        if(t.isPresent()){
+            dto= (BeanDto)GlobalData.getReqDtos().get(t.get());
+            return dto;
+        }
+        return dto;
+    }
+
+
 
     /**----------------------------实体类查询(单体数据逻辑查询)--------------------------*/
     // ？id查询是否也应该addQueryFilter 根据用户的查询权限组进行一层过滤？，目前没有
@@ -328,6 +355,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         return saveBean(idBean, null, null, null, isFull);
     }
 
+
     /**
      * 删除逻辑，递归逻辑
      */
@@ -335,6 +363,19 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         String[] ids= id.split(",");
         EntityDto entityDto = GlobalData.entityDto(itemClz);
         List<Class<? extends Item>> relationClz = entityDto.getRelationTableClz();
+        //检查关联表，查看是否有作为外键字段的关联数据，且该表设置了不能删除的则删除结束
+        for (Class<? extends Item> clz : relationClz) {
+//            EntityDto delEntityDto = GlobalData.entityDto(clz);
+            String delType = entityDto.getDeleteMap().get(clz);
+            if(DELETE_TYPE.UNABLE.equals(delType)){
+                QueryWrapper wrapper = QueryWrapper.of(clz)
+                        .eq(ids.length==1,entityDto.getType()+"Id",id)
+                        .in(ids.length>1,entityDto.getType()+"Id",ids);
+                if(dao.query(clz, wrapper, null).size()>0){
+                    return -1; //没有给出原因
+                }
+            }
+        }
         for (Class<? extends Item> clz : relationClz) {
             EntityDto delEntityDto = GlobalData.entityDto(clz);
             QueryWrapper wrapper = new QueryWrapper(clz);
@@ -349,7 +390,10 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                 String deltype = delRelation(entityDto, delEntityDto);
                 for (Item item : data) {
                     if (DELETE_TYPE.REMOVE.equals(deltype)) {
-                        remove(clz, item.getId());
+                         long num=remove(clz, item.getId());
+                         if(num==-1){//递归调用子集有不能删除的则整个都不能删除
+                             return num;
+                         }
                     } else if (DELETE_TYPE.CLEAR.equals(deltype)) {
                         ReflectionUtils.setFieldValue(item, fkName, null);
                         dao.save(item);
