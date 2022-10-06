@@ -219,6 +219,14 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
     /**
+     * 10.1 查询所有vo视图模型数据
+     */
+    public <D extends VoBean<T>, S extends QueryWrapper, E extends CustomQuery<T, S>> List<D> queryAll(Class<D> vo) {
+        QueryWrapper qw=addQueryFilter(QueryWrapper.of(entityClz));
+        return dao.query(vo,qw,null);
+    }
+
+    /**
      *11. 根据条件分页包装对象和Vo类信息来查询PageVO<Vo>的分页数据
      */
     public <E extends VoBean<T>, N extends PageQuery<T>> PageVo<E> queryPage(Class<E> vo, N request) {
@@ -653,7 +661,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      */
     public < S extends QueryWrapper, E extends CustomQuery<T, S>> E addQueryFilter(E request){
         addQueryFilter(request.qw(entityClz));
-//        request.setQueryWrapper(addQueryFilter(request.getQueryWrapper()));
         return request;
     }
 

@@ -4,7 +4,7 @@
 
 - [使用指南] <http://vlife.cc>
 - [入门视频] [5分钟快速体验入门](https://www.bilibili.com/video/BV1sT411c71v/?vd_source=4c025d49e1ac4adb74b6dd2a39ce185e&t=119.6)
-- [骨架示例] <http://admin.vlife.cc> 
+- [骨架示例] <http://admin.vlife.cc>
 - [权限管理骨架应用服务端] <https://github.com/wwwlike/vlife-admin>
 - [权限管理骨架应用web端] <https://github.com/wwwlike/vlife-admin-react>
 
@@ -46,4 +46,4 @@
 3. 提供了模板组件，不用写前端代码即可实现前端一般CRUD业务场景功能页面的渲染
 
 ## 反馈与共建
-<img src="http://admin.vlife.cc/image/linkme.png" width=500 height=230 />
+![反馈与共建](assets/markdown-img-paste-20221006103734320.png)

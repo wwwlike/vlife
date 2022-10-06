@@ -72,7 +72,7 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
      */
     @GetMapping("/view/{modelName}/{id}")
     public IdBean view(@PathVariable String modelName,@PathVariable String id){
-        BeanDto btn=modelInfo(modelName);
+        BeanDto btn=service.modelInfo(modelName);
         if(Item.class.isAssignableFrom(btn.getClz())){
             return service.findOne(id);
         }else{
