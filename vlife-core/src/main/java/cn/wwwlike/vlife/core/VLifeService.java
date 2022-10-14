@@ -165,6 +165,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 根据包装对象查询实体
      */
     public List<T> find(QueryWrapper<T> qw){
+        qw=addQueryFilter(qw);
         return dao.find(qw);
     }
 

@@ -38,14 +38,14 @@ public class ReadCt {
      * @param value
      * @return
      */
-    public static String getLabel(Class outer,Class inner,String value){
+    public static String getLabel(Class outer,Class inner,Object value){
         try{
         Object sub=Class.forName(outer.getName()+"$"+inner.getSimpleName()).newInstance();
         Field[] dictDetail=sub.getClass().getFields();
         for(Field field:dictDetail){
             Named temp=field.getAnnotation(Named.class);
             Object val=  ReflectionUtils.getFieldValue(sub,field.getName());
-            if(val.equals(value)){
+            if(val.toString().equals(value.toString())){
                 return temp.value();
             }
         }

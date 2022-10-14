@@ -96,7 +96,7 @@ public class CommentParser {
 
             if (typeDeclaration.getComment().isPresent()) {//有注释
                 String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().get().getContent());
-                commentText = commentText.split("\n")[0].split("\r")[0];
+                commentText = commentText.split("\n")[0].split("\r")[0];//取注释的第一行
                 clzTag.setTitle(commentText);
             }
             NodeList list = typeDeclaration.getMembers();
@@ -110,7 +110,8 @@ public class CommentParser {
                     }
                     if (((FieldDeclaration) o).getComment().isPresent()) {
                         String comment = ((FieldDeclaration) o).getComment().get().getContent();
-                        fieldTag.setTitle(CommentUtils.parseCommentText(comment));
+//                      //取注释的第一行
+                        fieldTag.setTitle(CommentUtils.parseCommentText(comment).split("\n")[0].split("\r")[0]);
                     }else if(beanDto!=null){
                        List<FieldDto> fields=beanDto.getFields();
                         for(FieldDto fieldDto:fields){

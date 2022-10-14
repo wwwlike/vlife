@@ -54,7 +54,7 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
     }
 
     /**
-     * 模型信息
+     * 模型信息 待移除
      * 未指定模型类ing，当前按entity,dto,vo,req顺序进行模型匹配
      * @param modelName 模型名称
      * @return
@@ -82,7 +82,6 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
 
     /**
      * 通过字段批量查询数据只包含查询字段和name的数据
-     *
      * @param ids
      * @return
      */

@@ -36,6 +36,16 @@ public class CT {
         public final static String NORMAL = "1";
     }
 
+    //逻辑删除使用
+    @Named("是否")
+    public static final class TF {
+        @Named("是")
+        public final static Boolean T = true;
+        @Named("否")
+        public final static Boolean F= false;
+    }
+
+
     @Named("业务状态")
     public static final class STATE {
         @Named("作废")

@@ -26,9 +26,17 @@ import cn.wwwlike.vlife.base.Item;
  * @param <T>
  */
 public class QueryWrapper<T extends Item> extends AbstractWrapper<T, String, QueryWrapper<T>> {
+    /**
+     * 过滤规则实体类
+     * 默认是T，主动设置后进行覆盖(area,org,dept会被业务类实体覆盖)
+     */
+    public Class filterRuleClz;
+
     public QueryWrapper(Class<T> entity) {
         super.entityClz = entity;
     }
+
+
 
     public static <E extends Item> QueryWrapper<E> of(Class<E> clz) {
         return new QueryWrapper<E>(clz);
