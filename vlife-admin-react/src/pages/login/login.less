@@ -1,0 +1,242 @@
+.loginContainerCon {
+  background-color: #f2f5f7;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100%;
+  background-position: center;
+  .showLangChangeBottom {
+    margin-bottom: 0;
+  }
+
+  .loginBox {
+    a {
+      text-decoration: none;
+      &:hover {
+        color: #1182dd;
+      }
+    }
+
+    .findPassword {
+      color: #757575 !important;
+      &:hover {
+        color: #1182dd !important;
+      }
+    }
+
+    .loginContainer {
+      max-width: 420px;
+      padding: 48px 48px 23px;
+      box-sizing: border-box;
+      margin: 80px auto 0;
+      background: #ffffff;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      position: relative;
+
+      @media screen and (max-width: 414px) {
+        padding: 48px 24px 23px;
+      }
+
+      .loadingLine {
+        height: 3px;
+        width: 10px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: #2196f3;
+        animation-name: fadeMove;
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        animation-direction: normal;
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes fadeMove {
+        from {
+          width: 10px;
+          left: 0;
+        }
+
+        50% {
+          width: 100px;
+          left: 40%;
+        }
+
+        to {
+          width: 10px;
+          left: 386px;
+        }
+      }
+
+      @media screen and (max-width: 414px) {
+        margin: 0;
+      }
+
+      .titleHeader {
+        line-height: 1;
+        .title {
+          text-align: left;
+          font-size: 20px;
+          color: #333333;
+
+          span {
+            display: block;
+            width: 8px;
+            height: 3px;
+            background: #2196f3;
+            margin-top: 12px;
+          }
+        }
+      }
+
+      .btnForLogin {
+        font-weight: 600;
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        display: block;
+        background: #2296f3;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #fff;
+        margin-top: 32px;
+        text-align: center;
+
+        &:hover {
+          background: #1182dd;
+        }
+        &:active {
+          background: #1585dd;
+        }
+      }
+
+      .line {
+        width: 100%;
+        height: 0px;
+        border-top: 1px solid rgba(240, 240, 240, 1);
+        opacity: 1;
+        display: block;
+        margin-top: 48px;
+      }
+
+      .btnUseOldAccount {
+        font-size: 14px;
+        color: #2196f3;
+        display: block;
+        margin: 20px auto 0;
+        text-align: center;
+
+        &:hover {
+          color: #1182dd;
+        }
+      }
+    }
+
+    .loginContainer .cbRememberPasswordDiv {
+      color: #757575;
+      line-height: 18px;
+      cursor: pointer;
+    }
+
+    .loginContainer .cbRememberPasswordDiv .cb {
+      margin-right: 5px;
+      margin-top: 1px;
+      float: left;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+
+      &.unCheckedIcon {
+        background: url(./img/unCheckedIcon.png) no-repeat;
+      }
+
+      &.checkedIcon {
+        background: url(./img/checkedIcon.png) no-repeat;
+      }
+    }
+
+    .loginContainer .tpLogin {
+      // height: 70px;
+      // margin-top: 25px;
+      // border-bottom: 1px solid #e0e1e5;
+      // position: relative;
+      // margin-bottom: 30px;
+
+      .title {
+        text-align: center;
+        color: #bbb;
+        margin: 40px auto;
+      }
+
+      a {
+        height: 24px;
+        display: inline-block;
+        text-decoration: none;
+        width: 23%;
+        text-align: center;
+
+        i {
+          display: inline-block;
+          width: 24px;
+          height: 24px;
+          background-size: cover;
+          background-repeat: no-repeat;
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          -moz-osx-font-smoothing: grayscale;
+
+          &:hover {
+            -webkit-animation-name: hvr-pop;
+            animation-name: hvr-pop;
+            -webkit-animation-duration: 0.3s;
+            animation-duration: 0.3s;
+            -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+            -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+          }
+        }
+      }
+    }
+
+    @-webkit-keyframes hvr-pop {
+      50% {
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+      }
+    }
+
+    @keyframes hvr-pop {
+      50% {
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+      }
+    }
+
+    .loginContainer .tpLogin .weixinIcon {
+      background-image: url(./img/weixinIcon.png);
+    }
+
+    .loginContainer .tpLogin .personalQQIcon {
+      background-image: url(./img/personalQQIcon.png);
+    }
+
+    .loginContainer .tpLogin .workWeixinIcon {
+      background-image: url(./img/workWeixinIcon.png);
+    }
+  }
+
+  @media screen and (max-width: 414px) {
+    .loginBox {
+      padding: 46px 16px;
+
+      .loginContainer {
+        margin: 0;
+      }
+    }
+  }
+}
