@@ -37,6 +37,7 @@
         <module>vlife-plugin</module>
         <module>vlife-spring-boot-starter</module>
         <module>vlife-boot-starter-web</module>
+        <module>vlife-admin</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

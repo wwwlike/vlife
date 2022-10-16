@@ -1,0 +1,10 @@
+{
+  "serverUrl": "http://localhost:8088",
+  "isStrict": false,
+  "allInOne": true,
+  "outPath": "src/main/resources/static/doc",
+  "coverOld": true,
+  "createDebugPage": true,
+  "md5EncryptedHtmlName": false,
+  "projectName": "health健康3333333档案"
+}

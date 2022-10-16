@@ -212,12 +212,21 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
     /**
+     * 10-1. 根据条件包装对象和Vo类信息来查询List<Vo>的集合数据
+     */
+    public <D extends VoBean<T>, S extends QueryWrapper, E extends CustomQuery<T, S>> List<D> query(Class<D> vo, QueryWrapper<T> qw) {
+        qw=addQueryFilter(qw);
+        return dao.query(vo, qw,null);
+    }
+
+    /**
      * 10. 根据条件包装对象和Vo类信息来查询List<Vo>的集合数据
      */
     public <D extends VoBean<T>, S extends QueryWrapper, E extends CustomQuery<T, S>> List<D> query(Class<D> vo, E request) {
         request=addQueryFilter(request);
         return dao.query(vo, request.qw(entityClz), request.getOrder());
     }
+
 
     /**
      * 10.1 查询所有vo视图模型数据
