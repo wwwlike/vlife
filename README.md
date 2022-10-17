@@ -6,7 +6,7 @@
 - [骨架示例] <http://admin.vlife.cc>
 - [前端项目] <https://github.com/wwwlike/vlife-admin-react>
 
-![反馈与共建](https://gitee.com/wwwlike/vlife-img/raw/master/vlife_jg.png)
+![逻辑架构](https://wwwlike.gitee.io/vlife-img/vlife_jg.png)
 
 ## 特点
 - 核心底层代码开源、二次开发私有部署无限制
