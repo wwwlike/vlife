@@ -4,6 +4,9 @@
 - [使用指南] <http://vlife.cc>
 - [入门视频] [5分钟快速体验入门](https://www.bilibili.com/video/BV1sT411c71v/?vd_source=4c025d49e1ac4adb74b6dd2a39ce185e&t=119.6)
 - [骨架示例] <http://admin.vlife.cc>
+- [前端项目] <https://github.com/wwwlike/vlife-admin-react>
+
+![反馈与共建](https://gitee.com/wwwlike/vlife-img/raw/master/vlife_jg.png)
 
 ## 特点
 - 核心底层代码开源、二次开发私有部署无限制
@@ -22,7 +25,7 @@
 
 ## 权限管理脚手架应用
 - [vlife-admin](https://github.com/wwwlike/vlife/vlife-admin) 基于vlife核心数据处理与web权限控制能力打造的权限管理骨架的后端接口层，包含了数据逻辑处理的大量应用示例。
-- [vlife-admin-react](https://github.com/wwwlike/vlife/vlife-admin-react) vlife整个系统的reacts+ts4实现的前端应用，包含了大量封装的通用业务级组件和权限管理的模块
+- [vlife-admin-react](https://github.com/wwwlike/vlife-admin-react) vlife整个系统的reacts+ts4实现的前端应用，包含了大量封装的通用业务级组件和权限管理的模块
 
 ### 骨架特新功能
 - 用户、部门、机构、地区管理、字典管理
@@ -38,7 +41,6 @@
 - semi(字节跳动ui框架)
 - hooks/ahooks
 - formily(阿里表单组件)
-
 
 
 ## 反馈与共建
