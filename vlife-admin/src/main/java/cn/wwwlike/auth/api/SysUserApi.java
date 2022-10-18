@@ -38,6 +38,11 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
     return service.findPage(req);
   }
 
+  @GetMapping("/list")
+  public List<SysUser> list(SysUserPageReq req) {
+    return service.find(req);
+  }
+
   /**
    * 保存用户表;
    * @param dto 用户表;
