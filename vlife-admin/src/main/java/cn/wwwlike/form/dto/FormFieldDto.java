@@ -33,6 +33,10 @@ public class FormFieldDto implements VoBean<FormField> {
      */
     public String formId;
     /**
+     * 分组容器
+     */
+    public String formGroupId;
+    /**
      * 字段名
      */
     public String fieldName;

@@ -38,6 +38,11 @@ public class FormFieldVo implements VoBean<FormField> {
      * 所属表单
      */
     public String formId;
+
+    /**
+     * 分组容器
+     */
+    public String formGroupId;
     /**
      * 字段名
      */

@@ -16,53 +16,49 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.form.dto;
+package cn.wwwlike.form.entity;
 
-import cn.wwwlike.form.entity.Form;
-import cn.wwwlike.form.entity.FormField;
-import cn.wwwlike.form.entity.FormGroup;
-import cn.wwwlike.vlife.base.SaveBean;
-import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.base.ITree;
+import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
- * 类说明
- *
+ * 表单容器
+ * 对字段进行分组展示。占一整行的大小
  * @author xiaoyu
- * @date 2022/9/22
+ * @date 2022/10/17
  */
+@Entity
 @Data
-public class FormDto implements SaveBean<Form> {
-    public String id;
+@Table(name="form_group")
+public class FormGroup extends DbEntity implements ITree {
     /**
-     * 元素中文信息
+     * 所在表单
      */
-    public String title;
+    public String formId;
     /**
-     * 类型(clz)
+     * 组名
      */
-    public String type;
-    /**
-     * 实体clz
-     */
-    public String entityType;
-    /**
-     * ui类型
-     */
-    public String uiType;
-    /**
-     * 模型类型
-     */
-    public String itemType;
-
-
     public String name;
-
-    public Integer gridSpan;
-
-    public List<FormField> fields;
-
-    public List<FormGroup> groups;
+    /**
+     * 容器组件
+     * FormTab,card等进行扩展
+     */
+    public String component;
+    /**
+     * 放置位置
+     * 空则是上级容器就是表单
+     */
+    public String pcode;
+    /**
+     * 组件编号
+     */
+    public String code;
+    /**
+     * 同级序号
+     */
+    public String sort;
 }

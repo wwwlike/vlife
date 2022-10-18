@@ -226,7 +226,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                             }
                             fieldDtoList.add(fieldDto);
                         } else {
-                            System.out.println(field.getName());
+//                            System.out.println(field.getName());
                         }
                     }
                     dto.setFields(fieldDtoList);
@@ -458,9 +458,6 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         String fieldType = fieldDto.getFieldType();/*字段分类 list basic, vo*/
         String voFieldName = fieldDto.getPathName();/*字段路径名称*/
         Class fieldClz = fieldDto.getClz(); /* 字段类型*/
-        if(voFieldName.equals("groupIds")||voFieldName.equals("sysRole_SysRoleGroup_sysGroup")){
-            System.out.println("1");
-        }
         Class<? extends Item> entityClz =  /* 字段对应的实体类型*/
                 Item.class.isAssignableFrom(fieldClz) ? fieldClz : GenericsUtils.getGenericType(fieldClz);
 

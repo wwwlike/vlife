@@ -181,18 +181,12 @@ public class JavaToTypeScript extends AbstractMojo {
         List<Class<?>> allClass = getAllClass(allJavaFile);
         //转换类型
         String result = allClass.stream().map(clazz -> getTypeScript(clazz)).collect(Collectors.joining("\n"));
-        System.out.println(superClassTypeStr);
-        System.out.println(result);
-
         //写入文件
         File file = new File(BASE_PATH + "type.d.ts");
         if(file.exists()){
             file.delete();
         }
         FileUtil.nioWriteFile(superClassTypeStr, BASE_PATH + "type.d.ts");
-
-//        FileUtil.appendString(superClassTypeStr,file, Charset.defaultCharset());
-//        FileUtil.appendString(result,file, Charset.defaultCharset());
     }
 }
 

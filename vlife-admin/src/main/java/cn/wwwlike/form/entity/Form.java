@@ -23,12 +23,10 @@ import java.util.Date;
 public class Form extends DbEntity {
     /**
      * 类型
-     * simple:SysUserPageVo
      */
     public String type;
     /**
      * 关联实体
-     * simple:SysUserPageVo
      */
     public String entityType;
     /**
@@ -39,15 +37,12 @@ public class Form extends DbEntity {
      * 模型名称
      */
     public String title;
-
-    // 页面设置
     /**
      * 表单名称
      */
     public String name;
     /**
      * 使用场景
-     * (save/req/view/list)
      */
     public String uiType;
     /**

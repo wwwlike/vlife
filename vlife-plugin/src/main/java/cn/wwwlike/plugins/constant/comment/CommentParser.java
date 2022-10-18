@@ -64,8 +64,6 @@ public class CommentParser {
     public static ClzTag parserField(File file, ModelReadCheck modelReadCheck) {
         ClzTag clzTag = new ClzTag();
         clzTag.setEntityName(file.getName().replace(".java",""));
-
-
         try {
             CompilationUnit cu = new JavaParser().parse(file).getResult().get();
             TypeDeclaration typeDeclaration = cu.getTypes().get(0);
@@ -171,14 +169,10 @@ public class CommentParser {
                     apiTag.setParamWrapper(method.getParameter(0).getTypeAsString());
                 }
                 tag.getApiTagList().add(apiTag);
-                System.out.println(method.getName());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        System.out.println(tag.entityName);
         return tag;
     }
 }

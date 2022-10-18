@@ -20,6 +20,7 @@ package cn.wwwlike.form.vo;
 
 
 import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.form.entity.FormGroup;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 
@@ -57,4 +58,7 @@ public class FormVo implements VoBean<Form> {
   public Integer gridSpan;
 
   public List<FormFieldVo> fields;
+
+  public List<FormGroup> groups;
+
 }

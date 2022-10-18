@@ -26,6 +26,10 @@ public class FormField  extends DbEntity {
      */
     public String formId;
     /**
+     * 所在容器
+     */
+    public String formGroupId;
+    /**
      * 字段名
      */
     public String fieldName;
