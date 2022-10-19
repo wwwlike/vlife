@@ -442,6 +442,15 @@
         "methodName": "page"
       },
       {
+        "title": "",
+        "path": "/list",
+        "paramWrapper": "SysUserPageReq",
+        "param": "req",
+        "returnClz": "List<SysUser>",
+        "methodType": "GetMapping",
+        "methodName": "list"
+      },
+      {
         "title": "\r\n   * 保存用户表;\r\n   * @param dto 用户表;\r\n   * @return 用户表;\r\n   ",
         "path": "/save",
         "paramWrapper": "SysUser",
@@ -509,12 +518,14 @@
       },
       "details": {
         "fieldName": "details",
-        "fieldType": "List<SysFilterDetail>"
+        "fieldType": "List<SysFilterDetail>",
+        "title": "查询配置明细"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       }
     },
     "apiTagList": []
@@ -527,7 +538,8 @@
     "tags": {
       "scope": {
         "fieldName": "scope",
-        "fieldType": "Integer"
+        "fieldType": "Integer",
+        "title": "数据维度"
       },
       "name": {
         "fieldName": "name",
@@ -566,12 +578,14 @@
       },
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "角色组名称"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       }
     },
     "apiTagList": []
@@ -584,24 +598,29 @@
     "tags": {
       "sysRole": {
         "fieldName": "sysRole",
-        "fieldType": "RoleDto"
+        "fieldType": "RoleDto",
+        "title": "用户角色"
       },
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "资源名称"
       },
       "sysRoleId": {
         "fieldName": "sysRoleId",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "归属角色"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "sysRole_sysRoleGroup": {
         "fieldName": "sysRole_sysRoleGroup",
-        "fieldType": "List<SysRoleGroup>"
+        "fieldType": "List<SysRoleGroup>",
+        "title": "角色聚合组"
       }
     },
     "apiTagList": []
@@ -619,16 +638,19 @@
       },
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "角色名称"
       },
       "remark": {
         "fieldName": "remark",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "描述介绍"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       }
     },
     "apiTagList": []
@@ -1175,7 +1197,8 @@
     "tags": {
       "sysFilter_busniess": {
         "fieldName": "sysFilter_busniess",
-        "fieldType": "Boolean"
+        "fieldType": "Boolean",
+        "title": "是否业务模型"
       },
       "sysFilterId": {
         "fieldName": "sysFilterId",
@@ -1248,7 +1271,8 @@
       },
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "角色名称"
       }
     },
     "apiTagList": []
@@ -1295,12 +1319,14 @@
     "tags": {
       "scope": {
         "fieldName": "scope",
-        "fieldType": "Integer"
+        "fieldType": "Integer",
+        "title": "数据范围"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "label": {
         "fieldName": "label",
@@ -1322,12 +1348,14 @@
       },
       "scope": {
         "fieldName": "scope",
-        "fieldType": "Integer"
+        "fieldType": "Integer",
+        "title": "数据维度"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "sysRoleGroup_sysRole_name": {
         "fieldName": "sysRoleGroup_sysRole_name",
@@ -1356,7 +1384,8 @@
       },
       "resourcesPcode": {
         "fieldName": "resourcesPcode",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "依赖资源"
       },
       "url": {
         "fieldName": "url",
@@ -1374,7 +1403,8 @@
     "tags": {
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "角色名称"
       },
       "resources": {
         "fieldName": "resources",
@@ -1384,7 +1414,8 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       }
     },
     "apiTagList": []
@@ -1397,15 +1428,18 @@
     "tags": {
       "sysFilter_entityName": {
         "fieldName": "sysFilter_entityName",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "编码"
       },
       "sysFilter_busniess": {
         "fieldName": "sysFilter_busniess",
-        "fieldType": "Boolean"
+        "fieldType": "Boolean",
+        "title": "是否业务模型"
       },
       "scope": {
         "fieldName": "scope",
-        "fieldType": "Integer"
+        "fieldType": "Integer",
+        "title": "数据范围"
       },
       "name": {
         "fieldName": "name",
@@ -1415,15 +1449,18 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "sysFilter_name": {
         "fieldName": "sysFilter_name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "名称"
       },
       "sysFilterId": {
         "fieldName": "sysFilterId",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "模块"
       }
     },
     "apiTagList": []
@@ -1436,28 +1473,34 @@
     "tags": {
       "busniess": {
         "fieldName": "busniess",
-        "fieldType": "Boolean"
+        "fieldType": "Boolean",
+        "title": "是否业务模型"
       },
       "entityName": {
         "fieldName": "entityName",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "编码"
       },
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "名称"
       },
       "detailList": {
         "fieldName": "detailList",
-        "fieldType": "List<FilterDetailCompVo>"
+        "fieldType": "List<FilterDetailCompVo>",
+        "title": "查询配置明细"
       },
       "details": {
         "fieldName": "details",
-        "fieldType": "List<SysFilterDetail>"
+        "fieldType": "List<SysFilterDetail>",
+        "title": "查询配置明细"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       }
     },
     "apiTagList": []
@@ -1470,16 +1513,19 @@
     "tags": {
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "角色组名称"
       },
       "remark": {
         "fieldName": "remark",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "描述"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "sysRoleGroup_sysRole_name": {
         "fieldName": "sysRoleGroup_sysRole_name",
@@ -1558,7 +1604,8 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "menus": {
         "fieldName": "menus",
@@ -1581,7 +1628,8 @@
     "tags": {
       "groupName": {
         "fieldName": "groupName",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "角色组名称"
       },
       "name": {
         "fieldName": "name",
@@ -1596,11 +1644,13 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "state": {
         "fieldName": "state",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "启用状态"
       },
       "idno": {
         "fieldName": "idno",
@@ -1870,7 +1920,8 @@
       },
       "gridSpan": {
         "fieldName": "gridSpan",
-        "fieldType": "Integer"
+        "fieldType": "Integer",
+        "title": "每行列数"
       },
       "entityType": {
         "fieldName": "entityType",
@@ -1884,16 +1935,19 @@
       },
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "表单名称"
       },
       "groups": {
         "fieldName": "groups",
-        "fieldType": "List<FormGroup>"
+        "fieldType": "List<FormGroup>",
+        "title": "表单容器"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "title": {
         "fieldName": "title",
@@ -1907,7 +1961,8 @@
       },
       "fields": {
         "fieldName": "fields",
-        "fieldType": "List<FormField>"
+        "fieldType": "List<FormField>",
+        "title": "列表字段"
       }
     },
     "apiTagList": []
@@ -1920,7 +1975,8 @@
     "tags": {
       "formId": {
         "fieldName": "formId",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "所属表单"
       },
       "val": {
         "fieldName": "val",
@@ -1945,7 +2001,8 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "eventType": {
         "fieldName": "eventType",
@@ -2013,17 +2070,13 @@
       },
       "vlife_pattern": {
         "fieldName": "vlife_pattern",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "vlife开头 需要特殊处理的字段"
       },
       "required": {
         "fieldName": "required",
         "fieldType": "boolean",
         "title": "必填"
-      },
-      "formGroupId": {
-        "fieldName": "formGroupId",
-        "fieldType": "String",
-        "title": "分组容器"
       },
       "dictCode": {
         "fieldName": "dictCode",
@@ -2053,7 +2106,8 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "vlife_message": {
         "fieldName": "vlife_message",
@@ -2078,6 +2132,11 @@
         "fieldName": "initialValues",
         "fieldType": "String",
         "title": "默认值"
+      },
+      "formGroupCode": {
+        "fieldName": "formGroupCode",
+        "fieldType": "String",
+        "title": "分组容器编码"
       },
       "x_component": {
         "fieldName": "x_component",
@@ -2315,11 +2374,6 @@
         "fieldType": "boolean",
         "title": "必填"
       },
-      "formGroupId": {
-        "fieldName": "formGroupId",
-        "fieldType": "String",
-        "title": "所在容器"
-      },
       "dictCode": {
         "fieldName": "dictCode",
         "fieldType": "String",
@@ -2392,6 +2446,11 @@
         "fieldName": "initialValues",
         "fieldType": "String",
         "title": "默认值"
+      },
+      "formGroupCode": {
+        "fieldName": "formGroupCode",
+        "fieldType": "String",
+        "title": "所在容器编码"
       },
       "x_component": {
         "fieldName": "x_component",
@@ -2574,7 +2633,8 @@
     "tags": {
       "formId": {
         "fieldName": "formId",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "所属表单"
       }
     },
     "apiTagList": []
@@ -2587,7 +2647,8 @@
     "tags": {
       "formId": {
         "fieldName": "formId",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "所属表单"
       },
       "val": {
         "fieldName": "val",
@@ -2612,7 +2673,8 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "eventType": {
         "fieldName": "eventType",
@@ -2640,7 +2702,8 @@
       },
       "x_decorator_props$gridSpan": {
         "fieldName": "x_decorator_props$gridSpan",
-        "fieldType": "Integer"
+        "fieldType": "Integer",
+        "title": "对应 x-decorator-props.gridSpan属性"
       },
       "fieldName": {
         "fieldName": "fieldName",
@@ -2679,7 +2742,8 @@
       },
       "vlife_pattern": {
         "fieldName": "vlife_pattern",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "vlife开头 需要特殊处理的字段"
       },
       "x_component_props$placeholder": {
         "fieldName": "x_component_props$placeholder",
@@ -2690,11 +2754,6 @@
         "fieldName": "required",
         "fieldType": "boolean",
         "title": "必填"
-      },
-      "formGroupId": {
-        "fieldName": "formGroupId",
-        "fieldType": "String",
-        "title": "分组容器"
       },
       "dictCode": {
         "fieldName": "dictCode",
@@ -2724,7 +2783,8 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "vlife_message": {
         "fieldName": "vlife_message",
@@ -2754,6 +2814,11 @@
         "fieldName": "initialValues",
         "fieldType": "String",
         "title": "默认值"
+      },
+      "formGroupCode": {
+        "fieldName": "formGroupCode",
+        "fieldType": "String",
+        "title": "分组容器编码"
       },
       "x_component": {
         "fieldName": "x_component",
@@ -2786,7 +2851,8 @@
       },
       "fieldName": {
         "fieldName": "fieldName",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "字段名"
       },
       "reactionAttr": {
         "fieldName": "reactionAttr",
@@ -2801,7 +2867,8 @@
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "formEventId": {
         "fieldName": "formEventId",
@@ -2824,7 +2891,8 @@
       },
       "gridSpan": {
         "fieldName": "gridSpan",
-        "fieldType": "Integer"
+        "fieldType": "Integer",
+        "title": "每行列数"
       },
       "entityType": {
         "fieldName": "entityType",
@@ -2838,16 +2906,19 @@
       },
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "表单名称"
       },
       "groups": {
         "fieldName": "groups",
-        "fieldType": "List<FormGroup>"
+        "fieldType": "List<FormGroup>",
+        "title": "表单容器"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "title": {
         "fieldName": "title",
@@ -2861,7 +2932,8 @@
       },
       "fields": {
         "fieldName": "fields",
-        "fieldType": "List<FormFieldVo>"
+        "fieldType": "List<FormFieldVo>",
+        "title": "列表字段"
       }
     },
     "apiTagList": []
@@ -3136,7 +3208,8 @@
     "tags": {
       "search": {
         "fieldName": "search",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "单位名称"
       }
     },
     "apiTagList": []
@@ -3704,7 +3777,8 @@
       },
       "level": {
         "fieldName": "level",
-        "fieldType": "List<String>"
+        "fieldType": "List<String>",
+        "title": "地区类型"
       },
       "name": {
         "fieldName": "name",
@@ -3727,7 +3801,8 @@
       },
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "部门名称"
       }
     },
     "apiTagList": []
@@ -3797,16 +3872,19 @@
     "tags": {
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "区划名称"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       },
       "createDate": {
         "fieldName": "createDate",
-        "fieldType": "Date"
+        "fieldType": "Date",
+        "title": "创建时间"
       }
     },
     "apiTagList": []
@@ -3819,12 +3897,14 @@
     "tags": {
       "name": {
         "fieldName": "name",
-        "fieldType": "String"
+        "fieldType": "String",
+        "title": "机构名称"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "String",
-        "extendsField": true
+        "extendsField": true,
+        "title": "主键id"
       }
     },
     "apiTagList": []
