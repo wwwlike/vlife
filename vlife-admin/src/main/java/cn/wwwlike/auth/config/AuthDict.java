@@ -27,6 +27,7 @@ public class AuthDict {
     @Named("用户类型")
     public static final class USER_TYPE {
     }
+
     @Named("项目阶段")
     public static final class PROJECT_STATE {
     }
@@ -66,35 +67,6 @@ public class AuthDict {
         public final static Integer DEPT = 1;
         @Named("查看本人数据")
         public final static Integer SELF = 0;
-    }
-//    VOID,
-//    eq,
-//    like,
-//    notLike,
-//    startsWith,
-//    endsWith,
-//    between,
-//    notBetween,
-//    gt,
-//    goe,
-//    lt,
-//    loe,
-//    in,
-//    ne,
-//    isNotNull,
-//    isNull,
-//    notIn;
-
-    @Named("表单触发事件")
-    public static final class EVENT_TYPE {
-        @Named("值域等于设定的值")
-        public final static String Equal = "equal";
-        @Named("指定在指定几个值内")
-        public final static String In = "in";
-        @Named("目标值不为空")
-        public final static String NotEmpty = "notEmpty";
-        @Named("目标值为空")
-        public final static String Empty = "Empty";
     }
 
 }

@@ -21,6 +21,8 @@ package cn.wwwlike.vlife.core.dsl;
 import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.*;
 import cn.wwwlike.vlife.bean.PageVo;
+import cn.wwwlike.vlife.bi.Groups;
+import cn.wwwlike.vlife.bi.ReportWrapper;
 import cn.wwwlike.vlife.core.DataProcess;
 import cn.wwwlike.vlife.core.VLifeDao;
 import cn.wwwlike.vlife.dict.CT;
@@ -40,11 +42,9 @@ import cn.wwwlike.vlife.utils.VlifeUtils;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.ComparableExpression;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.StringPath;
-import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Sort;
@@ -58,6 +58,7 @@ import java.util.stream.Collectors;
 
 /**
  * 以queryDsl方式的dao实现
+ *
  * @author xiaoyu
  * @date 2022/5/30
  */
@@ -96,6 +97,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      * 通过视图VO类信息得到Dao封装的VO的查询模型
      */
     protected QModel select(Class<? extends IdBean> voClz) {
+//        return new VoModel(factory, voClz);
         if (models.get(voClz) == null) {
             models.put(voClz, new VoModel(factory, voClz));
         }
@@ -104,6 +106,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * 得到VO查询的模型(每次都new)
+     *
      * @param prefix 本次vo里主查询的alias的前缀
      */
     protected QModel selectNew(Class<? extends IdBean> vo, String prefix) {
@@ -116,7 +119,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     private WModel edit(Class<? extends IdBean> dto) {
         if (wModels.get(dto) == null) {
             wModels.put(dto, new WriteModel(factory, dto));
-        }else{
+        } else {
             wModels.get(dto).resetClause();
         }
         return wModels.get(dto);
@@ -124,6 +127,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * ✦✦✦✦原子查询✦✦✦✦
+     *
      * @param entityVoClz 查询对象CLz信息
      * @param wrapper     查询条件
      * @param page        分页条件
@@ -156,11 +160,12 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * 用包装条件进行VO类型数据查询数据查询
-     * @param vo 返回查询的结果类型
-     * @param wrapper 包裹条件对象
+     *
+     * @param vo          返回查询的结果类型
+     * @param wrapper     包裹条件对象
      * @param isMainQuery 本次是否是主查询(该方法支持递归)
-     * @param page 分页参数
-     * @param order 排序参数
+     * @param page        分页参数
+     * @param order       排序参数
      */
     private <E extends VoBean> List<E> query(Class<E> vo, QueryWrapper<? extends Item> wrapper, PageableRequest page, OrderRequest order, Boolean isMainQuery) {
         List mainResult = dslQuery(vo, wrapper, page, order).fetch();
@@ -177,10 +182,11 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * 用包装条件进行 VO and DO 类型数据查询数据查询
+     *
      * @param entityVoClz 返回视图的类信息
-     * @param wrapper   包装条件
-     * @param page 分页参数
-     * @param order 排序参数
+     * @param wrapper     包装条件
+     * @param page        分页参数
+     * @param order       排序参数
      * @param <E>
      * @return
      */
@@ -256,9 +262,10 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * 通过条件包装对象和VO的class类型进行VO和DO的查询
+     *
      * @param entityVoClz 实体类或VO类信息
-     * @param wrapper 条件包装对象
-     * @param order 排序对象
+     * @param wrapper     条件包装对象
+     * @param order       排序对象
      */
     @Override
     public <E extends IdBean> List<E> query(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, OrderRequest order) {
@@ -294,29 +301,29 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         WModel wmodel = edit(item.getClass());
         EntityPathBase<? extends Item> saveEntityPath = getItemEntityPath(item.getClass());
         if (item.getId() == null) { //新增则过滤掉不参与到保存的字段
-           if(dataProcess.getAssigns()!=null){ //指定
-               Arrays.stream(item.getClass().getFields()).map(Field::getName).filter(name->{
-                   return !dataProcess.getAssigns().contains(name);
-               }).forEach(name->{
-                   ReflectionUtils.setFieldValue(item,name,null);
-               });
-           }else if(dataProcess.getIgnores()!=null){ //排除
-               Arrays.stream(item.getClass().getFields()).map(Field::getName).filter(name->{
-                   return dataProcess.getIgnores().contains(name);
-               }).forEach(name->{
-                   ReflectionUtils.setFieldValue(item,name,null);
-               });
-           }
+            if (dataProcess.getAssigns() != null) { //指定
+                Arrays.stream(item.getClass().getFields()).map(Field::getName).filter(name -> {
+                    return !dataProcess.getAssigns().contains(name);
+                }).forEach(name -> {
+                    ReflectionUtils.setFieldValue(item, name, null);
+                });
+            } else if (dataProcess.getIgnores() != null) { //排除
+                Arrays.stream(item.getClass().getFields()).map(Field::getName).filter(name -> {
+                    return dataProcess.getIgnores().contains(name);
+                }).forEach(name -> {
+                    ReflectionUtils.setFieldValue(item, name, null);
+                });
+            }
             em.persist(item);
         } else {// 修改则直接对参与的字段拼接成querydsl语法保存
             StringPath idPath = (StringPath) ReflectionUtils.getFieldValue(saveEntityPath, "id");
             wmodel.where(idPath.eq(item.getId()));
-            if(dataProcess.getAssigns()!=null){
-                wmodel.setValWithAssign(item,dataProcess.getAssigns().toArray(new String[dataProcess.getAssigns().size()]));
-            }else{
-                wmodel.setVal(item,dataProcess.getIgnores().toArray(new String[dataProcess.getIgnores().size()]));
+            if (dataProcess.getAssigns() != null) {
+                wmodel.setValWithAssign(item, dataProcess.getAssigns().toArray(new String[dataProcess.getAssigns().size()]));
+            } else {
+                wmodel.setVal(item, dataProcess.getIgnores().toArray(new String[dataProcess.getIgnores().size()]));
             }
-            Map<String,Object> columnValMap=dataProcess.getColumnValMap();
+            Map<String, Object> columnValMap = dataProcess.getColumnValMap();
             columnValMap.forEach((k, v) -> {
                 Path fnNameDsl = (Path) ReflectionUtils.getFieldValue(saveEntityPath, k);
                 wmodel.getUpdateClause().set(fnNameDsl, v);
@@ -350,8 +357,9 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * SaveDto数据保存
-     * @param saveBean  保存的dto数据
-     * @param fkMap 可以写入到saveBean对应DO里的外键map集合
+     *
+     * @param saveBean 保存的dto数据
+     * @param fkMap    可以写入到saveBean对应DO里的外键map集合
      */
     @Override
     public <E extends SaveBean> E save(E saveBean, Map<String, Object> fkMap) {
@@ -417,14 +425,15 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      * (私)分页过滤条件注入到jpaQuery里
      */
     private JPAQuery page(JPAQuery jQuery, PageableRequest pageRequest) {
-        jQuery.offset((pageRequest.getPage()-1) * pageRequest.getSize());
+        jQuery.offset((pageRequest.getPage() - 1) * pageRequest.getSize());
         jQuery.limit(pageRequest.getSize());
         return jQuery;
     }
 
     /**
      * (私)排序条件注入到jpaQuery里
-     * @param  main 排序目前值支持主查询里的字段进行排序
+     *
+     * @param main 排序目前值支持主查询里的字段进行排序
      */
     private JPAQuery order(EntityPathBase main, JPAQuery jQuery, List<Order> orderReqList) {
         orderReqList.stream().forEach(order -> {
@@ -441,6 +450,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * VO里的注入对象数据的查询
+     *
      * @param vo         主查询的Vo的clz信息
      * @param mainResult 查询的vo里的主结果集对象，可能是元组
      */
@@ -546,6 +556,33 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
                 }
             }
         }
+    }
+
+
+    /**
+     * 查询单一字段报表数据
+     */
+    public List report(ReportWrapper wrapper) {
+        return report(new ArrayList<>(), wrapper);
+    }
+
+    /**
+     * 查询一张报表
+     */
+    public List<Map> report(List<Map> all, ReportWrapper wrapper) {
+        QModel<T> model = select(wrapper.getEntityClz());//产生： select * from xxx
+        JPAQuery query = model.fromGroupWhere(wrapper); //过滤条件组装 where?
+        List<String> names = new ArrayList<>();
+        List<Groups> groups = wrapper.getGroups();
+        List<String> columns = groups.stream().map(g -> {
+            return g.getColumn() + (g.getFunc() != null ? "_" + g.getFunc() : "");
+        }).collect(Collectors.toList());
+        List currList = QueryHelper.tupletoMap(query.fetch(), columns, wrapper.getCode());
+        if (all.size() == 0) {
+            return currList;
+        }
+        all = QueryHelper.join(currList, all, columns, wrapper.getCode());
+        return all;
     }
 
 }

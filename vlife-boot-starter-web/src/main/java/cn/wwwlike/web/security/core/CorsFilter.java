@@ -25,7 +25,6 @@ public class CorsFilter implements Filter {
         //getResponseHeader()方法只能拿到6个基本字段：
         //Cache-Control、Content-Language、Content-Type、Expires、Last-Modified、Pragma。如果想拿到其他字段，就必须在Access-Control-Expose-Headers里面指定。上面的例子指定，getResponseHeader('FooBar')可以返回FooBar字段的值。
         res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Accept-Encoding, Accept-Language, Host, Referer, Connection, User-Agent, authorization, sw-useragent, sw-version");
-
         // Just REPLY OK if request method is OPTIONS for CORS (pre-flight)
         //OPTIONS请求方法的主要用途有两个：
 //1、获取服务器支持的HTTP请求方法；也是黑客经常使用的方法。
@@ -34,7 +33,6 @@ public class CorsFilter implements Filter {
             res.setStatus(HttpServletResponse.SC_OK);
             //System.out.println("CorsFilter:HttpServletResponse.SC_OK");
             logger.info("CorsFilter:HttpServletResponse.SC_OK");
-//            return;
         }
         chain.doFilter(request, response);
     }

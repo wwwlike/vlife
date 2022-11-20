@@ -21,20 +21,26 @@ package cn.wwwlike.vlife.core.dsl;
 import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.objship.dto.VoDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.DataExpressTran;
 import cn.wwwlike.vlife.query.QueryWrapper;
+import cn.wwwlike.vlife.query.tran.JiExpressTran;
+import cn.wwwlike.vlife.query.tran.YearExpressTran;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.EntityPathBase;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -219,37 +225,37 @@ public class QueryHelper {
         Class<? extends Item>[] leftArray = leftClz.toArray(new Class[leftClz.size()]);
         for (String reqName : lastQueryPathFieldName) {
             if (queryPath.get(queryPath.size() - 1) instanceof Class) {
-                if (opt == Opt.in ) {
+                if (opt == Opt.in) {
                     qw.in(true, reqName, (val instanceof List ? ((List) val).toArray() : (Object[]) val), tran, leftArray);
-                }else if ( opt == Opt.notIn) {
+                } else if (opt == Opt.notIn) {
                     qw.notIn(true, reqName, (val instanceof List ? ((List) val).toArray() : (Object[]) val), tran, leftArray);
-                }else if (opt == Opt.between ) {
+                } else if (opt == Opt.between) {
                     qw.between(true, reqName, ((List) val).get(0), ((List) val).get(1), tran, leftArray);
                 } else if (opt == Opt.notBetween) {
                     qw.notBetween(true, reqName, ((List) val).get(0), ((List) val).get(1), tran, leftArray);
                 } else if (opt == Opt.eq) {
                     qw.eq(true, reqName, val, tran, leftArray);
-                } else if ( opt == Opt.ne) {
+                } else if (opt == Opt.ne) {
                     qw.ne(true, reqName, val, tran, leftArray);
-                } else if (opt == Opt.like ) {
+                } else if (opt == Opt.like) {
                     qw.like(true, reqName, "%" + val + "%", tran, leftArray);
-                } else if ( opt == Opt.notLike) {
+                } else if (opt == Opt.notLike) {
                     qw.notLike(true, reqName, "%" + val + "%", tran, leftArray);
-                }else if (opt == Opt.isNotNull ) {
+                } else if (opt == Opt.isNotNull) {
                     qw.isNotNull((Boolean) val, reqName, leftArray);
-                } else if ( opt == Opt.isNull){
+                } else if (opt == Opt.isNull) {
                     qw.isNull((Boolean) val, reqName, leftArray);
-                }else if (opt == Opt.startsWith) {
+                } else if (opt == Opt.startsWith) {
                     qw.startsWith(true, reqName, val, tran, leftArray);
-                }else if (opt == Opt.endsWith) {
+                } else if (opt == Opt.endsWith) {
                     qw.endsWith(true, reqName, val, tran, leftArray);
-                }else if (opt == Opt.gt) {
+                } else if (opt == Opt.gt) {
                     qw.gt(true, reqName, val, tran, leftArray);
-                }else if (opt == Opt.goe) {
+                } else if (opt == Opt.goe) {
                     qw.goe(true, reqName, val, tran, leftArray);
-                }else if (opt == Opt.lt) {
+                } else if (opt == Opt.lt) {
                     qw.lt(true, reqName, val, tran, leftArray);
-                }else if (opt == Opt.loe) {
+                } else if (opt == Opt.loe) {
                     qw.loe(true, reqName, val, tran, leftArray);
                 }
             }
@@ -279,4 +285,170 @@ public class QueryHelper {
             }
         }
     }
+
+    /**
+     * 返回字段
+     *
+     * @param expression
+     * @param func
+     * @return
+     */
+    public static SimpleExpression tran(SimpleExpression expression, String func) {
+        if ("ji".equals(func)) {
+            return new JiExpressTran().tran(expression);
+        } else if ("year".equals(func)) {
+            return new YearExpressTran().tran(expression);
+        } else if (expression instanceof NumberExpression) {
+            if (CT.ITEM_FUNC.AVG.equals(func)) {
+                return ((NumberExpression) expression).avg();
+            } else if (CT.ITEM_FUNC.MAX.equals(func)) {
+                return ((NumberExpression) expression).max();
+            } else if (CT.ITEM_FUNC.MIN.equals(func)) {
+                return ((NumberExpression) expression).min();
+            } else if (CT.ITEM_FUNC.SUM.equals(func)) {
+                return ((NumberExpression) expression).sum();
+            }
+        } else if (func != null) {
+            if ("id".equals(expression.toString())) {
+                return ((NumberExpression) expression).count();
+            }
+        }
+        return expression;
+    }
+
+
+//    public static List<Map> TupletoMap(List<Map> list, List<Tuple> tuples, List<String> group, String field) {
+//        Map<String, Object> m = null;
+//        for (Tuple t : tuples) {
+//            //再已经存在的数组里找title相同的map
+//            m = new HashMap();
+//            int i = 0;
+//            for (String g : group) {
+//                String columnTitle = t.get(i, String.class);// 行记录的列标题的值
+//                m.put(g, columnTitle);
+//                i++;
+//            }
+//            // list里赵是否有title相同的
+//            //找是否有相同的map
+//            Map filter = null;
+//            for (Map map : list) {//行记录
+//
+//                for (String key : m.keySet()) {
+//                    if (!map.get(key).equals(m.get(key))) {
+//                        break;
+//                    }
+//                }
+//                //说明时一样的
+//                filter = m;
+//                break;
+//            }
+//            if (filter != null) {
+//                filter.put(field, t.get(i, Number.class));
+//
+//            } else {
+//                m.put(field, t.get(i, Number.class));
+//                list.add(m);
+//            }
+//        }
+//        return list;
+//    }
+
+    /**
+     * @param tuples 元组结果集
+     * @param group  分组内容
+     * @param field  查询主体字段
+     * @return 元组结果集转list<Map>
+     */
+    public static List<Map> tupletoMap(List<Tuple> tuples, List<String> group, String field) {
+        List<Map> list = new ArrayList<>();
+        Map<String, Object> lineMap = null;
+        for (Tuple t : tuples) {
+            lineMap = new HashMap();
+            int i = 0;
+            for (String g : group) {
+                String columnTitle = t.get(i, String.class);// 行记录的列标题的值
+                lineMap.put(g, columnTitle);
+                i++;
+            }
+            lineMap.put(field, t.get(i, Number.class));
+            list.add(lineMap);
+        }
+        return list;
+    }
+
+    /**
+     * 将一个字段的查询结果合并到整张report里
+     *
+     * @param currMap  一张表的
+     * @param totalMap 整张表
+     * @param group    分组title
+     * @return
+     */
+    public static List<Map> join(List<Map> currMap, List<Map> totalMap, List<String> group, String fieldName) {
+        for (Map map : totalMap) {
+            for (Map curr : currMap) {
+                boolean eq = false;
+                int i = 0;
+                for (String title : group) {
+                    if (curr.get(title) != null &&
+                            curr.get(title).equals(map.get(title))) {
+                        i++;
+                    }
+                    if (i == group.size()) {
+                        eq = true;
+                    }
+                }
+                if (eq) {
+                    map.put(fieldName, curr.get(fieldName));
+                }
+            }
+        }
+        return totalMap;
+    }
+
+
+//    /**
+//     * List<Tuple>数据转成 List<Map>,并放入到指定的
+//     *
+//     * @param list 全量返回到端的数据
+//     * @return
+//     */
+//    public List<Map> tran(List<Map> list, List<Tuple> tuples, List<String> names, Expression expression[]) {
+//        Map biEntity = null;
+//        for (Tuple tuple : tuples) {
+//            Object val = tuple.get(expression[expression.length - 1]);
+//            Map<String, Object> title = new HashMap<>();
+//            for (int i = 0; i < names.size() - 1; i++) {
+//                Object obj = tuple.get(expression[i]);
+//                title.put(names.get(i), obj);
+//            }
+//
+//            Optional<Map> optional = list.stream().filter(line -> {
+//                for (int i = 0; i < names.size() - 1; i++) {
+//                    if (!tuple.get(expression[i]).toString().equals(line.getTitle().get(names.get(i)).toString())) {
+//                        continue;
+//                    }
+//                    if (i == names.size() - 2) {
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }).findAny();
+//
+//            if (optional.isPresent()) {
+//                biEntity = optional.get();
+//            } else {
+//                try {
+//                    biEntity = clz.newInstance();
+//                    biEntity.setTitle(title);
+//                    list.add(biEntity);
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//            ReflectionUtils.setFieldValue(biEntity, names.get(names.size() - 1), val);
+//        }
+//        return list;
+//    }
+
 }

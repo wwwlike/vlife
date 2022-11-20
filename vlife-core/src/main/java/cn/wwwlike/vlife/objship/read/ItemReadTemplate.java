@@ -212,6 +212,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                 ex.printStackTrace();
                 continue;
             }
+            try{
             T dto = readInfo(clazz);
             if (dto != null) {
                 if (!VCT.ITEM_STATE.ERROR.equals(dto.getState())) {
@@ -233,8 +234,12 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                 }
                 readAll.add(dto);
             }
+            }catch (Exception exception){
+                exception.printStackTrace();
+            }
         }
         /* 关联信息读取*/
+        try{
         relation();
         /* 注释信息读取*/
         for(T beanInfo:readAll){
@@ -244,6 +249,9 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
             if(beanInfo instanceof NotEntityDto ){
                 commentPerfect(beanInfo);
             }
+        }
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
         return readAll;
     }

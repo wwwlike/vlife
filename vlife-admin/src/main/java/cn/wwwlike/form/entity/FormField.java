@@ -1,16 +1,11 @@
 package cn.wwwlike.form.entity;
 
 import cn.wwwlike.vlife.annotation.VClazz;
-import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.bean.DbEntity;
-import cn.wwwlike.vlife.objship.base.FieldInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * 列表字段
@@ -18,9 +13,11 @@ import java.util.Date;
  */
 @Entity
 @Data
-@Table(name="form_field")
-@VClazz(orders ="sort_asc" )
-public class FormField  extends DbEntity {
+@Table(name = "form_field")
+@VClazz(orders = "sort_asc")
+public class FormField extends DbEntity {
+
+    public String name;
     /**
      * 所属表单
      */
@@ -29,6 +26,16 @@ public class FormField  extends DbEntity {
      * 所在容器编码
      */
     public String formGroupCode;
+
+    //真实字段所在实体名称
+    public String entityType;
+
+    //实体字段名称
+    public String entityFieldName;
+
+
+    //组件类型
+    public String componentType;
     /**
      * 字段名
      */
@@ -102,7 +109,7 @@ public class FormField  extends DbEntity {
     public String x_decorator;
 
     /**
-     *  vlife开头 需要特殊处理的字段
+     * vlife开头 需要特殊处理的字段
      */
     public String vlife_pattern;
     public String vlife_message;
@@ -145,6 +152,18 @@ public class FormField  extends DbEntity {
      */
     public String x_validator;
 
+    /**
+     * 是否列表展示
+     */
+    public Boolean listShow;
 
+    /**
+     * 组件设置的JSON信息
+     */
+    public String componentSettingJson;
+
+    public String getName() {
+        return this.title;
+    }
 
 }

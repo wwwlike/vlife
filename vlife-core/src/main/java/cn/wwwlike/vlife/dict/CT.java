@@ -42,7 +42,7 @@ public class CT {
         @Named("是")
         public final static Boolean T = true;
         @Named("否")
-        public final static Boolean F= false;
+        public final static Boolean F = false;
     }
 
 
@@ -55,5 +55,20 @@ public class CT {
         @Named("停用")
         public static final String DISABLE = "2";
     }
+
+    @Named("聚合方式")
+    public static final class ITEM_FUNC {
+        @Named("总数")
+        public final static String COUNT = "count";
+        @Named("人次")
+        public final static String SUM = "sum";
+        @Named("平均")
+        public final static String AVG = "avg";
+        @Named("最大/最近")
+        public final static String MAX = "max";
+        @Named("最小/最先")
+        public final static String MIN = "min";
+    }
+
 
 }

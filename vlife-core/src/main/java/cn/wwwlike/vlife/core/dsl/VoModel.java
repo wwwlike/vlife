@@ -22,6 +22,8 @@ import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.BaseRequest;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.bi.Groups;
+import cn.wwwlike.vlife.bi.ReportWrapper;
 import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.dict.Join;
 import cn.wwwlike.vlife.dict.Opt;
@@ -96,12 +98,13 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
     private JPAQuery filterQuery;
     private String prefix = "";
 
+
     public VoModel(JPAQueryFactory factory, Class<? extends IdBean> vo, String prefix) {
         this.prefix = prefix;
         this.factory = factory;
         this.vo = vo;
         this.voFromQuery = from(vo);
-
+        //vo模型组装查询字段
         if (VoBean.class.isAssignableFrom(vo)) {
             Expression[] selects = selectExpression();
             if (selects.length > 1) {
@@ -110,7 +113,6 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
                 this.voFromQuery.select(selects[0]);
             }
         }
-
         voJoin.putAll(alljoin);
     }
 
@@ -159,7 +161,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      */
     private BooleanExpression subQueryFilter(String prefix, StringPath mainId, AbstractWrapper wrapper) {
         //子查询也需要查询状态有效的数据
-        wrapper.eq("status",CT.STATUS.NORMAL);
+        wrapper.eq("status", CT.STATUS.NORMAL);
         List<Class<? extends Item>> ls = (List) wrapper.allLeftPath().get(0);
         JPAQuery subMainQuery = joinByVo(null, null, prefix + "_", ls);
         BooleanBuilder subBuilder = whereByWrapper(wrapper);
@@ -190,6 +192,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
 
     /**
      * 表左连接组装
+     *
      * @param fromQuery 查询语句（为空说明不是递归）
      * @param entityDto 实体类info信息
      * @param lefts     字段左查询CLz数组（可能不同字段来源不同的左关联表）
@@ -289,7 +292,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             }
         }
 
-        for (QueryWrapper subQueryWrapper : wrapper.getSubQuery()) {
+        for (AbstractWrapper subQueryWrapper : wrapper.getSubQuery()) {
             String mainLeftJoinName = subQueryWrapper.lethJoinName();
             EntityPathBase leftDslPath = alljoin.get(mainLeftJoinName);
             BooleanExpression booleanExpression = subQueryFilter(
@@ -303,7 +306,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             }
         }
 
-        for (QueryWrapper sub : wrapper.getChilds()) {
+        for (AbstractWrapper sub : wrapper.getChilds()) {
             BooleanBuilder builder = whereByWrapper(sub);
             if (wrapper.getJoin() == Join.and) {
                 booleanBuilder.and(builder);
@@ -366,27 +369,57 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
     }
 
     /**
+     * 一般查询流程组装以及表达式返回
      * synchronized ->处理连续2次查询查询条件覆盖的问题
      */
     public synchronized <R extends AbstractWrapper> JPAQuery fromWhere(R wrapper) {
         //主表需要有status
-        wrapper.eq("status",CT.STATUS.NORMAL);
+        wrapper.eq("status", CT.STATUS.NORMAL);
         // step1 query init
         filterQuery = (JPAQuery) getVoFromQuery().clone();// filterQuery 克隆赋值 初始化
         alljoin.clear();
         alljoin.putAll(voJoin); //map恢复到vo初始化完成后的状态（select里会用到的join）
-
-//        alljoin.keySet().forEach((String a)->{
-//            if(a.indexOf("_")!=-1){
-////                wrapper.eq(a+"_status",CT.STATUS.NORMAL);
-//            }else{
-//                wrapper.eq("status",CT.STATUS.NORMAL);
-//            }
-//        });
         // step2 add  leftjoin
         filterQuery = addQueryFilterJoin(filterQuery, wrapper); //添加查询条件里需要做查询的leftPath到joins里
         // step3 filter(sub filter)
         filterQuery.where(whereByWrapper(wrapper));
+        return filterQuery;
+    }
+
+    /**
+     * 聚合查询query表达式返回
+     *
+     * @param wrapper
+     * @param <R>
+     * @return
+     */
+    public synchronized <R extends ReportWrapper> JPAQuery fromGroupWhere(R wrapper) {
+        EntityPathBase entityPathBase = getMain();
+        //1. 基本select from where 组装
+        filterQuery = fromWhere(wrapper);
+        //2. group by加入
+        List<Groups> groups = wrapper.getGroups();
+        SimpleExpression[] groupExpression = new SimpleExpression[groups.size()];
+        int i = 0;
+        for (Groups group : groups) {
+            SimpleExpression groupException = (SimpleExpression) ReflectionUtils.getFieldValue(entityPathBase, group.getColumn());
+            if (group.getFunc() != null) {
+                groupException = QueryHelper.tran(groupException, group.getFunc());
+                filterQuery.groupBy(groupException);
+            }
+            groupExpression[i] = groupException;
+            i++;
+        }
+        filterQuery.groupBy(groupExpression);
+
+        //2. select 分组 聚合的
+        SimpleExpression fieldExpression = (SimpleExpression) ReflectionUtils.getFieldValue(entityPathBase, wrapper.getItemField());
+        SimpleExpression[] selectExpression = selectExpression = ArrayUtils.addAll(groupExpression,
+                QueryHelper.tran(fieldExpression, wrapper.getFunc()).as(wrapper.getCode()));
+        filterQuery.select(selectExpression);
+
+        //group by加入
+        //having 加入
         return filterQuery;
     }
 

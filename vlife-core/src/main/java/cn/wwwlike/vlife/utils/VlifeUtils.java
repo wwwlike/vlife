@@ -33,8 +33,7 @@ import java.util.stream.Stream;
  */
 public class VlifeUtils {
     /**
-     * 将实体类路径添加到集合里；被包涵的和一致的不用被添加；
-     *
+     * 将实体类路径添加到集合里；被包涵的和一致不会被重复添加
      * @param existList 已经有的类路径列表<数组>
      * @param items     本次要添加的数组路径
      * @return
@@ -104,9 +103,7 @@ public class VlifeUtils {
     }
 
     /**
-     * 静态工具方法
      * 根据查询路径获得其中的左连接Clazz的查询路径
-     *
      * @return
      */
     public static List<Class<? extends Item>> leftJoinPathByQueryPath(List queryPath) {
@@ -125,9 +122,8 @@ public class VlifeUtils {
 
     /**
      * 递归获取全量路径
-     *
-     * @param total         全量路径字符串形式的表达式拼接-> a_b__c__d
-     *                      ——>select * from a left b where b.id in (select c.b_id from c where exist (select id from d where d.c_id=c.id)))
+     * @param total 全量路径字符串形式的表达式拼接-> a_b__c__d
+     * ——>select * from a left b where b.id in (select c.b_id from c where exist (select id from d where d.c_id=c.id)))
      * @param fullQueryPath
      * @return
      */

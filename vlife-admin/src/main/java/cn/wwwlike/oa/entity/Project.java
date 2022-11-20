@@ -17,16 +17,19 @@
  */
 
 package cn.wwwlike.oa.entity;
+
 import cn.wwwlike.auth.common.Business;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 
 /**
  * 项目管理
+ *
  * @author xiaoyu
  * @date 2022/8/17
  */
@@ -73,5 +76,8 @@ public class Project extends DbEntity implements Business {
      */
     public String sysDeptId;
 
-
+    /**
+     * 合同金额
+     */
+    public Double amount;
 }

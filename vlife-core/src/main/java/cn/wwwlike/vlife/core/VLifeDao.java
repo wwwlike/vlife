@@ -19,11 +19,16 @@
 package cn.wwwlike.vlife.core;
 
 import cn.wwwlike.base.model.IdBean;
-import cn.wwwlike.vlife.base.*;
+import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.base.OrderRequest;
+import cn.wwwlike.vlife.base.SaveBean;
+import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.bean.PageVo;
+import cn.wwwlike.vlife.bi.ReportWrapper;
 import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.PageQuery;
+
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +40,12 @@ public interface VLifeDao<T extends Item> {
     /**
      * 用包装条件对象查询数量
      */
-    public Long count(QueryWrapper<T> wrapper) ;
+    public Long count(QueryWrapper<T> wrapper);
 
     /**
      * 终端传入的查询条件查询数量
      */
-    public <W extends QueryWrapper<T>, R extends CustomQuery<T, W>> Long count(R request) ;
+    public <W extends QueryWrapper<T>, R extends CustomQuery<T, W>> Long count(R request);
 
     /**
      * 终端传入的查询条件<CustsomQuery>进行实体对象<T>列表数据的过滤
@@ -50,7 +55,7 @@ public interface VLifeDao<T extends Item> {
     /**
      * 包装条件进行实体对象<T>列表数据的过滤
      */
-    public List<T > find(QueryWrapper<T> wq);
+    public List<T> find(QueryWrapper<T> wq);
 
     /**
      * 通过终端入参的分页查询对象进行实体分页查询
@@ -64,9 +69,10 @@ public interface VLifeDao<T extends Item> {
 
     /**
      * 通过条件包装对象和VO的class类型进行VO和DO的查询
+     *
      * @param entityVoClz 实体类或VO类信息
-     * @param wrapper 条件包装对象
-     * @param order 排序对象
+     * @param wrapper     条件包装对象
+     * @param order       排序对象
      */
     public <E extends IdBean> List<E> query(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, OrderRequest order);
 
@@ -77,8 +83,9 @@ public interface VLifeDao<T extends Item> {
 
     /**
      * SaveDto数据保存
-     * @param saveBean  保存的dto数据
-     * @param fkMap 可以写入到saveBean对应DO里的外键map集合
+     *
+     * @param saveBean 保存的dto数据
+     * @param fkMap    可以写入到saveBean对应DO里的外键map集合
      */
     public <E extends SaveBean> E save(E saveBean, Map<String, Object> fkMap);
 
@@ -93,9 +100,9 @@ public interface VLifeDao<T extends Item> {
      */
     public <E extends Item> E save(E item, DataProcess dataProcess);
 
-        /**
-         * 物理删除当前表ID所在的行数据
-         */
+    /**
+     * 物理删除当前表ID所在的行数据
+     */
     public long delete(String id);
 
     /**
@@ -108,4 +115,13 @@ public interface VLifeDao<T extends Item> {
      */
     public long remove(Class<? extends Item> clazz, String id);
 
+    /**
+     * 报表查询，查询单个指标数据
+     */
+    public List report(ReportWrapper t);
+
+    /**
+     * 报表查询，查询单个指标数据
+     */
+    public List report(List<Map> all, ReportWrapper t);
 }

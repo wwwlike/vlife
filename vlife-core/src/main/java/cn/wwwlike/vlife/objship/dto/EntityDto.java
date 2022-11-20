@@ -33,49 +33,31 @@ import java.util.*;
 @Getter
 @Setter
 public class EntityDto extends BeanDto<Item> implements ISort {
-    /**
-     * 本表的外键字段
-     */
+    /** 外键字段信息 */
     public List<FieldDto> fkFields = new ArrayList<>();
-    /** 本表外键字段关联nsys的表clz*/
-    ;
+    /** 外键模型信息 */
     public List<Class<? extends Item>> fkTableClz;
-    /**
-     * 关联字段 entity主键ID在其他体表的作为外键的字段信息
-     */
+    /** 关联字段信息(id作为他表外键) */
     public List<FieldDto> relationFields = new ArrayList<>();
-    /* 外键表 other里所在实体类的信息 */;
+    /** 关联模型信息 */;
     public List<Class<? extends Item>> relationTableClz;
-    /**
-     * 当前表的外键信息;key->外键表class，val->当前表的外键字段(存在于本表里)
-     */
+    /** 外键map(key外键类clz,val字段名) */
     public Map<Class<? extends Item>, String> fkMap = new HashMap<>();
-    /**
-     * 做级联删除时相关类及操作记录
-     */
+    /** 级联删除map key级联类clz,val级联删除方式(remove,clear,nothing)*/
     public Map<Class<? extends Item>, String> deleteMap = new HashMap<>();
-    /**
-     * 排序字段
-     */
+    /** 排序字段 */
     public String orders;
 
-    /**
-     * 实体类默认的列表查询clz,没有注解
-     */
-    public Class<? extends IdBean> pageClz;
+//
+//    /** 实体类默认的列表查询clz,没有注解 */
+//    public Class<? extends IdBean> pageClz;
 
-    /**
-     * 是否是多对多的表
-     */
+    /** 是否是多对多的表  */
     public boolean isM2M() {
         return this.getClz().getDeclaredFields().length == 2 && fkTableClz != null && fkTableClz.size() == 2;
     }
 
-    /**
-     * 所有能够左查询的表
-     *
-     * @return
-     */
+    /** 能够leftjoin左查询的表 */
     public List<Class<? extends Item>> getFkTableClz() {
         if (fkFields == null) {
             return null;
@@ -88,11 +70,7 @@ public class EntityDto extends BeanDto<Item> implements ISort {
         }
     }
 
-    /**
-     * 关联表，有当前表的ID作为外键的表
-     *
-     * @return
-     */
+    /** 关联表，有当前表的ID作为外键的表 */
     public List<Class<? extends Item>> getRelationTableClz() {
         if (relationFields == null) {
             return null;

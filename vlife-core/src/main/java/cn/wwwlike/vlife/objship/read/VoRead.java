@@ -67,9 +67,8 @@ public class VoRead extends ItemReadTemplate<VoDto> {
             dto.setItemType(VO);
             Class entityClz = GenericsUtils.getGenericType(s);
             if (entityClz == null || !Item.class.isAssignableFrom(entityClz)) {
-                dto.setState(VCT.ITEM_STATE.ERROR);
+//                dto.setState(VCT.ITEM_STATE.ERROR);
             } else {
-
                 dto.setEntityClz(entityClz);
                 dto.setEntityType(entityClz.getSimpleName());
             }

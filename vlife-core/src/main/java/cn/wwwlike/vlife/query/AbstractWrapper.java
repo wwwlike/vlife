@@ -54,10 +54,9 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
     protected Class<T> entityClz;
     /**
      * 如果本child作为*子查询*，那么子查询关联对象的主查询的路径，索引最后一位就是关联的表对象clz
-     * ??? 如果是多层嵌套的子查询这里可能存在问题(本查询的路径，如果是子查询不包含外层路径)
+     * (本查询的路径，如果是子查询不包含外层路径)
      */
     protected List<Class<? extends Item>> mainClzPath;
-
     /**
      * 默认本()里的连接方式
      */
@@ -71,7 +70,6 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
      * 查询条件的子元素列表信息
      */
     protected List<Element> elements = new ArrayList<>();
-
     /**
      * 包括的子查询列表
      */
@@ -264,25 +262,30 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
 
     @Override
     public Children and(boolean condition, Consumer<Children> consumer) {
-        Children children = this.instance(typedThis);
-        children.entityClz = this.entityClz;
-        consumer.accept(children);
-        childs.add(children);
+        if (condition) {
+            Children children = this.instance(typedThis);
+            children.entityClz = this.entityClz;
+            consumer.accept(children);
+            childs.add(children);
+        }
         return typedThis;
     }
 
     @Override
     public Children or(boolean condition, Consumer<Children> consumer) {
-        Children children = this.instance(typedThis);
-        children.join = Join.or;
-        children.entityClz = this.entityClz;
-        consumer.accept(children);
-        childs.add(children);
+        if (condition) {
+            Children children = this.instance(typedThis);
+            children.join = Join.or;
+            children.entityClz = this.entityClz;
+            consumer.accept(children);
+            childs.add(children);
+        }
         return typedThis;
     }
 
     /**
      * 子查询里的搜索条件
+     *
      * @param condition   执行条件
      * @param subMainClz  创建子查询的 主表entityClz
      * @param consumer    子查询语句
@@ -324,8 +327,8 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
         protected DataExpressTran tran;
         protected Object[] vals;
 
-        public Object getVal(){
-           return val;
+        public Object getVal() {
+            return val;
 //            if(opt==Opt.like){
 //                return "%"+val+"%";
 //            }else if(opt==Opt.startsWith){
@@ -336,6 +339,7 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
 //                return val;
 //            }
         }
+
         /**
          * 找到该字段的左查询的全量路径
          * （如果element在子查询里则不包含父查询路径->可以全路径通过getQueryPath获取）

@@ -18,32 +18,34 @@
 
 package cn.wwwlike.vlife.objship.base;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import lombok.Data;
 
 /**
  * 字段类型元素基础类型字段的信息
  */
 @Data
 public class FieldInfo extends ClazzInfo {
+    /** 字段名称 */
     public String fieldName;
-
+    /** 真实路径名称*/
     public String pathName;
-
+    /** 字段类型 */
     public String fieldType;
-
+    /** 所在实体*/
     public String entityType;
-
+    /** 字段值来源的实体字段名称 */
     public String entityFieldName;
+    /** 字典的code */
+    public String dictCode;
+
+    // -----待移除-------------
+    /**字段在页面显示状态1不显示，2只读， 3可写 */
+    public String uiState;
+    /** 解析状态*/
     @JsonIgnore
     public String state;
-    /**
-     * 字典的coden
-     */
-    public String dictCode;
 
     public String getPathName() {
         if (this.pathName == null) {
@@ -51,7 +53,6 @@ public class FieldInfo extends ClazzInfo {
         }
         return this.pathName;
     }
-
     public void setEntityType(String entityType){
         this.entityType= StringUtils.uncapitalize(entityType);
     }
@@ -59,10 +60,6 @@ public class FieldInfo extends ClazzInfo {
     public String getEntityType(){
         return StringUtils.uncapitalize(entityType);
     }
-    /**
-     * 字段在页面显示状态1不显示，2只读， 3可写
-     */
-    public String uiState;
 
 }
 

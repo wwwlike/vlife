@@ -18,7 +18,9 @@
 
 
 package cn.wwwlike.vlife.utils;
+
 import org.apache.commons.lang3.StringUtils;
+
 import java.io.*;
 import java.net.URL;
 import java.nio.channels.FileChannel;
@@ -185,6 +187,23 @@ public class FileUtil {
         } catch (FileNotFoundException var3) {
             var3.printStackTrace();
             return null;
+        }
+    }
+
+    // 生成文件夹
+    public static void createDir(String path) {
+        // if 匹配win else linux
+//        String path = "";
+//        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+//            path = "D:/usr/local/GHKboard/fmbBoardMonitor/";
+//        } else {
+//            path = "/usr/local/GHKboard/fmbBoardMonitor/";
+//        }
+        File folder = new File(path);
+        if (!folder.exists() && !folder.isDirectory()) {
+            folder.setWritable(true, false);
+            folder.mkdirs();
+        } else {
         }
     }
 

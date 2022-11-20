@@ -36,6 +36,16 @@ public class FormFieldDto implements VoBean<FormField> {
      * 分组容器编码
      */
     public String formGroupCode;
+
+    //真实字段所在实体名称
+    public String entityType;
+
+    //实体字段名称
+    public String entityFieldName;
+
+    //组件类型
+    public String componentType;
+
     /**
      * 字段名
      */
@@ -138,4 +148,5 @@ public class FormFieldDto implements VoBean<FormField> {
 
     public String vlife_pattern;
     public String vlife_message;
+    public String componentSettingJson;
 }

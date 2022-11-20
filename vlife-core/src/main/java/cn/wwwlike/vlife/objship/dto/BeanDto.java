@@ -19,43 +19,36 @@
 package cn.wwwlike.vlife.objship.dto;
 
 import cn.wwwlike.vlife.objship.base.ItemInfo;
-import lombok.Data;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * bean类型的DTO基类
+ * 所有模型dto信息基类
  */
 public abstract class BeanDto<T> extends ItemInfo {
-    /* 当前类对象 */
+    /* 当前模型对象clz */
     public Class<? extends T> clz;
-    /* BEAN里面的字段信息*/
+    /* 当前模型的字段信息集合*/
     public List<FieldDto> fields;
-    /*是否业务类*/
+
     public Class<? extends T> getClz() {
         return clz;
     }
-
     public void setClz(Class<? extends T> clz) {
         this.clz = clz;
     }
-
     public List<FieldDto> getFields() {
         return fields;
     }
-
     public void setFields(List<FieldDto> fields) {
         this.fields = fields;
     }
 
     /**
-     * 过滤初需要类型的字段
-     *
-     * @param fieldType
-     * @return
+     *  根据字段类型查找字段信息集合
+     *  （basic/list）
      */
     public List<FieldDto> filter(String... fieldType) {
         List<FieldDto> filters = null;
@@ -68,9 +61,7 @@ public abstract class BeanDto<T> extends ItemInfo {
     }
 
     /**
-     * 查找符合的字段信息
-     * @param fieldName
-     * @return
+     * 根据字段名查找单个字段信息
      */
     public Optional<FieldDto> find(String fieldName) {
         return getFields().stream().filter(f->f.getFieldName().equals(fieldName)).findAny();

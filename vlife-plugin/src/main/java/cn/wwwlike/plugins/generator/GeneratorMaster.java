@@ -19,19 +19,19 @@
 package cn.wwwlike.plugins.generator;
 
 import cn.wwwlike.base.model.IdBean;
-import cn.wwwlike.plugins.utils.FileUtil;
-import cn.wwwlike.vlife.base.*;
+import cn.wwwlike.vlife.base.BaseRequest;
+import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.base.SaveBean;
+import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.core.dsl.DslDao;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.*;
-import cn.wwwlike.vlife.objship.read.*;
 import com.squareup.javapoet.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.lang.model.element.Modifier;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,23 +41,30 @@ import java.util.stream.Collectors;
  */
 public class GeneratorMaster extends GeneratorUtils {
     List<String> error = new ArrayList<>();
-    public List<JavaFile> generator(String basePath,ClassLoader loader, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> res, List<SaveDto> saves) {
-        List<Class<? extends Item>> entityList = entitys.stream().map(entityDto -> {
-            return entityDto.getClz();
-        }).collect(Collectors.toList());
-        List<Class<? extends VoBean>> voList = vos.stream().map(voDto -> {
-            return voDto.getClz();
-        }).collect(Collectors.toList());
-        List<Class<? extends BaseRequest>> reqList = res.stream().map(resDto -> {
-            return resDto.getClz();
-        }).collect(Collectors.toList());
-        List<Class<? extends SaveBean>> saveList = saves.stream().map(saveBean -> {
-            return saveBean.getClz();
-        }).collect(Collectors.toList());
-        List<JavaFile> waitCreateFiles=new ArrayList();
-        waitCreateFiles.addAll(apiGenerator(basePath, entitys, vos, res, saves));
-        waitCreateFiles.addAll(daoGenerator(basePath, entityList));
-        waitCreateFiles.addAll(serviceGenerator(basePath, entityList));
+
+    public List<JavaFile> generator(String basePath, ClassLoader loader, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> res, List<SaveDto> saves) {
+        List<JavaFile> waitCreateFiles = new ArrayList();
+        try {
+            List<Class<? extends Item>> entityList = entitys.stream().map(entityDto -> {
+                return entityDto.getClz();
+            }).collect(Collectors.toList());
+            List<Class<? extends VoBean>> voList = vos.stream().map(voDto -> {
+                return voDto.getClz();
+            }).collect(Collectors.toList());
+            List<Class<? extends BaseRequest>> reqList = res.stream().map(resDto -> {
+                return resDto.getClz();
+            }).collect(Collectors.toList());
+            List<Class<? extends SaveBean>> saveList = saves.stream().map(saveBean -> {
+                return saveBean.getClz();
+            }).collect(Collectors.toList());
+
+            waitCreateFiles.addAll(apiGenerator(basePath, entitys, vos, res, saves));
+            waitCreateFiles.addAll(daoGenerator(basePath, entityList));
+            waitCreateFiles.addAll(serviceGenerator(basePath, entityList));
+            return waitCreateFiles;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
         return waitCreateFiles;
     }
 
@@ -67,12 +74,12 @@ public class GeneratorMaster extends GeneratorUtils {
      */
     public List<JavaFile> apiGenerator(String basePath, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> reqs, List<SaveDto> saves) {
         GeneratorAutoApi generatorApi = new GeneratorAutoApi();
-        List<JavaFile> files=new ArrayList<>();
+        List<JavaFile> files = new ArrayList<>();
         entitys.forEach(entityDto -> {
-             String packagePath=entityDto.getClz().getPackage().getName();
-            if (!sourceClzExist(entityDto.getClz(),basePath , CLZ_TYPE.API)) {
+            String packagePath = entityDto.getClz().getPackage().getName();
+            if (!sourceClzExist(entityDto.getClz(), basePath, CLZ_TYPE.API)) {
                 files.add(generatorApi.apiGenerator(entityDto, vos, reqs, saves));
-            }else{/*增量方法*/
+            } else {/*增量方法*/
             }
         });
         return files;
@@ -83,9 +90,9 @@ public class GeneratorMaster extends GeneratorUtils {
      * 模板service生成
      */
     public List<JavaFile> serviceGenerator(String basePath, List<Class<? extends Item>> items) {
-        List<JavaFile> files=new ArrayList<>();
+        List<JavaFile> files = new ArrayList<>();
         for (Class item : items) {
-            if (sourceClzExist( item,basePath, CLZ_TYPE.SERVICE)) {
+            if (sourceClzExist(item, basePath, CLZ_TYPE.SERVICE)) {
                 continue;
             }
             String packageName = item.getPackage().getName();
@@ -103,7 +110,7 @@ public class GeneratorMaster extends GeneratorUtils {
                     .superclass(clzAndGenic)
                     .build();
             files.add(JavaFile.builder(servicePackageName, user)
-                    .build()) ;
+                    .build());
         }
         return files;
     }
@@ -112,9 +119,9 @@ public class GeneratorMaster extends GeneratorUtils {
      * dao生成
      */
     public List<JavaFile> daoGenerator(String basePath, List<Class<? extends Item>> items) {
-        List<JavaFile> files=new ArrayList<>();
+        List<JavaFile> files = new ArrayList<>();
         for (Class item : items) {
-            if (sourceClzExist(item, basePath,CLZ_TYPE.DAO)) {
+            if (sourceClzExist(item, basePath, CLZ_TYPE.DAO)) {
                 continue;
             }
             ParameterizedTypeName clzAndGenic = ParameterizedTypeName.get(DslDao.class, item);

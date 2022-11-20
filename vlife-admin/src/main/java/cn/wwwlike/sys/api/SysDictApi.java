@@ -24,11 +24,11 @@ import cn.wwwlike.sys.service.SysDictService;
 import cn.wwwlike.vlife.base.OrderRequest;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 字典表接口;
@@ -37,59 +37,73 @@ import java.util.List;
 @RequestMapping("/sysDict")
 public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
 
-  @GetMapping("/page")
-  public PageVo<SysDict> page(SysDictPageReq req){
-    if(req.getQueryType()!=null){
-      req.qw(SysDict.class).isNull(req.getQueryType()==true,"val")
-              .isNotNull(req.getQueryType()==false,"val");
+    @GetMapping("/page")
+    public PageVo<SysDict> page(SysDictPageReq req) {
+        if (req.getQueryType() != null) {
+            req.qw(SysDict.class).isNull(req.getQueryType() == true, "val")
+                    .isNotNull(req.getQueryType() == false, "val");
+        }
+        return service.findPage(req);
     }
-    return service.findPage(req);
-  }
 
 
-  @GetMapping("/all")
-  public List<SysDict> all(){
-    return service.findAll(new OrderRequest().addOrder("code", Sort.Direction.ASC)
-            .addOrder("val", Sort.Direction.ASC)
-    );
+    @GetMapping("/all")
+    public List<SysDict> all() {
+        return service.findAll(new OrderRequest().addOrder("code", Sort.Direction.ASC)
+                .addOrder("val", Sort.Direction.ASC)
+        );
 
-  }
+    }
 
-  /**
-   * 保存字典表;
-   * @param dto 字典表;
-   * @return 字典表;
-   */
-  @PostMapping("/save")
-  public SysDict save(@RequestBody SysDict dto) {
-    dto.setSys(false);
-    dto.setEdit(true);
-    return service.save(dto);
-  }
+    /**
+     * 保存字典表;
+     *
+     * @param dto 字典表;
+     * @return 字典表;
+     */
+    @PostMapping("/save")
+    public SysDict save(@RequestBody SysDict dto) {
+        dto.setSys(false);
+        dto.setEdit(true);
+        return service.save(dto);
+    }
 
-  /**
-   * 明细查询字典表;
-   * @param id 主键id;
-   * @return 字典表;
-   */
-  @GetMapping("/detail/{id}")
-  public SysDict detail(@PathVariable String id) {
-    return service.findOne(id);
-  }
+    /**
+     * 明细查询字典表;
+     *
+     * @param id 主键id;
+     * @return 字典表;
+     */
+    @GetMapping("/detail/{id}")
+    public SysDict detail(@PathVariable String id) {
+        return service.findOne(id);
+    }
 
-  /**
-   * 逻辑删除;
-   * @param id 主键id;
-   * @return 已删除数量;
-   */
-  @DeleteMapping("/remove/{id}")
-  public Long remove(@PathVariable String id) {
-    return service.remove(id);
-  }
+    /**
+     * 逻辑删除;
+     *
+     * @param id 主键id;
+     * @return 已删除数量;
+     */
+    @DeleteMapping("/remove/{id}")
+    public Long remove(@PathVariable String id) {
+        return service.remove(id);
+    }
 
-  @GetMapping("/sync")
-  public List<SysDict> sync() {
-    return service.sync();
-  }
+    @GetMapping("/sync")
+    public List<SysDict> sync() {
+        return service.sync();
+    }
+
+    /**
+     * 根据code查询字典
+     *
+     * @param code
+     * @return
+     */
+    @GetMapping("/listByCode")
+    public List<SysDict> listByCode(String code) {
+        return service.find("code", code).stream().filter(s -> s.val != null).collect(Collectors.toList());
+    }
 
 }

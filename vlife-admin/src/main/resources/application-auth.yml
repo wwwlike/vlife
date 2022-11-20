@@ -4,8 +4,8 @@ server:
     context-path: /oa
 spring:
   datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/auth?useSSL=true&serverTimezone=GMT%2B8&characterEncoding=UTF8
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    url: jdbc:mysql://localhost:3306/auth?useSSL=true&serverTimezone=GMT%2B8&characterEncoding=UTF8
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
     url: jdbc:p6spy:mysql://localhost:3306/auth?useUnicode=true&characterEncoding=utf8
     username: root
@@ -20,9 +20,19 @@ endpoints:
   metrics:
     sensitive: false
 
+file:
+  image:
+    path: d:\\img
+    url: http://vlife.cc/img/aaa
+
 #springdoc:
 #  swagger-ui:
 #    path: /swagger.html
 #    operations-sorter: method
 #    #custom path for api docs
 #    url: /doc/openapi.json
+gitee:
+  oauth:
+    clientid: e3b04bf27387e4c935f5e1827ad596d568790fd38f5ca436f2c59b187dbbbee4
+    clientsecret: c35b11b3d4eafe729969e4e3058c4591740a0324872876a2fd2ea2b713e73922
+    callback: http://localhost:3000/login

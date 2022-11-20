@@ -19,9 +19,6 @@
 package cn.wwwlike.auth.test;
 
 import cn.wwwlike.AdminApplication;
-import cn.wwwlike.auth.api.SysResourcesApi;
-import cn.wwwlike.auth.entity.SysResources;
-import cn.wwwlike.auth.entity.SysRole;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysResourcesPageReq;
 import cn.wwwlike.auth.req.SysUserPageReq;
@@ -40,6 +37,7 @@ import java.util.List;
 
 /**
  * 新增为主的测试
+ *
  * @author xiaoyu
  * @date 2022/6/25
  */
@@ -52,33 +50,45 @@ public class ReqTest {
     @Autowired
     SysAreaService areaService;
 
+
     @Autowired
     SysResourcesService resourcesService;
+
     @Test
-    public void modelTest(){
-        SysUserPageReq req=new SysUserPageReq();
+    public void modelTest() {
+        SysUserPageReq req = new SysUserPageReq();
         req.setSearch("abcd");
-        req.qw().eq("name","zhangsan")
-                .eq(true,"tel","138");
-        List<SysUser> user=service.find(req);
+        req.qw().eq("name", "zhangsan")
+                .eq(true, "tel", "138");
+        List<SysUser> user = service.find(req);
         System.out.println(user.size());
+    }
+
+    @Test
+    public void modelTest4() {
+        SysUserPageReq req = new SysUserPageReq();
+        req.qw().or(qw ->
+                qw.eq("name", "111")
+                        .eq("tel", "123")
+                        .and(ww -> ww.eq("name", "1").eq("name", "2")));
+        List<SysUser> user = service.find(req);
     }
 
     /**
      * 间隔外键表的数据查询
      */
     @Test
-    public void modelTest1(){
-        SysUserPageReq req=new SysUserPageReq();
-        List<SysUser> user=service.find(req);
+    public void modelTest1() {
+        SysUserPageReq req = new SysUserPageReq();
+        List<SysUser> user = service.find(req);
     }
 
     @Test
-    public void modelTest2(){
-        SysAreaPageReq req=new SysAreaPageReq();
+    public void modelTest2() {
+        SysAreaPageReq req = new SysAreaPageReq();
 //        req.setPid("40288a81828ac3bf01828acf55930024");
 //        req.qw().eq("code","42000", VSysUser.SysUser_SysOrg_SysArea);
-        List<SysArea> user=areaService.find(req);
+        List<SysArea> user = areaService.find(req);
 
         System.out.println(user.size());
     }
@@ -91,7 +101,6 @@ public class ReqTest {
 //        req.qw().eq("name", "111",  SysRole.class);
         resourcesService.find(req);
     }
-
 
 
 }

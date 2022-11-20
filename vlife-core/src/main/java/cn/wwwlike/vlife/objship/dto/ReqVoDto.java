@@ -28,26 +28,18 @@ import java.util.List;
 
 /**
  * req和VO类型dto基类
- *
- * @param <T>
  */
 @Data
 public abstract class ReqVoDto<T> extends BeanDto<T> implements NotEntityDto {
-    /**
-     * 对应实体类clazz
-     */
+    /** 关联实体模型clz */
     public Class<? extends Item> entityClz;
-    /**
-     * 所有打平字段的查询路径
-     */
+    /** 所有打平字段的查询路径 */
     public List<List<Class<? extends Item>>> leftPathClz;
-    /**
-     * 对应的实体类信息
-     */
+    /** 关联实体模型信息 */
     public EntityDto entityDto;
 
     /**
-     * req vo 里进行字段查询，条件查询会左leftjoin连接的表集合
+     * req/vo里进行字段查询，条件查询会leftjoin的类信息的集合
      */
     public List<List<Class<? extends Item>>> getLeftPathClz() {
         if (leftPathClz == null) {

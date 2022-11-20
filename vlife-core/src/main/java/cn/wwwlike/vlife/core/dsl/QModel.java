@@ -20,6 +20,7 @@ package cn.wwwlike.vlife.core.dsl;
 
 import cn.wwwlike.vlife.base.BaseRequest;
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.bi.ReportWrapper;
 import cn.wwwlike.vlife.objship.dto.ReqDto;
 import cn.wwwlike.vlife.query.AbstractWrapper;
 import com.querydsl.core.types.dsl.EntityPathBase;
@@ -40,6 +41,12 @@ public interface QModel<T extends Item> {
      * 通过查询条件返回查询语句
      */
     public <R extends AbstractWrapper> JPAQuery fromWhere(R request);
+
+
+    /**
+     * 通过查询条件返回聚合分组查询语句
+     */
+    public <R extends ReportWrapper> JPAQuery fromGroupWhere(R request);
 
     /**
      * 本次主查询对象

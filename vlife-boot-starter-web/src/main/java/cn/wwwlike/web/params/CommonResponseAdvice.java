@@ -16,7 +16,9 @@
  *    limitations under the License.
  */
 package cn.wwwlike.web.params;
+
 import cn.wwwlike.web.exception.pojo.ErrorResponse;
+import cn.wwwlike.web.params.bean.NativeResult;
 import cn.wwwlike.web.params.bean.Result;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -75,9 +77,11 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
 //            return objectMapper.writeValueAsString(request);
 //            return new Gson().toJson(request);
 //            return JSON.toJSONString(result);
-        } else if("ResponseEntity".equals(returnClassType)){
+        } else if ("ResponseEntity".equals(returnClassType)) {
             return returnValue;
-        }  else {
+        } else if (NativeResult.class == returnValue.getClass()) {
+            return ((NativeResult) returnValue).getRs();
+        } else {
             if (Objects.isNull(returnValue)) {
                 result = Result.createSuccess();
             } else {

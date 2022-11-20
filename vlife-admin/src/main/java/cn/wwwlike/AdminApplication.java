@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         "cn.wwwlike.oa",
         "cn.wwwlike.sys",
         "cn.wwwlike.vlife.ts",
+        "cn.wwwlike.vlife.gitee",
         "cn.wwwlike.form"})
 public class AdminApplication {
     public static void main(String[] args) {

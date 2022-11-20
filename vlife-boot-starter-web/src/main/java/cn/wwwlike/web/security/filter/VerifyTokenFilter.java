@@ -32,7 +32,7 @@ public class VerifyTokenFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) res;
         try {
             Optional<Authentication> authentication = TokenUtil.verifyToken(request);
-            if (authentication.isPresent()) {//Optional 是jdk1.8里面的新类  泛型里面是否有值
+            if (authentication.isPresent()) {
                 SecurityContextHolder.getContext().setAuthentication(authentication.get());
                 //SecurityContextHolder是用来保存SecurityContext的。SecurityContext中含有当前正在访问系统的用户的详细信息
             } else {

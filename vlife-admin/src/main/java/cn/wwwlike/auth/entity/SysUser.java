@@ -84,4 +84,10 @@ public class SysUser extends DbEntity implements IUser, IOrg {
      * 登录次数
      */
     public Integer loginNum;
+
+    /**
+     * 用户来源
+     */
+    public String source;
+
 }

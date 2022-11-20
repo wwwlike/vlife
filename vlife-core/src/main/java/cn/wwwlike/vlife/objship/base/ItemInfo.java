@@ -25,6 +25,11 @@ import org.apache.commons.lang3.StringUtils;
  * 类级别元素的基础字段信息
  */
 public class ItemInfo extends ClazzInfo {
+    /** 模型类型(ENTITY/REQ/SAVE/VO)*/
+    public String itemType;
+    /** 实体模型类型名称 */
+    public String entityType;
+
     public String getItemType() {
         return itemType;
     }
@@ -34,8 +39,6 @@ public class ItemInfo extends ClazzInfo {
     public void setEntityType(String entityType) {
         this.entityType = StringUtils.uncapitalize(entityType);
     }
-    public String itemType;
-    public String entityType;
     public String getEntityType() {
         if (this.entityType != null)
             return StringUtils.uncapitalize(this.entityType);

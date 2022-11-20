@@ -134,6 +134,7 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
             if (qw == null) {
                 qw = instance();
             }
+
             qw.or(ww -> {
                 createWrapperFromQueryPath((Q) ww, fieldDto.getQueryPath(), val,
                         fieldDto.getOpt(),
@@ -213,7 +214,7 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     }
 
     /**
-     * 正常简单的正向排序
+     * 正常简单的反向排序
      *
      * @param field
      */

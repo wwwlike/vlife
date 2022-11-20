@@ -34,51 +34,53 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 所有pojo类的属性字段信息dto
+ * 模型字段解析后的信息
  */
 @Data
 public class FieldDto<T extends BeanDto> extends FieldInfo implements ISort {
-    /**
-     * 字段所在item类信息 parent信息
-     */
+    /** 字段所在类模型信息 */
     @JsonIgnore
     public T itemDto;
-    /**
-     * 字段类型 type的clz list的存放的是里面泛型的clazz
-     */
+    /** 字段类型（集合字段是泛型clz) */
     @JsonIgnore
     public Class clz;
-    /**
-     * 字段所属 item的 Clazz 字段所在item的类clz itemInfoType的clz
-     */
+    /** 字段所在item的类clz*/
     @JsonIgnore
     public Class<? extends IdBean> itemClz;
     /**
-     * 字段所在实体类的clazz,这里不是item对应的entity,例如ITEM是VO，那么可能放的是其他关联表的字段
+     * 字段所在实体类clz
+     * 不是字段所在VO类对应的entity;是字段数值来源的实体；
+     * 如sysUserVo里的deptId对应的类实体不是 sysUser而是sysDept
      */
     @JsonIgnore
     public Class<? extends Item> entityClz;
-    /**
-     * 打平字段的查询路径 有下划线多层打平 && 驼峰命名字段间接一层注入
-     */
+
+    /** 到达该字段的路径clz信息，list里存clz和集合clz
+     *  集合clz说明有子查询
+     * */
     @JsonIgnore
     public List queryPath;
+    /** 字段值(当前没有用到，可以作为默认初始值) */
     @JsonIgnore
     public Object value;
+    /** 字段排序方式(注解方式可以进行设置)*/
     @JsonIgnore
     public String orders;
+    /** 作为查询条件的匹配方式，B端设置功能后期因该可以对他进行覆盖*/
     @JsonIgnore
     public Opt opt;
+    /** 注解信息*/
     @JsonIgnore
     public VField vField;
+    /** 字段查询和展示时使用的转换方式*/
     @JsonIgnore
     public DataExpressTran tran;
 
-    public static void main(String[] args) {
-        String a = "a__b_c";
-        a.split("___");
+    /** 外键关联查询路径 */
+    public List<Class<? extends Item>> leftJoinPath() {
+        return VlifeUtils.leftJoinPathByQueryPath(getQueryPath());
     }
-
+    /** 外键关联查询名称*/
     public String leftJoinName() {
         List<Class<? extends Item>> clz = leftJoinPath();
         if (clz == null || clz.size() == 0)
@@ -90,15 +92,7 @@ public class FieldDto<T extends BeanDto> extends FieldInfo implements ISort {
         return all.substring(1);
     }
 
-    /**
-     * 如果是注入对象那么查询到该对象 需要传参file命名是
-     *
-     * @return
-     */
-    public String filterFieldName() {
-        return null;
-    }
-
+    /** 根据全量路径得到全量查询路径名称(能递归) */
     public String queryPathName() {
         List obj = getQueryPath();
         if (obj == null) {
@@ -107,77 +101,16 @@ public class FieldDto<T extends BeanDto> extends FieldInfo implements ISort {
         return VlifeUtils.fullPath("", obj, true);
     }
 
-    /**
-     * 进行左连接的路径
-     *
-     * @return
-     */
-    public List<Class<? extends Item>> leftJoinPath() {
-        return VlifeUtils.leftJoinPathByQueryPath(getQueryPath());
-    }
-
-    /**
-     * 查询路径里最后一个对象是否包涵在数组里（
-     * 包涵则:最后一个对象是上一个对象的外键对象  (子查询exist or is)
-     * 不包涵：最后一个对象是上一个对象的关联对象（left）
-     *
-     * @return
-     */
-    public boolean lastItemClzIsInArray() {
-        String path = queryPathName();
-        String[] split = path.split("__");
-        if (split.length > 1) {
-            if (split[split.length - 1].split("_").length > 1) {
-                return false;
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * 返回查询该字段的第一个子查询的LISt语句
-     * 该字段第子查询的路径(子查询可里面还可以包涵子查询) ,
-     * 集合里index=0个子查询的主对象，index >0的是左连接查询对象, 里面如果是list则是嵌套的子查询对象
-     *
-     * @return
-     */
-    @JsonIgnore
-    public List getSubPath() {
-        if (getQueryPath() != null) {
-            for (Object obj : getQueryPath()) {
-                if (obj instanceof List) {
-                    return (List) obj;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 深入拷贝使用插件时候存在找不到类的情况，使用该对象的时候浅拷贝
-     */
     public List getQueryPath() {
         return this.queryPath;
-
-
     }
 
-    /**
-     * 设置全量查询路径 只设置一个
-     *
-     * @param queryPath
-     */
+    /** 设置全量查询路径 */
     public void setQueryPath(List queryPath) {
         this.queryPath = queryPath;
     }
 
-    /**
-     * 设置全量查询路径
-     *
-     * @param queryPath
-     */
+    /** 设置全量查询路径 */
     public void setQueryPath(Object... queryPath) {
         this.queryPath = Arrays.asList(queryPath);
     }
