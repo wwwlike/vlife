@@ -27,6 +27,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 /**
@@ -81,7 +82,9 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
             return returnValue;
         } else if (NativeResult.class == returnValue.getClass()) {
             return ((NativeResult) returnValue).getRs();
-        } else {
+        } else if (BufferedImage.class == returnValue.getClass()) {
+            return returnValue;
+        }  else {
             if (Objects.isNull(returnValue)) {
                 result = Result.createSuccess();
             } else {

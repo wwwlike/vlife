@@ -50,9 +50,9 @@ public class ReportTableItem extends DbEntity {
      */
     public String reportKpiId;
 
-    /**
-     * 项目标题(冗余)
-     */
-    public String title;
+//    /**
+//     * 项目标题(冗余)
+//     */
+//    public String title;
 
 }

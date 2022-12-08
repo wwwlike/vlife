@@ -34,6 +34,11 @@ import java.util.List;
 @Data
 public class UserDetailVo implements VoBean<SysUser> {
     public String id;
+
+    /**
+     * 头像
+     */
+    public String avatar;
     /**
      * 用户名
      */
@@ -104,6 +109,7 @@ public class UserDetailVo implements VoBean<SysUser> {
      */
     @VField(pathName = "sysGroup_sysRoleGroup_sysRole_sysResources_resourcesCode")
     public List<String> resourceCodes;
+
 
     /**
      * 角色里资源对应的菜单

@@ -5,52 +5,21 @@
     "typeName": "SysFile",
     "title": "文件存储接口;",
     "path": "/sysFile",
-    "tags": {},
+    "tags": {
+      "imgPath": {
+        "fieldName": "imgPath",
+        "fieldType": "String"
+      }
+    },
     "apiTagList": [
       {
-        "title": "\n     * wangEditor上传图片接收\n     ",
+        "title": "\r\n     * wangEditor上传图片接收,不存数据库\r\n     ",
         "path": "/upload",
         "paramWrapper": "MultipartFile",
         "param": "file",
         "returnClz": "NativeResult<Map>",
         "methodType": "PostMapping",
         "methodName": "uploadImg"
-      },
-      {
-        "title": "\n     * 上传文件，返回下载码。\n     *\n     * @param file\n     * @return\n     ",
-        "path": "/uploadImg",
-        "paramWrapper": "MultipartFile",
-        "param": "file",
-        "returnClz": "SysFile",
-        "methodType": "PostMapping",
-        "methodName": "upload"
-      },
-      {
-        "title": "\n     * 明细查询文件存储;\n     *\n     * @param id 主键id;\n     * @return 文件存储;\n     ",
-        "path": "/detail/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "SysFile",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n     * 保存文件存储;\n     *\n     * @param dto 文件存储;\n     * @return 文件存储;\n     ",
-        "path": "/save",
-        "paramWrapper": "SysFile",
-        "param": "dto",
-        "returnClz": "SysFile",
-        "methodType": "PostMapping",
-        "methodName": "save"
-      },
-      {
-        "title": "\n     * 逻辑删除;\n     *\n     * @param id 主键id;\n     * @return 已删除数量;\n     ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
@@ -761,6 +730,11 @@
         "fieldType": "String",
         "title": "文件展现形式"
       },
+      "projectId": {
+        "fieldName": "projectId",
+        "fieldType": "String",
+        "title": "所属项目"
+      },
       "url": {
         "fieldName": "url",
         "fieldType": "String",
@@ -1233,6 +1207,11 @@
         "extendsField": true,
         "title": "修订人"
       },
+      "avatar": {
+        "fieldName": "avatar",
+        "fieldType": "String",
+        "title": "头像"
+      },
       "sysDeptId": {
         "fieldName": "sysDeptId",
         "fieldType": "String",
@@ -1677,6 +1656,11 @@
         "fieldType": "String",
         "title": "地区编码"
       },
+      "avatar": {
+        "fieldName": "avatar",
+        "fieldType": "String",
+        "title": "头像"
+      },
       "sysDeptId": {
         "fieldName": "sysDeptId",
         "fieldType": "String",
@@ -1777,6 +1761,11 @@
         "fieldType": "String",
         "extendsField": true,
         "title": "主键id"
+      },
+      "avatar": {
+        "fieldName": "avatar",
+        "fieldType": "String",
+        "title": "头像"
       },
       "state": {
         "fieldName": "state",
@@ -1904,7 +1893,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\n     * 保存查询过滤条件;\n     *\n     * @param dto 查询过滤条件;\n     * @return 查询过滤条件;\n     ",
+        "title": "\r\n     * 保存查询过滤条件;\r\n     *\r\n     * @param dto 查询过滤条件;\r\n     * @return 查询过滤条件;\r\n     ",
         "path": "/save",
         "paramWrapper": "FormCondition",
         "param": "dto",
@@ -1913,7 +1902,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n     * 明细查询查询过滤条件;\n     *\n     * @param id 主键id;\n     * @return 查询过滤条件;\n     ",
+        "title": "\r\n     * 明细查询查询过滤条件;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 查询过滤条件;\r\n     ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -1922,7 +1911,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\n     * 逻辑删除;\n     *\n     * @param id 主键id;\n     * @return 已删除数量;\n     ",
+        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -1931,13 +1920,22 @@
         "methodName": "remove"
       },
       {
-        "title": "\n     * 过滤条件分页查询\n     ",
+        "title": "\r\n     * 过滤条件分页查询\r\n     ",
         "path": "/page",
         "paramWrapper": "FormConditionPageReq",
         "param": "req",
         "returnClz": "PageVo<FormCondition>",
         "methodType": "GetMapping",
         "methodName": "page"
+      },
+      {
+        "title": "",
+        "path": "/list/all",
+        "paramWrapper": "String",
+        "param": "formId",
+        "returnClz": "List<FormCondition>",
+        "methodType": "GetMapping",
+        "methodName": "listAll"
       }
     ]
   },
@@ -2093,7 +2091,7 @@
     },
     "apiTagList": [
       {
-        "title": "\n     * 分页查询单个查询统计项目;\n     *\n     * @param req 工作项查询条件;\n     * @return 单个查询统计项目;\n     ",
+        "title": "\r\n     * 分页查询单个查询统计项目;\r\n     *\r\n     * @param req 工作项查询条件;\r\n     * @return 单个查询统计项目;\r\n     ",
         "path": "/page",
         "paramWrapper": "FormItemPageReq",
         "param": "req",
@@ -2102,7 +2100,7 @@
         "methodName": "page"
       },
       {
-        "title": "\n     * 保存单个查询统计项目;\n     *\n     * @param dto 单个查询统计项目;\n     * @return 单个查询统计项目;\n     ",
+        "title": "\r\n     * 保存单个查询统计项目;\r\n     *\r\n     * @param dto 单个查询统计项目;\r\n     * @return 单个查询统计项目;\r\n     ",
         "path": "/save",
         "paramWrapper": "FormItem",
         "param": "dto",
@@ -2111,7 +2109,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n     * 明细查询单个查询统计项目;\n     *\n     * @param id 主键id;\n     * @return 单个查询统计项目;\n     ",
+        "title": "\r\n     * 明细查询单个查询统计项目;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 单个查询统计项目;\r\n     ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2120,7 +2118,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\n     * 逻辑删除;\n     *\n     * @param id 主键id;\n     * @return 已删除数量;\n     ",
+        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2187,6 +2185,154 @@
   },
   {
     "superName": "VLifeApi",
+    "entityName": "PageApiParamApi",
+    "typeName": "PageApiParam",
+    "title": "API参数接口;",
+    "path": "/pageApiParam",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 保存API参数;\n   * @param dto API参数;\n   * @return API参数;\n   ",
+        "path": "/save/apiParam",
+        "paramWrapper": "PageApiParam",
+        "param": "dto",
+        "returnClz": "PageApiParam",
+        "methodType": "PostMapping",
+        "methodName": "saveApiParam"
+      },
+      {
+        "title": "\n   * 明细查询API参数;\n   * @param id 主键id;\n   * @return API参数;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "PageApiParam",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "PageComponentApi",
+    "typeName": "PageComponent",
+    "title": "单元组件信息接口;",
+    "path": "/pageComponent",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 保存单元组件信息;\n   * @param dto 单元组件信息;\n   * @return 单元组件信息;\n   ",
+        "path": "/save/component",
+        "paramWrapper": "PageComponent",
+        "param": "dto",
+        "returnClz": "PageComponent",
+        "methodType": "PostMapping",
+        "methodName": "saveComponent"
+      },
+      {
+        "title": "\n   * 明细查询单元组件信息;\n   * @param id 主键id;\n   * @return 单元组件信息;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "PageComponent",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "PageComponentPropApi",
+    "typeName": "PageComponentProp",
+    "title": "组件属性接口;",
+    "path": "/pageComponentProp",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 保存组件属性;\n   * @param dto 组件属性;\n   * @return 组件属性;\n   ",
+        "path": "/save/componentProp",
+        "paramWrapper": "PageComponentProp",
+        "param": "dto",
+        "returnClz": "PageComponentProp",
+        "methodType": "PostMapping",
+        "methodName": "saveComponentProp"
+      },
+      {
+        "title": "\n   * 明细查询组件属性;\n   * @param id 主键id;\n   * @return 组件属性;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "PageComponentProp",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "entityName": "PageLayoutApi",
+    "typeName": "PageLayout",
+    "title": "页面布局接口;",
+    "path": "/pageLayout",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 页面布局保存\n   ",
+        "path": "/save/pageConfDto",
+        "paramWrapper": "PageConfDto",
+        "param": "dto",
+        "returnClz": "PageConfDto",
+        "methodType": "PostMapping",
+        "methodName": "savePageConfDto"
+      },
+      {
+        "title": "\n   * 明细查询页面布局;\n   * @param id 主键id;\n   * @return 页面布局;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "PageConfDto",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
     "entityName": "ReportItemApi",
     "typeName": "ReportItem",
     "title": "报表统计项接口;",
@@ -2194,7 +2340,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\n     * 保存报表统计项;\n     *\n     * @param dto 报表统计项;\n     * @return 报表统计项;\n     ",
+        "title": "\r\n     * 保存报表统计项;\r\n     *\r\n     * @param dto 报表统计项;\r\n     * @return 报表统计项;\r\n     ",
         "path": "/save",
         "paramWrapper": "ReportItem",
         "param": "dto",
@@ -2203,7 +2349,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n     * 明细查询报表统计项;\n     *\n     * @param id 主键id;\n     * @return 报表统计项;\n     ",
+        "title": "\r\n     * 明细查询报表统计项;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 报表统计项;\r\n     ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2212,7 +2358,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\n     * 逻辑删除;\n     *\n     * @param id 主键id;\n     * @return 已删除数量;\n     ",
+        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2221,7 +2367,7 @@
         "methodName": "remove"
       },
       {
-        "title": "\n     * 统计项分页查询\n     ",
+        "title": "\r\n     * 统计项分页查询\r\n     ",
         "path": "/page",
         "paramWrapper": "ReportItemPageReq",
         "param": "req",
@@ -2258,7 +2404,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\n     * 列表查询关键指标;\n     *\n     * @param req 指标查询条件;\n     * @return 关键指标;\n     ",
+        "title": "\r\n     * 列表查询关键指标;\r\n     *\r\n     * @param req 指标查询条件;\r\n     * @return 关键指标;\r\n     ",
         "path": "/list",
         "paramWrapper": "ReportKpiReq",
         "param": "req",
@@ -2267,7 +2413,7 @@
         "methodName": "list"
       },
       {
-        "title": "\n     * 保存关键指标;\n     *\n     * @param dto 关键指标;\n     * @return 关键指标;\n     ",
+        "title": "\r\n     * 保存关键指标;\r\n     *\r\n     * @param dto 关键指标;\r\n     * @return 关键指标;\r\n     ",
         "path": "/save",
         "paramWrapper": "ReportKpi",
         "param": "dto",
@@ -2276,7 +2422,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n     * 明细查询关键指标;\n     *\n     * @param id 主键id;\n     * @return 关键指标;\n     ",
+        "title": "\r\n     * 明细查询关键指标;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 关键指标;\r\n     ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2285,7 +2431,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\n     * 逻辑删除;\n     *\n     * @param id 主键id;\n     * @return 已删除数量;\n     ",
+        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2299,6 +2445,15 @@
         "returnClz": "List<ReportKpi>",
         "methodType": "GetMapping",
         "methodName": "listAll"
+      },
+      {
+        "title": "\r\n     * 指标项分页查询\r\n     ",
+        "path": "/page",
+        "paramWrapper": "ReportKpiPageReq",
+        "param": "req",
+        "returnClz": "PageVo<ReportKpi>",
+        "methodType": "GetMapping",
+        "methodName": "page"
       }
     ]
   },
@@ -2311,7 +2466,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\n     * 保存报表;\n     *\n     * @param dto 报表;\n     * @return 报表;\n     ",
+        "title": "\r\n     * 保存报表;\r\n     *\r\n     * @param dto 报表;\r\n     * @return 报表;\r\n     ",
         "path": "/save/reportTableSaveDto",
         "paramWrapper": "ReportTableSaveDto",
         "param": "dto",
@@ -2320,7 +2475,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n     * 明细查询报表配置视图;\n     *\n     * @param id 主键id;\n     * @return 报表配置视图;\n     ",
+        "title": "\r\n     * 明细查询报表配置视图;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 报表配置视图;\r\n     ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2329,7 +2484,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\n     * 逻辑删除;\n     *\n     * @param id 主键id;\n     * @return 已删除数量;\n     ",
+        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2345,13 +2500,22 @@
         "methodName": "listAll"
       },
       {
-        "title": "\n     * 报表查询\n     *\n     * @param req\n     * @return\n     ",
+        "title": "\r\n     * 报表查询\r\n     *\r\n     * @param req\r\n     * @return\r\n     ",
         "path": "/report",
         "paramWrapper": "ReportQuery",
         "param": "req",
         "returnClz": "List",
         "methodType": "GetMapping",
         "methodName": "report"
+      },
+      {
+        "title": "\r\n     * 单个统计值查询 支持指标和\r\n     * @return\r\n     ",
+        "path": "/total/{code}",
+        "paramWrapper": "String",
+        "param": "code",
+        "returnClz": "Double",
+        "methodType": "GetMapping",
+        "methodName": "total"
       }
     ]
   },
@@ -2364,7 +2528,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\n   * 保存报表明细;\n   * @param dto 报表明细;\n   * @return 报表明细;\n   ",
+        "title": "\r\n   * 保存报表明细;\r\n   * @param dto 报表明细;\r\n   * @return 报表明细;\r\n   ",
         "path": "/save",
         "paramWrapper": "ReportTableItem",
         "param": "dto",
@@ -2373,7 +2537,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n   * 明细查询报表明细项视图;\n   * @param id 主键id;\n   * @return 报表明细项视图;\n   ",
+        "title": "\r\n   * 明细查询报表明细项视图;\r\n   * @param id 主键id;\r\n   * @return 报表明细项视图;\r\n   ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2382,7 +2546,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -2657,6 +2821,133 @@
         "fieldName": "fieldType",
         "fieldType": "String",
         "title": "字段类型"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "entityName": "PageComponentDto",
+    "typeName": "PageComponent",
+    "tags": {
+      "component": {
+        "fieldName": "component",
+        "fieldType": "String",
+        "title": "单元组件类型"
+      },
+      "w": {
+        "fieldName": "w",
+        "fieldType": "Integer",
+        "title": "栅格宽度"
+      },
+      "x": {
+        "fieldName": "x",
+        "fieldType": "Integer",
+        "title": "栅格横向位置"
+      },
+      "h": {
+        "fieldName": "h",
+        "fieldType": "Integer",
+        "title": "栅格高度"
+      },
+      "y": {
+        "fieldName": "y",
+        "fieldType": "Integer",
+        "title": "栅格纵坐标位置"
+      },
+      "pageKey": {
+        "fieldName": "pageKey",
+        "fieldType": "String",
+        "title": "单元编号"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "String",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "pageLayoutId": {
+        "fieldName": "pageLayoutId",
+        "fieldType": "String",
+        "title": "组件单元所在页面"
+      },
+      "props": {
+        "fieldName": "props",
+        "fieldType": "List<PageComponentPropDto>",
+        "title": "组件属性配置"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "entityName": "PageComponentPropDto",
+    "typeName": "PageComponentProp",
+    "tags": {
+      "apiMethod": {
+        "fieldName": "apiMethod",
+        "fieldType": "String",
+        "title": "接口请求后数据的转化方法"
+      },
+      "pageComponentId": {
+        "fieldName": "pageComponentId",
+        "fieldType": "String",
+        "title": "所属组件"
+      },
+      "sourceType": {
+        "fieldName": "sourceType",
+        "fieldType": "String",
+        "title": "属性值来源"
+      },
+      "subName": {
+        "fieldName": "subName",
+        "fieldType": "String",
+        "title": "子属性名称"
+      },
+      "listNo": {
+        "fieldName": "listNo",
+        "fieldType": "Integer",
+        "title": "数组排序号"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "String",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "propVal": {
+        "fieldName": "propVal",
+        "fieldType": "String",
+        "title": "属性值"
+      },
+      "params": {
+        "fieldName": "params",
+        "fieldType": "List<PageApiParam>",
+        "title": "关联api参数设置"
+      },
+      "propName": {
+        "fieldName": "propName",
+        "fieldType": "String",
+        "title": "属性名称"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "entityName": "PageConfDto",
+    "typeName": "PageLayout",
+    "tags": {
+      "id": {
+        "fieldName": "id",
+        "fieldType": "String",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "content": {
+        "fieldName": "content",
+        "fieldType": "List<PageComponentDto>",
+        "title": "单元组件信息"
       }
     },
     "apiTagList": []
@@ -3384,6 +3675,292 @@
   },
   {
     "superName": "DbEntity",
+    "entityName": "PageApiParam",
+    "title": "组件API参数设置",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "pageComponentPropId": {
+        "fieldName": "pageComponentPropId",
+        "fieldType": "String",
+        "title": "组件属性"
+      },
+      "sourceType": {
+        "fieldName": "sourceType",
+        "fieldType": "String",
+        "title": "参数值来源"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "paramVal": {
+        "fieldName": "paramVal",
+        "fieldType": "String",
+        "title": "参数值"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "paramName": {
+        "fieldName": "paramName",
+        "fieldType": "String",
+        "title": "参数名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "PageComponent",
+    "title": "单元组件信息",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "h": {
+        "fieldName": "h",
+        "fieldType": "Integer",
+        "title": "栅格高度"
+      },
+      "pageKey": {
+        "fieldName": "pageKey",
+        "fieldType": "String",
+        "title": "单元编号"
+      },
+      "component": {
+        "fieldName": "component",
+        "fieldType": "String",
+        "title": "单元组件类型"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "w": {
+        "fieldName": "w",
+        "fieldType": "Integer",
+        "title": "栅格宽度"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "单元名称"
+      },
+      "x": {
+        "fieldName": "x",
+        "fieldType": "Integer",
+        "title": "栅格横向位置"
+      },
+      "y": {
+        "fieldName": "y",
+        "fieldType": "Integer",
+        "title": "栅格纵坐标位置"
+      },
+      "pageLayoutId": {
+        "fieldName": "pageLayoutId",
+        "fieldType": "String",
+        "title": "组件单元所在页面"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "PageComponentProp",
+    "title": "组件属性",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "propVal": {
+        "fieldName": "propVal",
+        "fieldType": "String",
+        "title": "属性值"
+      },
+      "propName": {
+        "fieldName": "propName",
+        "fieldType": "String",
+        "title": "属性名称"
+      },
+      "apiMethod": {
+        "fieldName": "apiMethod",
+        "fieldType": "String",
+        "title": "接口取值到属性值的转换方法名称"
+      },
+      "pageComponentId": {
+        "fieldName": "pageComponentId",
+        "fieldType": "String",
+        "title": "所属组件"
+      },
+      "sourceType": {
+        "fieldName": "sourceType",
+        "fieldType": "String",
+        "title": "属性值来源"
+      },
+      "subName": {
+        "fieldName": "subName",
+        "fieldType": "String",
+        "title": "子属性名称"
+      },
+      "listNo": {
+        "fieldName": "listNo",
+        "fieldType": "Integer",
+        "title": "数组排序号"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "entityName": "PageLayout",
+    "title": "页面布局",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "页面名称"
+      },
+      "sysUserId": {
+        "fieldName": "sysUserId",
+        "fieldType": "String",
+        "title": "对应用户"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "sysGroupId": {
+        "fieldName": "sysGroupId",
+        "fieldType": "String",
+        "title": "对应权限组"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
     "entityName": "ReportItem",
     "title": "报表统计项",
     "tags": {
@@ -3643,11 +4220,6 @@
         "extendsField": true,
         "title": "主键id"
       },
-      "title": {
-        "fieldName": "title",
-        "fieldType": "String",
-        "title": "项目标题(冗余)"
-      },
       "status": {
         "fieldName": "status",
         "fieldType": "string",
@@ -3705,7 +4277,7 @@
       "search": {
         "fieldName": "search",
         "fieldType": "String",
-        "title": "项目名称"
+        "title": "查询名称"
       },
       "entityName": {
         "fieldName": "entityName",
@@ -3740,6 +4312,25 @@
         "fieldName": "func",
         "fieldType": "String",
         "title": "聚合方式"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "ReportKpiPageReq",
+    "typeName": "ReportKpi",
+    "title": "kpi指标项查询条件",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所属模块"
+      },
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "指标名称"
       }
     },
     "apiTagList": []
@@ -4395,7 +4986,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\n   * 保存项目任务表;\n   * @param dto 项目任务表;\n   * @return 项目任务表;\n   ",
+        "title": "\r\n   * 保存项目任务表;\r\n   * @param dto 项目任务表;\r\n   * @return 项目任务表;\r\n   ",
         "path": "/save",
         "paramWrapper": "ProjectTask",
         "param": "dto",
@@ -4404,7 +4995,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n   * 明细查询项目任务表;\n   * @param id 主键id;\n   * @return 项目任务表;\n   ",
+        "title": "\r\n   * 明细查询项目任务表;\r\n   * @param id 主键id;\r\n   * @return 项目任务表;\r\n   ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -4413,7 +5004,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -4464,6 +5055,11 @@
         "fieldName": "tasks",
         "fieldType": "List<ProjectTask>",
         "title": "任务分解"
+      },
+      "sysFile_id": {
+        "fieldName": "sysFile_id",
+        "fieldType": "List<String>",
+        "title": "项目图片"
       },
       "customer": {
         "fieldName": "customer",

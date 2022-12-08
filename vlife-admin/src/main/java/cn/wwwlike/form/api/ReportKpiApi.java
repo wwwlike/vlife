@@ -1,8 +1,12 @@
 package cn.wwwlike.form.api;
 
+import cn.wwwlike.form.entity.ReportItem;
 import cn.wwwlike.form.entity.ReportKpi;
+import cn.wwwlike.form.req.ReportItemPageReq;
+import cn.wwwlike.form.req.ReportKpiPageReq;
 import cn.wwwlike.form.req.ReportKpiReq;
 import cn.wwwlike.form.service.ReportKpiService;
+import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +65,15 @@ public class ReportKpiApi extends VLifeApi<ReportKpi, ReportKpiService> {
     @GetMapping("/list/all")
     public List<ReportKpi> listAll() {
         return service.findAll();
+    }
+
+
+    /**
+     * 指标项分页查询
+     */
+    @GetMapping("/page")
+    public PageVo<ReportKpi> page(ReportKpiPageReq req) {
+        return service.findPage(req);
     }
 
 }

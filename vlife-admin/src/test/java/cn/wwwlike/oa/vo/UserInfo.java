@@ -33,6 +33,8 @@ public class UserInfo implements VoBean<SysUser> {
     public String id;
     public String name;
 
+    public String avatar;
+
     /**
      * 角色组名称
      */

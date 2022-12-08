@@ -18,6 +18,7 @@
 
 package cn.wwwlike.oa.dto;
 
+import cn.wwwlike.auth.entity.SysFile;
 import cn.wwwlike.oa.entity.Project;
 import cn.wwwlike.oa.entity.ProjectTask;
 import cn.wwwlike.vlife.annotation.VField;
@@ -63,6 +64,11 @@ public class ProjectDto implements SaveBean<Project> {
      * 任务分解
      */
     public List<ProjectTask> tasks;
+
+    /**
+     * 项目图片
+     */
+    public List<String> sysFile_id;
 
 
 }

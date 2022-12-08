@@ -16,49 +16,23 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.auth.vo;
+package cn.wwwlike.form.req;
 
-import cn.wwwlike.auth.entity.SysUser;
+import cn.wwwlike.form.entity.FormItem;
+import cn.wwwlike.form.entity.ReportKpi;
 import cn.wwwlike.vlife.annotation.VField;
-import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.dict.Opt;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
 /**
- * 用户列表信息
+ * kpi指标项查询条件
  */
 @Data
-public class UserVo implements VoBean<SysUser> {
-    public String id;
+public class ReportKpiPageReq extends PageQuery<ReportKpi> {
+    @VField(pathName = "name",orReqFields = {"code"},opt = Opt.like)
+    public String search;
 
-    /**
-     * 头像
-     */
-    public String avatar;
-    /**
-     * 用户名
-     */
-    public String name;
-    /**
-     * 账号
-     */
-    public String username;
-
-    @VField(pathName = "sysGroup_name")
-    public String groupName;
-    /**
-     * 证件号码
-     */
-    public String idno;
-    /**
-     * 联系电话
-     */
-    public String tel;
-    /**
-     * 用户类型
-     */
-    public String usetype;
-
-    public String state;
-
+    public String formId;
 
 }

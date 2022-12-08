@@ -26,12 +26,7 @@ import cn.wwwlike.vlife.base.Item;
  * @param <T>
  */
 public class QueryWrapper<T extends Item> extends AbstractWrapper<T, String, QueryWrapper<T>> {
-    /**
-     * 设置本业务过滤使用的“哪个业务模型”的过滤维度
-     * 如查询“项目”模块，它的查看维度部门下的项目，但是部门表的维度是查看本机构的部门，再项目里过滤部门的维度就需要调整成和项目一致
-     * 这里设置的filterRuleClz就是只我们查询部门表时可能会用到业务部门的行级数据过滤规则。
-     */
-    public Class filterRuleClz;
+
 
     public QueryWrapper(Class<T> entity) {
         super.entityClz = entity;

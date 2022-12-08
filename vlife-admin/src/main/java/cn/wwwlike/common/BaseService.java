@@ -35,6 +35,7 @@ import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.*;
 import cn.wwwlike.vlife.objship.read.GlobalData;
+import cn.wwwlike.vlife.query.AbstractWrapper;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.tran.LengthTran;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
@@ -94,12 +95,13 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
         return false;
     }
 
-    public < S extends QueryWrapper> S addQueryFilter(S queryWrapper){
+    @Override
+    public < S extends AbstractWrapper> S addQueryFilter(S queryWrapper){
         //当前查询模块
         PehrSecurityUser user=SecurityConfig.getCurrUser();
         if(user!=null&&isBusEntity(queryWrapper.getEntityClz())){
             //该业务实体的过滤规则
-            Consumer<QueryWrapper<T>> consumer= wrapper->{
+            Consumer<S> consumer= wrapper->{
                 SysFilterDetail rule = filterDetailService.filterRule(queryWrapper.getEntityClz(), user.getGroupId());
                 //filterRuleClz 业务表的过滤规则，查询 user,org,area,dept时，如果过滤规则与业务表不一致，以业务表为准
                 if(queryWrapper.filterRuleClz!=null){

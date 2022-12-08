@@ -287,10 +287,9 @@ public class QueryHelper {
     }
 
     /**
-     * 返回字段
-     *
-     * @param expression
-     * @param func
+     * 字段用聚合函数包装
+     * @param expression 字段表达式
+     * @param func 聚合函数名
      * @return
      */
     public static SimpleExpression tran(SimpleExpression expression, String func) {
@@ -298,20 +297,16 @@ public class QueryHelper {
             return new JiExpressTran().tran(expression);
         } else if ("year".equals(func)) {
             return new YearExpressTran().tran(expression);
-        } else if (expression instanceof NumberExpression) {
-            if (CT.ITEM_FUNC.AVG.equals(func)) {
-                return ((NumberExpression) expression).avg();
-            } else if (CT.ITEM_FUNC.MAX.equals(func)) {
-                return ((NumberExpression) expression).max();
-            } else if (CT.ITEM_FUNC.MIN.equals(func)) {
-                return ((NumberExpression) expression).min();
-            } else if (CT.ITEM_FUNC.SUM.equals(func)) {
-                return ((NumberExpression) expression).sum();
-            }
-        } else if (func != null) {
-            if ("id".equals(expression.toString())) {
-                return ((NumberExpression) expression).count();
-            }
+        } else  if (CT.ITEM_FUNC.AVG.equals(func)) {
+            return ((NumberExpression) expression).avg();
+        } else if (CT.ITEM_FUNC.MAX.equals(func)) {
+            return ((NumberExpression) expression).max();
+        } else if (CT.ITEM_FUNC.MIN.equals(func)) {
+            return ((NumberExpression) expression).min();
+        } else if (CT.ITEM_FUNC.SUM.equals(func)) {
+            return ((NumberExpression) expression).sum();
+        }else if (CT.ITEM_FUNC.COUNT.equals(func)) {
+            return expression.count();
         }
         return expression;
     }
@@ -391,7 +386,10 @@ public class QueryHelper {
                 int i = 0;
                 for (String title : group) {
                     if (curr.get(title) != null &&
-                            curr.get(title).equals(map.get(title))) {
+                            curr.get(title).equals(map.get(title))
+                    ||(curr.get(title)==null&&map.get(title)==null )
+
+                    ) {
                         i++;
                     }
                     if (i == group.size()) {

@@ -37,8 +37,9 @@ public class SysFileService extends VLifeService<SysFile, SysFileDao> {
      */
     public String uploadImg(MultipartFile multipartFile) {
         FileUtil.createDir(imgPath);
-        String fileName = imgPath + "\\" + getFileName() + "." + multipartFile.getOriginalFilename().split("\\.")[1];
-        File file = new File(fileName);
+//        imgPath + "\\" +
+        String fileName = getFileName() + "." + multipartFile.getOriginalFilename().split("\\.")[1];
+        File file = new File( imgPath + "\\" +fileName);
         OutputStream out = null;
         try {
             out = new FileOutputStream(file);

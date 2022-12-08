@@ -72,4 +72,9 @@ public class SysFile extends DbEntity {
      */
     public String viewMode;
 
+    /**
+     * 所属项目
+     */
+    public String projectId;
+
 }

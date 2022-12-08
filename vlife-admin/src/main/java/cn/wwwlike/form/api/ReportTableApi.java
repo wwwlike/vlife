@@ -24,7 +24,7 @@ public class ReportTableApi extends VLifeApi<ReportTable, ReportTableService> {
      */
     @PostMapping("/save/reportTableSaveDto")
     public ReportTableSaveDto save(@RequestBody ReportTableSaveDto dto) {
-        return service.save(dto);
+        return service.save(dto,true);
     }
 
     /**
@@ -64,4 +64,15 @@ public class ReportTableApi extends VLifeApi<ReportTable, ReportTableService> {
     public List report(ReportQuery req) {
         return service.report(req);
     }
+
+    /**
+     * 单个统计值查询 支持指标和
+     * @return
+     */
+    @GetMapping("/total/{code}")
+    public Double total(@PathVariable String code) {
+       return (Double) service.queryOne(code);
+    }
+
+
 }

@@ -28,6 +28,7 @@ import cn.wwwlike.vlife.bi.Conditions;
 import cn.wwwlike.vlife.bi.ReportWrapper;
 import cn.wwwlike.vlife.objship.dto.*;
 import cn.wwwlike.vlife.objship.read.GlobalData;
+import cn.wwwlike.vlife.query.AbstractWrapper;
 import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.PageQuery;
@@ -120,7 +121,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     public List<T> findByIds(String... ids) {
         if (ids == null || ids.length == 0) {
             logger.error("findByIds-> ids is null or length=0");
-            return null;
+            return new ArrayList<>();
         }
         QueryWrapper<T> wrapper = QueryWrapper.of(entityClz).in("id", ids);
         return dao.find(wrapper);
@@ -529,7 +530,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
                 } else if (bean instanceof List) {
                     for (Object b : (List) bean) {
                         if (b instanceof IdBean) {
-                            saveBean((IdBean) b, entityClz, masterId, callBackMethod, false);
+                            saveBean((IdBean) b, entityClz, masterId, callBackMethod, subIsFull);
                         } else if (b.getClass().isPrimitive()
                                 || b instanceof Date
                                 || b instanceof String) {
@@ -640,7 +641,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         QueryWrapper wrapper = new QueryWrapper(fieldDto.getEntityClz());
         Class<? extends Item> subItemClz = fieldDto.getEntityClz();
         EntityDto subEntityDto = GlobalData.entityDto(fieldDto.getEntityClz());
-        String fkName = subEntityDto.getFkMap().get(entityClz);
+        String fkName = subEntityDto.getFkMap().get(entityDto.getClz());
         wrapper.eq(fkName, saveBean.getId());
         List<? extends Item> existDb = dao.query(subItemClz, wrapper, null);
         final List<String> thisCommitIds = new ArrayList<>();
@@ -707,7 +708,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     /**
      * 加入查询过滤条件，待改成抽象类
      */
-    public <S extends QueryWrapper, E extends CustomQuery<T, S>> E addQueryFilter(E request) {
+    public <S extends AbstractWrapper, E extends CustomQuery<T, S>> E addQueryFilter(E request) {
         addQueryFilter(request.qw(entityClz));
         return request;
     }
@@ -715,7 +716,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     /**
      * 加入查询过滤的条件
      */
-    public <S extends QueryWrapper> S addQueryFilter(S queryWrapper) {
+    public <S extends AbstractWrapper> S addQueryFilter(S queryWrapper) {
         //该方法由继承类来实现
         return queryWrapper;
     }

@@ -1,11 +1,16 @@
 package cn.wwwlike.form.api;
 
 import cn.wwwlike.form.entity.FormCondition;
+import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.form.req.FormConditionPageReq;
 import cn.wwwlike.form.service.FormConditionService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.vlife.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 查询过滤条件接口;
@@ -53,6 +58,15 @@ public class FormConditionApi extends VLifeApi<FormCondition, FormConditionServi
     @GetMapping("/page")
     public PageVo<FormCondition> page(FormConditionPageReq req) {
         return service.findPage(req);
+    }
+
+
+    @GetMapping("/list/all")
+    public List<FormCondition> listAll(String formId) {
+        if (formId == null) {
+            return new ArrayList<>();
+        }
+        return service.find(QueryWrapper.of(FormCondition.class).eq("formId", formId));
     }
 
 }

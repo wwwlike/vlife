@@ -36,6 +36,10 @@ import javax.persistence.Table;
 @Table(name = "sys_user")
 public class SysUser extends DbEntity implements IUser, IOrg {
     /**
+     * 头像
+     */
+    public String avatar;
+    /**
      * 姓名
      */
     public String name;
