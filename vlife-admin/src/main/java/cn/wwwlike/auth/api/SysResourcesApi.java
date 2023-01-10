@@ -89,7 +89,7 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
      */
     @GetMapping("/list/menu")
     public List<SysResources> listMenu() {
-        return service.find(QueryWrapper.of(SysResources.class).eq("type", VCT.SYSRESOURCES_TYPE.MENU));
+        return service.find(QueryWrapper.of(SysResources.class).eq("resourcesType", VCT.SYSRESOURCES_TYPE.MENU));
     }
 
     /**

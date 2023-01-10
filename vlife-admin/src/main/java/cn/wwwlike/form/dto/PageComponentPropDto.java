@@ -14,6 +14,13 @@ public class PageComponentPropDto implements SaveBean<PageComponentProp> {
      * 所属组件
      */
     public String pageComponentId;
+
+    /**
+     * 关联字段
+     * FormField里选择x_component后，其属性信息在本表里存储
+     */
+    public String formFieldId;
+
     /**
      * 属性名称
      */

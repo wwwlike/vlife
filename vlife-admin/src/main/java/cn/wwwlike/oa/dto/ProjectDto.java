@@ -71,4 +71,10 @@ public class ProjectDto implements SaveBean<Project> {
     public List<String> sysFile_id;
 
 
+    /**
+     * 合同金额
+     */
+    public Double amount;
+
+
 }

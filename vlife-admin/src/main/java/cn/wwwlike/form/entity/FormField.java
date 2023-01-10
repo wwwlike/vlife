@@ -112,16 +112,8 @@ public class FormField extends DbEntity {
      * vlife开头 需要特殊处理的字段
      */
     public String vlife_pattern;
-    public String vlife_message;
-//    /**
-//     * 正则校验
-//     */
-//    public String x_rules$pattern;
-//    /**
-//     * 不通过提示
-//     */
-//    public String x_rules$message;
 
+    public String vlife_message;
 
     /**
      * 对应 x-decorator-props.gridSpan属性

@@ -18,6 +18,7 @@
 
 package cn.wwwlike.form.entity;
 
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -51,5 +52,6 @@ public class ReportKpi extends DbEntity {
     /**
      * 统计项(分母)
      */
-    public String reportItemId2;
+//    @VField(pathName = "reportItem_id")
+    public String reportItemOtherId;
 }

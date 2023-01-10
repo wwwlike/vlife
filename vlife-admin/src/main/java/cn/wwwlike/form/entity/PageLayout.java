@@ -18,13 +18,25 @@ public class PageLayout extends DbEntity {
      */
     public String name;
     /**
-     * 对应权限组
-     * 为某权限组配置的页面
+     * 动态路由地址
      */
-    public String sysGroupId;
+    public String url;
     /**
-     * 对应用户
-     * 为某一用户配置的页面
+     * 是否需要权限登录
      */
-    public String sysUserId;
+    public Boolean auth;
+    /**
+     * 是否作为模块使用
+     */
+    public Boolean module;
+    /**
+     * 页面高度
+     */
+    public Integer h;
+
+    /**
+     * 预览图片
+     */
+    public String img;
+
 }

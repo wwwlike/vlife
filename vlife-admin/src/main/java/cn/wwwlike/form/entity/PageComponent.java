@@ -33,6 +33,11 @@ public class PageComponent extends DbEntity {
      */
     @VField(dictCode = "VIEW_COMPONENT")
     public String component;
+
+    /**
+     * 模块id(pageLayoutId)
+     */
+    public String moduleId;
     /**
      * 栅格横向位置
      */

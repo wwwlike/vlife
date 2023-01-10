@@ -19,21 +19,26 @@
 package cn.wwwlike.form.dto;
 
 import cn.wwwlike.form.entity.FormField;
-import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 字段信息视图
  */
 @Data
-public class FormFieldDto implements VoBean<FormField> {
+public class FormFieldDto  implements SaveBean<FormField> {
+
     public String id;
+
+    public String name;
     /**
      * 所属表单
      */
     public String formId;
     /**
-     * 分组容器编码
+     * 所在容器编码
      */
     public String formGroupCode;
 
@@ -43,9 +48,9 @@ public class FormFieldDto implements VoBean<FormField> {
     //实体字段名称
     public String entityFieldName;
 
+
     //组件类型
     public String componentType;
-
     /**
      * 字段名
      */
@@ -91,7 +96,6 @@ public class FormFieldDto implements VoBean<FormField> {
      * 隐藏
      */
     public boolean x_hidden;
-
     /**
      * 描述
      */
@@ -120,20 +124,16 @@ public class FormFieldDto implements VoBean<FormField> {
     public String x_decorator;
 
     /**
+     * vlife开头 需要特殊处理的字段
+     */
+    public String vlife_pattern;
+
+    public String vlife_message;
+
+    /**
      * 对应 x-decorator-props.gridSpan属性
      */
     public Integer x_decorator_props$gridSpan;
-
-    /**
-     * 异步加载数据的api的name
-     */
-    public String apiKey;
-
-    /**
-     * 字段校验方式
-     */
-    public String x_validator;
-
 
     /**
      * label位置 水平 vertical
@@ -146,7 +146,34 @@ public class FormFieldDto implements VoBean<FormField> {
     public String x_decorator_props$labelAlign;
 
 
-    public String vlife_pattern;
-    public String vlife_message;
+    /**
+     * 描述信息 对应 x-component-props.placeholder;
+     */
+    public String x_component_props$placeholder;
+    /**
+     * 加载组件数据的地址关键字
+     */
+    public String apiKey;
+    /**
+     * 字段校验方式
+     */
+    public String x_validator;
+
+    /**
+     * 是否列表展示
+     */
+    public Boolean listShow;
+
+    /**
+     * 组件设置的JSON信息
+     */
     public String componentSettingJson;
+
+    public String getName() {
+        return this.title;
+    }
+
+    /** 字段所在组件属性设置*/
+    public List<PageComponentPropDto> pageComponentPropDtos;
+
 }

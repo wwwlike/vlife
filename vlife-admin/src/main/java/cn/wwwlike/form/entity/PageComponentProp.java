@@ -18,6 +18,13 @@ public class PageComponentProp extends DbEntity {
      * 所属组件
      */
     public String pageComponentId;
+
+    /**
+     * 关联字段
+     * FormField里选择x_component后，其属性信息在本表里存储
+     */
+    public String formFieldId;
+
     /**
      * 属性名称
      */
@@ -36,6 +43,7 @@ public class PageComponentProp extends DbEntity {
     /**
      * 属性值来源
      * 系统值/常量值/对象字段取值/接口取值
+     * (最终会去掉，所有组件属性来源在定义组件时需要确定唯一性，减少复杂度，让维护人员更方便)
      */
     public String sourceType;
     /**

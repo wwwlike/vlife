@@ -2,15 +2,12 @@ package cn.wwwlike.auth.service;
 
 import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.dao.SysResourcesDao;
-import cn.wwwlike.auth.dto.ResourcesDto;
-import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.common.BaseService;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.tag.ApiTag;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
-import cn.wwwlike.vlife.query.AbstractWrapper;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +50,7 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
     public List<SysResources> findApiResources(){
         VlifeQuery<SysResources> req=new VlifeQuery<SysResources>(SysResources.class);
         //对有角色关联的资源进行拦截
-        req.qw().isNotNull("sysRoleId").eq("type", VCT.SYSRESOURCES_TYPE.API);
+        req.qw().isNotNull("sysRoleId").eq("resourcesType", VCT.SYSRESOURCES_TYPE.API);
         return find(req);
     }
 
@@ -78,7 +75,7 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
     public List<SysResources> findRoleEmptyResources(){
        VlifeQuery<SysResources> req= new VlifeQuery(SysResources.class);
        req.qw(SysResources.class)
-               .eq("type",VCT.SYSRESOURCES_TYPE.API)
+               .eq("resourcesType",VCT.SYSRESOURCES_TYPE.API)
                .isNull("sysRoleId");
        return find(req);
     }
@@ -123,7 +120,7 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
                     menu=new SysResources();
                     menu.setName(GlobalData.entityDto(clzTag.getTypeName()).getTitle());
                     menu.setResourcesCode(clzTag.getPath().substring(1));
-                    menu.setType(VCT.SYSRESOURCES_TYPE.MENU);
+                    menu.setResourcesType(VCT.SYSRESOURCES_TYPE.MENU);
                     menu.setId(menu.getResourcesCode());
                     if(search==null||clzTag.getPath().toLowerCase().indexOf(search.toLowerCase())!=-1){
                         list.add(menu);
@@ -153,7 +150,7 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
                         bean.setUrl(url);
                         bean.setMenuCode(clzTag.getPath().substring(1));
                         bean.setResourcesCode(url.substring(1).replaceAll("/",":"));
-                        bean.setType(VCT.SYSRESOURCES_TYPE.API);
+                        bean.setResourcesType(VCT.SYSRESOURCES_TYPE.API);
                         bean.setId(bean.getResourcesCode());
                         if(search==null||bean.getResourcesCode().toLowerCase().indexOf(search.toLowerCase())!=-1){
                             list.add(bean);

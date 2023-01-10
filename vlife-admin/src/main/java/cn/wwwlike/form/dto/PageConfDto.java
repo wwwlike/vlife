@@ -11,5 +11,11 @@ import java.util.List;
 @Data
 public class PageConfDto implements SaveBean<PageLayout> {
     public String id;
+    public String name;
+    public String url;
+    public Boolean auth;
+    public Boolean module;
+    public Integer h;
+    public String img;
     public List<PageComponentDto> content;
 }

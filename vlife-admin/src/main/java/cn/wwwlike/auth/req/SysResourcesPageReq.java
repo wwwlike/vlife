@@ -40,7 +40,7 @@ public class SysResourcesPageReq extends PageQuery<SysResources> {
     /**
      * 资源类型
      */
-    public String type;
+    public String resourcesType;
     /**
      * 接口角色
      */

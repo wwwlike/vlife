@@ -41,7 +41,7 @@ public class SysResources  extends DbEntity {
      * 资源类型
      */
     @VField(dictCode = "SYSRESOURCES_TYPE")
-    public String type;
+    public String resourcesType;
     /**
      * 接口地址
      */

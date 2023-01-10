@@ -45,6 +45,7 @@ public class SysUserPageReq extends PageQuery<SysUser> {
     /**
      * 机构
      */
+    @VField(opt = Opt.startsWith)
     public String sysOrg_code;
     /**
      * 部门

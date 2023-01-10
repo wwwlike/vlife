@@ -1,11 +1,15 @@
 package cn.wwwlike.form.api;
 
+import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.form.dto.PageConfDto;
 import cn.wwwlike.form.entity.PageLayout;
 import cn.wwwlike.form.service.PageLayoutService;
 import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
+import java.util.List;
+
+import cn.wwwlike.vlife.query.req.VlifeQuery;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,12 +35,23 @@ public class PageLayoutApi extends VLifeApi<PageLayout, PageLayoutService> {
 
   /**
    * 明细查询页面布局;
-   * @param id 主键id;
+   * @param urlOrId 页面路由地址或者id
    * @return 页面布局;
    */
-  @GetMapping("/detail/{id}")
-  public PageConfDto detail(@PathVariable String id) {
-    return service.queryOne(PageConfDto.class,id);
+  @GetMapping("/detail/{urlOrId}")
+  public PageConfDto detail(@PathVariable String urlOrId) {
+    PageConfDto dto=service.queryOne(PageConfDto.class,urlOrId);
+    if(dto!=null){
+      return dto;
+    }
+    VlifeQuery<PageLayout> req=new VlifeQuery<PageLayout>(PageLayout.class);
+    req.qw().eq("url",urlOrId);
+    List<PageConfDto> dtos=service.query(PageConfDto.class,req);
+    if(dtos.size()>0){
+      return dtos.get(0);
+    }else{
+      return null;
+    }
   }
 
   /**
@@ -47,5 +62,13 @@ public class PageLayoutApi extends VLifeApi<PageLayout, PageLayoutService> {
   @DeleteMapping("/remove/{id}")
   public Long remove(@PathVariable String id) {
     return service.remove(id);
+  }
+
+  /**
+   * 全量数据
+   */
+  @GetMapping("/list/all")
+  public List<PageLayout> listAll(){
+    return service.findAll();
   }
 }

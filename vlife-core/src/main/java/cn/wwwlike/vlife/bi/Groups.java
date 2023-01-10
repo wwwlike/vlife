@@ -21,8 +21,7 @@ package cn.wwwlike.vlife.bi;
 import lombok.Data;
 
 /**
- * 类说明
- *
+ * 分组信息
  * @author xiaoyu
  * @date 2022/11/4
  */

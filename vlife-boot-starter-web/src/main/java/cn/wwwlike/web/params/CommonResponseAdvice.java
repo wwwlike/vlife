@@ -80,9 +80,9 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
 //            return JSON.toJSONString(result);
         } else if ("ResponseEntity".equals(returnClassType)) {
             return returnValue;
-        } else if (NativeResult.class == returnValue.getClass()) {
+        } else if (returnValue!=null&&NativeResult.class == returnValue.getClass()) {
             return ((NativeResult) returnValue).getRs();
-        } else if (BufferedImage.class == returnValue.getClass()) {
+        } else if (returnValue!=null&&BufferedImage.class == returnValue.getClass()) {
             return returnValue;
         }  else {
             if (Objects.isNull(returnValue)) {

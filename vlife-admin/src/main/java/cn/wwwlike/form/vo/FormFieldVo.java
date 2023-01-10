@@ -18,6 +18,7 @@
 
 package cn.wwwlike.form.vo;
 
+import cn.wwwlike.form.dto.PageComponentPropDto;
 import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.base.VoBean;
@@ -161,8 +162,8 @@ public class FormFieldVo implements VoBean<FormField> {
      */
     public String vlife_pattern;
     /**
-     * 正则自定义提醒
-     */
+     *
+     *
     public String vlife_message;
 
     /**
@@ -174,4 +175,9 @@ public class FormFieldVo implements VoBean<FormField> {
      * 预览
      */
     public String componentSettingJson;
+
+    /**
+     * 字段绑定组件设置信息
+     */
+    public List<PageComponentPropDto> pageComponentPropDtos;
 }

@@ -44,6 +44,8 @@ public class PageComponentDto implements SaveBean<PageComponent> {
      */
     public Integer h;
 
+    public String moduleId;
+
     /**
      * 组件属性配置
      */

@@ -9,6 +9,7 @@ import cn.wwwlike.vlife.core.VLifeApi;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 报表接口;
@@ -56,23 +57,34 @@ public class ReportTableApi extends VLifeApi<ReportTable, ReportTableService> {
 
     /**
      * 报表查询
-     *
+     * list里放的是一行记录，记录的形式是map; 每个统计项/指标项/分组项 的code是key，值就是统计出来的数值；
+     * [
+         {createid:123,avg:1,total:2},{createid:2222,avg:1,total:2}
+     * ]
      * @param req
      * @return
      */
     @GetMapping("/report")
-    public List report(ReportQuery req) {
+    public List<Map> report(ReportQuery req) {
         return service.report(req);
     }
 
     /**
-     * 单个统计值查询 支持指标和
+     * 单个统计值指标code查询
      * @return
      */
     @GetMapping("/total/{code}")
-    public Double total(@PathVariable String code) {
-       return (Double) service.queryOne(code);
+    public Number total(@PathVariable String code) {
+       return  (Number)service.queryOne(code);
     }
 
+//    /**
+//     * 单维度echart统计图封装
+//     * 如：根据report的汇总项进行分组后查询：
+//     */
+//    @GetMapping("/chart")
+//    public List<Map> simpleChart(ReportQuery req){
+//        return service.itemReport(code,group);
+//    }
 
 }

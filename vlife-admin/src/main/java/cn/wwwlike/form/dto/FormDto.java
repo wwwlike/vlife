@@ -28,7 +28,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 类说明
+ * 表单保存对象
  *
  * @author xiaoyu
  * @date 2022/9/22
@@ -62,7 +62,7 @@ public class FormDto implements SaveBean<Form> {
 
     public Integer gridSpan;
 
-    public List<FormField> fields;
+    public List<FormFieldDto> fields;
 
     public List<FormGroup> groups;
 }

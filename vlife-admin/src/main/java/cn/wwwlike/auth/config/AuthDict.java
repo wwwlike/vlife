@@ -69,4 +69,16 @@ public class AuthDict {
         public final static Integer SELF = 0;
     }
 
+
+    @Named("分组字段")
+    public static final class GROUPS {
+        @Named("创建用户")
+        public final static String CREATREID = "createId";
+        @Named("机构")
+        public final static String SYSORGID = "sysOrgId";
+        @Named("部门")
+        public final static String SYSDEPTID = "sysDeptId";
+    }
+
+
 }

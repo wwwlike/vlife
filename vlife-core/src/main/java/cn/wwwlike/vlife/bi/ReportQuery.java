@@ -34,8 +34,9 @@ import java.util.List;
 public class ReportQuery<T extends Item> extends CustomQuery<T, ReportWrapper<T>> {
     /**
      * 统计项编码
+     * 与reportCode二选一
      */
-    public String fieldCode;
+    public List<String> itemCode;
     /**
      * 报表编码
      */

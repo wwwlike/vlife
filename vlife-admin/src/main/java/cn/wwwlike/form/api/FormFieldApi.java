@@ -48,6 +48,11 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
         return service.remove(id);
     }
 
+    /**
+     * 查询表的字段信息
+     * @param formId
+     * @return
+     */
     @GetMapping("/list/all")
     public List<FormField> listAll(String formId) {
         if (formId == null) {

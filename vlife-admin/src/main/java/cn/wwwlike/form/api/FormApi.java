@@ -11,6 +11,7 @@ import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.QueryWrapper;
+import cn.wwwlike.vlife.query.req.ComponentParam;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,17 +90,26 @@ public class FormApi extends VLifeApi<Form, FormService> {
         if (uiType.equals("req")) {
             form = service.reqModelFilter(form);
         }
+        if(form==null){//modelName当id使用
+            return service.queryOne(FormVo.class,modelName);
+        }
         return form;
     }
 
     /**
-     * 实体模型
+     * 所有实体模型
      *
      * @return
      */
     @RequestMapping("/entityModels")
     public List<FormVo> entityModels() {
         return service.queryAll(FormVo.class).stream().filter(v -> v.getItemType().equals("entity")).collect(Collectors.toList());
+    }
+
+
+    @RequestMapping("/list/all")
+    public List<Form> listAll(){
+        return  service.find("itemType","entity");
     }
 
     /**
