@@ -42,12 +42,14 @@ public abstract class ReqVoDto<T> extends BeanDto<T> implements NotEntityDto {
      * req/vo里进行字段查询，条件查询会leftjoin的类信息的集合
      */
     public List<List<Class<? extends Item>>> getLeftPathClz() {
-        if (leftPathClz == null) {
+       if (leftPathClz == null||(leftPathClz.size()>0&&leftPathClz.get(0)==null)) {
             leftPathClz = new ArrayList<>();
             List<FieldDto> fields = getFields();
             for (FieldDto field : fields) {
                 if (VCT.ITEM_TYPE.BASIC.equals(field.getFieldType())) {
-                    leftPathClz = VlifeUtils.addItemClzArray(leftPathClz, field.leftJoinPath());
+                    if(field.leftJoinPath()!=null&&field.leftJoinPath().size()>0){
+                        leftPathClz = VlifeUtils.addItemClzArray(leftPathClz, field.leftJoinPath());
+                    }
                 }
             }
         }
