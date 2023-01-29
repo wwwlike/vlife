@@ -2420,43 +2420,6 @@
   },
   {
     "superName": "VLifeApi",
-    "entityName": "ReportItemGroupFieldApi",
-    "typeName": "ReportItemGroupField",
-    "title": "统计项支持的分组字段接口;",
-    "path": "/reportItemGroupField",
-    "tags": {},
-    "apiTagList": [
-      {
-        "title": "\n   * 保存统计项支持的分组字段;\n   * @param dto 统计项支持的分组字段;\n   * @return 统计项支持的分组字段;\n   ",
-        "path": "/save",
-        "paramWrapper": "ReportItemGroupField",
-        "param": "dto",
-        "returnClz": "ReportItemGroupField",
-        "methodType": "PostMapping",
-        "methodName": "save"
-      },
-      {
-        "title": "\n   * 明细查询统计项支持的分组字段;\n   * @param id 主键id;\n   * @return 统计项支持的分组字段;\n   ",
-        "path": "/detail/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "ReportItemGroupField",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      }
-    ]
-  },
-  {
-    "superName": "VLifeApi",
     "entityName": "ReportKpiApi",
     "typeName": "ReportKpi",
     "title": "关键指标接口;",
@@ -2671,7 +2634,7 @@
       "fields": {
         "fieldName": "fields",
         "fieldType": "List<FormFieldDto>",
-        "title": "字段信息视图"
+        "title": "列表字段"
       }
     },
     "apiTagList": []
@@ -4214,65 +4177,6 @@
   },
   {
     "superName": "DbEntity",
-    "entityName": "ReportItemGroupField",
-    "title": "统计项支持的分组字段",
-    "tags": {
-      "reportItemId": {
-        "fieldName": "reportItemId",
-        "fieldType": "String",
-        "title": "统计项"
-      },
-      "formFieldId": {
-        "fieldName": "formFieldId",
-        "fieldType": "String",
-        "title": "字段"
-      },
-      "matchCode": {
-        "fieldName": "matchCode",
-        "fieldType": "String",
-        "title": "匹配分组code"
-      },
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "创建人"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "创建时间"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "DbEntity",
     "entityName": "ReportKpi",
     "title": "关键指标",
     "tags": {
@@ -5148,7 +5052,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\n   * 保存null;\n   * @param dto null;\n   * @return null;\n   ",
+        "title": "\r\n   * 保存null;\r\n   * @param dto null;\r\n   * @return null;\r\n   ",
         "path": "/save",
         "paramWrapper": "OaNews",
         "param": "dto",
@@ -5157,7 +5061,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n   * 明细查询null;\n   * @param id 主键id;\n   * @return null;\n   ",
+        "title": "\r\n   * 明细查询null;\r\n   * @param id 主键id;\r\n   * @return null;\r\n   ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -5166,7 +5070,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -5182,43 +5086,6 @@
         "returnClz": "PageVo<OaNews>",
         "methodType": "GetMapping",
         "methodName": "page"
-      }
-    ]
-  },
-  {
-    "superName": "VLifeApi",
-    "entityName": "ProductApi",
-    "typeName": "Product",
-    "title": "产品信息接口;",
-    "path": "/product",
-    "tags": {},
-    "apiTagList": [
-      {
-        "title": "\n   * 保存产品信息;\n   * @param dto 产品信息;\n   * @return 产品信息;\n   ",
-        "path": "/save",
-        "paramWrapper": "Product",
-        "param": "dto",
-        "returnClz": "Product",
-        "methodType": "PostMapping",
-        "methodName": "save"
-      },
-      {
-        "title": "\n   * 明细查询产品信息;\n   * @param id 主键id;\n   * @return 产品信息;\n   ",
-        "path": "/detail/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Product",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
@@ -5538,50 +5405,6 @@
         "fieldName": "state",
         "fieldType": "String",
         "title": "新闻状态"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "创建时间"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "Product",
-    "title": "产品信息",
-    "tags": {
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "创建人"
       },
       "id": {
         "fieldName": "id",

@@ -20,10 +20,10 @@ endpoints:
   metrics:
     sensitive: false
 
+#和项目同级目录存放上传图片
 file:
   image:
     path: d:\\img
-    url: http://vlife.cc/img/aaa
 
 #springdoc:
 #  swagger-ui:

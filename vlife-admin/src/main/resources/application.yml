@@ -11,13 +11,13 @@ spring:
     static-locations: classpath:/static/, classpath:/templates/
   profiles:
     active: auth
-#  jackson:
-#    date-format: yyyy-MM-dd HH:mm:ss
-#    time-zone: GMT+
-#    serialization:
-#      indent_output: true
-#      #忽略无法转换的对象
-#      fail_on_empty_beans: false
+  #  jackson:
+  #    date-format: yyyy-MM-dd HH:mm:ss
+  #    time-zone: GMT+
+  #    serialization:
+  #      indent_output: true
+  #      #忽略无法转换的对象
+  #      fail_on_empty_beans: false
   datasource:
   　type: com.alibaba.druid.pool.DruidDataSource   #配置当前要使用的数据源的操作类型那个
   　driver-class-name: org.gjt.mm.mysql.Driver       #配置MySQL的驱动程序类
