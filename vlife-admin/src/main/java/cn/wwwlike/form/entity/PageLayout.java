@@ -39,4 +39,8 @@ public class PageLayout extends DbEntity {
      */
     public String img;
 
+    /**
+     * 内部组件支持覆盖
+     */
+    public Boolean componentOver;
 }

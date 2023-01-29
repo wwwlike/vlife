@@ -96,6 +96,18 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return form;
     }
 
+
+    /**
+     * 查找Java内存里的模型信息
+     * @param modelName 模型名称
+     * @return
+     */
+    @GetMapping("/javaModel/{modelName}")
+    public BeanDto javaModel(@PathVariable String modelName) {
+        return service.modelInfo(modelName);
+    }
+
+
     /**
      * 所有实体模型
      *

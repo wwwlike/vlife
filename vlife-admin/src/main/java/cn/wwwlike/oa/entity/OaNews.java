@@ -10,7 +10,6 @@ import javax.persistence.Table;
 /**
  * 新闻
  */
-
 @Data
 @Entity
 @Table(name = "oa_news")

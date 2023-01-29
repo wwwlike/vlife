@@ -100,6 +100,13 @@ public class ModelReadCheck {
             SaveRead saveRead = SaveRead.getInstance(itemDtos);
             saveDtos = saveRead.read(loader, list);
             GlobalData.save(saveDtos);
+            //两个for 处理缓存读取时有时为空的问题
+            for(VoDto d:voDtos){
+                d.getLeftPathClz();
+            }
+            for(ReqDto d:reqDtos){
+                d.getLeftPathClz();
+            }
             /** step1 模型分析; 注解信息校验(待处理) */
             errorNum=errInfo(itemDtos, voDtos, reqDtos, saveDtos);
         } catch (Exception exception) {

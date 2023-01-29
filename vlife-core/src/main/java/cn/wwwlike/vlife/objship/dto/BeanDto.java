@@ -18,7 +18,10 @@
 
 package cn.wwwlike.vlife.objship.dto;
 
+import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.objship.base.ItemInfo;
+import org.apache.commons.lang3.ClassUtils;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +35,16 @@ public abstract class BeanDto<T> extends ItemInfo {
     public Class<? extends T> clz;
     /* 当前模型的字段信息集合*/
     public List<FieldDto> fields;
+
+    /**
+     * 所有父类集合，包涵间接关系的
+     */
+    public List<Class<? extends IdBean>> parents;
+
+    /**
+     * 所有父类的字符串形式集合
+     */
+    public List<String> parentsName;
 
     public Class<? extends T> getClz() {
         return clz;
@@ -65,6 +78,16 @@ public abstract class BeanDto<T> extends ItemInfo {
      */
     public Optional<FieldDto> find(String fieldName) {
         return getFields().stream().filter(f->f.getFieldName().equals(fieldName)).findAny();
+    }
+
+    public List<Class> getParents(){
+      List list=ClassUtils.getAllInterfaces(clz);
+      list .addAll(ClassUtils.getAllSuperclasses(clz));
+      return list;
+    }
+
+    public List<String> getParentsName(){
+        return getParents()==null?null:getParents().stream().map(Class::getSimpleName).collect(Collectors.toList());
     }
 }
 

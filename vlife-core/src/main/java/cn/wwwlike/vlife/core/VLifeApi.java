@@ -49,17 +49,6 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
         entityClz = GenericsUtils.getSuperClassGenricType(this.getClass());
     }
 
-    /**
-     * 模型信息 待移除
-     * 未指定模型类ing，当前按entity,dto,vo,req顺序进行模型匹配
-     *
-     * @param modelName 模型名称
-     * @return
-     */
-    @GetMapping("/modelInfo/{modelName}")
-    public BeanDto modelInfo(@PathVariable String modelName) {
-        return service.modelInfo(modelName);
-    }
 
     /**
      * 明细查询通用方法 支持saveBean数据查询

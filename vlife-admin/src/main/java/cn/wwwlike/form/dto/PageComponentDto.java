@@ -44,7 +44,17 @@ public class PageComponentDto implements SaveBean<PageComponent> {
      */
     public Integer h;
 
+    /**
+     * 布局的层次
+     */
+    public Integer i;
+
     public String moduleId;
+
+    /**
+     * 组件置顶
+     */
+    public Boolean layoutTop;
 
     /**
      * 组件属性配置

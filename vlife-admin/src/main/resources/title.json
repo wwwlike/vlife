@@ -1817,6 +1817,15 @@
         "methodName": "model"
       },
       {
+        "title": "\r\n     * 查找Java内存里的模型信息\r\n     * @param modelName 模型名称\r\n     * @return\r\n     ",
+        "path": "/javaModel/{modelName}",
+        "paramWrapper": "String",
+        "param": "modelName",
+        "returnClz": "BeanDto",
+        "methodType": "GetMapping",
+        "methodName": "javaModel"
+      },
+      {
         "title": "\r\n     * 所有实体模型\r\n     *\r\n     * @return\r\n     ",
         "path": "/entityModels",
         "returnClz": "List<FormVo>",
@@ -2920,10 +2929,20 @@
         "fieldType": "Integer",
         "title": "栅格高度"
       },
+      "layoutTop": {
+        "fieldName": "layoutTop",
+        "fieldType": "Boolean",
+        "title": "组件置顶"
+      },
       "y": {
         "fieldName": "y",
         "fieldType": "Integer",
         "title": "栅格纵坐标位置"
+      },
+      "i": {
+        "fieldName": "i",
+        "fieldType": "Integer",
+        "title": "布局的层次"
       },
       "pageKey": {
         "fieldName": "pageKey",
@@ -3027,6 +3046,11 @@
         "fieldName": "auth",
         "fieldType": "Boolean",
         "title": "是否需要权限登录"
+      },
+      "componentOver": {
+        "fieldName": "componentOver",
+        "fieldType": "Boolean",
+        "title": "内部组件支持覆盖"
       },
       "module": {
         "fieldName": "module",
@@ -3869,6 +3893,11 @@
         "fieldType": "Integer",
         "title": "栅格高度"
       },
+      "i": {
+        "fieldName": "i",
+        "fieldType": "Integer",
+        "title": "现实层次"
+      },
       "pageKey": {
         "fieldName": "pageKey",
         "fieldType": "String",
@@ -3899,6 +3928,11 @@
         "fieldName": "x",
         "fieldType": "Integer",
         "title": "栅格横向位置"
+      },
+      "layoutTop": {
+        "fieldName": "layoutTop",
+        "fieldType": "Boolean",
+        "title": "固定放置在顶端"
       },
       "y": {
         "fieldName": "y",
@@ -4041,11 +4075,31 @@
         "fieldType": "Boolean",
         "title": "是否需要权限登录"
       },
+      "componentOver": {
+        "fieldName": "componentOver",
+        "fieldType": "Boolean",
+        "title": "内部组件支持覆盖"
+      },
       "modifyId": {
         "fieldName": "modifyId",
         "fieldType": "string",
         "extendsField": true,
         "title": "修订人"
+      },
+      "module": {
+        "fieldName": "module",
+        "fieldType": "Boolean",
+        "title": "是否作为模块使用"
+      },
+      "h": {
+        "fieldName": "h",
+        "fieldType": "Integer",
+        "title": "页面高度"
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String",
+        "title": "动态路由地址"
       },
       "createId": {
         "fieldName": "createId",
@@ -4053,31 +4107,16 @@
         "extendsField": true,
         "title": "创建人"
       },
-      "module": {
-        "fieldName": "module",
-        "fieldType": "Boolean",
-        "title": "是否作为模块使用"
-      },
       "name": {
         "fieldName": "name",
         "fieldType": "String",
         "title": "页面名称"
-      },
-      "h": {
-        "fieldName": "h",
-        "fieldType": "Integer",
-        "title": "页面高度"
       },
       "id": {
         "fieldName": "id",
         "fieldType": "string",
         "extendsField": true,
         "title": "主键id"
-      },
-      "url": {
-        "fieldName": "url",
-        "fieldType": "String",
-        "title": "动态路由地址"
       },
       "status": {
         "fieldName": "status",
@@ -5134,6 +5173,15 @@
         "returnClz": "Long",
         "methodType": "DeleteMapping",
         "methodName": "remove"
+      },
+      {
+        "title": "",
+        "path": "/page",
+        "paramWrapper": "OaNewsPageReq",
+        "param": "req",
+        "returnClz": "PageVo<OaNews>",
+        "methodType": "GetMapping",
+        "methodName": "page"
       }
     ]
   },
@@ -5426,6 +5474,7 @@
   {
     "superName": "DbEntity",
     "entityName": "OaNews",
+    "title": "新闻",
     "tags": {
       "titleSub": {
         "fieldName": "titleSub",
@@ -5718,6 +5767,24 @@
         "fieldName": "search",
         "fieldType": "String",
         "title": "单位名称"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "entityName": "OaNewsPageReq",
+    "typeName": "OaNews",
+    "tags": {
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String",
+        "title": "标题"
+      },
+      "newsType": {
+        "fieldName": "newsType",
+        "fieldType": "String",
+        "title": "新闻分类"
       }
     },
     "apiTagList": []

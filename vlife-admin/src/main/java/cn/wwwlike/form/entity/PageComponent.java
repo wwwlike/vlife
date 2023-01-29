@@ -21,6 +21,7 @@ public class PageComponent extends DbEntity {
     public String pageLayoutId;
     /**
      * 单元编号
+     * 系统命名comp开头
      */
     public String pageKey;
     /**
@@ -54,5 +55,15 @@ public class PageComponent extends DbEntity {
      * 栅格高度
      */
     public Integer h;
+    /**
+     * 现实层次
+     */
+    public Integer i;
+
+    /**
+     * 固定放置在顶端
+     * 页面级有效
+     */
+    public Boolean layoutTop;
 
 }

@@ -26,6 +26,7 @@ import javax.persistence.Table;
 
 /**
  * 单个查询统计项目
+ * 没有作用了
  */
 @Data
 @Entity

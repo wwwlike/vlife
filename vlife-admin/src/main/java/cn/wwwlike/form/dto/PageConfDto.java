@@ -17,5 +17,6 @@ public class PageConfDto implements SaveBean<PageLayout> {
     public Boolean module;
     public Integer h;
     public String img;
+    public Boolean componentOver;
     public List<PageComponentDto> content;
 }
