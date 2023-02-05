@@ -17,13 +17,8 @@ import java.util.UUID;
 @Service
 public class SysFileService extends VLifeService<SysFile, SysFileDao> {
 
-
     @Value("${file.image.path}")
     public String imgPath;
-
-
-    @Value("${file.image.url}")
-    public String visitUrl;
 
     public String getFileName() {
         return UUID.randomUUID().toString();
@@ -36,10 +31,24 @@ public class SysFileService extends VLifeService<SysFile, SysFileDao> {
      * @return
      */
     public String uploadImg(MultipartFile multipartFile) {
-        FileUtil.createDir(imgPath);
-//        imgPath + "\\" +
+        if (!System.getProperty("os.name").toLowerCase().contains("win") &&
+                !imgPath.startsWith("/")) {
+            imgPath = "/" + imgPath;
+        }
+
         String fileName = getFileName() + "." + multipartFile.getOriginalFilename().split("\\.")[1];
-        File file = new File( imgPath + "\\" +fileName);
+        String pathFileName = imgPath + "/" + fileName;
+        FileUtil.createDir(imgPath);
+
+        if (pathFileName.indexOf(":") == -1) { //linux
+            pathFileName = "/" + pathFileName;
+        }
+
+
+        pathFileName = imgPath + "/" + fileName;
+
+
+        File file = new File(pathFileName);
         OutputStream out = null;
         try {
             out = new FileOutputStream(file);

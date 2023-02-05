@@ -80,11 +80,11 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
 //            return JSON.toJSONString(result);
         } else if ("ResponseEntity".equals(returnClassType)) {
             return returnValue;
-        } else if (returnValue!=null&&NativeResult.class == returnValue.getClass()) {
+        } else if (returnValue != null && NativeResult.class == returnValue.getClass()) {
             return ((NativeResult) returnValue).getRs();
-        } else if (returnValue!=null&&BufferedImage.class == returnValue.getClass()) {
-            return returnValue;
-        }  else {
+        } else if (returnValue != null && BufferedImage.class == returnValue.getClass()) {
+            return returnValue;//图片流直接返回
+        } else {
             if (Objects.isNull(returnValue)) {
                 result = Result.createSuccess();
             } else {

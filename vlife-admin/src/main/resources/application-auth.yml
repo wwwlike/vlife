@@ -30,10 +30,9 @@ vlife:
     client_secret:
     redirect_uri: http://XXXX:port/login?from=gitee
 
-
+#和项目同级目录存放上传图片
 file:
   image:
     path: d:\\img
-    url: http://vlife.cc/img/aaa
 
 

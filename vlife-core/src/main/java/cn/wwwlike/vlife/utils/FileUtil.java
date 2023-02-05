@@ -192,13 +192,11 @@ public class FileUtil {
 
     // 生成文件夹
     public static void createDir(String path) {
-        // if 匹配win else linux
-//        String path = "";
-//        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-//            path = "D:/usr/local/GHKboard/fmbBoardMonitor/";
-//        } else {
-//            path = "/usr/local/GHKboard/fmbBoardMonitor/";
-//        }
+        //  匹配 linux
+        if (!System.getProperty("os.name").toLowerCase().contains("win") &&
+                !path.startsWith("/")) {
+            path = "/" + path;
+        }
         File folder = new File(path);
         if (!folder.exists() && !folder.isDirectory()) {
             folder.setWritable(true, false);
