@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 该方法是登录的时候会进入
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.inMemoryAuthentication();//这个干啥的？
+        authenticationManagerBuilder.inMemoryAuthentication();
 //        authenticationManagerBuilder.parentAuthenticationManager(authenticationManager);//ProviderManager实现authenticationManager 认证管理器
         authenticationManagerBuilder.userDetailsService(userService)
                 .passwordEncoder(passwordEncoder());//设置密码处理方式//设置用户校验方式
@@ -147,8 +147,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         }
         authorizeRequests.antMatchers("/open/api/getToken",
-                        "/gitee/callback", "/gitee/auth",
-                        "/ts/test/file", "/ts/upload", "/sysFile/upload", "/sysFile/image/*", "/sysFile/uploadImg", "/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
+                    "/sysUser/checkEmail","/sysUser/sendEmail","/sysUser/register","/git/*","/git/token/*", "/ts/test/file", "/ts/upload", "/sysFile/upload", "/sysFile/image/*", "/sysFile/uploadImg", "/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
                 .and().formLogin()
                 .failureHandler(eauthenticationFailureHandler())
                 .and()

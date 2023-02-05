@@ -1,15 +1,15 @@
 package cn.wwwlike.auth.service;
 
 import cn.wwwlike.auth.dao.SysUserDao;
+import cn.wwwlike.auth.dto.RegisterDto;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.common.BaseService;
-import cn.wwwlike.web.security.core.SecurityUser;
 import cn.wwwlike.web.security.filter.PehrSecurityUser;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -38,39 +38,45 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
         }
     }
 
-    public PehrSecurityUser getPerhSecurityUser(String username){
-        List<SysUser> users=find("username",username);
-        if(users==null||users.size()==0){
-            throw new UsernameNotFoundException(username+"is not exist");
-        }else{
-            SysUser user=users.get(0);
-            UserDetailVo detailVo=queryOne(UserDetailVo.class,user.getId());
-            PehrSecurityUser securityUser = new PehrSecurityUser(user.getId(),
-                    user.getUsername(),user.getPassword(),user.getSysGroupId()
-            );
-            securityUser.setOrgId(user.getSysOrgId());
-            securityUser.setDeptId(user.getSysDeptId());
-            securityUser.setGroupId(user.getSysGroupId());
-            //vo查询到的部分,间接查询的结构信息
-            securityUser.setCodeArea(detailVo.getCodeArea());
-            securityUser.setCodeDept(detailVo.getCodeDept());
-            securityUser.setCodeOrg(detailVo.getCodeOrg());
-            securityUser.setAreaId(detailVo.getSysAreaId());
-            return securityUser;
-        }
+    public PehrSecurityUser getPerhSecurityUser(SysUser user){
+        UserDetailVo detailVo=queryOne(UserDetailVo.class,user.getId());
+        PehrSecurityUser securityUser = new PehrSecurityUser(user.getId(),
+                user.getUsername(),user.getPassword(),user.getSysGroupId()
+        );
+        securityUser.setOrgId(user.getSysOrgId());
+        securityUser.setDeptId(user.getSysDeptId());
+        securityUser.setGroupId(user.getSysGroupId());
+        //vo查询到的部分,间接查询的结构信息
+        securityUser.setCodeArea(detailVo.getCodeArea());
+        securityUser.setCodeDept(detailVo.getCodeDept());
+        securityUser.setCodeOrg(detailVo.getCodeOrg());
+        securityUser.setAreaId(detailVo.getSysAreaId());
+        return securityUser;
     }
     /**
      * 创建一个用户信息来源于gitee
      * @return
      */
-    public PehrSecurityUser createUserFromGitee(JSONObject object){
-        PehrSecurityUser user=new PehrSecurityUser();
+    public void saveUserByregister(RegisterDto register){
+//        SysOrg org=new SysOrg();
+//        org.setName("xxx第一人民医院");
+////        org.setSysAreaId();
+//        org.setPcode("");
+//        org.setOrgcode("");
+        SysUser user=new SysUser();
+        user.setEmail(register.getEmail());
+        user.setUsername(register.getEmail());
+        user.setPassword(new MessageDigestPasswordEncoder("MD5").encode(register.getPassword()));
+        user.setSysGroupId("40288a8183360b430183361553530037");
+        user.setSysOrgId("4028b881857568ed01857590c3c40053");
+        user.setName(register.getEmail());
+        save(user);
 //        user.setUsername();
 //        user.setSysOrgId();
 //        user.setSysDeptId();
 //        user.setSysGroupId();
 //        user.setName();
 //        user.setSource("gitee");
-        return user;
+//        return user;
     }
 }

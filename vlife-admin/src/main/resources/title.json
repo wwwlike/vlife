@@ -1201,6 +1201,11 @@
         "extendsField": true,
         "title": "修改时间"
       },
+      "thirdId": {
+        "fieldName": "thirdId",
+        "fieldType": "String",
+        "title": "第三方id"
+      },
       "modifyId": {
         "fieldName": "modifyId",
         "fieldType": "string",
@@ -1269,6 +1274,11 @@
         "extendsField": true,
         "title": "主键id"
       },
+      "thirdToken": {
+        "fieldName": "thirdToken",
+        "fieldType": "String",
+        "title": "第三方的token"
+      },
       "usetype": {
         "fieldName": "usetype",
         "fieldType": "String",
@@ -1278,6 +1288,11 @@
         "fieldName": "sysGroupId",
         "fieldType": "String",
         "title": "权限组"
+      },
+      "email": {
+        "fieldName": "email",
+        "fieldType": "String",
+        "title": "邮箱"
       },
       "username": {
         "fieldName": "username",
@@ -2671,7 +2686,7 @@
       "fields": {
         "fieldName": "fields",
         "fieldType": "List<FormFieldDto>",
-        "title": "字段信息视图"
+        "title": "列表字段"
       }
     },
     "apiTagList": []
@@ -5187,43 +5202,6 @@
   },
   {
     "superName": "VLifeApi",
-    "entityName": "ProductApi",
-    "typeName": "Product",
-    "title": "产品信息接口;",
-    "path": "/product",
-    "tags": {},
-    "apiTagList": [
-      {
-        "title": "\n   * 保存产品信息;\n   * @param dto 产品信息;\n   * @return 产品信息;\n   ",
-        "path": "/save",
-        "paramWrapper": "Product",
-        "param": "dto",
-        "returnClz": "Product",
-        "methodType": "PostMapping",
-        "methodName": "save"
-      },
-      {
-        "title": "\n   * 明细查询产品信息;\n   * @param id 主键id;\n   * @return 产品信息;\n   ",
-        "path": "/detail/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Product",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      }
-    ]
-  },
-  {
-    "superName": "VLifeApi",
     "entityName": "ProjectApi",
     "typeName": "Project",
     "title": "项目管理接口;",
@@ -5538,50 +5516,6 @@
         "fieldName": "state",
         "fieldType": "String",
         "title": "新闻状态"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "创建时间"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "DbEntity",
-    "entityName": "Product",
-    "title": "产品信息",
-    "tags": {
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "创建人"
       },
       "id": {
         "fieldName": "id",

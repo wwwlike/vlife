@@ -24,6 +24,7 @@ import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.core.DataProcess;
 import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.utils.GenericsUtils;
+import cn.wwwlike.web.security.filter.PehrSecurityUser;
 
 import java.util.Date;
 import java.util.Map;
@@ -81,19 +82,22 @@ public class VlifeDataProcess extends DataProcess {
                 this.ignores.remove("createId");
             }
 
-            mm.put("createId", SecurityConfig.getCurrUser().getId());
             mm.put("createDate", new Date());
             mm.put("status", CT.STATUS.NORMAL);
+            if(SecurityConfig.getCurrUser()!=null){
+              PehrSecurityUser user= SecurityConfig.getCurrUser();
+                mm.put("createId", user.getId());
+                if(IOrg.class.isAssignableFrom(entityClz)) {
+                    mm.put("sysOrgId",user.getOrgId());
+                }
+                if(IDept.class.isAssignableFrom(entityClz)) {
+                    mm.put("sysDeptId", user.getDeptId());
+                }
+                if(IArea.class.isAssignableFrom(entityClz)) {
+                    mm.put("sysAreaId",user.getAreaId());
+                }
+            }
 
-            if(IOrg.class.isAssignableFrom(entityClz)) {
-                mm.put("sysOrgId", SecurityConfig.getCurrUser().getOrgId());
-            }
-            if(IDept.class.isAssignableFrom(entityClz)) {
-                mm.put("sysDeptId", SecurityConfig.getCurrUser().getDeptId());
-            }
-            if(IArea.class.isAssignableFrom(entityClz)) {
-                mm.put("sysAreaId", SecurityConfig.getCurrUser().getAreaId());
-            }
         } else {
             if(getIgnores()!=null) {
                 this.ignores.remove("modifyDate");

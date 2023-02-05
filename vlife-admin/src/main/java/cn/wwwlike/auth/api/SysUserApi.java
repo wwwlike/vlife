@@ -1,19 +1,31 @@
 package cn.wwwlike.auth.api;
 
 import cn.wwwlike.auth.config.SecurityConfig;
+import cn.wwwlike.auth.dto.RegisterDto;
 import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysUserPageReq;
 import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.auth.service.SysUserService;
+import cn.wwwlike.auth.service.ThirdLoginService;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.auth.vo.UserVo;
+import cn.wwwlike.login.GiteeHttpClient;
+import cn.wwwlike.sys.service.SysAreaService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.web.security.filter.TokenUtil;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +36,11 @@ import java.util.stream.Collectors;
 public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
     @Autowired
     public SysResourcesService resourcesService;
+
+    @Autowired
+    public SysAreaService sysAreaService;
+    @Autowired
+    public ThirdLoginService loginService;
 
     /**
      * 分页查询用户表(视图);
@@ -114,4 +131,53 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
         return vo;
     }
 
+
+    /**
+     * 检查邮箱唯一性
+     */
+    @GetMapping("/checkEmail")
+    public Integer checkEmail(String email){
+//        sysAreaService.initCode();
+        return service.find("email",email).size();
+    }
+
+    //key->email  | object[]-> time,code,ip
+    public static Map<String,Object[]> sendMap=new HashMap<String,Object[]>();
+
+    /**
+     * 账号注册
+     * 返回null表示注册成功
+     */
+    @PostMapping("/register")
+    public String register(@RequestBody  RegisterDto registerDto){
+        if(loginService.openCheckCode()){
+            if(sendMap.get(registerDto.getEmail())==null){
+                return "还没有给该邮箱发送验证码";
+            } else if(!sendMap.get(registerDto.getEmail())[1].toString().equals(registerDto.getCheckCode())){
+                return "验证码不正确";
+            }
+        }
+        service.saveUserByregister(registerDto);
+        return null;
+    }
+
+    /**
+     * 检查邮箱唯一性
+     */
+    @GetMapping("/sendEmail")
+    public String sendEmail(String email){
+        if(checkEmail(email)==0){
+            Object[] sendObjs= sendMap.get(email);
+            if(sendObjs==null||DateUtils.addMilliseconds(((Date)sendObjs[0]),1).before(new Date())){
+                String checkCode= RandomUtils.nextInt(1000,9999)+"";
+                sendMap.put(email,new Object[]{new Date(),checkCode,});
+                return loginService.sendMail(email,checkCode);
+            }else if(DateUtils.addMilliseconds(((Date)sendObjs[0]),1).after(new Date())){
+                return "请不要频繁发送";
+            }
+        }else{
+            return "邮箱已经注册，发送失败";
+        }
+        return "";
+    }
 }

@@ -24,9 +24,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 类说明
- *
- * @author dlc
+ * @author cxl
  * @date 2022/5/29
  */
 

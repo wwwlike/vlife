@@ -75,6 +75,10 @@ public class SysUser extends DbEntity implements IUser, IOrg {
     public String state;
 
     /**
+     * 邮箱
+     */
+    public String email;
+    /**
      * 单位
      */
     public String sysOrgId;
@@ -91,7 +95,18 @@ public class SysUser extends DbEntity implements IUser, IOrg {
 
     /**
      * 用户来源
+     * gitee register
      */
     public String source;
+
+    /**
+     * 第三方id
+     */
+    public String thirdId;
+
+    /**
+     * 第三方的token
+     */
+    public String thirdToken;
 
 }
