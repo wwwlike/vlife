@@ -82,7 +82,7 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
             return returnValue;
         } else if (returnValue != null && NativeResult.class == returnValue.getClass()) {
             return ((NativeResult) returnValue).getRs();
-        } else if (returnValue != null && BufferedImage.class == returnValue.getClass()) {
+        } else if (returnValue != null && (BufferedImage.class == returnValue.getClass()||returnValue.getClass()==byte[].class)) {
             return returnValue;//图片流直接返回
         } else {
             if (Objects.isNull(returnValue)) {

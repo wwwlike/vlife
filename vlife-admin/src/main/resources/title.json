@@ -446,6 +446,19 @@
       "resourcesService": {
         "fieldName": "resourcesService",
         "fieldType": "SysResourcesService"
+      },
+      "loginService": {
+        "fieldName": "loginService",
+        "fieldType": "ThirdLoginService"
+      },
+      "sendMap = new HashMap<String, Object[]>()": {
+        "fieldName": "sendMap = new HashMap<String, Object[]>()",
+        "fieldType": "Map<String,Object[]>",
+        "title": "key->email  | object[]-> time,code,ip"
+      },
+      "sysAreaService": {
+        "fieldName": "sysAreaService",
+        "fieldType": "SysAreaService"
       }
     },
     "apiTagList": [
@@ -518,6 +531,33 @@
         "returnClz": "UserDetailVo",
         "methodType": "GetMapping",
         "methodName": "currUser"
+      },
+      {
+        "title": "\r\n     * 检查邮箱唯一性\r\n     ",
+        "path": "/checkEmail",
+        "paramWrapper": "String",
+        "param": "email",
+        "returnClz": "Integer",
+        "methodType": "GetMapping",
+        "methodName": "checkEmail"
+      },
+      {
+        "title": "\r\n     * 账号注册\r\n     * 返回null表示注册成功\r\n     ",
+        "path": "/register",
+        "paramWrapper": "RegisterDto",
+        "param": "registerDto",
+        "returnClz": "String",
+        "methodType": "PostMapping",
+        "methodName": "register"
+      },
+      {
+        "title": "\r\n     * 检查邮箱唯一性\r\n     ",
+        "path": "/sendEmail",
+        "paramWrapper": "String",
+        "param": "email",
+        "returnClz": "String",
+        "methodType": "GetMapping",
+        "methodName": "sendEmail"
       }
     ]
   },
@@ -2435,6 +2475,43 @@
   },
   {
     "superName": "VLifeApi",
+    "entityName": "ReportItemGroupFieldApi",
+    "typeName": "ReportItemGroupField",
+    "title": "统计项支持的分组字段接口;",
+    "path": "/reportItemGroupField",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 保存统计项支持的分组字段;\n   * @param dto 统计项支持的分组字段;\n   * @return 统计项支持的分组字段;\n   ",
+        "path": "/save",
+        "paramWrapper": "ReportItemGroupField",
+        "param": "dto",
+        "returnClz": "ReportItemGroupField",
+        "methodType": "PostMapping",
+        "methodName": "save"
+      },
+      {
+        "title": "\n   * 明细查询统计项支持的分组字段;\n   * @param id 主键id;\n   * @return 统计项支持的分组字段;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "ReportItemGroupField",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
     "entityName": "ReportKpiApi",
     "typeName": "ReportKpi",
     "title": "关键指标接口;",
@@ -4192,6 +4269,65 @@
   },
   {
     "superName": "DbEntity",
+    "entityName": "ReportItemGroupField",
+    "title": "统计项支持的分组字段",
+    "tags": {
+      "reportItemId": {
+        "fieldName": "reportItemId",
+        "fieldType": "String",
+        "title": "统计项"
+      },
+      "formFieldId": {
+        "fieldName": "formFieldId",
+        "fieldType": "String",
+        "title": "字段"
+      },
+      "matchCode": {
+        "fieldName": "matchCode",
+        "fieldType": "String",
+        "title": "匹配分组code"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
     "entityName": "ReportKpi",
     "title": "关键指标",
     "tags": {
@@ -5067,7 +5203,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\r\n   * 保存null;\r\n   * @param dto null;\r\n   * @return null;\r\n   ",
+        "title": "\n   * 保存null;\n   * @param dto null;\n   * @return null;\n   ",
         "path": "/save",
         "paramWrapper": "OaNews",
         "param": "dto",
@@ -5076,7 +5212,7 @@
         "methodName": "save"
       },
       {
-        "title": "\r\n   * 明细查询null;\r\n   * @param id 主键id;\r\n   * @return null;\r\n   ",
+        "title": "\n   * 明细查询null;\n   * @param id 主键id;\n   * @return null;\n   ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -5085,7 +5221,7 @@
         "methodName": "detail"
       },
       {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
         "path": "/remove/{id}",
         "paramWrapper": "String",
         "param": "id",

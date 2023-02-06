@@ -21,7 +21,8 @@ endpoints:
     sensitive: false
 
 vlife:
-  packroot: cn.wwwlike.oa
+#  packroot: http://admin.vlife.cc/
+  packroot: http://localhost:8288
   email: #注册码发送
     from: vlifelowcode@163.com
     pwd:

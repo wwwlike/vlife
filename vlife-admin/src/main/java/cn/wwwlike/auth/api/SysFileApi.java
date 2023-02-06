@@ -5,13 +5,17 @@ import cn.wwwlike.auth.service.SysFileService;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.web.params.bean.NativeResult;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,6 +34,9 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
     @Value("${file.image.path}")
     public String imgPath;
 
+    @Value("${vlife.packroot}")
+    public String packroot;
+
     /**
      * wangEditor上传图片接收,不存数据库
      */
@@ -38,24 +45,46 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
         Map map1 = new HashMap();
         Map map2 = new HashMap();
         String url = service.uploadImg(file);
-        map2.put("url", "http://localhost:8288/oa/sysFile/image/" + url);
+        map2.put("url", packroot+"/oa/sysFile/image/" + url);
         map1.put("errno", 0);
         map1.put("data", map2);
         return NativeResult.success(map1);
     }
 
 
-    //通过produces 告知浏览器我要返回的媒体类型
-    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public BufferedImage image(@PathVariable String id) throws IOException {
+//    //通过produces 告知浏览器我要返回的媒体类型
+//    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE})
+//    public BufferedImage image(@PathVariable String id) throws IOException {
+//        SysFile file = service.findOne(id);
+//        String fileName = file == null ? id : file.getFileName();
+//        if (!System.getProperty("os.name").toLowerCase().contains("win") &&
+//                !imgPath.startsWith("/")) {
+//            imgPath = "/" + imgPath;
+//        }
+//        return ImageIO.read(new FileInputStream(new File(imgPath + "/" + fileName)));
+//    }
+
+
+//    //通过produces 告知浏览器我要返回的媒体类型
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE,})
+    public byte[] image(@PathVariable String id) throws IOException {
         SysFile file = service.findOne(id);
         String fileName = file == null ? id : file.getFileName();
         if (!System.getProperty("os.name").toLowerCase().contains("win") &&
                 !imgPath.startsWith("/")) {
             imgPath = "/" + imgPath;
         }
-        return ImageIO.read(new FileInputStream(new File(imgPath + "/" + fileName)));
+        FileInputStream input =new FileInputStream(new File(imgPath + "/" + fileName));
+        byte[] bytes = new byte[input.available()];
+        input.read(bytes);
+        return bytes;
+//        BufferedImage bufferedImage =  ImageIO.read(new FileInputStream(new File(imgPath + "/" + fileName)));
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        ImageIO.write(bufferedImage, fileName.substring(fileName.length()-3), out);
+//        return out.toByteArray();
+
     }
+
 
     /**
      * 单独上传图片
