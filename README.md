@@ -4,11 +4,12 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">vlife低代码研发平台</h1>
 <h4 align="center">基于SpringBoot+React前后端分离的Java快速开发框架</h4>
 <p align="center">
-	<a href="https://gitee.com/wwwlike/vlife" target="_blank"><img src="https://gitee.com/wwwlike/vlife/badge/star.svg?theme=dark"></a>
+	<a href="https://gitee.com/wwwlike/vlife" target="_blank"><img src="https://img.shields.io/github/stars/wwwlike/vlife.svg?style=social&label=Stars"></a>
         <a href="https://gitee.com/open-source-byte/source-vue" target="_blank">
-            <img src="https://gitee.com/wwwlike/vlife/badge/fork.svg?theme=dark">
+            <img src="https://img.shields.io/github/forks/wwwlike/vlife.svg?style=social&label=Fork">
         </a>
-	<a href=" http://admin.vlife.cc/login" target="_blank"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
+    </a>
+    <a href=" http://admin.vlife.cc/login" target="_blank"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
 </p>
 
 
