@@ -4,12 +4,7 @@ import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.form.dto.FormDto;
-import cn.wwwlike.form.dto.FormEventDto;
-import cn.wwwlike.form.dto.FormFieldDto;
 import cn.wwwlike.form.entity.Form;
-import cn.wwwlike.form.entity.FormEvent;
-import cn.wwwlike.form.entity.FormField;
-import cn.wwwlike.form.entity.FormReaction;
 import cn.wwwlike.form.req.FormPageReq;
 import cn.wwwlike.form.service.FormEventService;
 import cn.wwwlike.form.service.FormFieldService;
@@ -23,7 +18,6 @@ import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.ModelService;
-import cn.wwwlike.vlife.ts.ReadTitle;
 import cn.wwwlike.vlife.utils.FileUtil;
 import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import cn.wwwlike.web.security.core.SecurityUser;
@@ -34,7 +28,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.*;
@@ -43,18 +36,23 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-
 /**
  * 列表字段接口;
  */
 @RestController
 @RequestMapping("/form")
 public class FormApi extends VLifeApi<Form, FormService> {
+
+
+
+
+    /**
+     *
+     */
 
     @Autowired
     public FormFieldService fieldService;
@@ -131,16 +129,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return exchange.getBody().get("data").toString();
     }
 
-    /**
-     * 接收客户端发来的代码请求
-     */
-    @PostMapping("/tsCode/remote/{type}")
-    public String tsCode(@RequestParam("file") MultipartFile file,@PathVariable String type) throws IOException {
-        InputStream is = file.getInputStream();
-        String  json = FileUtil.getFileContent(is);
-        return ReadTitle.tsCode(json,type);
-    }
-    /**
+    /*
      * 模型信息同步
      * 第一次进入系统就应该同步一次
      * Integer数量大于1标识有模型信息发生了变化，前端缓存需要更新
