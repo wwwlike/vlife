@@ -22,7 +22,6 @@ import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.web.security.core.*;
 import cn.wwwlike.web.security.filter.MyUsernamePasswordAuthenticationFilter;
-import cn.wwwlike.web.security.filter.PehrSecurityUser;
 import cn.wwwlike.web.security.filter.VerifyTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -146,7 +145,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .access("hasPermission('','" + map.get(url) + "')");
 
         }
-        authorizeRequests.antMatchers("/open/api/getToken",
+        authorizeRequests.antMatchers("/open/api/getToken","/form/tsCode/remote/*",
                     "/sysUser/checkEmail","/sysUser/sendEmail","/sysUser/register","/git/*","/git/token/*", "/ts/test/file", "/ts/upload", "/sysFile/upload", "/sysFile/image/*", "/sysFile/uploadImg", "/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
                 .and().formLogin()
                 .failureHandler(eauthenticationFailureHandler())
@@ -160,12 +159,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      *
      * @return
      */
-    public static PehrSecurityUser getCurrUser() {
+    public static SecurityUser getCurrUser() {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             return null;
         } else {
             try {
-                return (PehrSecurityUser) SecurityContextHolder.getContext().getAuthentication().getDetails();
+                return (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getDetails();
             } catch (Exception ex) {
                 return null;
             }

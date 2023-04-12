@@ -11,12 +11,10 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.*;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-import static cn.wwwlike.auth.entity.HrConstants.sysUser.email;
 
 /**
  * 第三方(GITEE)登录服务
@@ -97,10 +95,12 @@ public class ThirdLoginService {
     }
 
 
-    public SysUser createUser(ThirdAccountDto accountDto,String groupId,String sysOrgId){
+    public SysUser createUser(ThirdAccountDto accountDto){
         SysUser user=new SysUser();
-        user.setSysOrgId(sysOrgId);
-        user.setSysGroupId(groupId);
+//        user.setSysOrgId(sysOrgId);
+        user.setSysGroupId("super");
+        user.setSysDeptId("4028b8818747df52018747dfdf780000");
+        user.setState("1");
 //        user.setUsername(accountDto.getUsername());
         user.setThirdId(accountDto.getId());
         user.setName(accountDto.getName());
@@ -123,6 +123,36 @@ public class ThirdLoginService {
             ex.printStackTrace();
         }
     }
+
+    /**
+     * watch本系统
+     * @param thirdToken
+     */
+    public void  watch( String  thirdToken){
+        try{
+            JSONObject t=new JSONObject();
+            t.put("watch_type","watching");
+            JSONObject userObj=GiteeHttpClient.put(thirdToken,"https://gitee.com/api/v5/user/subscriptions/wwwlike/vlife", t);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * fork本系统
+     * @param thirdToken
+     */
+    public void  fork( String  thirdToken){
+        try{
+            JSONObject t=new JSONObject();
+            JSONObject userObj=GiteeHttpClient.post(thirdToken,"https://gitee.com/api/v5/repos/wwwlike/vlife/forks", t);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+
+
 
     /* 发送验证信息的邮件 */
     public  String sendMail(String to,String code) {

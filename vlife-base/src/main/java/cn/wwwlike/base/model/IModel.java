@@ -23,6 +23,6 @@ package cn.wwwlike.base.model;
  * @author xiaoyu
  * @date 2022/7/3
  */
-public interface IModel {
+public interface IModel<T> {
 
 }

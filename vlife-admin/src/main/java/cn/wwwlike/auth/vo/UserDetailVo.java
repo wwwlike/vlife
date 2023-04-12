@@ -20,6 +20,7 @@ package cn.wwwlike.auth.vo;
 
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.sys.entity.SysArea;
+import cn.wwwlike.sys.entity.SysDept;
 import cn.wwwlike.sys.vo.AreaVo;
 import cn.wwwlike.sys.vo.OrgVo;
 import cn.wwwlike.vlife.annotation.VField;
@@ -54,32 +55,34 @@ public class UserDetailVo implements VoBean<SysUser> {
      */
     public String username;
 
-    /**
-     * 机构名称
-     */
-    public String sysOrg_name;
+    public SysDept sysDept;
 
-    /**
-     * 地区名称
-     */
-    public String sysOrg_sysArea_name;
+//    /**
+//     * 机构名称
+//     */
+//    public String sysOrg_name;
 
-    /**
-     * 地区编码
-     */
-    public String sysOrg_sysArea_areacode;
+//    /**
+//     * 地区名称
+//     */
+//    public String sysOrg_sysArea_name;
+//
+//    /**
+//     * 地区编码
+//     */
+//    public String sysOrg_sysArea_areacode;
 
-    /**
-     * 地区id
-     */
-    @VField(pathName = "sysOrg_sysAreaId")
-    public String sysAreaId;
+//    /**
+//     * 地区id
+//     */
+//    @VField(pathName = "sysOrg_sysAreaId")
+//    public String sysAreaId;
 
-    /**
-     * 地区编码
-     */
-    @VField(pathName = "sysOrg_sysArea_code")
-    public String codeArea;
+//    /**
+//     * 地区编码
+//     */
+//    @VField(pathName = "sysOrg_sysArea_code")
+//    public String codeArea;
 
     /**
      * 部门代码
@@ -87,16 +90,16 @@ public class UserDetailVo implements VoBean<SysUser> {
     @VField(pathName = "sysDept_code")
     public String codeDept;
 
-    /**
-     * 机构代码
-     */
-    @VField(pathName = "sysOrg_code")
-    public String codeOrg;
+//    /**
+//     * 机构代码
+//     */
+//    @VField(pathName = "sysOrg_code")
+//    public String codeOrg;
 
-    /**
-     * 机构id
-     */
-    public String sysOrgId;
+//    /**
+//     * 机构id
+//     */
+//    public String sysOrgId;
 
     /**
      * 权限组名称
@@ -105,16 +108,21 @@ public class UserDetailVo implements VoBean<SysUser> {
     public String groupName;
 
     /**
+     * 权限组
+     */
+    public String sysGroupId;
+
+    /**
      * 用户有的权限资源代码 权限组->角色权限->角色->资源——资源编码
      */
-    @VField(pathName = "sysGroup_sysRoleGroup_sysRole_sysResources_resourcesCode")
+    @VField(pathName = "sysGroup_sysRoleGroup_sysRole_sysResources_code")
     public List<String> resourceCodes;
 
 
     /**
      * 角色里资源对应的菜单
      */
-    @VField(pathName = "sysGroup_sysRoleGroup_sysRole_sysResources_menuCode")
+    @VField(pathName = "sysGroup_sysRoleGroup_sysRole_sysResources_sysMenuId")
     public List<String> menus;
 
 }

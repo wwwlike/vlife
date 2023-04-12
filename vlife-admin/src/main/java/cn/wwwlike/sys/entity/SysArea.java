@@ -40,7 +40,6 @@ public class SysArea extends DbEntity implements ITree, IBus {
      * 区划名称
      */
     public String name;
-
     /**
      * 地区编码
      */

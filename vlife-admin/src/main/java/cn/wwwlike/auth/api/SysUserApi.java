@@ -2,20 +2,21 @@ package cn.wwwlike.auth.api;
 
 import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.dto.RegisterDto;
+import cn.wwwlike.auth.dto.UserPasswordModifyDto;
+import cn.wwwlike.auth.dto.UserStateDto;
 import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysUserPageReq;
+import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.auth.service.ThirdLoginService;
+import cn.wwwlike.auth.vo.GroupVo;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.auth.vo.UserVo;
-import cn.wwwlike.login.GiteeHttpClient;
 import cn.wwwlike.sys.service.SysAreaService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
-import cn.wwwlike.web.security.filter.TokenUtil;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,17 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/sysUser")
-public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
+public class
+
+
+SysUserApi extends VLifeApi<SysUser, SysUserService> {
     @Autowired
     public SysResourcesService resourcesService;
 
     @Autowired
     public SysAreaService sysAreaService;
+    @Autowired
+    public SysGroupService groupService;
     @Autowired
     public ThirdLoginService loginService;
 
@@ -58,6 +64,33 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
         return service.findPage(req);
     }
 
+    /**
+     * 密码重置
+     * @return
+     */
+    @PostMapping("/reset")
+    public Integer reset(@RequestBody String[] ids) {
+        List<SysUser> users=service.findByIds(ids);
+        for(SysUser user:users) {
+            user.setPassword("{F4T9t2BE3HCvD9khLCxL/nyib/AdM1WqR/tMx5eJJ2k=}f0afa783ba7607063606fdb43c2e55fb");
+            service.save(user);
+        }
+        return ids.length;
+    }
+
+    /**
+     * 密码修改
+     */
+    @PostMapping("/save/userPasswordModifyDto")
+    public boolean saveUserPasswordModifyDto(@RequestBody UserPasswordModifyDto dto) {
+       if(!dto.getPassword().equals(dto.getNewPassword())){
+           //两次密码不一致
+       }else{
+           service.save("password",dto.getNewPassword(),dto.getId());
+       }
+       return true;
+    }
+
     @GetMapping("/list")
     public List<SysUser> list(SysUserPageReq req) {
         return service.find(req);
@@ -72,7 +105,6 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
     @PostMapping("/save")
     public SysUser save(@RequestBody SysUser dto) {
         if (dto.getPassword() == null && dto.getId() == null) {
-            //初始化123456密码
             dto.setPassword("{F4T9t2BE3HCvD9khLCxL/nyib/AdM1WqR/tMx5eJJ2k=}f0afa783ba7607063606fdb43c2e55fb");
         }
         return service.save(dto);
@@ -118,16 +150,14 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
         SysUser user = service.findOne(vo.getId());
         user.setLoginNum(user.getLoginNum() == null ? 1 : user.getLoginNum() + 1);
         service.save(user);
-        //资源的上级资源加入到codes里
-        List<String> codes = vo.getResourceCodes();
-        if (vo.getResourceCodes() != null) {
-            vo.setResourceCodes(
-                    resourcesService.findApiResources(
-                                    resourcesService.findAll(),
-                                    codes.toArray(new String[codes.size()])).stream()
-                            .map(SysResources::getResourcesCode)
-                            .collect(Collectors.toList()));
+        if(user.getSysGroupId().equals("super")){
+            List<String> codes = resourcesService.findApiResources().stream().map(t->t.getCode()).collect(Collectors.toList());
+            vo.setResourceCodes(codes);
+        }else{
+            List<String> codes = groupService.findGroupResourceCodes(vo.getSysGroupId());
+            vo.setResourceCodes(codes);
         }
+
         return vo;
     }
 
@@ -180,4 +210,15 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
         }
         return "";
     }
+
+    /**
+     * 更新用户状态
+     * @param dto
+     * @return
+     */
+    @PostMapping("/state")
+    public List<String> state(@RequestBody UserStateDto dto){
+        return service.save("state",dto.getState(),dto.getIds().toArray(new String[dto.getIds().size()]));
+    }
+
 }

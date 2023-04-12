@@ -5,7 +5,7 @@
 <h4 align="center">基于SpringBoot+React前后端分离的Java快速开发框架</h4>
 <p align="center">
 	<a href="https://gitee.com/wwwlike/vlife" target="_blank"><img src="https://img.shields.io/github/stars/wwwlike/vlife.svg?style=social&label=Stars"></a>
-        <a href="https://gitee.com/open-source-byte/source-vue" target="_blank">
+        <a href="https://gitee.com/wwwlike/vlife" target="_blank">
             <img src="https://img.shields.io/github/forks/wwwlike/vlife.svg?style=social&label=Fork">
         </a>
     </a>

@@ -102,8 +102,6 @@ public class MyUsernamePasswordAuthenticationFilter extends AbstractAuthenticati
         String tokenString = this.tokenUtil.createTokenForUser(SecurityUser);
         res.setCharacterEncoding("UTF-8");
         res.setContentType("application/json; charset=utf-8");
-//tokenString+"||"+
-        //数据包装 authToken.getPrincipal()
         res.getWriter().print(JSON.toJSON(Result.createSuccess(tokenString)));
         res.getWriter().flush();
         res.getWriter().close();
@@ -113,12 +111,8 @@ public class MyUsernamePasswordAuthenticationFilter extends AbstractAuthenticati
     //token超期，无权限，token不正确，不会进入此方法
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, org.springframework.security.core.AuthenticationException failed) throws IOException, ServletException {
-        /**
-         * 验证成功则向前端返回失败原因
-         */
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
-//        response.getWriter().write(JSON.toJSONString(Result.createFail(300,failed.getMessage())));
         response.getWriter().write(JSON.toJSONString(Result.createFail(300,"用户名或者密码错误")));
     }
 }

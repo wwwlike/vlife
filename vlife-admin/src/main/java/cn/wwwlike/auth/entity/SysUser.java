@@ -22,6 +22,7 @@ import cn.wwwlike.auth.common.IDept;
 import cn.wwwlike.auth.common.IOrg;
 import cn.wwwlike.base.model.IUser;
 import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.base.IFkItem;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -34,7 +35,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_user")
-public class SysUser extends DbEntity implements IUser, IOrg {
+public class SysUser extends DbEntity implements IUser,IFkItem {
     /**
      * 头像
      */
@@ -78,10 +79,10 @@ public class SysUser extends DbEntity implements IUser, IOrg {
      * 邮箱
      */
     public String email;
-    /**
-     * 单位
-     */
-    public String sysOrgId;
+//    /**
+//     * 单位
+//     */
+//    public String sysOrgId;
 
     /**
      * 部门

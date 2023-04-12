@@ -41,7 +41,7 @@ public class SysAreaApi extends VLifeApi<SysArea, SysAreaService> {
   @GetMapping("/list/all")
   public List<SysArea> listAll(String entityName) {
     QueryWrapper<SysArea> wrapper = QueryWrapper.of(SysArea.class);
-    if(!entityName.equals("sysArea")){
+    if(entityName!=null&&!"sysArea".equals(entityName)){
       wrapper.filterRuleClz= GlobalData.entityDto(entityName).getClz();
     }
     return service.find(wrapper);

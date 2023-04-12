@@ -1,5 +1,6 @@
 server:
   port: 8288
+  address: 0.0.0.0
   servlet:
     context-path: /oa
 spring:
@@ -15,25 +16,19 @@ spring:
       ddl-auto: update #更新或创建表
     show-sql: true
     database: mysql
-
 endpoints:
   metrics:
     sensitive: false
-
 vlife:
-#  packroot: http://admin.vlife.cc/
-  packroot: http://localhost:8288
+  packroot: http://admin.vlife.cc
   email: #注册码发送
-    from: vlifelowcode@163.com
+    from:
     pwd:
   gitee: #gitee登录
     client_id:
     client_secret:
-    redirect_uri: http://XXXX:port/login?from=gitee
+    redirect_uri:
 
-#和项目同级目录存放上传图片
 file:
   image:
-    path: d:\\img
-
-
+    path: img

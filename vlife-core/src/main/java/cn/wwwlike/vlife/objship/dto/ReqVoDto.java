@@ -30,7 +30,7 @@ import java.util.List;
  * req和VO类型dto基类
  */
 @Data
-public abstract class ReqVoDto<T> extends BeanDto<T> implements NotEntityDto {
+public abstract class ReqVoDto<T> extends BeanDto<T> implements ModelDto {
     /** 关联实体模型clz */
     public Class<? extends Item> entityClz;
     /** 所有打平字段的查询路径 */
@@ -42,7 +42,7 @@ public abstract class ReqVoDto<T> extends BeanDto<T> implements NotEntityDto {
      * req/vo里进行字段查询，条件查询会leftjoin的类信息的集合
      */
     public List<List<Class<? extends Item>>> getLeftPathClz() {
-       if (leftPathClz == null||(leftPathClz.size()>0&&leftPathClz.get(0)==null)) {
+       if (leftPathClz == null||leftPathClz.size()==0||(leftPathClz.size()>0&&leftPathClz.get(0)==null)) {
             leftPathClz = new ArrayList<>();
             List<FieldDto> fields = getFields();
             for (FieldDto field : fields) {

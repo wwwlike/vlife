@@ -51,22 +51,36 @@ public class AuthDict {
 
     }
 
+//    @Named("数据维度")
+//    public static final class GROUP_SCOPE {
+//        @Named("查看本地区和下级地区数据")
+//        public final static Integer AREAS = 6;
+//        @Named("查看本地区数据")
+//        public final static Integer AREA = 5;
+//        @Named("查看本机构和下级机构数据")
+//        public final static Integer ORGS = 4;
+//        @Named("查看本机构数据")
+//        public final static Integer ORG = 3;
+//        @Named("查看本部门和下级部门数据")
+//        public final static Integer DEPTS = 2;
+//        @Named("查看本部门数据")
+//        public final static Integer DEPT = 1;
+//        @Named("查看本人数据")
+//        public final static Integer SELF = 0;
+//    }
+
     @Named("数据维度")
-    public static final class GROUP_SCOPE {
-        @Named("查看本地区和下级地区数据")
-        public final static Integer AREAS = 6;
-        @Named("查看本地区数据")
-        public final static Integer AREA = 5;
-        @Named("查看本机构和下级机构数据")
-        public final static Integer ORGS = 4;
-        @Named("查看本机构数据")
-        public final static Integer ORG = 3;
-        @Named("查看本部门和下级部门数据")
-        public final static Integer DEPTS = 2;
-        @Named("查看本部门数据")
-        public final static Integer DEPT = 1;
+    public static final class GROUP_FILTER_TYPE {
+        @Named("查看本系统数据")
+        public final static String ALL = "";
         @Named("查看本人数据")
-        public final static Integer SELF = 0;
+        public final static String SELF = "sysUser_1";
+        @Named("查看同一权限组人员的数据")
+        public final static String SAMEGROUP = "sysGroup_1";
+        @Named("查看本部门数据")
+        public final static String DEPT1 = "sysDept_1";
+        @Named("查看本部门和下级部门数据")
+        public final static String DEPT2 = "sysDept_2";
     }
 
 
@@ -80,5 +94,31 @@ public class AuthDict {
         public final static String SYSDEPTID = "sysDeptId";
     }
 
-
+    @Named("系统模块")
+    public static final class MODULE {
+        @Named("系统管理")
+        public final static String SYS = "sys";
+        @Named("运维配置")
+        public final static String CONF = "conf";
+        @Named("统计分析")
+        public final static String REPORT = "report";
+        @Named("网站新闻")
+        public final static String CMS = "cms";
+        @Named("OA系统")
+        public final static String OA = "oa";
+    }
+//'amber' | 'blue' | 'cyan' | 'green' | 'grey' | 'indigo' | 'light-blue' | 'light-green' | 'lime' | 'orange' | 'pink' | 'purple' | 'red' | 'teal' | 'violet' | 'yellow' | 'white'; //颜色代码
+    @Named("字典颜色")
+    public static final class DICT_COLOR {
+        @Named("红")
+        public final static String RED = "red";
+        @Named("黄")
+        public final static String YELLOW = "yellow";
+        @Named("绿")
+        public final static String GREEN = "green";
+        @Named("蓝")
+        public final static String BLUE = "blue";
+        @Named("白")
+        public final static String WHITE = "white";
+    }
 }

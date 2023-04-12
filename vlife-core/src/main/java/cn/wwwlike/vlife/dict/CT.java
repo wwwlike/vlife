@@ -48,12 +48,12 @@ public class CT {
 
     @Named("业务状态")
     public static final class STATE {
-        @Named("作废")
-        public final static String DROP = "0";
+//        @Named("作废")
+//        public final static String DROP = "0";
         @Named("正常")
         public final static String NORMAL = "1";
         @Named("停用")
-        public static final String DISABLE = "2";
+        public static final String DISABLE = "-1";
     }
 
     @Named("聚合方式")

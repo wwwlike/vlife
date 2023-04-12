@@ -135,7 +135,7 @@ public class TitleJsonCreateMojo extends AbstractMojo {
             }
             //api解析
             for (ClzTag tag : tags) {
-                if ("VLifeApi".equals(tag.getSuperName())) {
+                if ("VLifeApi".equals(tag.getSuperName())||"VLifeApi".equals(tag.getEntityName())) {
                     for (File path : files) {
                         if (path.getName().equals(tag.getEntityName() + ".java")) {
                             CommentParser.parserApi(path, tag);

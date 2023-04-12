@@ -32,11 +32,16 @@ import java.util.List;
 public class GroupVo implements VoBean<SysGroup> {
 
     public String id;
-    public Integer scope;
+//    public Integer scope;
+    public String filterType;
     /**
      * 对应的所有角色id
      */
     public List<String> sysRoleGroup_sysRoleId;
+
+    public List<String> sysRoleGroup_sysRole_sysResources_code;
+
+    public List<String> sysRoleGroup_sysRole_sysResources_sysMenuId;
     /**
      * 权限组关联的角色名称集合
      */

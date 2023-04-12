@@ -2,6 +2,7 @@ package cn.wwwlike;
 
 import cn.wwwlike.web.annotation.EnableRespWrap;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**

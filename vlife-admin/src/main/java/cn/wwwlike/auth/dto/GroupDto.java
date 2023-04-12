@@ -49,5 +49,13 @@ public class GroupDto implements SaveBean<SysGroup>{
     @VField(pathName = "sysRoleGroup_sysRoleId")//多对多保存 应该保存对象
     public List<String> sysRoleId;
 
-    public Integer scope;
+//    public Integer scope;
+
+    /**
+     * 数据维度
+     * 过滤模型_维度 sysUser_1->据用户表过滤，本级
+     */
+    public String filterType;
+
+
 }

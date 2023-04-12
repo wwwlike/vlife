@@ -1,9 +1,6 @@
 package cn.wwwlike.form.dto;
 
 import cn.wwwlike.form.entity.PageComponent;
-import cn.wwwlike.form.entity.PageComponentProp;
-import cn.wwwlike.form.entity.PageLayout;
-import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 

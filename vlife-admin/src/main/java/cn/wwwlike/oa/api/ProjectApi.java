@@ -1,7 +1,5 @@
 package cn.wwwlike.oa.api;
 
-import cn.wwwlike.form.service.ReportItemService;
-import cn.wwwlike.form.service.ReportTableService;
 import cn.wwwlike.oa.dto.ProjectDto;
 import cn.wwwlike.oa.entity.Project;
 import cn.wwwlike.oa.item.ProjectItem;
@@ -31,6 +29,12 @@ public class ProjectApi extends VLifeApi<Project, ProjectService> {
     public PageVo<Project> page(ProjectPageReq req) {
         return service.findPage(req);
     }
+
+    @GetMapping("/page/projectDto")
+    public PageVo<ProjectDto> projectDto(ProjectPageReq req) {
+        return service.queryPage(ProjectDto.class,req);
+    }
+
 
     /**
      * 保存项目管理;
@@ -83,9 +87,5 @@ public class ProjectApi extends VLifeApi<Project, ProjectService> {
         return service.count(new GroupWrapper<>(Project.class));
     }
 
-    @Autowired
-    public ReportItemService reportItemService;
 
-    @Autowired
-    public ReportTableService reportTableService;
 }

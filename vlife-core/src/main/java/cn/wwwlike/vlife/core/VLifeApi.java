@@ -68,6 +68,21 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
     }
 
     /**
+     * 所有表字段是否唯一性校验
+     * @param fieldName
+     * @param fieldVal
+     * @return
+     */
+    @GetMapping("/exist")
+    public Long exist(String fieldName,  String fieldVal,String id) {
+        QueryWrapper<T> qw = QueryWrapper.of(entityClz).eq(fieldName, fieldVal);
+        if(id!=null){
+            qw.ne("id",id);
+        }
+       return service.count(qw);
+    }
+
+    /**
      * 通过字段批量查询数据只包含查询字段和name的数据
      *
      * @param ids
@@ -86,7 +101,7 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
      */
     @GetMapping("/findName")
     public List<T> findName(ComponentParam params) {
-        QueryWrapper<T> qw = QueryWrapper.of(entityClz).in("id", params.getVal());
+        QueryWrapper<T> qw = QueryWrapper.of(entityClz).in("id", params.getIds());
         return service.find(qw);
     }
 

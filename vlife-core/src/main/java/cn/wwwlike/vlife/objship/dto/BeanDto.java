@@ -20,6 +20,7 @@ package cn.wwwlike.vlife.objship.dto;
 
 import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.objship.base.ItemInfo;
+import lombok.Data;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.Arrays;
@@ -30,7 +31,8 @@ import java.util.stream.Collectors;
 /**
  * 所有模型dto信息基类
  */
-public abstract class BeanDto<T> extends ItemInfo {
+@Data
+public  class BeanDto<T> extends ItemInfo {
     /* 当前模型对象clz */
     public Class<? extends T> clz;
     /* 当前模型的字段信息集合*/

@@ -19,8 +19,8 @@
 package cn.wwwlike.form.vo;
 
 
+import cn.wwwlike.form.dto.FormTabDto;
 import cn.wwwlike.form.entity.Form;
-import cn.wwwlike.form.entity.FormGroup;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 
@@ -32,6 +32,9 @@ import java.util.List;
 @Data
 public class FormVo implements VoBean<Form> {
   public String id;
+
+  public String labelField;
+
   /**
    * 元素中文信息
    */
@@ -45,20 +48,51 @@ public class FormVo implements VoBean<Form> {
    */
   public String entityType;
   /**
-   * ui类型
-   */
-  public String uiType;
-  /**
    * 模型类型
    */
   public String itemType;
 
   public String name;
 
-  public Integer gridSpan;
+  /**
+   * 排序
+   */
+  public Integer sort;
+  /**
+   * 图标
+   */
+  public String  icon;
+  /**
+   * 模块
+   * 字典：系统模块，业务模块等
+   */
+  public String module;
 
   public List<FormFieldVo> fields;
 
-  public List<FormGroup> groups;
+  /**
+   * 页签
+   */
+  public List<FormTabDto> formTabDtos;
 
+  public Integer modelSize;
+
+  public Integer  pageSize;
+
+
+  /**
+   * 版本
+   * 保存一次版本加一
+   */
+  public Integer version;
+
+  /**
+   * 分页列表api代码路径
+   */
+  public String listApiPath;
+
+  /**
+   * 分页列表api代码路径
+   */
+  public String saveApiPath;
 }

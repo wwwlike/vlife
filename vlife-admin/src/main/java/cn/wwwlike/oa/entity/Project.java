@@ -19,6 +19,7 @@
 package cn.wwwlike.oa.entity;
 
 import cn.wwwlike.auth.common.Business;
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
@@ -36,6 +37,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "oa_project")
+@VClazz(module = "oa")
 public class Project extends DbEntity implements Business {
     /**
      * 项目名称
@@ -45,6 +47,10 @@ public class Project extends DbEntity implements Business {
      * 项目编号
      */
     public String projectNo;
+    /**
+     * 项目说明
+     */
+    public String projectRemark;
     /**
      * 甲方
      */
@@ -62,7 +68,6 @@ public class Project extends DbEntity implements Business {
      * 启动日期
      */
     public Date startDate;
-
     /**
      * 数据机构
      */

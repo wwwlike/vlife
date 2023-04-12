@@ -24,9 +24,11 @@ import cn.wwwlike.sys.dao.SysDictDao;
 import cn.wwwlike.sys.entity.SysDict;
 import cn.wwwlike.vlife.dict.DictVo;
 import cn.wwwlike.vlife.dict.ReadCt;
+import cn.wwwlike.vlife.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -39,28 +41,53 @@ public class SysDictService extends BaseService<SysDict, SysDictDao> {
      * @return
      */
     public List<SysDict> sync(){
-        find("sys",true).forEach(dict -> {
-            delete(dict.getId());//待优化，做比对
-        });
+//        find("sys",true).forEach(dict -> {
+//            delete(dict.getId());//待优化，做比对
+//        });
+        List<SysDict> dbs=findAll();
         List<DictVo> sysDict = ReadCt.getSysDict();
-        saveByDictVo(sysDict,false,true);//是系统级的不可以维护
+        saveByDictVo(sysDict,dbs);//是系统级的不可以维护
         List<DictVo> autiDict = ReadCt.read(AuthDict.class);
-        saveByDictVo(autiDict,true,true);//导入的，可以维护
+        saveByDictVo(autiDict,dbs);//导入的，可以维护
         return findAll();
     }
 
     /**
-     * 根据dictVO进行批量保存
-     * @param dicts
-     * @param edit
+     * 同步一个模块的字典信息
+     * @param javaDicts
      */
-    public void saveByDictVo(List<DictVo> dicts,Boolean edit,Boolean sys){
-        dicts.forEach(dictVo -> {
-            SysDict sysDict =new SysDict();
-            BeanUtils.copyProperties(dictVo, sysDict);
-            sysDict.setEdit(edit);
-            sysDict.setSys(sys);
-            save(sysDict);
+    public void saveByDictVo(List<DictVo> javaDicts,List<SysDict> dbDicts){
+        //1 原先没有的新增，title改变了的进行修订
+        javaDicts.forEach(dictVo -> {
+            SysDict sysDict =null;
+            QueryWrapper qw=null;
+            if(dictVo.getVal()==null){
+                qw=QueryWrapper.of(SysDict.class).isNull("val").eq("code",dictVo.getCode());
+            }else{
+                qw=QueryWrapper.of(SysDict.class).eq("val",dictVo.getVal()).eq("code",dictVo.getCode());
+            }
+            List<SysDict> dicts=find(qw);
+            if(dicts==null||dicts.size()==0){
+                sysDict =new SysDict();
+                BeanUtils.copyProperties(dictVo, sysDict);
+                sysDict.setSys(true);
+                sysDict.setCreateDate(new Date());
+                save(sysDict);
+            }else {
+                sysDict = dicts.get(0);
+                if (!sysDict.getTitle().equals(dictVo.getTitle())) {
+                    sysDict.setTitle(dictVo.getTitle());
+                    sysDict.setModifyDate(new Date());
+                    save(sysDict);
+                }
+            }
         });
+    }
+
+    /**
+     * 删除
+     */
+    public void removeDict(){
+
     }
 }

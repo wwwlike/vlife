@@ -1,5 +1,6 @@
 package cn.wwwlike.form.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="page_component_prop")
+@VClazz(module = "conf")
 public class PageComponentProp extends DbEntity {
     /***
      * 所属组件
@@ -50,6 +52,12 @@ public class PageComponentProp extends DbEntity {
      * 属性值
      */
     public String propVal;
+
+    /**
+     * 关联值
+     * 选择接口，如果有的接口需要转换，有多种昂转换选择，则可以利用该字段
+     */
+    public String relateVal;
 
     /**
      * 接口取值到属性值的转换方法名称

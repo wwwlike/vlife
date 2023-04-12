@@ -40,10 +40,15 @@ public class SysGroup extends DbEntity {
     * 描述
     */
    public String remark;
+//   /**
+//    * 数据维度
+//    * 老的
+//    */
+//   public Integer scope;
    /**
     * 数据维度
     */
-   @VField(dictCode = "GROUP_SCOPE")
-   public Integer scope;
+   @VField(dictCode = "GROUP_FILTERTYPE")
+   public String filterType;
 
 }

@@ -137,4 +137,25 @@ public class GiteeHttpClient {
         httpPut.releaseConnection();
         return jsonObject;
     }
+
+
+    public static JSONObject post(String token,String url,JSONObject json) throws IOException, URISyntaxException {
+        JSONObject jsonObject = null;
+        CloseableHttpClient client = HttpClients.createDefault();
+        URIBuilder builder = new URIBuilder(url);
+        builder.setParameter("access_token", token);
+        json.keySet().forEach((k)->{
+            builder.setParameter(k,json.getString(k));
+        });
+        HttpPost httpPost = new HttpPost(builder.build());
+        httpPost.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+        HttpResponse response = client.execute(httpPost);
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            String result = EntityUtils.toString(entity, "UTF-8");
+            jsonObject = JSONObject.parseObject(result);
+        }
+        httpPost.releaseConnection();
+        return jsonObject;
+    }
 }

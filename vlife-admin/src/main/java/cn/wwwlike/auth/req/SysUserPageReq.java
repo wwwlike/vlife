@@ -34,6 +34,8 @@ public class SysUserPageReq extends PageQuery<SysUser> {
      */
     @VField(pathName = "name",opt = Opt.like,orReqFields = {"tel","idno"})
     public String search;
+
+    public String state;
     /**
      * 用户类型
      */
@@ -45,8 +47,8 @@ public class SysUserPageReq extends PageQuery<SysUser> {
     /**
      * 机构
      */
-    @VField(opt = Opt.startsWith)
-    public String sysOrg_code;
+//    @VField(opt = Opt.startsWith)
+//    public String sysOrg_code;
     /**
      * 部门
      */

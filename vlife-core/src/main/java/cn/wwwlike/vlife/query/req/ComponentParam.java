@@ -20,6 +20,8 @@ package cn.wwwlike.vlife.query.req;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 组件数据异步加载所需要的数据
  * 不是都用，这里给全量
@@ -29,21 +31,23 @@ public class ComponentParam {
     /**
      * 组件所在实体名称
      */
-    public String  entityName;
+    public String  entityType;
     /**
-     * 组件所在模型
-     */
-    public String  modelName;
-    /**
-     * 行记录id
-     */
-    public String id;
-    /**
-     * 组件字段
-     */
-    public String fieldName;
-    /**
-     * 字段值
-     */
-    public Object[] val;
+//     * 组件所在模型
+//     */
+//    public String  modelName;
+//    /**
+//     * 行记录id
+//     */
+//    public String id;
+//    /**
+//     * 组件字段
+//     */
+//    public String fieldName;
+//    /**
+//     * 字段值
+//     */
+//    public Object[] val;
+
+    public Object[] ids;
 }

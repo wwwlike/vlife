@@ -26,7 +26,7 @@ import lombok.Data;
  * 保存类型的dto扩展非数据库能存储的属性
  */
 @Data
-public class SaveDto extends BeanDto<SaveBean> implements NotEntityDto {
+public class SaveDto extends BeanDto<SaveBean> implements ModelDto {
     /**
      * 对应实体类对象
      */

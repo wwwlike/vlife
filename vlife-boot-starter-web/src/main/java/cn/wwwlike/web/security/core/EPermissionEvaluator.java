@@ -1,5 +1,6 @@
 package cn.wwwlike.web.security.core;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 /**
  * 权限校验类
  */
+@Configuration
 public class EPermissionEvaluator implements PermissionEvaluator {
 
     public static Map<String, List<String>> resourceRoleMap=new HashMap<>();

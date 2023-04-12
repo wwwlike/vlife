@@ -35,7 +35,7 @@ import lombok.Data;
 @Data
 public class PageQuery<T extends Item> extends CustomQuery<T, QueryWrapper<T>> implements IPage {
     @JsonIgnore
-    public PageableRequest pager = new PageableRequest();
+    private PageableRequest pager = new PageableRequest();
 
     public PageQuery() {
     }

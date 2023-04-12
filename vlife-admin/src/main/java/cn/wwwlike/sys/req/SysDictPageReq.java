@@ -32,22 +32,10 @@ import lombok.Data;
 @Data
 public class SysDictPageReq extends PageQuery<SysDict> {
     /**
-     * 编码
+     * 字典分类
      */
     public String code;
-    /**
-     * 名称
-     */
-    public String title;
-    /**
-     * 系统项
-     */
-    public Boolean sys;
 
-    /**
-     * 跳过检查
-     */
-    @VField(skip = true)
-    public Boolean queryType;
+//    public Boolean dictType;
 
 }

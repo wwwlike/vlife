@@ -8,67 +8,127 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * 列表字段
- * extends FieldInfo
+ * 模型字段信息
+ * 也包含UI场景的配置信息
  */
 @Entity
 @Data
 @Table(name = "form_field")
-@VClazz(orders = "sort_asc")
+@VClazz(orders = "sort_asc",module = "conf")
 public class FormField extends DbEntity {
+    /**
+     * 标题
+     * DB修改值
+     */
+    public String title;
 
+    /**
+     * 标题
+     */
     public String name;
+
     /**
-     * 所属表单
+     * 是否
      */
-    public String formId;
-    /**
-     * 所在容器编码
-     */
-    public String formGroupCode;
+    public Boolean labelField;
 
-    //真实字段所在实体名称
-    public String entityType;
-
-    //实体字段名称
-    public String entityFieldName;
-
-
-    //组件类型
-    public String componentType;
     /**
      * 字段名
      */
     public String fieldName;
+
     /**
-     * 全路径
+     * 前端数据类型
+     * basic,array,object
      */
-    public String pathName;
+    public String dataType;
     /**
      * 字段类型
      */
     public String fieldType;
+//    /**
+//     * 元素类型
+//     */
+//    public String type;
+
+    /**
+     * 所属表单
+     */
+    public String formId;
+
+    /**
+     *  唯一不重复
+     * validate是内置远程校验规则，触发form内部远程数据校验
+     */
+    public boolean  validate_unique;
+
+    /**
+     * 新增时隐藏
+     */
+    public boolean  create_hide;
+
+    /**
+     * 修改时只读
+     * 不可修改
+     */
+    public boolean  modify_read;
+
+    /**
+     * 加入分割线
+     */
+    public boolean divider;
+    /**
+     * 分割线标签名称
+     */
+    public String dividerLabel;
+
+    /**
+     * 所在分组
+     * 不存id原因，设计器阶段还没有产生id
+     */
+    public String formGroupCode;
+
+    /**
+     * 所在页签编码
+     */
+    public String formTabCode;
+
+    /**
+     * 标签隐藏
+     */
+    public boolean hideLabel;
+
+    /**
+     * 产生来源所在实体名称
+     */
+    public String entityType;
+
+    /**
+     * 字段来源实体对应字段名
+     */
+    public String entityFieldName;
+
+    //组件类型
+    public String componentType;
+
+    /**
+     * 全路径
+     */
+    public String pathName;
 
     /**
      * 字典的coden
      */
     public String dictCode;
 
-    /**
-     * 元素类型
-     */
-    public String type;
 
-    //-----------formily
+    //-----------formily 场景字段配置的信息
 
     /**
      * formliy里的字段名称，默认一致
      */
     public String dataIndex;
-    /**
-     * 标题
-     */
-    public String title;
+
     /**
      * 默认值
      */
@@ -90,6 +150,11 @@ public class FormField extends DbEntity {
      */
     public String x_component;
     /**
+     * 只读
+     *
+     */
+    public Boolean x_read_pretty;
+    /**
      * 禁用
      */
     public Boolean disabled;
@@ -101,7 +166,6 @@ public class FormField extends DbEntity {
      * 顺序
      */
     public Integer sort;
-
     //-------------外观
     /**
      * 包裹组件
@@ -143,6 +207,22 @@ public class FormField extends DbEntity {
      * 字段校验方式
      */
     public String x_validator;
+    /**
+     * 最小长度
+     */
+    public Integer minLength;
+    /**
+     * 最小长度
+     */
+    public Integer maxLength;
+    /**
+     * 最小值
+     */
+    public Double minimum;
+    /**
+     * 最大值
+     */
+    public  Double maximum;
 
     /**
      * 是否列表展示

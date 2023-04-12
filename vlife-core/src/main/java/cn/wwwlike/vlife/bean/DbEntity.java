@@ -43,25 +43,25 @@ public abstract class DbEntity implements Item {
      * 实体状态 【1有效 0逻辑删除】
      */
     @VField(dictCode = "STATUS")
-    public String status;
+    private String status;
 
     /**
      * 创建人
      */
-    public String createId;
+    private String createId;
     /**
      * 修改人
      */
-    public String modifyId;
+    private String modifyId;
 
     /**
      * 记录创建日期
      */
-    public Date createDate;
+    private Date createDate;
     /**
      * 最近修改日期
      */
-    public Date modifyDate;
+    private Date modifyDate;
 
 
     public String getCreateId() {

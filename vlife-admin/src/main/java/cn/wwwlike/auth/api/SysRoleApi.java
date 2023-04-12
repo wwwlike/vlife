@@ -11,6 +11,8 @@ import cn.wwwlike.vlife.core.VLifeApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 用户角色接口;
  */
@@ -57,6 +59,11 @@ public class SysRoleApi extends VLifeApi<SysRole, SysRoleService> {
   @GetMapping("/page")
   public PageVo<SysRole> page(SysRolePageReq req) {
     return service.findPage(req);
+  }
+
+  @GetMapping("/list/all")
+  public List<SysRole> listAll() {
+    return service.findAll();
   }
 
   /**

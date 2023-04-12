@@ -19,6 +19,7 @@
 package cn.wwwlike.oa.entity;
 
 import cn.wwwlike.auth.common.Business;
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -33,6 +34,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "oa_customer")
+@VClazz(module = "oa")
 public class Customer extends DbEntity implements Business {
     /**
      * 客户地区

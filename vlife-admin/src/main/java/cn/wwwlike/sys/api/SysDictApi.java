@@ -39,13 +39,14 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
 
     @GetMapping("/page")
     public PageVo<SysDict> page(SysDictPageReq req) {
-        if (req.getQueryType() != null) {
-            req.qw(SysDict.class).isNull(req.getQueryType() == true, "val")
-                    .isNotNull(req.getQueryType() == false, "val");
-        }
+        req.qw().ne("dictType",true);
         return service.findPage(req);
     }
 
+    @GetMapping("/list/type")
+    public List<SysDict> listType() {
+        return service.find("dictType",true);
+    }
 
     @GetMapping("/all")
     public List<SysDict> all() {
@@ -64,7 +65,6 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
     @PostMapping("/save")
     public SysDict save(@RequestBody SysDict dto) {
         dto.setSys(false);
-        dto.setEdit(true);
         return service.save(dto);
     }
 

@@ -1,5 +1,6 @@
 package cn.wwwlike.form.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="page_api_param")
+@VClazz(module = "conf")
 public class PageApiParam extends DbEntity {
     /***
      * 组件属性

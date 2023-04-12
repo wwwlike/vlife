@@ -19,12 +19,14 @@
 package cn.wwwlike.common;
 import cn.wwwlike.auth.common.*;
 import cn.wwwlike.auth.config.SecurityConfig;
+import cn.wwwlike.auth.entity.SysUser;
+import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.core.DataProcess;
 import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.utils.GenericsUtils;
-import cn.wwwlike.web.security.filter.PehrSecurityUser;
+import cn.wwwlike.web.security.core.SecurityUser;
 
 import java.util.Date;
 import java.util.Map;
@@ -49,7 +51,6 @@ public class VlifeDataProcess extends DataProcess {
         }else{
             entityClz=GenericsUtils.getGenericType(bean.getClass());
         }
-
 
         if (bean.getId() == null) {
             if(getIgnores()!=null) {//排除字段保存，不能排除这6个字段
@@ -85,17 +86,18 @@ public class VlifeDataProcess extends DataProcess {
             mm.put("createDate", new Date());
             mm.put("status", CT.STATUS.NORMAL);
             if(SecurityConfig.getCurrUser()!=null){
-              PehrSecurityUser user= SecurityConfig.getCurrUser();
+              SecurityUser securityUser= SecurityConfig.getCurrUser();
+                UserDetailVo user= (UserDetailVo) securityUser.getSysUser();
                 mm.put("createId", user.getId());
-                if(IOrg.class.isAssignableFrom(entityClz)) {
-                    mm.put("sysOrgId",user.getOrgId());
-                }
+//                if(IOrg.class.isAssignableFrom(entityClz)) {
+//                    mm.put("sysOrgId",user.getsys());
+//                }
                 if(IDept.class.isAssignableFrom(entityClz)) {
-                    mm.put("sysDeptId", user.getDeptId());
+                    mm.put("sysDeptId", user.getSysDeptId());
                 }
-                if(IArea.class.isAssignableFrom(entityClz)) {
-                    mm.put("sysAreaId",user.getAreaId());
-                }
+//                if(IArea.class.isAssignableFrom(entityClz)) {
+//                    mm.put("sysAreaId",user.getSys);
+//                }
             }
 
         } else {

@@ -65,7 +65,12 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
 //    }
 
 
-//    //通过produces 告知浏览器我要返回的媒体类型
+    /**
+     * 图片流输出
+     * @param id
+     * @return
+     * @throws IOException
+     */
     @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE,})
     public byte[] image(@PathVariable String id) throws IOException {
         SysFile file = service.findOne(id);

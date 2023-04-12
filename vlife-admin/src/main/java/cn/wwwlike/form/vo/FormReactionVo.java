@@ -38,7 +38,10 @@ public class FormReactionVo implements VoBean<FormReaction> {
      * 响应字段
      */
     public String formFieldId;
-
+    /**
+     * 关联表属性注入
+     * 有关联表属性注入的VO不能是DTO
+     */
     @VField(pathName = "formField_fieldName")
     public String fieldName;
     /**
@@ -49,30 +52,5 @@ public class FormReactionVo implements VoBean<FormReaction> {
      * 响应值
      */
     public String reactionValue;
-//
-//    //触发信息 外键表字段打平
-//    /**
-//     * 触发的字段
-//     */
-//    @VField(pathName = "formEvent_formField_fieldName")
-//    public String depsFieldName;
-//
-//
-//    /**
-//     * 触发的字段
-//     */
-//    @VField(pathName = "formEvent_attr")
-//    public String deptsAttr;
-//
-//    /**
-//     * 触发原因
-//     */
-//    @VField(pathName = "formEvent_eventType")
-//    public String depsEventType;
-//    /**
-//     * 触发值域
-//     */
-//    @VField(pathName = "formEvent_val")
-//    public String depsVal;
 
 }

@@ -18,6 +18,7 @@
 
 package cn.wwwlike.form.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
@@ -32,6 +33,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="form_event")
+@VClazz(module = "conf")
 public class FormEvent extends DbEntity {
     /** [name] =当[formId]表[formFieldId]字段
      * [attr]属性[eventType][val]匹配事件
@@ -52,6 +54,14 @@ public class FormEvent extends DbEntity {
      * 事件名称
      */
     public String name;
+
+    /**
+     * 触发时机
+     * 1.实时
+     * 2.进入时
+     */
+    public String moment;
+
     /**
      * 字段的属性
      */
@@ -65,4 +75,10 @@ public class FormEvent extends DbEntity {
      * 多个中间用逗号分隔
      */
     public String val;
+
+    /**
+     * 是否系统自动产生的
+     * 快捷方式产生的事件在手工列表则不展示；新增时隐藏属于系统创建的
+     */
+    public boolean sys;
 }

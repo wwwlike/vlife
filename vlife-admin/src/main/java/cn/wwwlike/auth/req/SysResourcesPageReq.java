@@ -35,12 +35,8 @@ public class SysResourcesPageReq extends PageQuery<SysResources> {
     /**
      * 名称/编码/地址
      */
-    @VField(opt= Opt.like,pathName = "name",orReqFields = {"resourcesCode","url"})
+    @VField(opt= Opt.like,pathName = "name",orReqFields = {"code","url"})
     public String search;
-    /**
-     * 资源类型
-     */
-    public String resourcesType;
     /**
      * 接口角色
      */

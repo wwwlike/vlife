@@ -40,6 +40,10 @@ public class VCT {
     public static final class ITEM_TYPE {
         @Named("基础数据类型")
         public final static String BASIC = "basic";
+        @Named("对象类型")
+        public final static String OBJECT = "object";
+        @Named("数组")
+        public final static String ARRAY = "array";
         @Named("集合")
         public final static String LIST = "list";
         @Named("主键列表")
@@ -48,12 +52,18 @@ public class VCT {
         public final static String ENTITY = "entity";
         @Named("VO对象")
         public final static String VO = "vo";
+        @Named("FK外键表模型")
+        public final static String FK = "fk";
+        @Named("关联模型")
+        public final static String Relation = "relation";
         @Named("提交对象")
         public final static String SAVE = "save";
         @Named("查询对象")
         public final static String REQ = "req";
         @Named("API对象")
         public final static String API = "api";
+        @Named("一般模型")
+        public final static String BEAN = "bean";
     }
 
     @Named("删除方式")

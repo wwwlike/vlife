@@ -42,7 +42,7 @@ public class ResourcesVo implements VoBean<SysResources> {
      */
     public String url;
 
-    public String resourcesPcode;
+    public String pcode;
     /**
      * 资源对应的角色组
      */

@@ -1,8 +1,7 @@
 package cn.wwwlike.sys.api;
 
-import cn.wwwlike.sys.entity.SysArea;
+import cn.wwwlike.sys.dto.SysDeptUserDto;
 import cn.wwwlike.sys.entity.SysDept;
-import cn.wwwlike.sys.entity.SysOrg;
 import cn.wwwlike.sys.req.SysDeptPageReq;
 import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.vlife.bean.PageVo;
@@ -10,11 +9,10 @@ import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 /**
- * null接口;
+ * 接口;
  */
 @RestController
 @RequestMapping("/sysDept")
@@ -40,17 +38,24 @@ public class SysDeptApi extends VLifeApi<SysDept, SysDeptService> {
   }
 
 
-  @GetMapping("/list/all")
-  public List<SysDept> listAll(String entityName) {
-    QueryWrapper<SysDept> wrapper = QueryWrapper.of(SysDept.class);
-    if(!entityName.equals("sysDept")){
-      wrapper.filterRuleClz= GlobalData.entityDto(entityName).getClz();
-    }
-    return service.find(wrapper);
-
+  @PostMapping("/save/sysDeptUserDto")
+  public SysDeptUserDto saveSysDeptUserDto(@RequestBody SysDeptUserDto dto) {
+    return service.save(dto,true);
   }
 
+//  @GetMapping("/list/all")
+//  public List<SysDept> listAll(String entityName) {
+//    QueryWrapper<SysDept> wrapper = QueryWrapper.of(SysDept.class);
+//    if(entityName!=null&&!entityName.equals("sysDept")){
+//      wrapper.filterRuleClz= GlobalData.entityDto(entityName).getClz();
+//    }
+//    return service.find(wrapper);
+//  }
 
+  @GetMapping("/list/all")
+  public List<SysDept> listAll() {
+    return service.findAll();
+  }
   /**
    * 明细查询null;
    * @param id 主键id;

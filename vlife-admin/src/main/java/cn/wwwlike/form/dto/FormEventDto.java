@@ -59,7 +59,13 @@ public class FormEventDto implements SaveBean<FormEvent> {
     /**
      * 响应内容
      */
-    List<FormReaction> reactions;
+    public List<FormReaction> reactions;
+
+    /**
+     * 是否系统自动产生的
+     * 快捷方式产生的事件在手工列表则不展示；新增时隐藏属于系统创建的
+     */
+    public boolean sys;
 
 
 }

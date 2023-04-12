@@ -27,6 +27,7 @@ import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.SaveDto;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.BASIC;
@@ -57,7 +58,7 @@ public class SaveRead extends ItemReadTemplate<SaveDto> {
      */
     public SaveDto readInfo(Class s) {
         SaveDto dto = null;
-        if (SaveBean.class.isAssignableFrom(s) && s != SaveBean.class) {
+        if (Arrays.stream(s.getInterfaces()).filter(ss->ss==SaveBean.class).count()>0) {
             dto = new SaveDto();
             superRead(dto, s);
             dto.setItemType(SAVE);

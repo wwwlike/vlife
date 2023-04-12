@@ -57,7 +57,6 @@ public class FormEventVo implements VoBean<FormEvent> {
     /**
      * 响应内容
      */
-    List<FormReactionVo> reactions;
-
+    public List<FormReactionVo> reactions;
 
 }

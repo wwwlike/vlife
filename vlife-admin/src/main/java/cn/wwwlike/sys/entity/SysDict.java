@@ -18,6 +18,8 @@
 
 package cn.wwwlike.sys.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -34,7 +36,12 @@ import javax.persistence.Table;
 @Data
 @Table(name = "sys_dict")
 @Entity
+@VClazz(orders = "code_asc,sort_asc")
 public class SysDict extends DbEntity {
+    /**
+     * 字典分类
+     */
+    public boolean dictType;
     /**
      *编码
      */
@@ -48,12 +55,18 @@ public class SysDict extends DbEntity {
      */
     public String title;
     /**
+     * 排序号
+     */
+    public Integer sort;
+    /**
+     * 颜色代码
+     */
+    @VField(dictCode = "DICT_COLOR")
+    public String color;
+    /**
      * 系统项
+     * 取自后台的为系统项，不能删除
      */
     public Boolean sys;
-    /**
-     * 可维护
-     */
-    public Boolean edit;
 
 }

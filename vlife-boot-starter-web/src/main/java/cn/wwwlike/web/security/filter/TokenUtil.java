@@ -51,7 +51,7 @@ public class TokenUtil {
     public static SecurityUser parseUserFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(secret)
                 .parseClaimsJws(token).getBody();
-        PehrSecurityUser tokenUser = JSON.parseObject(JSON.toJSONString(claims.get("user")), PehrSecurityUser.class);
+        SecurityUser tokenUser = JSON.parseObject(JSON.toJSONString(claims.get("user")), SecurityUser.class);
 //        JSON.toJSONString(claims.get("user")).
 //        SecurityUser tokenUser = new SecurityUser(,null,null,
 //               null

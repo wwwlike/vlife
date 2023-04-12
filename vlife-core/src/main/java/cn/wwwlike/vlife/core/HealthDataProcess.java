@@ -19,6 +19,7 @@
 package cn.wwwlike.vlife.core;
 
 import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.dict.CT;
 import java.util.Date;
 import java.util.Map;
@@ -59,6 +60,21 @@ public class HealthDataProcess extends DataProcess {
             mm.put("modifyDate", new Date());
         }
     }
+
+    // 静态方法提供 一些特定数据结构的业务处理
+
+    /**
+     * 保存数据之前对数据进行
+     */
+    public static  <E extends IdBean> E saveBefore(E saveBean) {
+        // 树形结构数据，新增数据时，计算code
+        if(ITree.class.isAssignableFrom(saveBean.getClass())&&saveBean.getId()==null){
+
+
+        }
+        return saveBean;
+    }
+
 
 
 }

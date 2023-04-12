@@ -75,6 +75,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
     protected static List<VoDto> voDtos = null;
     protected static List<ReqDto> reqDtos = null;
     protected static List<SaveDto> saveDtos=null;
+    protected static List<BeanDto> beanDtos=null;
     /**
      * 实现类读取的类信息
      */
@@ -126,11 +127,11 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
             return LIST;
         } else if (Item.class.isAssignableFrom(clz)) {
             return ENTITY;
+        }  else if (SaveBean.class.isAssignableFrom(clz)) {
+            return SAVE;
         } else if (VoBean.class.isAssignableFrom(clz)) {
             return VO;
-        } else if (SaveBean.class.isAssignableFrom(clz)) {
-            return SAVE;
-        } else if (ReqDto.class.isAssignableFrom(clz)) {
+        }else if (ReqDto.class.isAssignableFrom(clz)) {
             return REQ;
         } else {
             return API;
@@ -217,8 +218,10 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
             if (dto != null) {
                 if (!VCT.ITEM_STATE.ERROR.equals(dto.getState())) {
                     fieldDtoList = new ArrayList<>();
-                    /* item需要父类属性；其他模型不需要 */
-                    Field[] fields = Item.class.isAssignableFrom(clazz)?clazz.getFields():clazz.getDeclaredFields();
+                    /* item需要父类属性；其他模型不需要??? */
+//                    Field[] fields = Item.class.isAssignableFrom(clazz)?clazz.getFields():clazz.getDeclaredFields();
+                    /*13-2-14 改为需要, 如有字段不需要则调整为私有属性 */
+                    Field[] fields = clazz.getFields();
                     for (Field field : fields) {
                         if (!ignores.contains(field.getName())) {
                             FieldDto<T> fieldDto = FieldRead.getInstance().read(field, dto);
@@ -246,7 +249,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
             //用注释写title
             commentRead(beanInfo);
             //用实体类的注释
-            if(beanInfo instanceof NotEntityDto ){
+            if(beanInfo instanceof ModelDto ){
                 commentPerfect(beanInfo);
             }
         }
@@ -262,7 +265,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
      */
     private T commentPerfect(T beanInfo){
         if(StringUtils.isEmpty(beanInfo.getTitle())){
-            beanInfo.setTitle(((NotEntityDto)beanInfo).getEntityDto().getTitle() + "(视图)");
+            beanInfo.setTitle(((ModelDto)beanInfo).getEntityDto().getTitle() + "(视图)");
         }
         List<FieldDto> fieldDtos = beanInfo.getFields();
         /* 所有字段找对应的实体的字段title,字段是对象则找对象, vo save 存在嵌套注入的情况*/
@@ -396,7 +399,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
      * @param item     当前 vo ,req字段；
      * @param fieldDto
      */
-    protected <T extends NotEntityDto> List basicFieldMatch(T item, FieldDto fieldDto) {
+    protected <T extends ModelDto> List basicFieldMatch(T item, FieldDto fieldDto) {
         EntityDto entityDto = GlobalData.entityDto(item.getEntityClz());
         List<Class<? extends Item>> lefts = entityDto.getFkTableClz();
         List<Class<? extends Item>> rights = entityDto.getRelationTableClz();
@@ -538,7 +541,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
             return null;
         }
 
-        Class itemEntityClz = ((NotEntityDto) fieldDto.getItemDto()).getEntityClz();
+        Class itemEntityClz = ((ModelDto) fieldDto.getItemDto()).getEntityClz();
         if (leftToRight) {
             entityClzPaths.add(0, itemEntityClz);
         } else {

@@ -42,8 +42,7 @@ public class ModelReadCheck {
     private  List<VoDto> voDtos = null;
     private  List<ReqDto> reqDtos = null;
     private  List<SaveDto> saveDtos=null;
-
-
+    private  List<BeanDto> beanDtos=null;
     public BeanDto find(String beanName){
         if(itemDtos!=null){
            Optional obj=itemDtos.stream().filter(t->t.getType().equals(beanName)).findFirst();
@@ -65,6 +64,13 @@ public class ModelReadCheck {
         }
         if(saveDtos!=null){
             Optional obj=saveDtos.stream().filter(t->t.getType().equals(beanName)).findFirst();
+            if(obj.isPresent()){
+                return (BeanDto) obj.get();
+            }
+        }
+
+        if(beanDtos!=null){
+            Optional obj=beanDtos.stream().filter(t->t.getType().equals(beanName)).findFirst();
             if(obj.isPresent()){
                 return (BeanDto) obj.get();
             }
@@ -100,6 +106,10 @@ public class ModelReadCheck {
             SaveRead saveRead = SaveRead.getInstance(itemDtos);
             saveDtos = saveRead.read(loader, list);
             GlobalData.save(saveDtos);
+            BeanRead beanRead = BeanRead.getInstance(itemDtos);
+            beanDtos = beanRead.read(loader, list);
+            GlobalData.save(beanDtos);
+
             //两个for 处理缓存读取时有时为空的问题
             for(VoDto d:voDtos){
                 d.getLeftPathClz();
@@ -235,10 +245,10 @@ public class ModelReadCheck {
         Integer errorNum = 0;
         for (List<? extends BeanDto> list : beanDtos) {
             for (BeanDto beanDto : list) {
-                if (beanDto instanceof NotEntityDto) {
-                    if(((NotEntityDto) beanDto).getEntityClz()==null){
+                if (beanDto instanceof ModelDto) {
+                    if(((ModelDto) beanDto).getEntityClz()==null){
                         errorNum+=1;
-                        logger.error("[model] "+beanDto.getType()+" require write <Item>");
+                        logger.error("[模型] "+beanDto.getType()+" 未直接实现VoBean,SaveBean这类接口");
                     }
                 }
                 List<FieldDto> fieldDtos = beanDto.getFields();
@@ -249,8 +259,6 @@ public class ModelReadCheck {
                             errorNum = (checkField(beanDto, fieldDto) == false) ? errorNum + 1 : errorNum;
                         }
                     }
-                }
-                if(beanDto instanceof VoDto){
                 }
             }
         }

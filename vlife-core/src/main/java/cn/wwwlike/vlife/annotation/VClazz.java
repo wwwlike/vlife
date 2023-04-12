@@ -37,7 +37,7 @@ import static cn.wwwlike.vlife.dict.Constants.DEFAULT_ORDER_TYPE;
 @Target(ElementType.TYPE)
 public @interface VClazz {
     /**
-     * 删除当前类，那么级联清楚本表的外键的类
+     * 删除当前类，那么级联清除本表的外键的类
      */
     Class<? extends Item>[] clear() default {};
 
@@ -72,6 +72,12 @@ public @interface VClazz {
      * @return
      */
     Class returnType() default Object.class;
+
+    /**
+     * 类所属模块
+     * @return
+     */
+    String  module() default  "";
 
     /**
      * 默认实体类的排序方式

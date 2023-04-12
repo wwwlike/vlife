@@ -43,7 +43,7 @@ public class OrderRequest {
 
     public void setOrders(String orders) {
         this.orders = orders;
-        if (orders != null) {
+        if (orders != null&&!"".equals(orders)) {
             String[] orderArray = orders.split(",");
             for (String order : orderArray) {
                 String[] detail = order.split("_");

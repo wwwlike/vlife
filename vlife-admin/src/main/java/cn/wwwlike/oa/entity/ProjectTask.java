@@ -18,6 +18,7 @@
 
 package cn.wwwlike.oa.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -30,6 +31,7 @@ import javax.persistence.Table;
 @Data
 @Table(name = "oa_project_task")
 @Entity
+@VClazz(module = "oa")
 public class ProjectTask extends DbEntity {
     /**
      * 所属项目

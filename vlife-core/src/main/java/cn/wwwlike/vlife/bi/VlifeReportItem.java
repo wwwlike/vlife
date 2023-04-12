@@ -27,34 +27,36 @@ import lombok.Data;
  */
 @Data
 public class VlifeReportItem {
+
     /**
      * 项目名称
      */
-    public String name;
+    private String name;
     /**
      * 实体clz
      */
-    public Class entityClz;
+    private Class entityClz;
     /**
      * 项目编码
      */
-    public String code;
+    private String code;
     /**
      * 聚合字段
      */
-    public String fieldName;
+    private String fieldName;
     /**
      * 聚合方式
      */
     @VField(dictCode = "ITEM_FUNC")
-    public String func;
+    private String func;
     /**
      * 过滤条件
      */
-    public Conditions conditions;
+    private Conditions conditions;
     /**
      * 聚合过滤条件
      */
-    public String havings;
+    private String havings;
+
 
 }

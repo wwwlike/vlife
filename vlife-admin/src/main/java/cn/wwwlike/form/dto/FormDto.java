@@ -19,8 +19,6 @@
 package cn.wwwlike.form.dto;
 
 import cn.wwwlike.form.entity.Form;
-import cn.wwwlike.form.entity.FormField;
-import cn.wwwlike.form.entity.FormGroup;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
@@ -29,7 +27,6 @@ import java.util.List;
 
 /**
  * 表单保存对象
- *
  * @author xiaoyu
  * @date 2022/9/22
  */
@@ -44,25 +41,64 @@ public class FormDto implements SaveBean<Form> {
      * 类型(clz)
      */
     public String type;
+
+    /**
+     * 模型父类字符串集合
+     */
+    public String typeParentsStr;
+
     /**
      * 实体clz
      */
     public String entityType;
     /**
-     * ui类型
-     */
-    public String uiType;
-    /**
      * 模型类型
      */
     public String itemType;
 
-
     public String name;
 
-    public Integer gridSpan;
-
     public List<FormFieldDto> fields;
+    /**
+     * 页面排序
+     */
+    public Integer  sort;
 
-    public List<FormGroup> groups;
+    public List<FormTabDto> formTabDtos;
+
+    /**
+     * 图标
+     */
+    public String  icon;
+
+    /**
+     * 模块
+     * 字典：系统模块，业务模块等
+     */
+    public String module;
+
+    /**
+     * 页面大小
+     * 1. 对于form可以确定弹出层大小(tailwind的比例)
+     * 2. field的gridSpan最小支持的约束
+     */
+    public Integer modelSize;
+
+    public Integer  pageSize;
+
+    /**
+     * 版本
+     * 保存一次版本加一
+     */
+    public Integer version;
+
+    /**
+     * 分页列表api代码路径
+     */
+    public String listApiPath;
+
+    /**
+     * 分页列表api代码路径
+     */
+    public String saveApiPath;
 }

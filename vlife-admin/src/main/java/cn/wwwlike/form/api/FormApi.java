@@ -1,20 +1,51 @@
 package cn.wwwlike.form.api;
 
+import cn.wwwlike.auth.config.SecurityConfig;
+import cn.wwwlike.auth.entity.SysGroup;
+import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.form.dto.FormDto;
+import cn.wwwlike.form.dto.FormEventDto;
+import cn.wwwlike.form.dto.FormFieldDto;
 import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.form.entity.FormEvent;
+import cn.wwwlike.form.entity.FormField;
+import cn.wwwlike.form.entity.FormReaction;
+import cn.wwwlike.form.req.FormPageReq;
+import cn.wwwlike.form.service.FormEventService;
+import cn.wwwlike.form.service.FormFieldService;
+import cn.wwwlike.form.service.FormReactionService;
 import cn.wwwlike.form.service.FormService;
-import cn.wwwlike.form.vo.FormReportItemCompVo;
-import cn.wwwlike.form.vo.FormReportKpiCompVo;
-import cn.wwwlike.form.vo.FormVo;
+import cn.wwwlike.form.vo.*;
+import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
+import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
-import cn.wwwlike.vlife.query.QueryWrapper;
-import cn.wwwlike.vlife.query.req.ComponentParam;
-import cn.wwwlike.vlife.query.req.VlifeQuery;
+import cn.wwwlike.vlife.objship.read.ModelService;
+import cn.wwwlike.vlife.ts.ReadTitle;
+import cn.wwwlike.vlife.utils.FileUtil;
+import cn.wwwlike.web.exception.enums.CommonResponseEnum;
+import cn.wwwlike.web.security.core.SecurityUser;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,76 +55,140 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/form")
 public class FormApi extends VLifeApi<Form, FormService> {
+
+    @Autowired
+    public FormFieldService fieldService;
+
+    @Autowired
+    public FormEventService eventService;
+
+    @Autowired
+    public FormReactionService reactionService;
     /**
-     * 根据用途查询该类别已经保存的模型和能够支持该类型的模型
-     *
+     * 查询后台解析到的模型信息
+     * @param req 根究模型类型查询itemType,根据关联的实体名称entityName查询vo,save,req模型
+     */
+    @GetMapping("/javaModels")
+    public  List<BeanDto>  javaModels(FormPageReq req){
+        if(req.getEntityType()!=null){
+            return ModelService.typeEntityModels(req.getEntityType(),req.getItemType());
+        }else if(req.getItemType()!=null) {
+            return ModelService.typeModels(req.getItemType());
+        }
+        return new ArrayList<>();
+    }
+
+
+
+    /**
+     * 已启用的模型信息过滤
+     * @param req 根究模型类型查询itemType,根据关联的实体名称entityName查询vo,save,req模型
      * @return
      */
-    @GetMapping("/models/{uiType}")
-    public List<FormVo> models(@PathVariable String uiType) {
-        Collection<? extends BeanDto> entitys = GlobalData.getEntityDtos().values();
-        List<BeanDto> dtos = new ArrayList<>();//查询的指定模型
-        if (VCT.ITEM_TYPE.LIST.equals(uiType)) {//列表用途
-            dtos = new ArrayList<>(GlobalData.getVoDtos().values());
-        } else if (VCT.ITEM_TYPE.SAVE.equals(uiType)) {//数据编辑用途
-            dtos = new ArrayList<>(GlobalData.getSaveDtos().values());
-        } else if (VCT.ITEM_TYPE.VO.equals(uiType)) {// 数据展示用途
-            dtos = new ArrayList<>(GlobalData.getSaveDtos().values());
-        } else if (VCT.ITEM_TYPE.REQ.equals(uiType)) { //数据查询用途
-            dtos = new ArrayList<>(GlobalData.getReqDtos().values());
+    @GetMapping("/list")
+    public  List<Form> list(FormPageReq req){
+        return service.find(req);
+    }
+
+    @Autowired
+    private RestTemplateBuilder builder;
+
+    // 使用RestTemplateBuilder来实例化RestTemplate对象，spring默认已经注入了RestTemplateBuilder实例
+    @Bean
+    public RestTemplate restTemplate() {
+        return builder.build();
+    }
+
+    @Value("${vlife.packroot}")
+    public String packroot;
+    /**
+     * 生成指定模型代码 local模式
+     * @param type
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/tsCode/{type}")
+    public String tsCode(@PathVariable String type) throws IOException {
+        String json =null;
+        Resource resource = new ClassPathResource("title.json");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+//        FileSystemResource fileSystemResource = new FileSystemResource(url);
+        if(resource.isFile()) {//开发环境 classpath查找
+            InputStream is = resource.getInputStream();
+            json = FileUtil.getFileContent(is);
+
+            parts.add("file", resource);
+        }else{//生成环境jar包内读取
+            Resource[] resources=new PathMatchingResourcePatternResolver().getResources(ResourceUtils.CLASSPATH_URL_PREFIX+"BOOT-INF/classes/title.json");
+            parts.add("file", resources[0]);
+            json = FileUtil.getFileContent(resources[0].getInputStream());
         }
-        if (!VCT.ITEM_TYPE.REQ.equals(uiType)) {
-            dtos.addAll(new ArrayList<>(entitys));
-        }
-        return service.getFormsByUiType(uiType, dtos);
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(parts, headers);
+        ResponseEntity<JSONObject> exchange = null;
+        exchange = restTemplate().exchange(packroot+":8288/oa/form/tsCode/remote/"+type, HttpMethod.valueOf("POST"), entity, JSONObject.class);
+        return exchange.getBody().get("data").toString();
     }
 
     /**
+     * 接收客户端发来的代码请求
+     */
+    @PostMapping("/tsCode/remote/{type}")
+    public String tsCode(@RequestParam("file") MultipartFile file,@PathVariable String type) throws IOException {
+        InputStream is = file.getInputStream();
+        String  json = FileUtil.getFileContent(is);
+        return ReadTitle.tsCode(json,type);
+    }
+    /**
+     * 模型信息同步
+     * 第一次进入系统就应该同步一次
+     * Integer数量大于1标识有模型信息发生了变化，前端缓存需要更新
+     */
+    @GetMapping("/sync")
+    public Integer sync(){
+        return service.sync(GlobalData.allModels());
+    }
+
+    @Autowired
+    public SysGroupService groupService;
+
+    /**
      * 查询指定模型信息
-     *
-     * @param uiType
-     * @param modelName
      * @return
      */
     @GetMapping("/model")
-    public FormVo model(String uiType, String modelName) {
-        VlifeQuery<Form> request = new VlifeQuery(Form.class);
-        request.qw(Form.class).eq("uiType", uiType).eq("type", modelName);
-        List<FormVo> published = service.query(FormVo.class, request);
+    public FormVo model(FormPageReq req) {
+        SecurityUser currUser= SecurityConfig.getCurrUser();
+        CommonResponseEnum.CANOT_CONTINUE.assertNotNull(req.getType(),"模型标识type没有传入");
+        List<FormVo> published = service.query(FormVo.class, req);
         FormVo form = null;
         if (published != null && published.size() > 0) {
             form = published.get(0);
-        } else {
-            Collection<? extends BeanDto> list = GlobalData.getEntityDtos().values();
-            Optional<? extends BeanDto> dto = list.stream().filter(beanDto ->
-                    beanDto.getType().equalsIgnoreCase(modelName)).findAny();
-            if (dto.isPresent() == false) {
-                if (VCT.ITEM_TYPE.LIST.equals(uiType)) {//列表用途
-                    list = new ArrayList<>(GlobalData.getVoDtos().values());
-                } else if (VCT.ITEM_TYPE.SAVE.equals(uiType)) {//数据编辑用途
-                    list = new ArrayList<>(GlobalData.getSaveDtos().values());
-                } else if (VCT.ITEM_TYPE.VO.equals(uiType)) {// 数据展示用途
-                    list = new ArrayList<>(GlobalData.getSaveDtos().values());
-                } else if (VCT.ITEM_TYPE.REQ.equals(uiType)) { //数据查询用途
-                    list = new ArrayList<>(GlobalData.getReqDtos().values());
-                }
-                dto = list.stream().filter(beanDto ->
-                        beanDto.getType().equalsIgnoreCase(modelName)).findAny();
-            }
-            if (dto.isPresent()) {
-                form = service.tran(dto.get(), uiType);
+        } else if(req.getType()!=null) {
+            BeanDto dto=GlobalData.findBeanDtoByName(req.getItemType(),req.getType());
+            if (dto!=null) {
+                form = (FormVo)service.tran(dto);
             }
         }
-        /**
-         * 对机构/地区/部门的查询组件与查询权限范围进行对比，最多选出一个符合的组件展示
-         */
-        if (uiType.equals("req")) {
-            form = service.reqModelFilter(form);
+        //查询模型需要过滤掉和行级数据过滤无关的字段
+        if (!req.isDesign()&&form!=null &&VCT.ITEM_TYPE.REQ.equals(form.getItemType())&& currUser.getGroupId()!=null) {
+            SysGroup group=groupService.findOne( currUser.getGroupId());
+            String groupFilterType=group.getFilterType();
+            if(group.getFilterType()!=null&&!"".equals(groupFilterType)&&groupFilterType.split("_").length==2){
+            String[] filterType=groupFilterType.split("_");
+            String filterEntityType=filterType[0]; //根据哪个外键过滤
+            String level=filterType[1];// "1" 本级  2 本级和下级
+            EntityDto userEntityDto=GlobalData.entityDto("sysUser");
+            EntityDto reqEntityDto=GlobalData.entityDto(form.entityType);
+            EntityDto filterEntityDto=GlobalData.entityDto(filterEntityType);
+            List<String> reqEntityRelationTableNames=reqEntityDto.getRelationFields().stream().map(f->f.getEntityType()).collect(Collectors.toList());
+            List<String> userFkTableNames=userEntityDto.fields.stream().filter(f->!f.entityType.equals("sysUser")).map(f->f.getEntityType()).collect(Collectors.toList());
+            form.setFields(service.reqModelFilter(form,reqEntityRelationTableNames,userFkTableNames,filterEntityType,level,
+                    ITree.class.isAssignableFrom( filterEntityDto.getClz())));
+            }
         }
-        if(form==null){//modelName当id使用
-            return service.queryOne(FormVo.class,modelName);
-        }
-        return form;
+    return form;
     }
 
 
@@ -125,27 +220,30 @@ public class FormApi extends VLifeApi<Form, FormService> {
     }
 
     /**
-     * 保存列表字段;
-     *
+     * 模型&字段保存
      * @param dto 列表字段;
      * @return 列表字段;
      */
     @PostMapping("/save/formDto")
-    public FormVo save(@RequestBody FormDto dto) {
+    public FormVo saveFormDto(@RequestBody FormDto dto) {
         String id = service.save(dto, true).getId();
         FormVo vo = service.queryOne(FormVo.class, id);
+        eventService.createHideEvent(dto);
+        eventService.modifyReadEvent(dto);
         return vo;
     }
 
     /**
-     * 保存列表字段;
-     *
-     * @param dto 列表字段;
-     * @return 列表字段;
+     * 保存模型
+     * 并初始化字段
      */
     @PostMapping("/save")
-    public Form save(@RequestBody Form dto) {
-        return service.save(dto);
+    public FormDto save(@RequestBody Form dto) {
+        FormDto formDto=new FormDto();
+        BeanUtils.copyProperties(dto,formDto);
+        BeanDto beanDto=GlobalData.findBeanDtoByName(dto.getItemType(),dto.type);
+        formDto.setFields(fieldService.getFieldList(beanDto.getFields()));
+        return service.save(formDto);
     }
 
     /**
@@ -156,26 +254,26 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return service.queryOne(FormVo.class, id);
     }
 
-    /**
-     * 统计项选择组件vo对象
-     */
-    @GetMapping("/formReportItemAll")
-    public List<FormReportItemCompVo> formReportItemAll() {
-        QueryWrapper qw = QueryWrapper.of(Form.class);
-        qw.eq("itemType", "entity");
-        return service.query(FormReportItemCompVo.class, qw);
-    }
-
-
-    /**
-     * 指标项选择组件vo都西昂
-     */
-    @GetMapping("/formReportKpiAll")
-    public List<FormReportItemCompVo> formReportKpiAll() {
-        QueryWrapper qw = QueryWrapper.of(Form.class);
-        qw.eq("itemType", "entity");
-        return service.query(FormReportKpiCompVo.class, qw);
-    }
+//    /**
+//     * 统计项选择组件vo对象
+//     */
+//    @GetMapping("/formReportItemAll")
+//    public List<FormReportItemCompVo> formReportItemAll() {
+//        QueryWrapper qw = QueryWrapper.of(Form.class);
+//        qw.eq("itemType", "entity");
+//        return service.query(FormReportItemCompVo.class, qw);
+//    }
+//
+//
+//    /**
+//     * 指标项选择组件vo都西昂
+//     */
+//    @GetMapping("/formReportKpiAll")
+//    public List<FormReportItemCompVo> formReportKpiAll() {
+//        QueryWrapper qw = QueryWrapper.of(Form.class);
+//        qw.eq("itemType", "entity");
+//        return service.query(FormReportKpiCompVo.class, qw);
+//    }
 
     /**
      * 找到指标，统计项所在表集合里拥有的共同的字段；

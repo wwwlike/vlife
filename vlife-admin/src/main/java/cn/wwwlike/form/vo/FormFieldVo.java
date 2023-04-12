@@ -18,7 +18,9 @@
 
 package cn.wwwlike.form.vo;
 
+import cn.wwwlike.form.dto.FormFieldDto;
 import cn.wwwlike.form.dto.PageComponentPropDto;
+import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.base.VoBean;
@@ -31,12 +33,37 @@ import java.util.List;
  */
 @Data
 @VClazz(orders = "sort_asc")
-public class FormFieldVo implements VoBean<FormField> {
+public class FormFieldVo  implements VoBean<FormField>{
+
     public String id;
+
+    public String name;
+
+    public boolean hideLabel;
+
+    /**
+     * 前端数据类型
+     * basic,array,object
+     */
+    public String dataType;
+    /**
+     * 字段类型
+     */
+    public String fieldType;
+
     /**
      * 所属表单
      */
     public String formId;
+    /**
+     * 所在分组code
+     */
+    public String formGroupCode;
+
+    /**
+     * 所在页签code
+     */
+    public String formTabCode;
 
     //真实字段所在实体名称
     public String entityType;
@@ -44,13 +71,9 @@ public class FormFieldVo implements VoBean<FormField> {
     //实体字段名称
     public String entityFieldName;
 
+
     //组件类型
     public String componentType;
-
-    /**
-     * 分组容器编码
-     */
-    public String formGroupCode;
     /**
      * 字段名
      */
@@ -59,20 +82,12 @@ public class FormFieldVo implements VoBean<FormField> {
      * 全路径
      */
     public String pathName;
-    /**
-     * 字段类型
-     */
-    public String fieldType;
 
     /**
      * 字典的coden
      */
     public String dictCode;
 
-    /**
-     * 元素类型
-     */
-    public String type;
 
     //-----------formily
 
@@ -96,7 +111,6 @@ public class FormFieldVo implements VoBean<FormField> {
      * 隐藏
      */
     public boolean x_hidden;
-
     /**
      * 描述
      */
@@ -105,39 +119,45 @@ public class FormFieldVo implements VoBean<FormField> {
      * 采用组件
      */
     public String x_component;
+
+    /**
+     * 只读
+     *
+     */
+    public Boolean x_read_pretty;
+
     /**
      * 禁用
+     * 删除
      */
     public Boolean disabled;
     /**
      * 只读
+     * 删除
      */
     public Boolean readOnly;
     /**
      * 顺序
      */
     public Integer sort;
+
     //-------------外观
     /**
      * 包裹组件
      */
     public String x_decorator;
 
-//    /**
-//     * 响应内容
-//     */
-//    public List<FormReactionVo> reactions;
+    /**
+     * vlife开头 需要特殊处理的字段
+     */
+    public String vlife_pattern;
+
+    public String vlife_message;
 
     /**
-     * 自己触发的事件
+     * 对应 x-decorator-props.gridSpan属性
      */
-    public List<FormEventVo> events;
-
     public Integer x_decorator_props$gridSpan;
-    /**
-     * 填写描述信息
-     */
-    public String x_component_props$placeholder;
 
     /**
      * label位置 水平 vertical
@@ -149,22 +169,19 @@ public class FormFieldVo implements VoBean<FormField> {
      */
     public String x_decorator_props$labelAlign;
 
+
     /**
-     * 加载组件数据的地址
+     * 描述信息 对应 x-component-props.placeholder;
+     */
+    public String x_component_props$placeholder;
+    /**
+     * 加载组件数据的地址关键字
      */
     public String apiKey;
     /**
      * 字段校验方式
      */
     public String x_validator;
-    /**
-     * 校验正则表达式
-     */
-    public String vlife_pattern;
-    /**
-     *
-     *
-    public String vlife_message;
 
     /**
      * 是否列表展示
@@ -172,12 +189,60 @@ public class FormFieldVo implements VoBean<FormField> {
     public Boolean listShow;
 
     /**
-     * 预览
+     * 组件设置的JSON信息
      */
     public String componentSettingJson;
 
+    public String getName() {
+        return this.title;
+    }
     /**
-     * 字段绑定组件设置信息
+     * 最小长度
      */
+    public Integer minLength;
+    /**
+     * 最小长度
+     */
+    public Integer maxLength;
+
+    /**
+     * 最小值
+     */
+    public Double minimum;
+    /**
+     * 最大值
+     */
+    public  Double maximum;
+
+
+    /**
+     *  唯一不重复
+     * validate是内置远程校验规则，触发form内部远程数据校验
+     */
+    public boolean  validate_unique;
+
+    /** 字段所在组件属性设置*/
     public List<PageComponentPropDto> pageComponentPropDtos;
+
+    public boolean  create_hide;
+
+    /**
+     * 加入分割线
+     */
+    public boolean divider;
+    /**
+     * 分割线标签名称
+     */
+    public String dividerLabel;
+    /**
+     * 修改时只读
+     * 不可修改
+     */
+    public boolean  modify_read;
+
+    public String form_type;
+    /**
+     * 自己触发的事件
+     */
+    public List<FormEventVo> events;
 }

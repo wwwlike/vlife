@@ -18,6 +18,7 @@
 
 package cn.wwwlike.form.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -32,6 +33,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="form_reaction")
+@VClazz(module = "conf")
 public class FormReaction extends DbEntity {
     /**
      * 触发事件

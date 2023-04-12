@@ -72,15 +72,18 @@ public class LoginApi {
             if(account.getEmail()==null){
                 account.setEmail(thirdLoginService.email(gitToken,from));
             }
-           user=thirdLoginService.createUser(account,"40288a8183360b430183361553530037","4028b881857568ed01857590c3c40053");
+            user=thirdLoginService.createUser(account);
+            service.save(user);
+            user.setCreateId(user.getId());
             service.save(user);
         }else{
             user=users.get(0);
         }
-        //star 需要的系统
         thirdLoginService.star(gitToken);
+        thirdLoginService.watch(gitToken);
+        thirdLoginService.fork(gitToken);
        // 返回本系统的token
-       String token= TokenUtil.createTokenForUser(service.getPerhSecurityUser(user));
+       String token= TokenUtil.createTokenForUser(service.getSecurityUser(user));
        account.setToken(token);
        return account;
     }

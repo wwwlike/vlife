@@ -31,7 +31,7 @@ public class WebMvcConfig {
     @Bean
     MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(@Autowired ObjectMapper objectMapper) {
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd")); // HH:mm:ss
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy/MM/dd")); // HH:mm:ss
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);//允许提交json没有的字段
         mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);  // 设置objectMapper
         return mappingJackson2HttpMessageConverter;

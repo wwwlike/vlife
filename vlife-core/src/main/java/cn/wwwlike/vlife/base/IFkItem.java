@@ -18,10 +18,12 @@
 
 package cn.wwwlike.vlife.base;
 
+import cn.wwwlike.base.model.IdBean;
+
 /**
  * 作为其他表的外键需要实现的接口
  */
-public interface IFkItem {
+public interface IFkItem extends IdBean {
     public String getName();
     public void setName(String name);
 }

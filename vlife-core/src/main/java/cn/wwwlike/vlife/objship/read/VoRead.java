@@ -31,6 +31,7 @@ import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.VoDto;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.BASIC;
 import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.VO;
 
 /**
- * 视图层dto对象
+ * 视图层dto对象,savedto也是voDto
  * 需要校验注入得类也得是voBean或者entity
  */
 public class VoRead extends ItemReadTemplate<VoDto> {
@@ -61,25 +62,25 @@ public class VoRead extends ItemReadTemplate<VoDto> {
     public VoDto readInfo(Class s) {
         VoDto dto = null;
         // savebean其实也是voBean
-        if (VoBean.class.isAssignableFrom(s) && s != VoBean.class&& s != SaveBean.class) {
-            dto = new VoDto();
-            superRead(dto, s);
-            dto.setItemType(VO);
-            Class entityClz = GenericsUtils.getGenericType(s);
-            if (entityClz == null || !Item.class.isAssignableFrom(entityClz)) {
+        if (VoBean.class.isAssignableFrom(s)  &&s != VoBean.class&& s != SaveBean.class) {
+        dto = new VoDto();
+        superRead(dto, s);
+        dto.setItemType(VO);
+        Class entityClz = GenericsUtils.getGenericType(s);
+        if (entityClz == null || !Item.class.isAssignableFrom(entityClz)) {
 //                dto.setState(VCT.ITEM_STATE.ERROR);
-            } else {
-                dto.setEntityClz(entityClz);
-                dto.setEntityType(entityClz.getSimpleName());
-            }
-            dto.setOrders(Constants.DEFAULT_ORDER_TYPE);
-            VClazz f = (VClazz) s.getAnnotation(VClazz.class);
-            if (f != null) {
-                if (f.orders() != null) {
-                    dto.setOrders(f.orders());
-                }
+        } else {
+            dto.setEntityClz(entityClz);
+            dto.setEntityType(entityClz.getSimpleName());
+        }
+        dto.setOrders(Constants.DEFAULT_ORDER_TYPE);
+        VClazz f = (VClazz) s.getAnnotation(VClazz.class);
+        if (f != null) {
+            if (f.orders() != null) {
+                dto.setOrders(f.orders());
             }
         }
+    }
         return dto;
     }
 

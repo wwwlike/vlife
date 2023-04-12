@@ -176,7 +176,11 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 7.条件包装对象查询总数
      */
     public <S extends QueryWrapper, E extends CustomQuery<T, S>> long count(E request) {
-        return dao.count(request.qw());
+        return count(request.qw());
+    }
+
+    public <S extends QueryWrapper, E extends CustomQuery<T, S>> long count(QueryWrapper<T> qw) {
+        return dao.count(qw);
     }
 
     /**
@@ -351,6 +355,26 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         DataProcess masterProcess = createProcess(t);
         masterProcess.setAssigns(assigns);
         return save(t, masterProcess);
+    }
+
+
+    /**
+     * 16 实体类对象保存
+     *
+     * @param
+     * @return 保存成功的id
+     */
+    public List<String> save(String field,Object val,String ... ids) {
+        List<String> savedIds=new ArrayList<>();
+        for(String id:ids){
+          T t=  findOne(id);
+          if(t!=null){
+              savedIds.add(id);
+          }
+          ReflectionUtils.setFieldValue(t,field,val);
+          save(t);
+        }
+        return savedIds;
     }
 
     /**

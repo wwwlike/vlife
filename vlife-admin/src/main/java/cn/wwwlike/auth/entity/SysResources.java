@@ -20,6 +20,7 @@ package cn.wwwlike.auth.entity;
 
 
 import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -32,39 +33,66 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_reources")
-public class SysResources  extends DbEntity {
+public class SysResources  extends DbEntity{
     /**
      * 资源名称
      */
     public String name;
     /**
-     * 资源类型
-     */
-    @VField(dictCode = "SYSRESOURCES_TYPE")
-    public String resourcesType;
-    /**
      * 接口地址
      */
     public String url;
+
+    /**
+     * 所属模块类型
+     */
+    public String entityType;
+
+    /**
+     * 所在api的类标识
+     */
+    public String actionType;
+
     /**
      * 资源编码
+     * 接口进行转换
      */
-    public String resourcesCode;
+    public String code;
     /**
      * 图标
      */
     public String icon;
+
+    /**
+     * 归属菜单
+     * 归属就开启了权限
+     */
+    public String sysMenuId;
+
+    /**
+     * 菜单必备资源
+     */
+    public boolean menuRequired;
+
+    /**
+     * 是否需要权限管理
+     * 1 是
+     * 0 不是
+     * -1 待处理
+     */
+    public String state;
     /**
      * 归属角色
+     * 参与权限管理的角色，auth=true时选择
      */
     public String sysRoleId;
     /**
-     * 依赖资源
+     * 上级资源
      */
-    public String resourcesPcode;
+    public String pcode;
     /**
-     * 归属菜单
+     * 接口说明
      */
-    public String menuCode;
+    public String remark;
 
 }

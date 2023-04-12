@@ -64,7 +64,7 @@ public class SysOrgApi extends VLifeApi<SysOrg, SysOrgService> {
   @GetMapping("/list/all")
   public List<SysOrg> listAll(String entityName) {
     QueryWrapper<SysOrg> wrapper = QueryWrapper.of(SysOrg.class);
-    if(!entityName.equals("sysOrg")){
+    if(entityName!=null&&!entityName.equals("sysOrg")){
       wrapper.filterRuleClz=GlobalData.entityDto(entityName).getClz();
     }
     return service.find(wrapper);

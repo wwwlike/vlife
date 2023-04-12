@@ -33,6 +33,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.apache.commons.lang3.StringUtils;
 
@@ -85,45 +86,48 @@ public class CommentParser {
                     );
                 }
             }
-
             BeanDto beanDto= modelReadCheck.find(StringUtils.uncapitalize(clzTag.getEntityName()));
             //不是模型，不是接口层的则排除
-            if(beanDto==null&&!"VLifeApi".equals(clzTag.getSuperName())){
+            if(beanDto!=null||"VLifeApi".equals(clzTag.getSuperName())||"VLifeApi".equals(clzTag.getEntityName())) {
+
+                if("VLifeApi".equals(clzTag.getEntityName())){
+                    System.out.println("1");
+                }
+                if (typeDeclaration.getComment().isPresent()) {//有注释
+                    String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().get().getContent());
+                    commentText = commentText.split("\n")[0].split("\r")[0];//取注释的第一行
+                    clzTag.setTitle(commentText);
+                }
+                NodeList list = typeDeclaration.getMembers();
+                FieldTag fieldTag = null;
+                for (Object o : list) {
+                    if (o instanceof FieldDeclaration) {
+                        fieldTag = new FieldTag();
+                        fieldTag.setFieldName(((FieldDeclaration) o).getVariables().get(0).toString());
+                        if (fieldTag.getFieldName().equals("id")) {
+                            fieldTag.setExtendsField(true);
+                        }
+                        if (((FieldDeclaration) o).getComment().isPresent()) {
+                            String comment = ((FieldDeclaration) o).getComment().get().getContent();
+//                      //取注释的第一行
+                            fieldTag.setTitle(CommentUtils.parseCommentText(comment).split("\n")[0].split("\r")[0]);
+                        } else if (beanDto != null) {
+                            List<FieldDto> fields = beanDto.getFields();
+                            for (FieldDto fieldDto : fields) {
+                                if (fieldDto.getFieldName().equals(fieldTag.getFieldName())) {
+                                    fieldTag.setTitle(fieldDto.getTitle());
+                                }
+                            }
+                        }
+                        fieldTag.setFieldType(((FieldDeclaration) o).getElementType().asString());
+//                        fieldTag.setFieldType(((FieldDeclaration) o).getVariables().get(0).getChildNodes().get(0).name);
+                        clzTag.getTags().put(fieldTag.getFieldName(), fieldTag);
+                    }
+                }
+            }else{
                 return null;
             }
 
-            if (typeDeclaration.getComment().isPresent()) {//有注释
-                String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().get().getContent());
-                commentText = commentText.split("\n")[0].split("\r")[0];//取注释的第一行
-                clzTag.setTitle(commentText);
-            }
-            NodeList list = typeDeclaration.getMembers();
-            FieldTag fieldTag = null;
-            for (Object o : list) {
-                if (o instanceof FieldDeclaration) {
-                    fieldTag = new FieldTag();
-                    fieldTag.setFieldName(((FieldDeclaration) o).getVariables().get(0).toString());
-                    if(fieldTag.getFieldName().equals("id")){
-                        fieldTag.setExtendsField(true);
-                    }
-                    if (((FieldDeclaration) o).getComment().isPresent()) {
-                        String comment = ((FieldDeclaration) o).getComment().get().getContent();
-//                      //取注释的第一行
-                        fieldTag.setTitle(CommentUtils.parseCommentText(comment).split("\n")[0].split("\r")[0]);
-                    }else if(beanDto!=null){
-                       List<FieldDto> fields=beanDto.getFields();
-                        for(FieldDto fieldDto:fields){
-                           if(fieldDto.getFieldName().equals(fieldTag.getFieldName())){
-                               fieldTag.setTitle(fieldDto.getTitle());
-                           }
-                        }
-                    }
-                    fieldTag.setFieldType(((FieldDeclaration) o).getElementType().asString());
-//                        fieldTag.setFieldType(((FieldDeclaration) o).getVariables().get(0).getChildNodes().get(0).name);
-                    clzTag.getTags().put(fieldTag.getFieldName(), fieldTag);
-
-                }
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,7 +166,12 @@ public class CommentParser {
                 apiTag.setTitle(method.getComment().isPresent()?method.getComment().get().getContent():"");
                 apiTag.setMethodName(method.getNameAsString());
                 apiTag.setReturnClz(method.getTypeAsString());
-                apiTag.setPath(((StringLiteralExpr)(method.getAnnotation(0).getChildNodes().get(1))).getValue());
+                Object path=method.getAnnotation(0).getChildNodes().get(1);
+                if(path.getClass()==StringLiteralExpr.class){
+                    apiTag.setPath(((StringLiteralExpr)path).getValue());
+                }else if(path.getClass()== MemberValuePair.class){
+                    apiTag.setPath(((MemberValuePair)path).getValue().toString());
+                }
                 apiTag.setMethodType(method.getAnnotation(0).getChildNodes().get(0).toString());
                 if(method.getParameters().size()>0){
                     apiTag.setParam(method.getParameter(0).getNameAsString());

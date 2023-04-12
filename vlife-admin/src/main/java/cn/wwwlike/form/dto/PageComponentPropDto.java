@@ -52,4 +52,6 @@ public class PageComponentPropDto implements SaveBean<PageComponentProp> {
      */
     public List<PageApiParam> params;
 
+    public String relateVal;
+
 }

@@ -23,5 +23,5 @@ package cn.wwwlike.auth.common;
  * 所以该类的实现实体只能创建自己用户机构的数据
  * 业务类实现该接口，机构，地区，部门均提取用户信息里的
  */
-public interface Business extends IOrg, IArea, IDept {
+public interface Business extends  IDept {
 }

@@ -7,20 +7,11 @@ import cn.wwwlike.auth.service.SysRoleService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.dict.VCT;
-import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 import cn.wwwlike.vlife.query.QueryWrapper;
-import cn.wwwlike.vlife.utils.FileUtil;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,20 +49,6 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
         return service.findOne(id);
     }
 
-    /**
-     * 角色应该有的资源权限，因该去掉，交给前端过滤
-     *
-     * @param sysRoleId
-     * @return
-     */
-    @GetMapping("/roleAllResources/{sysRoleId}")
-    public List<SysResources> roleAllResources(@PathVariable String sysRoleId) {
-        return service.findRoleAllResources(
-                (StringUtils.isEmpty(sysRoleId)
-                        || "undefiend".equals(sysRoleId)
-                        || "null".equals(sysRoleId)) ? new ArrayList<>() :
-                        service.find("sysRoleId", sysRoleId));
-    }
 
     /**
      * 全量的资源数据/指定菜单的资源
@@ -109,20 +86,13 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
     }
 
     /**
-     * 获得待导入的接口信息
-     *
+     * 获得待导入的所有接口和菜单的信息
      * @return
      */
     @GetMapping("/page/import")
     public PageVo<SysResources> pageImport(SysResourcesPageReq req) throws IOException {
         PageVo<SysResources> page = new PageVo<>();
-        Resource resource = new ClassPathResource("title.json");
-        InputStream is = resource.getInputStream();
-        String json = FileUtil.getFileContent(is);
-        Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-        List<ClzTag> allTag = gson.fromJson(json, new TypeToken<List<ClzTag>>() {
-        }.getType());
-        List list = service.imports(allTag, req.getSearch());
+        List list = service.imports( req.getSearch());
         //手工分页
         int pageSize = req.getPager().getSize();
         page.setTotal(Long.parseLong(list.size() + ""));
@@ -134,6 +104,26 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
         return page;
     }
 
+
+    /**
+     * 单个模块的所有接口&菜单（数据库+title结合)
+     * @param menuCode
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/menuResources/{menuCode}")
+    public List<SysResources> menuResources(@PathVariable String menuCode) throws IOException {
+        //数据库
+       List<SysResources> rs= service.find("code",menuCode);
+       List list = service.imports(menuCode);
+       if(rs!=null&&rs.size()>0){
+           rs.addAll(service.find("code",menuCode));
+           rs.addAll(list);
+           return rs;
+       }
+       return list;
+    }
+
     /**
      * 数据导入
      *
@@ -141,16 +131,21 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
      */
     @PostMapping("/save/import")
     public SysResources saveImport(@RequestBody SysResources dto) throws IOException {
-        PageVo<SysResources> page = new PageVo<>();
-        Resource resource = new ClassPathResource("title.json");
-        InputStream is = resource.getInputStream();
-        String json = FileUtil.getFileContent(is);
-        Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-        List<ClzTag> allTag = gson.fromJson(json, new TypeToken<List<ClzTag>>() {
-        }.getType());
-        List<SysResources> list = service.imports(allTag, dto.getResourcesCode());
-        SysResources data = list.stream().filter(l -> l.getResourcesCode().equals(dto.getResourcesCode())).findFirst().get();
+        List<SysResources> list = service.imports( dto.getCode());
+        SysResources data = list.stream().filter(l -> l.getCode().equals(dto.getCode())).findFirst().get();
         data.setId(null);
         return service.save(data);
+    }
+
+    /**
+     * 一次批量保存资源
+     * @return
+     */
+    @PostMapping("/save/resources")
+    public Integer saveResources(@RequestBody List<SysResources> resources) {
+        for(SysResources bean:resources){
+            service.save(bean);
+        }
+        return  resources.size();
     }
 }

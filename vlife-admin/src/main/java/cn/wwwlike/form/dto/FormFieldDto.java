@@ -17,11 +17,9 @@
  */
 
 package cn.wwwlike.form.dto;
-
 import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
-
 import java.util.List;
 
 /**
@@ -33,14 +31,32 @@ public class FormFieldDto  implements SaveBean<FormField> {
     public String id;
 
     public String name;
+
+    public boolean hideLabel;
+
+    /**
+     * 前端数据类型
+     * basic,array,object
+     */
+    public String dataType;
+    /**
+     * 字段类型
+     */
+    public String fieldType;
+
     /**
      * 所属表单
      */
     public String formId;
     /**
-     * 所在容器编码
+     * 所在分组code
      */
     public String formGroupCode;
+
+    /**
+     * 所在页签code
+     */
+    public String formTabCode;
 
     //真实字段所在实体名称
     public String entityType;
@@ -59,20 +75,12 @@ public class FormFieldDto  implements SaveBean<FormField> {
      * 全路径
      */
     public String pathName;
-    /**
-     * 字段类型
-     */
-    public String fieldType;
 
     /**
      * 字典的coden
      */
     public String dictCode;
 
-    /**
-     * 元素类型
-     */
-    public String type;
 
     //-----------formily
 
@@ -84,6 +92,33 @@ public class FormFieldDto  implements SaveBean<FormField> {
      * 标题
      */
     public String title;
+
+
+
+    /**
+     *  唯一不重复
+     * validate是内置远程校验规则，触发form内部远程数据校验
+     */
+    public boolean  validate_unique;
+
+    public boolean  create_hide;
+
+    /**
+     * 修改时只读
+     * 不可修改
+     */
+    public boolean  modify_read;
+
+
+    /**
+     * 加入分割线
+     */
+    public boolean divider;
+    /**
+     * 分割线标签名称
+     */
+    public String dividerLabel;
+
     /**
      * 默认值
      */
@@ -104,12 +139,21 @@ public class FormFieldDto  implements SaveBean<FormField> {
      * 采用组件
      */
     public String x_component;
+
+    /**
+     * 只读
+     *
+     */
+    public Boolean x_read_pretty;
+
     /**
      * 禁用
+     * 删除
      */
     public Boolean disabled;
     /**
      * 只读
+     * 删除
      */
     public Boolean readOnly;
     /**
@@ -172,6 +216,23 @@ public class FormFieldDto  implements SaveBean<FormField> {
     public String getName() {
         return this.title;
     }
+    /**
+     * 最小长度
+     */
+    public Integer minLength;
+    /**
+     * 最小长度
+     */
+    public Integer maxLength;
+
+    /**
+     * 最小值
+     */
+    public Double minimum;
+    /**
+     * 最大值
+     */
+    public  Double maximum;
 
     /** 字段所在组件属性设置*/
     public List<PageComponentPropDto> pageComponentPropDtos;

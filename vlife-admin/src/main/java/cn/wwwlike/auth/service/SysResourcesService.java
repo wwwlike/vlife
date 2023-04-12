@@ -10,9 +10,17 @@ import cn.wwwlike.vlife.objship.read.tag.ApiTag;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
+import cn.wwwlike.vlife.utils.FileUtil;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,11 +35,11 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
     public List<SysResources> findApiResources(List<SysResources> all, String ... codes){
         List<SysResources> list=new ArrayList<>();
         for(String code:codes){
-           SysResources resources= all.stream().filter(res->res.resourcesCode.equals(code)).findFirst().get();
+           SysResources resources= all.stream().filter(res->res.getCode().equals(code)).findFirst().get();
            list.add(resources);
-           if(StringUtils.isNotEmpty(resources.getResourcesPcode())){
-               if(!resources.getResourcesCode().equals(resources.getResourcesPcode())){
-                list.addAll(findApiResources(all,resources.getResourcesPcode()));
+           if(StringUtils.isNotEmpty(resources.getCode())){
+               if(!resources.getCode().equals(resources.getPcode())){
+                list.addAll(findApiResources(all,resources.getPcode()));
                }
            }
         }
@@ -40,17 +48,21 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
 
     public Set<String> getResourcesAndSubsRoleId(List<SysResources> all, String code){
         Set<String> set=new HashSet<>();
-        set.add(all.stream().filter(res->res.getResourcesCode().equals(code)).findFirst().get().getSysRoleId());
-        all.stream().filter(res->code.equals(res.getResourcesPcode())).forEach(res->{
-           set.addAll(getResourcesAndSubsRoleId(all,res.getResourcesCode()));
+        set.add(all.stream().filter(res->res.getCode().equals(code)).findFirst().get().getSysRoleId());
+        all.stream().filter(res->code.equals(res.getCode())).forEach(res->{
+           set.addAll(getResourcesAndSubsRoleId(all,res.getCode()));
         });
         return set;
     }
 
+    /**
+     * 所有启用的接口
+     * @return
+     */
     public List<SysResources> findApiResources(){
         VlifeQuery<SysResources> req=new VlifeQuery<SysResources>(SysResources.class);
         //对有角色关联的资源进行拦截
-        req.qw().isNotNull("sysRoleId").eq("resourcesType", VCT.SYSRESOURCES_TYPE.API);
+        req.qw().isNotNull("sysRoleId").eq("state","1"); //0停用，-1未启用
         return find(req);
     }
 
@@ -62,10 +74,10 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
     public List<SysResources> findMenuResource(List<SysResources> all, String ... codes){
         List<SysResources> allApiResources=findApiResources(all,codes);
         Set<String> menus=allApiResources.stream()
-                .filter(res->res.getMenuCode()!=null)
-                .map(SysResources::getMenuCode).collect(Collectors.toSet());
+                .filter(res->res.getPcode()==null)
+                .map(SysResources::getCode).collect(Collectors.toSet());
 
-        return all.stream().filter(res->menus.contains(res.resourcesCode)).collect(Collectors.toList());
+        return all.stream().filter(res->menus.contains(res.getCode())).collect(Collectors.toList());
     }
 
     /**
@@ -87,7 +99,7 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
      */
     public List<SysResources> findRoleAllResources(List<SysResources> resources){
         resources.addAll(findRoleEmptyResources());//空角色资源
-        String[] codes=resources.stream().map(SysResources::getResourcesCode).collect(Collectors.toList()).toArray(new String[resources.size()]);
+        String[] codes=resources.stream().map(SysResources::getCode).collect(Collectors.toList()).toArray(new String[resources.size()]);
         resources.addAll(findMenuResource(findAll(),codes));//加入菜单
         return resources;
     }
@@ -100,10 +112,16 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
     public Set<String> getMenuCode(String... roleId){
         QueryWrapper<SysResources> wrapper = QueryWrapper.of(entityClz).in("sysRoleId", roleId);
         List<SysResources> resources= dao.find(wrapper);
-        return resources.stream().map(SysResources::getMenuCode).collect(Collectors.toSet());
+        return resources.stream().map(SysResources::getPcode).collect(Collectors.toSet());
     }
 
-    public List<SysResources> imports(List<ClzTag> allTag,String search){
+    public List<SysResources> imports(String menuResourcesCode) throws IOException {
+        Resource resource = new ClassPathResource("title.json");
+        InputStream is = resource.getInputStream();
+        String json = FileUtil.getFileContent(is);
+        Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+        List<ClzTag> allTag = gson.fromJson(json, new TypeToken<List<ClzTag>>() {
+        }.getType());
         List<SysResources> list=new ArrayList();
         for(ClzTag clzTag:allTag){
             if(clzTag.getPath()!=null&&clzTag.getApiTagList()!=null&&
@@ -113,16 +131,15 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
                             ))
             )
                     {
-               List<SysResources> menus= find("resourcesCode",clzTag.getPath().substring(1));
+               List<SysResources> menus= find("code",clzTag.getPath().substring(1));
                 //菜单待导入
                 SysResources menu=null;
                 if(menus==null||menus.size()==0){
                     menu=new SysResources();
                     menu.setName(GlobalData.entityDto(clzTag.getTypeName()).getTitle());
-                    menu.setResourcesCode(clzTag.getPath().substring(1));
-                    menu.setResourcesType(VCT.SYSRESOURCES_TYPE.MENU);
-                    menu.setId(menu.getResourcesCode());
-                    if(search==null||clzTag.getPath().toLowerCase().indexOf(search.toLowerCase())!=-1){
+                    menu.setCode(clzTag.getPath().substring(1));
+                    menu.setId(menu.getCode());
+                    if(menuResourcesCode==null||clzTag.getPath().toLowerCase().substring(1).equals(menuResourcesCode.toLowerCase())){
                         list.add(menu);
                     }
                 }else{
@@ -147,12 +164,15 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
                         menthodName=menthodName.replaceAll("page","查询");
                         menthodName=menthodName.replaceAll("page","列表");
                         bean.setName(menthodName);
+                        int index=url.indexOf("/{");
+                        if(index>-1){
+                            url=url.substring(0,index);
+                        }
                         bean.setUrl(url);
-                        bean.setMenuCode(clzTag.getPath().substring(1));
-                        bean.setResourcesCode(url.substring(1).replaceAll("/",":"));
-                        bean.setResourcesType(VCT.SYSRESOURCES_TYPE.API);
-                        bean.setId(bean.getResourcesCode());
-                        if(search==null||bean.getResourcesCode().toLowerCase().indexOf(search.toLowerCase())!=-1){
+                        bean.setPcode(clzTag.getPath().substring(1));
+                        bean.setCode(url.substring(1).replaceAll("/",":"));
+                        bean.setId(bean.getCode());
+                        if(menuResourcesCode==null||bean.getCode().toLowerCase().indexOf(menuResourcesCode.toLowerCase()+":")!=-1){
                             list.add(bean);
                         }
                     }
@@ -160,5 +180,86 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
             }
         }
         return list;
+    }
+
+    /**
+     * 同步最新接口信息到DB里
+     * @return
+     * @throws IOException
+     */
+    public void sync() throws IOException {
+        Resource resource = new ClassPathResource("title.json");
+        InputStream is = resource.getInputStream();
+        String json = FileUtil.getFileContent(is);
+        Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+        List<ClzTag> allTag = gson.fromJson(json, new TypeToken<List<ClzTag>>() {
+        }.getType());
+        List<SysResources> list=new ArrayList();
+        List<ClzTag> apitTags=allTag.stream().filter(tag->tag.getPath()!=null&&tag.getApiTagList()!=null&&
+                tag.getApiTagList().size()>0).collect(Collectors.toList());
+        for(ClzTag action:apitTags){
+            syncOne(action);
+        }
+    }
+
+    public void syncOne(ClzTag action)   {
+        List<ApiTag> apis=action.getApiTagList();
+        for(ApiTag api:apis){
+            String url=(action.getPath()+api.getPath());
+            int index=url.indexOf("/{");
+            if(index>-1){
+                url=url.substring(0,index);
+            }
+            url=  url.replaceAll("\"","");
+//            QueryWrapper<SysResources> wrapper = QueryWrapper.of(entityClz).eq("url",url);
+            List<SysResources> list=find("url",url);
+
+            if(list!=null&&list.size()>0){
+
+            }else{
+                SysResources bean=new SysResources();
+                String menthodName=api.getMethodName();
+                menthodName=menthodName.replaceAll("save","保存");
+                menthodName=menthodName.replaceAll("add","新增");
+                menthodName=menthodName.replaceAll("remove","删除");
+                menthodName=menthodName.replaceAll("modify","修改");
+                menthodName=menthodName.replaceAll("delete","删除");
+                menthodName=menthodName.replaceAll("detail","明细");
+                menthodName=menthodName.replaceAll("page","列表");
+                menthodName=menthodName.replaceAll("export","导出");
+                menthodName=menthodName.replaceAll("sync","同步");
+                bean.setName(menthodName);
+                bean.setRemark(api.getTitle());
+                bean.setUrl(url);
+                if(menthodName.indexOf("保存")!=-1)
+                    bean.setIcon("IconSave");
+                if(menthodName.indexOf("删除")!=-1)
+                    bean.setIcon("IconDelete");
+                if(menthodName.indexOf("明细")!=-1)
+                    bean.setIcon("IconExternalOpen");
+                if(menthodName.indexOf("导出")!=-1)
+                    bean.setIcon("IconExport");
+                if(menthodName.indexOf("同步")!=-1)
+                    bean.setIcon("IconSync");
+                if(bean.getIcon()==null){
+                    bean.setIcon("IconBox");
+                }
+//                bean.setPcode(api.getPath().substring(1));
+                bean.setCode(url.substring(1).replaceAll("/",":"));
+
+//                bean.setResourcesType(VCT.SYSRESOURCES_TYPE.API);
+                bean.setState("-1");
+                bean.setActionType(action.getEntityName());
+                bean.setEntityType(action.getTypeName());
+                save(bean);
+            }
+        }
+    }
+
+    /**
+     * 获得指定菜单下一定能访问到的资源
+     */
+    public List<String> findMenuRequireResources(String ...menuIds){
+       return findByIds(menuIds).stream().filter(r->r.isMenuRequired()).collect(Collectors.toList()).stream().map(t->t.getCode()).collect(Collectors.toList());
     }
 }
