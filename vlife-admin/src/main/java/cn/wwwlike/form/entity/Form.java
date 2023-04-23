@@ -103,5 +103,11 @@ public class Form extends DbEntity {
      */
     public String saveApiPath;
 
+    /**
+     * 编号前缀
+     * 需要模型实现INo接口
+     */
+    public String prefixNo;
+
 
 }

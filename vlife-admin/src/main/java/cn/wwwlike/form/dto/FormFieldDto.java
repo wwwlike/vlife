@@ -30,7 +30,16 @@ public class FormFieldDto  implements SaveBean<FormField> {
 
     public String id;
 
-    public String name;
+    /**
+     * 标题
+     * db标题
+     */
+    public String title;
+    /**
+     * 标题
+     * java标题
+     */
+    public String javaTitle;
 
     public boolean hideLabel;
 
@@ -88,12 +97,6 @@ public class FormFieldDto  implements SaveBean<FormField> {
      * formliy里的字段名称，默认一致
      */
     public String dataIndex;
-    /**
-     * 标题
-     */
-    public String title;
-
-
 
     /**
      *  唯一不重复
@@ -213,9 +216,6 @@ public class FormFieldDto  implements SaveBean<FormField> {
      */
     public String componentSettingJson;
 
-    public String getName() {
-        return this.title;
-    }
     /**
      * 最小长度
      */

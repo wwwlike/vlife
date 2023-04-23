@@ -21,6 +21,7 @@ package cn.wwwlike.form.vo;
 
 import cn.wwwlike.form.dto.FormTabDto;
 import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 
@@ -95,4 +96,16 @@ public class FormVo implements VoBean<Form> {
    * 分页列表api代码路径
    */
   public String saveApiPath;
+
+  /**
+   * 编号前缀
+   * 需要模型实现INo接口
+   */
+  public String prefixNo;
+
+  /**
+   * 模型的接口类
+   */
+  @VField(skip = true)
+  public List<String> parentsName;
 }

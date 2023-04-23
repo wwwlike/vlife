@@ -101,6 +101,19 @@ public class VoRead extends ItemReadTemplate<VoDto> {
             List<FieldDto> fkFields = entityDto.getFkFields();
             List<Class<? extends Item>> in = entityDto.getFkTableClz();
             for (FieldDto fieldDto : item.getFields()) {
+                entityDto.fields.forEach(e->{
+//                    if(fieldDto.getFieldType().equals("basic")&&
+//                            e.getFieldName().equals(fieldDto.getFieldName())
+//                            && !e.getPathName().equals(fieldDto.getPathName())
+//                    ){
+//                        fieldDto.setPathName(e.getPathName());
+//                        fieldDto.setEntityClz(e.getEntityClz());
+//                        fieldDto.setQueryPath(e.getQueryPath());
+//                        fieldDto.setEntityType(e.getEntityType());
+//                        fieldDto.setEntityFieldName(e.getEntityFieldName());
+//                    }
+                });
+
                 if (fieldDto.getEntityFieldName() == null) {
                     if (BASIC.equals(fieldDto.getFieldType())
                             || !IdBean.class.isAssignableFrom(fieldDto.getClz())) {

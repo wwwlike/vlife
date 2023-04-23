@@ -26,7 +26,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 类说明
+ * 资源角色dto
  * @author xiaoyu
  * @date 2022/7/12
  */

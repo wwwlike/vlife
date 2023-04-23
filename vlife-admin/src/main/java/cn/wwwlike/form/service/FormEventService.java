@@ -116,7 +116,7 @@ public class FormEventService extends BaseService<FormEvent, FormEventDao> {
     public void createHideEvent(FormDto dto){
         //当前实体formid,主键的form里id
         String formId=dto.getId();
-        Optional<FormFieldDto> idFieldOptional=dto.fields.stream().filter(fr->fr.fieldName.equals("id")).findFirst();
+         Optional<FormFieldDto> idFieldOptional=dto.fields.stream().filter(fr->fr.fieldName.equals("id")).findFirst();
         if(idFieldOptional.isPresent()){
             String idFieldId=idFieldOptional.get().getId();
             FormEventVo eventVo=findIdNullEvent(idFieldId);
@@ -124,8 +124,8 @@ public class FormEventService extends BaseService<FormEvent, FormEventDao> {
         if(eventVo!=null){
             eventVo.getReactions().forEach(reaction->{
                 String fieldId=reaction.getFormFieldId();
-                FormFieldDto field=dto.fields.stream().filter(d->d.getId().equals(fieldId)).findFirst().get();
-                if(field.create_hide!=true){
+               Optional<FormFieldDto> optional=dto.fields.stream().filter(d->d.getId().equals(fieldId)).findFirst();
+                if(optional.isPresent()&&optional.get().create_hide!=true){
                     reactionService.remove(reaction.getId());
                 }
             });
@@ -154,15 +154,13 @@ public class FormEventService extends BaseService<FormEvent, FormEventDao> {
         Optional<FormFieldDto> idFieldOptional=dto.fields.stream().filter(fr->fr.fieldName.equals("id")).findFirst();
         if(idFieldOptional.isPresent()) {
             String idFieldId = idFieldOptional.get().getId();
-
-
             FormEventVo eventVo = findIdNotNullEvent(idFieldId);
             //删除已经取消的新增隐藏
             if (eventVo != null) {
                 eventVo.getReactions().forEach(reaction -> {
                     String fieldId = reaction.getFormFieldId();
-                    FormFieldDto field = dto.fields.stream().filter(d -> d.getId().equals(fieldId)).findFirst().get();
-                    if (field.modify_read != true) {
+                    Optional<FormFieldDto> optional=dto.fields.stream().filter(d->d.getId().equals(fieldId)).findFirst();
+                    if(optional.isPresent()&&optional.get().modify_read!=true){
                         reactionService.remove(reaction.getId());
                     }
                 });

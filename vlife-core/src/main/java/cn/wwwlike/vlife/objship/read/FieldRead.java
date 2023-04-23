@@ -143,8 +143,8 @@ public class FieldRead implements Read {
                 dto.setOrders(f.orders());
             }
         }
-        mapField = match(entityClz, dto.getPathName());
-        if (mapField != null) {
+        mapField = match(entityClz, dto.getPathName());//匹配的实体类字段
+        if (mapField != null) {//和匹配的实体字段保持一致
             dto.setEntityClz(entityClz);
             dto.setQueryPath(entityClz);
             dto.setEntityType(StringUtils.uncapitalize(entityClz.getSimpleName()));

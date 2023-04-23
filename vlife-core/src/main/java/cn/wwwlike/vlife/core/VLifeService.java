@@ -330,8 +330,9 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * @return
      */
     public T save(T beanDto) {
-        DataProcess masterProcess = createProcess(beanDto);
-        return save(beanDto, masterProcess);
+        return saveBean(beanDto,true);
+//        DataProcess masterProcess = createProcess(beanDto);
+//        return save(beanDto, masterProcess);
     }
 
 
@@ -430,7 +431,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * /**
      * 支持VO，DO的保存方法
      */
-    private <E extends IdBean> E saveBean(final E idBean, boolean isFull) {
+    protected  <E extends IdBean> E saveBean(final E idBean, boolean isFull) {
         return saveBean(idBean, null, null, null, isFull);
     }
 

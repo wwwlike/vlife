@@ -29,7 +29,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- *行政区划
+ *区划
  */
 @Data
 @Entity

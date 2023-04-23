@@ -27,6 +27,7 @@ import cn.wwwlike.vlife.core.DataProcess;
 import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.web.security.core.SecurityUser;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.Date;
 import java.util.Map;
@@ -87,13 +88,14 @@ public class VlifeDataProcess extends DataProcess {
             mm.put("status", CT.STATUS.NORMAL);
             if(SecurityConfig.getCurrUser()!=null){
               SecurityUser securityUser= SecurityConfig.getCurrUser();
-                UserDetailVo user= (UserDetailVo) securityUser.getSysUser();
-                mm.put("createId", user.getId());
+
+                JSONObject user= (JSONObject)securityUser.getSysUser();
+                mm.put("createId", user.get("id"));
 //                if(IOrg.class.isAssignableFrom(entityClz)) {
 //                    mm.put("sysOrgId",user.getsys());
 //                }
                 if(IDept.class.isAssignableFrom(entityClz)) {
-                    mm.put("sysDeptId", user.getSysDeptId());
+                    mm.put("sysDeptId",user.get("sysDeptId"));
                 }
 //                if(IArea.class.isAssignableFrom(entityClz)) {
 //                    mm.put("sysAreaId",user.getSys);
@@ -108,7 +110,6 @@ public class VlifeDataProcess extends DataProcess {
             if(getAssigns()!=null) {
                 this.assigns.add("modifyDate");
                 this.assigns.add("modifyId");
-
             }
             mm.put("modifyDate", new Date());
             mm.put("modifyId",SecurityConfig.getCurrUser().getId());

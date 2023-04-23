@@ -26,6 +26,7 @@ import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.ReqDto;
 import cn.wwwlike.vlife.utils.GenericsUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -88,6 +89,20 @@ public class ReqRead extends ItemReadTemplate<ReqDto> {
             item.setEntityDto(entityDto);
             if (item.getFields() != null) {
                 for (FieldDto fieldDto : item.getFields()) {
+                    //把实体相同字段的field以下信息赋值给req
+//                    entityDto.fields.forEach(e->{
+//                        if(fieldDto.getFieldType().equals("basic")&&
+//                                e.getFieldName().equals(fieldDto.getFieldName())
+//                                && !e.getPathName().equals(fieldDto.getPathName())
+//                        ){
+//                            fieldDto.setPathName(e.getPathName());
+//                            fieldDto.setEntityClz(e.getEntityClz());
+//                            fieldDto.setQueryPath(e.getQueryPath());
+//                            fieldDto.setEntityType(e.getEntityType());
+//                            fieldDto.setEntityFieldName(e.getEntityFieldName());
+//                        }
+//                    });
+
                     if (fieldDto.getEntityFieldName() == null) {
                         if (BASIC.equals(fieldDto.getFieldType())
                                 || !IdBean.class.isAssignableFrom(fieldDto.getClz())) {

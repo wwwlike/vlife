@@ -118,13 +118,14 @@ public class EntityRead extends ItemReadTemplate<EntityDto> {
             List<FieldDto> fkFields = new ArrayList<>();
             if (!item.getState().equals(VCT.ITEM_STATE.ERROR)) {
                 for (FieldDto fieldDto : item.getFields()) {
-                    if (fieldDto.getPathName().endsWith("Id")) {
+                    if (fieldDto.getPathName().endsWith("Id")) {//id结尾的是外键
                         String type = fieldDto.getPathName().substring(0, fieldDto.getPathName().length() - 2);
                         readAll.forEach(entityDto -> {
                             if (entityDto.getType().equalsIgnoreCase(type)) {
                                 fieldDto.setEntityClz(entityDto.getClz());
                                 fieldDto.setEntityType(StringUtils.uncapitalize(entityDto.getClz().getSimpleName()));
                                 fieldDto.setEntityFieldName("id");
+                                fieldDto.setQueryPath(fieldDto.getEntityClz());
                                 fkFields.add(fieldDto);
                                 item.getFkMap().put(fieldDto.getEntityClz(), fieldDto.getFieldName());
                                 readAll.forEach(entityDto1 -> {

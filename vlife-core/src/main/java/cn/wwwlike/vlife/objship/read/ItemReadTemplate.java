@@ -315,6 +315,9 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                         }
                     });
                 }
+                beanInfo.setCommentRead(true);
+            }else{
+                beanInfo.setCommentRead(false);
             }
         }
         return beanInfo;

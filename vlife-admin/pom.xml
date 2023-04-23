@@ -129,6 +129,7 @@
                         <goals>
                             <goal>titleJson</goal>
                             <goal>codeCreate</goal>
+                            <goal>titleJson</goal>
                         </goals>
                     </execution>
                 </executions>

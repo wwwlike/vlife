@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages ={
         "cn.wwwlike.auth",
         "cn.wwwlike.oa",
+        "cn.wwwlike.erp",
         "cn.wwwlike.sys",
         "cn.wwwlike.vlife.ts",
         "cn.wwwlike.vlife.gitee",

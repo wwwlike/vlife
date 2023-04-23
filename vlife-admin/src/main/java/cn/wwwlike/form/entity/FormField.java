@@ -14,18 +14,18 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name = "form_field")
-@VClazz(orders = "sort_asc",module = "conf")
+@VClazz(orders = "sort_asc",module = "conf",remove = {FormEvent.class,FormReaction.class})
 public class FormField extends DbEntity {
     /**
      * 标题
-     * DB修改值
+     * db标题
      */
     public String title;
-
     /**
      * 标题
+     * java标题
      */
-    public String name;
+    public String javaTitle;
 
     /**
      * 是否
@@ -233,9 +233,5 @@ public class FormField extends DbEntity {
      * 组件设置的JSON信息
      */
     public String componentSettingJson;
-
-    public String getName() {
-        return this.title;
-    }
 
 }

@@ -91,6 +91,11 @@ public  class BeanDto<T> extends ItemInfo {
     public List<String> getParentsName(){
         return getParents()==null?null:getParents().stream().map(Class::getSimpleName).collect(Collectors.toList());
     }
+
+    /**
+     * 注释信息是否读取完成
+     */
+    public boolean commentRead;
 }
 
 

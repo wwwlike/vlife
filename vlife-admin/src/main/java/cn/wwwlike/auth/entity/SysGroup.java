@@ -48,7 +48,7 @@ public class SysGroup extends DbEntity {
    /**
     * 数据维度
     */
-   @VField(dictCode = "GROUP_FILTERTYPE")
+   @VField(dictCode = "GROUP_FILTER_TYPE")
    public String filterType;
 
 }

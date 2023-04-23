@@ -37,12 +37,12 @@ import static cn.wwwlike.vlife.dict.Constants.DEFAULT_ORDER_TYPE;
 @Target(ElementType.TYPE)
 public @interface VClazz {
     /**
-     * 删除当前类，那么级联清除本表的外键的类
+     * 删除当前类，那么级联清除本表的外键的实体
      */
     Class<? extends Item>[] clear() default {};
 
     /**
-     * 删除当前类，那么级联清楚的类，原先是clear,现在remove
+     * 删除当前类，那么级联清除的实体类class
      */
     Class<? extends Item>[] remove() default {};
 

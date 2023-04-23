@@ -34,12 +34,14 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.MemberValuePair;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +76,7 @@ public class CommentParser {
                 clzTag.setSuperName(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getName().asString());
                 if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getTypeArguments().isPresent()){
                     clzTag.setTypeName(
-                    ((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getTypeArguments().get().get(0).asString()
+                            ((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getTypeArguments().get().get(0).asString()
                     );
                 }
             }else if(((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes()!=null&&
@@ -159,25 +161,30 @@ public class CommentParser {
             NodeList list = typeDeclaration.getMembers();
             /*过滤接口*/
             List<MethodDeclaration> methodDeclarations= (List<MethodDeclaration>) typeDeclaration
-                    .getMembers().stream().filter(t->(t instanceof MethodDeclaration)).collect(Collectors.toList());
+                    .getMembers().stream().filter(t->(t instanceof MethodDeclaration)).filter(t->((MethodDeclaration)t).getAnnotations().size()>0).collect(Collectors.toList());
+            final String [] types={"GetMapping","PostMapping","RequestMapping","DeleteMappting","PutMappting"};
             ApiTag apiTag = null;
             for (MethodDeclaration method : methodDeclarations) {
-                apiTag=new ApiTag();
-                apiTag.setTitle(method.getComment().isPresent()?method.getComment().get().getContent():"");
-                apiTag.setMethodName(method.getNameAsString());
-                apiTag.setReturnClz(method.getTypeAsString());
-                Object path=method.getAnnotation(0).getChildNodes().get(1);
-                if(path.getClass()==StringLiteralExpr.class){
-                    apiTag.setPath(((StringLiteralExpr)path).getValue());
-                }else if(path.getClass()== MemberValuePair.class){
-                    apiTag.setPath(((MemberValuePair)path).getValue().toString());
-                }
-                apiTag.setMethodType(method.getAnnotation(0).getChildNodes().get(0).toString());
-                if(method.getParameters().size()>0){
-                    apiTag.setParam(method.getParameter(0).getNameAsString());
-                    apiTag.setParamWrapper(method.getParameter(0).getTypeAsString());
-                }
-                tag.getApiTagList().add(apiTag);
+                List annotations=method.getAnnotations().stream().filter(t->
+                        Arrays.stream(types).filter(tt->tt.equals(t.getNameAsString())).count()>0).collect(Collectors.toList());
+                if(annotations.size()>0) {
+                    Object path=((AnnotationExpr) annotations.get(0)).getChildNodes().get(1);
+                    apiTag=new ApiTag();
+                    apiTag.setTitle(method.getComment().isPresent()?method.getComment().get().getContent():"");
+                    apiTag.setMethodName(method.getNameAsString());
+                    apiTag.setReturnClz(method.getTypeAsString());
+                    if(path.getClass()==StringLiteralExpr.class){
+                        apiTag.setPath(((StringLiteralExpr)path).getValue());
+                    }else if(path.getClass()== MemberValuePair.class){
+                        apiTag.setPath(((MemberValuePair)path).getValue().toString());
+                    }
+                    apiTag.setMethodType(method.getAnnotation(0).getChildNodes().get(0).toString());
+                    if(method.getParameters().size()>0){
+                        apiTag.setParam(method.getParameter(0).getNameAsString());
+                        apiTag.setParamWrapper(method.getParameter(0).getTypeAsString());
+                    }
+                    tag.getApiTagList().add(apiTag); }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

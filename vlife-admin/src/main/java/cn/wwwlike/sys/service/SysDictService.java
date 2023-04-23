@@ -52,6 +52,16 @@ public class SysDictService extends BaseService<SysDict, SysDictDao> {
         return findAll();
     }
 
+    public void createByField(String code,String name){
+        if(find("code",code).size()==0){
+            SysDict dict=new SysDict();
+            dict.setCode(code);
+            dict.setTitle(name);
+            dict.setTitle(name);
+            dict.setDictType(true);
+            save(dict);
+        }
+    }
     /**
      * 同步一个模块的字典信息
      * @param javaDicts

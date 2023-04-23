@@ -47,6 +47,8 @@ import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 
 import javax.annotation.PostConstruct;
@@ -63,6 +65,8 @@ import java.util.stream.Collectors;
  * @date 2022/5/30
  */
 public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
+
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * 当前类的实体信息
      */
@@ -269,6 +273,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     @Override
     public <E extends IdBean> List<E> query(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, OrderRequest order) {
+        logger.info("当前查询"+entityVoClz.getTypeName());
         if (VoBean.class.isAssignableFrom(entityVoClz)) {
             return (List<E>) query((Class<? extends VoBean>) entityVoClz, wrapper, null, order, true);
         } else {
@@ -459,7 +464,8 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
             VoDto voDto = GlobalData.voDto(vo);
             List<FieldDto> iocFields = voDto.getFields().stream().filter(
                     fieldDto -> {
-                        return !VCT.ITEM_TYPE.BASIC.equals(fieldDto.getFieldType());
+                        return !VCT.ITEM_TYPE.BASIC.equals(fieldDto.getFieldType())
+                                && (fieldDto.getVField()==null||fieldDto.getVField().skip()==false);
                     }).collect(Collectors.toList());
             for (FieldDto fieldDto : iocFields) {
                 boolean iocList = (VCT.ITEM_TYPE.ENTITY.equals(fieldDto.getFieldType()) ||

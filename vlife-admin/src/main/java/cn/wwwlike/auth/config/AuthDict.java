@@ -24,6 +24,12 @@ import javax.inject.Named;
  * 业务字典，用户可以对该字典进行维护
  */
 public class AuthDict {
+
+    @Named("字典类目")
+    public static final class vlife {
+    }
+
+
     @Named("用户类型")
     public static final class USER_TYPE {
     }

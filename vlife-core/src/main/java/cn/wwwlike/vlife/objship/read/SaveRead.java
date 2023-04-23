@@ -84,6 +84,17 @@ public class SaveRead extends ItemReadTemplate<SaveDto> {
             List<FieldDto> fkFields = entityDto.getFkFields();
             List<Class<? extends Item>> in = entityDto.getFkTableClz();
             for (FieldDto fieldDto : item.getFields()) {
+                //把实体相同字段的field以下信息赋值给save
+//                entityDto.fields.forEach(e->{
+//                    if(e.getFieldName().equals(fieldDto.getFieldName())){
+//                        fieldDto.setPathName(e.getPathName());
+//                        fieldDto.setEntityClz(e.getEntityClz());
+//                        fieldDto.setQueryPath(e.getQueryPath());
+//                        fieldDto.setEntityType(e.getEntityType());
+//                        fieldDto.setEntityFieldName(e.getEntityFieldName());
+//                    }
+//                });
+
                 if (fieldDto.getEntityFieldName() == null) {
                     if (!BASIC.equals(fieldDto.getFieldType())) {
                         if (!IdBean.class.isAssignableFrom(fieldDto.getClz())) {

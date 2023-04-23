@@ -48,10 +48,12 @@ public abstract class DbEntity implements Item {
     /**
      * 创建人
      */
+//    @VField(pathName = "sysUserId")
     private String createId;
     /**
      * 修改人
      */
+//    @VField(pathName = "sysUserId")
     private String modifyId;
 
     /**

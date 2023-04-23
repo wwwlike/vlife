@@ -138,7 +138,12 @@ public class TitleJsonCreateMojo extends AbstractMojo {
                 if ("VLifeApi".equals(tag.getSuperName())||"VLifeApi".equals(tag.getEntityName())) {
                     for (File path : files) {
                         if (path.getName().equals(tag.getEntityName() + ".java")) {
-                            CommentParser.parserApi(path, tag);
+                            try {
+                                CommentParser.parserApi(path, tag);
+                            }catch (Exception ex){
+                                ex.printStackTrace();
+                                System.out.println(tag.entityName);
+                            }
                         }
                         ;
                     }

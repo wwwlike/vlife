@@ -58,13 +58,13 @@ public class FormDto implements SaveBean<Form> {
 
     public String name;
 
-    public List<FormFieldDto> fields;
+
     /**
      * 页面排序
      */
     public Integer  sort;
 
-    public List<FormTabDto> formTabDtos;
+
 
     /**
      * 图标
@@ -101,4 +101,15 @@ public class FormDto implements SaveBean<Form> {
      * 分页列表api代码路径
      */
     public String saveApiPath;
+
+    /**
+     * 编号前缀
+     * 需要模型实现INo接口
+     */
+    public String prefixNo;
+
+
+    public List<FormFieldDto> fields;
+
+    public List<FormTabDto> formTabDtos;
 }

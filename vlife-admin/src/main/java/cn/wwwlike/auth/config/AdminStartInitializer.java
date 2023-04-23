@@ -22,6 +22,7 @@ import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.sys.service.SysDictService;
+import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.ModelReadCheck;
 import org.slf4j.Logger;
@@ -54,20 +55,26 @@ public class AdminStartInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        //资源同步
+        resourcesService.sync();
+        //字典同步
+        dictService.sync();
         //模型同步(移除的需要物理删除)
         GlobalData.allModels().stream().forEach(m->{
-            service.syncOne(m.getType());
+           if( service.syncOne(m.getType())){
+               //系统字典
+               m.getFields().stream().filter(f->((FieldDto)f).getDictCode()!=null).forEach(f->{
+                   dictService.createByField(((FieldDto)f).getDictCode(),((FieldDto)f).getTitle());
+               });
+           }
         });
         List<Form> dbModels=formService.findAll();//干掉的删除
         dbModels.stream().filter(db->GlobalData.allModels().stream().filter(java->java.getType().equals(db.getType())).count()==0).forEach(m->{
             formService.remove(m.getId());
         });
 
-        //资源同步
-        resourcesService.sync();
-        //字典同步
-        dictService.sync();
         //用户和权限组初始化
+        //字典里没有
 
     }
 }

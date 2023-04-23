@@ -12,9 +12,11 @@ import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.form.vo.FormFieldVo;
 import cn.wwwlike.form.vo.FormVo;
 import cn.wwwlike.vlife.annotation.VClazz;
+import cn.wwwlike.vlife.base.INo;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
@@ -37,13 +39,16 @@ import java.util.stream.Collectors;
 import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.*;
 
 @Service
-public class FormService extends BaseService<Form, FormDao> {
+public class FormService extends VLifeService<Form, FormDao> {
 
     @Autowired
     public FormFieldService fieldService;
 
 
-    private FormFieldDto  initComponent(FormFieldDto dto,String itemType){
+    private FormFieldDto  initComponent(FormFieldDto dto,String itemType,BeanDto javaDto){
+        if(dto.getFieldName().equals("id")){
+            dto.setX_hidden(true);
+        }
         if(itemType.equals("req")){
             dto.setX_decorator_props$labelAlign("left");
             dto.setX_decorator_props$layout("vertical");
@@ -92,15 +97,21 @@ public class FormService extends BaseService<Form, FormDao> {
         if(dto.getFieldName().equals("code")){
             dto.setX_hidden(true);
         }
+        if(dto.getFieldName().equals("no")&&INo.class.isAssignableFrom(javaDto.getClz())){
+            dto.setX_hidden(true);
+            dto.setListShow(true);
+        }
         dto.setX_component(x_component);
         return dto;
     }
 
+
     /**
-     * 同步一个模型信息，DB没有则创建，有则更新字段
+     * 模型信息同步
      * @param modelName
+     * @return 能否继续
      */
-    public void syncOne(String modelName){
+    public boolean syncOne(String modelName){
         //查找最新java模型
         List<Form> published=find("type",modelName);
         FormDto formDto=null;
@@ -108,93 +119,116 @@ public class FormService extends BaseService<Form, FormDao> {
             formDto=queryOne(FormDto.class,published.get(0).getId());
         }
        BeanDto javaDto= GlobalData.findModel(modelName);
-        //最新的模型字段
-        if(formDto!=null){//更新
-            List<FieldDto> javaFields=javaDto.getFields();
-            List<String> syncField=new ArrayList<>();
-            //遍历最新模型的Java字段
-            for(FieldDto javaField:javaFields){
-                //1找出要新增，要修改的字段
-                boolean exists=false;
-                for(FormFieldDto dbField:formDto.getFields()){
-                    //找到相同的字段
-                    if(dbField.getFieldName().equals(javaField.getFieldName())){
-                        syncField.add(dbField.getId());
-                        //字段类型和注释变化了，表示进行了字段修改
-                        if(!dbField.getFieldType().equals(getFileType(javaField.getType()))||
-                                !dbField.getDataType().equals(getDataType(javaField.getFieldType()))
-                        ){
-                            dbField.setDataType(getDataType(javaField.getFieldType()));
-                            dbField.setFieldType(getFileType(javaField.getType()));
-                            initComponent(dbField,formDto.getItemType());
-                            fieldService.save(dbField);//修改
+        //有关联title读取到，则进行同步
+        if(javaDto.commentRead) {
+            if (formDto != null) {//更新
+                if (!formDto.getTitle().equals(javaDto.getTitle())) {
+                    formDto.setTitle(javaDto.getTitle());
+                    save(formDto);
+                }
+                List<FieldDto> javaFields = javaDto.getFields();
+                //遍历最新模型的Java字段
+                int count = 0;
+                for (FieldDto javaField : javaFields) {
+                    //1找出要新增，要修改的字段
+                    boolean exists = false;
+                    for (FormFieldDto dbField : formDto.getFields()) {
+                        boolean change = false;
+                        //字段属性发生变化进行修订
+                        if (dbField.getFieldName().equals(javaField.getFieldName())) {
+                            if (!dbField.getFieldType().equals(getFileType(javaField.getType())) ||
+                                    !dbField.getDataType().equals(getDataType(javaField.getFieldType()))
+                            ) {
+                                change = true;
+                                dbField.setDataType(getDataType(javaField.getFieldType()));
+                                dbField.setFieldType(getFileType(javaField.getType()));
+                                initComponent(dbField, formDto.getItemType(),javaDto);
+                            }
+                            String javaTitle = javaField.getTitle();
+                            if (javaTitle != null && !javaTitle.equals("/") && !javaTitle.equals(dbField.getJavaTitle())) {
+                                change = true;
+                                if (dbField.getTitle().equals(dbField.getJavaTitle())) {
+                                    dbField.setTitle(javaTitle);
+                                }
+                                dbField.setJavaTitle(javaTitle);
+                            }
+                            if (change) {
+                                fieldService.save(dbField);
+                            }
+                            exists = true;
                         }
-                        exists=true;
+                    }
+                    if (exists == false) {//增量新增
+                        count++;
+                        FormFieldDto formField = new FormFieldDto();
+                        BeanUtils.copyProperties(fieldTran(javaField), formField);
+                        formField.setSort(formDto.getFields().size() + count);
+                        formField.setFormId(formDto.getId());
+                        initComponent(formField, formDto.getItemType(),javaDto);
+                        //没有注释，则使用fieldName
+                        if (formField.getTitle() == null || formField.getTitle().equals("/")) {
+                            formField.setTitle(formField.getFieldName());
+                        }
+                        formField.setJavaTitle(formField.getTitle());
+                        fieldService.save(formField);
                     }
                 }
-                if(exists==false){//开始新增
-                    FormFieldDto formField=new FormFieldDto();
-                    BeanUtils.copyProperties(fieldTran(javaField),formField);
-                    formField.setSort(formDto.getFields().size()+1);
-                    formField.setFormId(formDto.getId());
-                    initComponent(formField,formDto.getItemType());
-                    fieldService.save(formField); //新增
-                }
-            }
-            //2 找出要删除的字段
-            if(formDto.getFields()!=null){
-                for(FormFieldDto dbField:formDto.getFields()){
-                    //开始删除
-                    if(javaFields.stream().filter(f->f.getFieldName().equals(dbField.getFieldName())).count()==0){
-                        fieldService.remove(dbField.getId());
+                //2 找出要删除的字段
+                if (formDto.getFields() != null) {
+                    for (FormFieldDto dbField : formDto.getFields()) {
+                        //开始删除
+                        if (javaFields.stream().filter(f -> f.getFieldName().equals(dbField.getFieldName())).count() == 0) {
+                            fieldService.remove(dbField.getId());
+                        }
                     }
                 }
-            }
-        }else if(javaDto!=null&&javaDto.getFields()!=null&&javaDto.getFields().size()>0){//新增
-            FormVo vo=tran(javaDto);
-            FormDto dto=new FormDto();
-            dto.setVersion(0);
-            BeanUtils.copyProperties(vo,dto);
-            dto.setFields(
-            vo.getFields().stream().map(f->{
-               //1赋值
-                FormFieldDto d=new FormFieldDto();
-                BeanUtils.copyProperties(f,d);
-               //2.组件后端初始化
-                d=initComponent(d,vo.getItemType());
-                if(d.getFieldName().equals("id")){
-                    d.setX_hidden(true);
-                    d.setTitle("主键编码");
+            } else if (javaDto != null && javaDto.getFields() != null && javaDto.getFields().size() > 0) {//模型新增
+                FormVo vo = tran(javaDto);
+                FormDto dto = new FormDto();
+                dto.setVersion(0);
+                BeanUtils.copyProperties(vo, dto);
+                dto.setFields(
+                        vo.getFields().stream().map(f -> {
+                            //1赋值
+                            FormFieldDto d = new FormFieldDto();
+                            BeanUtils.copyProperties(f, d);
+                            if (d.getTitle() == null || "".equals(d.getTitle()) || d.getTitle().equals("/")) {
+                                d.setTitle(d.getFieldName());
+                            }
+                            d.setJavaTitle(d.getTitle());
+                            //2.组件后端初始化
+                            d = initComponent(d, vo.getItemType(),javaDto);
+                            return d;
+                        }).collect(Collectors.toList()));
+
+//            VClazz v= (VClazz) javaDto.getClz().getAnnotation(VClazz.class);
+//            if(v!=null&&v.module()!=null){
+//                dto.setModule(v.module());
+//            }else{
+//                Pattern pattern = Pattern.compile("[A-Z]");
+//                Matcher matcher = pattern.matcher(vo.getEntityType());
+//                //字段初始化
+//                if (matcher.find()) {
+//                    dto.setModule(vo.getEntityType().substring(0,matcher.start()));
+//                }
+//            }
+                //页面布局相关
+                if (dto.getItemType().equals("req")) {
+                    dto.setModelSize(1);
+                } else {
+                    int size = dto.getFields().size();
+                    dto.setModelSize(size > 16 ? 4 : size > 10 ? 3 : 2);
                 }
-                return d;
-
-            }).collect(Collectors.toList()));
-
-
-            VClazz v= (VClazz) javaDto.getClz().getAnnotation(VClazz.class);
-            if(v!=null&&v.module()!=null){
-                dto.setModule(v.module());
-            }else{
-                Pattern pattern = Pattern.compile("[A-Z]");
-                Matcher matcher = pattern.matcher(vo.getEntityType());
-                //字段初始化
-                if (matcher.find()) {
-                    dto.setModule(vo.getEntityType().substring(0,matcher.start()));
-                }
+                dto.setPageSize(10);
+                save(dto);
+            } else {
+                System.out.println(modelName);
             }
-
-
-            if(dto.getItemType().equals("req")){
-                dto.setModelSize(1);
-            }else{
-                int size=dto.getFields().size();
-                dto.setModelSize(size>16?4:size>10?3:2);
-            }
-            dto.setPageSize(10);
-            save(dto);
+            return true;
         }else{
-            System.out.println(modelName);
+            return false;
         }
+
     }
 
     /**

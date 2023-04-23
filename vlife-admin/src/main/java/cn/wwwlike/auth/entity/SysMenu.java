@@ -17,6 +17,10 @@ import javax.persistence.Table;
 @VClazz(orders = "sort_asc")
 public class SysMenu extends DbEntity implements ITree {
     /**
+     * 应用
+     */
+    public boolean app;
+    /**
      * 菜单名称
      */
     public String name;
