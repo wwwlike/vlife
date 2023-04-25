@@ -37,8 +37,8 @@ public class OrderSaleApi extends VLifeApi<OrderSale, OrderSaleService> {
    * @param dto 销售单据;
    * @return 销售单据;
    */
-  @PostMapping("/save")
-  public OrderSaleDto save(@RequestBody OrderSaleDto dto) {
+  @PostMapping("/save/orderSaleDto")
+  public OrderSaleDto saveOrderSaleDto(@RequestBody OrderSaleDto dto) {
     return service.save(dto);
   }
 

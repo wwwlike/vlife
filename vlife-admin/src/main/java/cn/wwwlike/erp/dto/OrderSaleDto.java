@@ -3,6 +3,7 @@ package cn.wwwlike.erp.dto;
 import cn.wwwlike.erp.entity.OrderSale;
 import cn.wwwlike.erp.entity.OrderSaleDetail;
 import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.base.INo;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 import java.util.Date;
@@ -12,8 +13,9 @@ import java.util.List;
  * 销售单据
  */
 @Data
-public class OrderSaleDto implements SaveBean<OrderSale> {
+public class OrderSaleDto implements SaveBean<OrderSale> , INo {
     public String id;
+    public String no;
     /**
      * 客户
      */

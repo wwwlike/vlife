@@ -15,6 +15,10 @@ import java.util.Date;
 @Table(name = "erp_order_sale")
 public class OrderSale extends DbEntity implements INo {
     /**
+     * 订单编号
+     */
+    public String no;
+    /**
      * 客户
      */
     public String customerId;
@@ -22,10 +26,7 @@ public class OrderSale extends DbEntity implements INo {
      * 销售员
      */
     public String sysUserId;
-    /**
-     * 订单编号
-     */
-    public String no;
+
     /**
      * 下单日期
      */

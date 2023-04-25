@@ -11,7 +11,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "erp_order_sall_detail")
+@Table(name = "erp_order_sale_detail")
 public class OrderSaleDetail extends DbEntity {
     /**
      * 销售产品

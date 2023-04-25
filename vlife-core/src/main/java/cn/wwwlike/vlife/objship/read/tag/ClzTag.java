@@ -31,9 +31,13 @@ import java.util.Map;
 @Data
 public class ClzTag {
     /**
-     * 父类
+     * 直接父类
      */
     public String superName;
+    /**
+     * 父类集合
+     */
+    public List<String> parentsName;
     /**
      * 类名(名字起的不好，应该是clz)
      */

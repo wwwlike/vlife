@@ -36,12 +36,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-import cn.wwwlike.vlife.ts.ReadTitle;
+
 /**
  * 列表字段接口;
  */
@@ -124,15 +123,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return exchange.getBody().get("data").toString();
     }
 
-    /**
-     * 接收客户端发来的代码请求
-     */
-    @PostMapping("/tsCode/remote/{type}")
-    public String tsCode(@RequestParam("file") MultipartFile file,@PathVariable String type) throws IOException {
-        InputStream is = file.getInputStream();
-        String  json = FileUtil.getFileContent(is);
-        return ReadTitle.tsCode(json,type);
-    }
+
     /**
      * 模型信息同步
      * 第一次进入系统就应该同步一次
@@ -247,27 +238,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
     public FormVo detailFormVo(@PathVariable String id) {
         return service.queryOne(FormVo.class, id);
     }
-
-//    /**
-//     * 统计项选择组件vo对象
-//     */
-//    @GetMapping("/formReportItemAll")
-//    public List<FormReportItemCompVo> formReportItemAll() {
-//        QueryWrapper qw = QueryWrapper.of(Form.class);
-//        qw.eq("itemType", "entity");
-//        return service.query(FormReportItemCompVo.class, qw);
-//    }
-//
-//
-//    /**
-//     * 指标项选择组件vo都西昂
-//     */
-//    @GetMapping("/formReportKpiAll")
-//    public List<FormReportItemCompVo> formReportKpiAll() {
-//        QueryWrapper qw = QueryWrapper.of(Form.class);
-//        qw.eq("itemType", "entity");
-//        return service.query(FormReportKpiCompVo.class, qw);
-//    }
 
     /**
      * 找到指标，统计项所在表集合里拥有的共同的字段；

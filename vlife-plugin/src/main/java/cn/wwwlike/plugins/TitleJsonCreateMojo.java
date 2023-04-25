@@ -121,7 +121,8 @@ public class TitleJsonCreateMojo extends AbstractMojo {
             }
             /* entity的继承的属性 加入*/
             for (ClzTag tag : tags) {
-                if ("DbEntity".equals(tag.getSuperName())) {
+                if ((tag.getParentsName()!=null&&tag.getParentsName().contains("DbEntity"))||
+                        "DbEntity".equals(tag.getSuperName())) {
                     if (tag.getTags() == null) {
                         tag.setTags(dbEntityFieldTag);
                     } else {
@@ -135,7 +136,7 @@ public class TitleJsonCreateMojo extends AbstractMojo {
             }
             //api解析
             for (ClzTag tag : tags) {
-                if ("VLifeApi".equals(tag.getSuperName())||"VLifeApi".equals(tag.getEntityName())) {
+                if ((tag.getParentsName()!=null&&tag.getParentsName().contains("VLifeApi"))||"VLifeApi".equals(tag.getSuperName())||"VLifeApi".equals(tag.getEntityName())) {
                     for (File path : files) {
                         if (path.getName().equals(tag.getEntityName() + ".java")) {
                             try {

@@ -1826,12 +1826,12 @@
       },
       {
         "title": "\n   * 保存销售单据;\n   * @param dto 销售单据;\n   * @return 销售单据;\n   ",
-        "path": "/save",
+        "path": "/save/orderSaleDto",
         "paramWrapper": "OrderSaleDto",
         "param": "dto",
         "returnClz": "OrderSaleDto",
         "methodType": "PostMapping",
-        "methodName": "save"
+        "methodName": "saveOrderSaleDto"
       },
       {
         "title": "\n   * 明细查询销售单;\n   * @param id 主键id;\n   * @return 销售单;\n   ",
@@ -2016,11 +2016,6 @@
         "fieldName": "taxNo",
         "fieldType": "String",
         "title": "纳税人识别号"
-      },
-      "customerNo": {
-        "fieldName": "customerNo",
-        "fieldType": "String",
-        "title": "编号"
       }
     },
     "apiTagList": []
@@ -2086,6 +2081,11 @@
     "typeName": "OrderSale",
     "title": "销售单据",
     "tags": {
+      "no": {
+        "fieldName": "no",
+        "fieldType": "String",
+        "title": "订单编号"
+      },
       "totalPrice": {
         "fieldName": "totalPrice",
         "fieldType": "Double",
@@ -2253,11 +2253,6 @@
         "fieldName": "taxNo",
         "fieldType": "String",
         "title": "纳税人识别号"
-      },
-      "customerNo": {
-        "fieldName": "customerNo",
-        "fieldType": "String",
-        "title": "编号"
       },
       "status": {
         "fieldName": "status",

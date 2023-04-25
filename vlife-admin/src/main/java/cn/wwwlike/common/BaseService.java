@@ -57,6 +57,9 @@ import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.form.service.FormService;
+import cn.wwwlike.form.vo.FormVo;
 import cn.wwwlike.plugins.utils.JsonUtil;
 import cn.wwwlike.sys.entity.SysDept;
 import cn.wwwlike.vlife.base.*;
@@ -88,6 +91,20 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
     public final String TREECODE = "code";
     @Autowired
     public SysGroupService sysGroupService;
+    @Autowired
+    public FormService formService;
+    /*
+     * 权限组map
+     * */
+    public static Map<String, FormVo> models = new HashMap<>();
+
+    public FormVo getModelInfo(String type){
+        if(models.get(type)==null){
+            QueryWrapper<Form> req=QueryWrapper.of(Form.class).eq("type",type);
+            models.put(type,formService.query(FormVo.class,req).get(0));
+        }
+       return models.get(type);
+    }
     /*
      * 权限组map
      * */
@@ -177,7 +194,8 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
         }
         //编号接口赋值
         if(idBean instanceof INo && ((INo) idBean).getNo()==null){
-            ReflectionUtils.setFieldValue(idBean,"no", BusinessNumberGenerator.generate("NO-"));
+            String noPrefix=getModelInfo(StringUtils.uncapitalize(idBean.getClass().getSimpleName())).getPrefixNo();
+            ReflectionUtils.setFieldValue(idBean,"no", BusinessNumberGenerator.generate(noPrefix));
         }
          saveBean(idBean, null, null, null, isFull);
         if (oldTree != null) {  //1 修改之前的子集成新的code

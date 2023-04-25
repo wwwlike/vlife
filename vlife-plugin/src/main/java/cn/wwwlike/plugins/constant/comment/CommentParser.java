@@ -36,11 +36,13 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,7 +75,15 @@ public class CommentParser {
             /* 设置父类 */
             if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes()!=null&&
                     ((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().size()>0) {
-                clzTag.setSuperName(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getName().asString());
+                List<String> parentsName=new ArrayList<>();
+                String extendClz=((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getName().asString();
+                clzTag.setSuperName(extendClz);
+                parentsName.add(extendClz);
+                List<String> interfaces=((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().stream().map(NodeWithSimpleName::getNameAsString).collect(Collectors.toList());
+                if(interfaces!=null&& interfaces.size()>0){
+                    parentsName.addAll(interfaces);
+                }
+                clzTag.setParentsName(parentsName);
                 if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getTypeArguments().isPresent()){
                     clzTag.setTypeName(
                             ((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().get(0).getTypeArguments().get().get(0).asString()
@@ -82,6 +92,7 @@ public class CommentParser {
             }else if(((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes()!=null&&
                     ((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().size()>0) {
                 clzTag.setSuperName(((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().get(0).getName().asString());
+                clzTag.setParentsName(((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().stream().map(NodeWithSimpleName::getNameAsString).collect(Collectors.toList()));
                 if(((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().get(0).getTypeArguments().isPresent()){
                     clzTag.setTypeName(
                             ((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().get(0).getTypeArguments().get().get(0).asString()
