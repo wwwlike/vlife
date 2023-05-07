@@ -1,0 +1,40 @@
+.layout-page {
+	border: 1px solid var(--semi-color-border);
+	height: 100%;
+	background: #f0f2f5;
+	.layout-content {
+		position: relative;
+		margin: 8px;
+		> :last-child {
+			height: 100%;
+		}
+	}
+	.layout-header {
+		background-color: var(--semi-color-bg-1);
+		.semi-navigation-horizontal {
+			height: 50px;
+			border-bottom: 0px;
+		}
+	}
+	.semi-badge-rightTop {
+		position: absolute;
+		top: 8px;
+		right: 20px;
+		transform: translate(50%, -50%);
+		transform-origin: 100% 0%;
+	}
+	.semi-radio-addon-buttonRadio-checked {
+		font-weight: 600;
+		background: var(--semi-color-bg-3);
+		color: var(--semi-color-text-1);
+	}
+
+	// .semi-navigation-vertical .semi-navigation-header-list-outer {
+	// 	overflow-y: scroll;
+	// }
+	.semi-navigation-vertical .semi-navigation-header-list-outer::-webkit-scrollbar {
+		width: 0;
+	}
+
+	
+}

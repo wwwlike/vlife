@@ -1,0 +1,112 @@
+html,
+body,
+#root,
+#root > * {
+	height: 100%;
+	margin: 0;
+	// input {
+	// 	background-color: #fff;
+	// }
+	// color: rgba(0, 0, 0, 0.65) !important;
+	// --semi-color-primary: rgba(var(--semi-violet-6), 1);
+	// --semi-color-primary-hover: rgba(var(--semi-violet-3), 1);
+	// --semi-color-primary-light-default: rgba(var(--semi-violet-0), 1);
+	.flex-between {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+}
+
+.semi-table-thead > .semi-table-row > .semi-table-row-head {
+  background-color: #f9fafc;
+}
+
+.my-markdown {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.my-markdown h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.my-markdown p {
+  margin-bottom: 20px;
+}
+
+.my-markdown ul,
+.my-markdown ol {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.my-markdown li {
+  margin-bottom: 10px;
+}
+
+.my-markdown a {
+  color: #007bff;
+  text-decoration: none;
+  border-bottom: 1px solid #007bff;
+}
+
+
+
+/* Markdown 样式 */
+.markdown {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.markdown h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.markdown h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+.markdown h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+.markdown p {
+  margin-bottom: 20px;
+}
+
+.markdown ul,
+.markdown ol {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.markdown li {
+  margin-bottom: 10px;
+}
+
+.markdown a {
+  color: #007bff;
+  text-decoration: none;
+  border-bottom: 1px solid #007bff;
+}
+
+
+.font-chinese {
+  font-family: 'chinese';
+}
