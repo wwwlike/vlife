@@ -16,41 +16,36 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.vlife.bi;
+package cn.wwwlike.plus.report.entity;
 
-import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 
 /**
- * 报表统计项
- */
+* 报表配置明细
+*/
+@Table(name = "report_table_item")
+@Entity
 @Data
-public class VlifeReportItem {
+public class ReportTableItem extends DbEntity {
     /**
-     * 项目名称
+     * 所属报表
      */
-    private String name;
+    public String reportTableId;
+    /*
+     * 排序号
+     */
+    public Integer sort;
     /**
-     * 实体clz
+     * 指标项
      */
-    private Class entityClz;
+    public String reportKpiId;
     /**
-     * 项目编码
+     * 统计项
      */
-    private String code;
-    /**
-     * 聚合字段
-     */
-    private String fieldName;
-    /**
-     * 聚合方式
-     */
-    @VField(dictCode = "ITEM_FUNC")
-    private String func;
-    /**
-     * 过滤条件
-     */
-    private Conditions conditions;
-
+    public String reportItemId;
 }

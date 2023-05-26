@@ -16,41 +16,28 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.vlife.bi;
+package cn.wwwlike.plus.report.req;
 
+import cn.wwwlike.plus.report.entity.ReportItem;
 import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.dict.Opt;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
-
 /**
- * 报表统计项
+ * 统计项目查询条件
  */
 @Data
-public class VlifeReportItem {
+public class ReportItemPageReq extends PageQuery<ReportItem> {
     /**
-     * 项目名称
+     * 统计项名称/编码
      */
-    private String name;
-    /**
-     * 实体clz
-     */
-    private Class entityClz;
-    /**
-     * 项目编码
-     */
-    private String code;
-    /**
-     * 聚合字段
-     */
-    private String fieldName;
-    /**
-     * 聚合方式
-     */
-    @VField(dictCode = "ITEM_FUNC")
-    private String func;
-    /**
-     * 过滤条件
-     */
-    private Conditions conditions;
+    @VField(pathName = "name", orReqFields = {"code"}, opt = Opt.like)
+    public String search;
 
+    public String func;
+    /**
+     * 所在模型
+     */
+    public String formId;
 }

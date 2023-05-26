@@ -37,7 +37,9 @@
         <module>vlife-plugin</module>
         <module>vlife-spring-boot-starter</module>
         <module>vlife-boot-starter-web</module>
+        <module>vlife-plus</module>
         <module>vlife-admin</module>
+        <module>vlife-admin-plus</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -111,20 +113,20 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- GPG -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+                    <!-- GPG 发布的签名屏蔽 -->
+<!--                    <plugin>-->
+<!--                        <groupId>org.apache.maven.plugins</groupId>-->
+<!--                        <artifactId>maven-gpg-plugin</artifactId>-->
+<!--                        <version>1.5</version>-->
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <phase>verify</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>sign</goal>-->
+<!--                                </goals>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+<!--                    </plugin>-->
                     <!-- 多模块版本插件 mvn versions:set -DnewVersion=1.1-SNAPSHOT-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>

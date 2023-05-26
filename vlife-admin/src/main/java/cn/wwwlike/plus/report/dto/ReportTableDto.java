@@ -16,41 +16,28 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.vlife.bi;
+package cn.wwwlike.plus.report.dto;
 
+import cn.wwwlike.plus.report.entity.ReportTable;
 import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 
+import java.util.List;
 
 /**
- * 报表统计项
+ * 报表及关联统计项和指标传输的dto
  */
 @Data
-public class VlifeReportItem {
-    /**
-     * 项目名称
-     */
-    private String name;
-    /**
-     * 实体clz
-     */
-    private Class entityClz;
-    /**
-     * 项目编码
-     */
-    private String code;
-    /**
-     * 聚合字段
-     */
-    private String fieldName;
-    /**
-     * 聚合方式
-     */
-    @VField(dictCode = "ITEM_FUNC")
-    private String func;
-    /**
-     * 过滤条件
-     */
-    private Conditions conditions;
-
+public class ReportTableDto implements SaveBean<ReportTable> {
+    public String id;
+    public String name;
+    public String formId;
+    public String code;
+    public String groupColumn;
+    public String func;
+    @VField(pathName = "reportTableItem_reportItemId")
+    public List<String> itemIds;
+    @VField(pathName = "reportTableItem_reportKpiId")
+    public List<String> kpiIds;
 }

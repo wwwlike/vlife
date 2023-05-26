@@ -16,41 +16,29 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.vlife.bi;
+package cn.wwwlike.plus.report.vo;
 
-import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.plus.report.entity.ReportItem;
+import cn.wwwlike.plus.report.entity.ReportKpi;
+import cn.wwwlike.plus.report.entity.ReportTableItem;
+import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 
-
 /**
- * 报表统计项
+ * 报表明细项视图
  */
 @Data
-public class VlifeReportItem {
+public class ReportTableItemVo implements VoBean<ReportTableItem> {
+    public String id;
+    public Integer sort;
     /**
-     * 项目名称
+     * 指标
      */
-    private String name;
+    public ReportKpi kpi;
     /**
-     * 实体clz
+     * 统计项
      */
-    private Class entityClz;
-    /**
-     * 项目编码
-     */
-    private String code;
-    /**
-     * 聚合字段
-     */
-    private String fieldName;
-    /**
-     * 聚合方式
-     */
-    @VField(dictCode = "ITEM_FUNC")
-    private String func;
-    /**
-     * 过滤条件
-     */
-    private Conditions conditions;
+    public ReportItem item;
+
 
 }

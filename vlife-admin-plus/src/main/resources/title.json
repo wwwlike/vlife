@@ -1,0 +1,769 @@
+[
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "ModelComponentApi",
+    "typeName": "ModelComponent",
+    "title": "模块组件测试接口;",
+    "path": "/modelComponent",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 分页查询模块组件测试;\n   * @param req 模块组件测试(视图);\n   * @return 模块组件测试;\n   ",
+        "path": "/page",
+        "paramWrapper": "ModelComponentPageReq",
+        "param": "req",
+        "returnClz": "PageVo<ModelComponent>",
+        "methodType": "GetMapping",
+        "methodName": "page"
+      },
+      {
+        "title": "\n   * 保存模块组件测试;\n   * @param dto 模块组件测试;\n   * @return 模块组件测试;\n   ",
+        "path": "/save",
+        "paramWrapper": "ModelComponent",
+        "param": "dto",
+        "returnClz": "ModelComponent",
+        "methodType": "PostMapping",
+        "methodName": "save"
+      },
+      {
+        "title": "\n   * 明细查询模块组件测试;\n   * @param id 主键id;\n   * @return 模块组件测试;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "ModelComponent",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "ModelComponent",
+    "title": "模块组件测试",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "模块名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "ModelComponentPageReq",
+    "typeName": "ModelComponent",
+    "title": "模块查询",
+    "tags": {
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "名称"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "ReportItemApi",
+    "typeName": "ReportItem",
+    "title": "统计项接口;",
+    "path": "/reportItem",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 分页查询统计项;\n   * @param req 统计项目查询条件;\n   * @return 统计项;\n   ",
+        "path": "/page",
+        "paramWrapper": "ReportItemPageReq",
+        "param": "req",
+        "returnClz": "PageVo<ReportItem>",
+        "methodType": "GetMapping",
+        "methodName": "page"
+      },
+      {
+        "title": "\n   * 分页查询统计项;\n   * @param req 统计项目查询条件;\n   * @return 统计项;\n   ",
+        "path": "/page",
+        "paramWrapper": "cn.wwwlike.plus.report.vo.ReportItemPageReq",
+        "param": "req",
+        "returnClz": "PageVo<ReportItem>",
+        "methodType": "GetMapping",
+        "methodName": "page"
+      },
+      {
+        "title": "\n   * 保存统计项;\n   * @param dto 统计项;\n   * @return 统计项;\n   ",
+        "path": "/save",
+        "paramWrapper": "ReportItem",
+        "param": "dto",
+        "returnClz": "ReportItem",
+        "methodType": "PostMapping",
+        "methodName": "save"
+      },
+      {
+        "title": "\n   * 明细查询统计项;\n   * @param id 主键id;\n   * @return 统计项;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "ReportItem",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "ReportKpiApi",
+    "typeName": "ReportKpi",
+    "title": "关键指标接口;",
+    "path": "/reportKpi",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 分页查询关键指标;\n   * @param req kpi指标项查询条件;\n   * @return 关键指标;\n   ",
+        "path": "/page",
+        "paramWrapper": "ReportKpiPageReq",
+        "param": "req",
+        "returnClz": "PageVo<ReportKpi>",
+        "methodType": "GetMapping",
+        "methodName": "page"
+      },
+      {
+        "title": "\n   * 分页查询关键指标;\n   * @param req kpi指标项查询条件;\n   * @return 关键指标;\n   ",
+        "path": "/page",
+        "paramWrapper": "cn.wwwlike.plus.report.req.ReportKpiPageReq",
+        "param": "req",
+        "returnClz": "PageVo<ReportKpi>",
+        "methodType": "GetMapping",
+        "methodName": "page"
+      },
+      {
+        "title": "\n   * 保存关键指标;\n   * @param dto 关键指标;\n   * @return 关键指标;\n   ",
+        "path": "/save",
+        "paramWrapper": "ReportKpi",
+        "param": "dto",
+        "returnClz": "ReportKpi",
+        "methodType": "PostMapping",
+        "methodName": "save"
+      },
+      {
+        "title": "\n   * 明细查询关键指标;\n   * @param id 主键id;\n   * @return 关键指标;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "ReportKpi",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "ReportTableApi",
+    "typeName": "ReportTable",
+    "title": "报表配置(主)接口;",
+    "path": "/reportTable",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 分页查询报表配置(主);\n   * @param req 报表查询条件;\n   * @return 报表配置(主);\n   ",
+        "path": "/page",
+        "paramWrapper": "ReportTablePageReq",
+        "param": "req",
+        "returnClz": "PageVo<ReportTable>",
+        "methodType": "GetMapping",
+        "methodName": "page"
+      },
+      {
+        "title": "\n   * 分页查询报表配置(主);\n   * @param req 报表查询条件;\n   * @return 报表配置(主);\n   ",
+        "path": "/page",
+        "paramWrapper": "cn.wwwlike.plus.report.vo.ReportTablePageReq",
+        "param": "req",
+        "returnClz": "PageVo<ReportTable>",
+        "methodType": "GetMapping",
+        "methodName": "page"
+      },
+      {
+        "title": "\n   * 保存报表配置(主);\n   * @param dto 报表配置(主);\n   * @return 报表配置(主);\n   ",
+        "path": "/save",
+        "paramWrapper": "ReportTable",
+        "param": "dto",
+        "returnClz": "ReportTable",
+        "methodType": "PostMapping",
+        "methodName": "save"
+      },
+      {
+        "title": "\n   * 明细查询报表配置(主);\n   * @param id 主键id;\n   * @return 报表配置(主);\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "ReportTable",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "ReportTableItemApi",
+    "typeName": "ReportTableItem",
+    "title": "报表配置明细接口;",
+    "path": "/reportTableItem",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "\n   * 保存报表配置明细;\n   * @param dto 报表配置明细;\n   * @return 报表配置明细;\n   ",
+        "path": "/save",
+        "paramWrapper": "ReportTableItem",
+        "param": "dto",
+        "returnClz": "ReportTableItem",
+        "methodType": "PostMapping",
+        "methodName": "save"
+      },
+      {
+        "title": "\n   * 明细查询报表配置明细;\n   * @param id 主键id;\n   * @return 报表配置明细;\n   ",
+        "path": "/detail/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "ReportTableItem",
+        "methodType": "GetMapping",
+        "methodName": "detail"
+      },
+      {
+        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
+        "path": "/remove/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "Long",
+        "methodType": "DeleteMapping",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "ReportItem",
+    "title": "统计项",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所在模型"
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "统计项编码"
+      },
+      "fieldName": {
+        "fieldName": "fieldName",
+        "fieldType": "String",
+        "title": "统计字段"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String",
+        "title": "过滤条件"
+      },
+      "groupBy": {
+        "fieldName": "groupBy",
+        "fieldType": "String",
+        "title": ""
+      },
+      "func": {
+        "fieldName": "func",
+        "fieldType": "String",
+        "title": "聚合方式"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "统计项名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "ReportKpi",
+    "title": "关键指标",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所属模块"
+      },
+      "reportItemId": {
+        "fieldName": "reportItemId",
+        "fieldType": "String",
+        "title": "统计项(分子)"
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "指标编码"
+      },
+      "reportItemOtherId": {
+        "fieldName": "reportItemOtherId",
+        "fieldType": "String",
+        "title": "统计项(分母)"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "指标名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "ReportTable",
+    "title": "报表配置(主)",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "实体模型"
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "报表编码"
+      },
+      "func": {
+        "fieldName": "func",
+        "fieldType": "String",
+        "title": "分组聚合函数"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "报表名称"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "groupColumn": {
+        "fieldName": "groupColumn",
+        "fieldType": "String",
+        "title": "分组字段"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "ReportTableItem",
+    "title": "报表配置明细",
+    "tags": {
+      "reportItemId": {
+        "fieldName": "reportItemId",
+        "fieldType": "String",
+        "title": "统计项"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "reportTableId": {
+        "fieldName": "reportTableId",
+        "fieldType": "String",
+        "title": "所属报表"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "reportKpiId": {
+        "fieldName": "reportKpiId",
+        "fieldType": "String",
+        "title": "指标项"
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "排序号"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "ReportItemPageReq",
+    "typeName": "ReportItem",
+    "title": "统计项目查询条件",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所在模型"
+      },
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "统计项名称/编码"
+      },
+      "func": {
+        "fieldName": "func",
+        "fieldType": "String",
+        "title": "聚合方式"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "ReportKpiPageReq",
+    "typeName": "ReportKpi",
+    "title": "kpi指标项查询条件",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所属模块"
+      },
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "指标名称"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "ReportTablePageReq",
+    "typeName": "ReportTable",
+    "title": "报表查询条件",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "业务模型"
+      },
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "报表名称/编码"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "ReportItemPageReq",
+    "typeName": "ReportItem",
+    "title": "统计项目查询条件",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所在模型"
+      },
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "统计项名称/编码"
+      },
+      "func": {
+        "fieldName": "func",
+        "fieldType": "String",
+        "title": "聚合方式"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "ReportKpiPageReq",
+    "typeName": "ReportKpi",
+    "title": "kpi指标项查询条件",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所属模块"
+      },
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "指标名称"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "ReportTablePageReq",
+    "typeName": "ReportTable",
+    "title": "报表查询条件",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "业务模型"
+      },
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "报表名称/编码"
+      }
+    },
+    "apiTagList": []
+  }
+]

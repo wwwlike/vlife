@@ -3,6 +3,7 @@ package cn.wwwlike.form.api;
 import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.service.SysGroupService;
+import cn.wwwlike.auth.service.ThirdLoginService;
 import cn.wwwlike.form.dto.FormDto;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.req.FormPageReq;
@@ -133,7 +134,26 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return exchange.getBody().get("data").toString();
     }
 
-
+    @Autowired
+    ThirdLoginService thirdLoginService;
+    /**
+     * 接收客户端发来的代码请求
+     * 不提交的代码
+     */
+    @PostMapping("/tsCode/remote/{type}")
+    public String tsCode(@RequestParam("file") MultipartFile file, @PathVariable String type, HttpServletRequest request) throws IOException {
+        String ipAddress = request.getRemoteAddr();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+              thirdLoginService.sendEmail("249168991@qq.com","","有用户下载代码"+ipAddress,"由用户下载代码");
+            }
+        });
+        thread.start();
+        InputStream is = file.getInputStream();
+        String  json = FileUtil.getFileContent(is);
+        return ReadTitle.tsCode(json,type);
+    }
     /**
      * 模型信息同步
      * 第一次进入系统就应该同步一次

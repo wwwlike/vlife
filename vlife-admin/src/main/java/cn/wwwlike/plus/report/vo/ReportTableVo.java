@@ -16,41 +16,30 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.vlife.bi;
-
-import cn.wwwlike.vlife.annotation.VField;
+package cn.wwwlike.plus.report.vo;
+import cn.wwwlike.form.vo.FormVo;
+import cn.wwwlike.plus.report.entity.ReportTable;
+import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 
+import java.util.List;
 
 /**
- * 报表统计项
+ * 报表配置视图
  */
 @Data
-public class VlifeReportItem {
+public class ReportTableVo implements VoBean<ReportTable> {
+    public String id;
+    public String name;
+    public String code;
+    public String func;
+    public String groupColumn;
     /**
-     * 项目名称
+     * 实体模型
      */
-    private String name;
+    public FormVo formVo;
     /**
-     * 实体clz
+     * 报表项目
      */
-    private Class entityClz;
-    /**
-     * 项目编码
-     */
-    private String code;
-    /**
-     * 聚合字段
-     */
-    private String fieldName;
-    /**
-     * 聚合方式
-     */
-    @VField(dictCode = "ITEM_FUNC")
-    private String func;
-    /**
-     * 过滤条件
-     */
-    private Conditions conditions;
-
+    public List<ReportTableItemVo> items;
 }
