@@ -24,6 +24,8 @@ import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 用户列表查询
  */
@@ -32,7 +34,7 @@ public class SysUserPageReq extends PageQuery<SysUser> {
     /**
      * 姓名/手机/证件
      */
-    @VField(pathName = "name",opt = Opt.like,orReqFields = {"tel","idno"})
+    @VField(pathName = "name",opt = Opt.startsWith,orReqFields = {"tel","idno"})
     public String search;
 
     public String state;
@@ -45,12 +47,11 @@ public class SysUserPageReq extends PageQuery<SysUser> {
      */
     public String sysGroupId;
     /**
-     * 机构
-     */
-//    @VField(opt = Opt.startsWith)
-//    public String sysOrg_code;
-    /**
      * 部门
      */
     public String sysDept_code;
+    /*
+     *年龄
+     */
+    public List<Integer> age;
 }

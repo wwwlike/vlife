@@ -56,18 +56,18 @@ public class CT {
         public static final String DISABLE = "-1";
     }
 
-    @Named("聚合方式")
+    @Named("统计类型")
     public static final class ITEM_FUNC {
-        @Named("总数")
+        @Named("数量")
         public final static String COUNT = "count";
-        @Named("人次")
+        @Named("合计")
         public final static String SUM = "sum";
-        @Named("平均")
+        @Named("均值")
         public final static String AVG = "avg";
-        @Named("最大/最近")
-        public final static String MAX = "max";
-        @Named("最小/最先")
-        public final static String MIN = "min";
+//        @Named("最大/最新(max)")
+//        public final static String MAX = "max";
+//        @Named("最小/最早(min)")
+//        public final static String MIN = "min";
     }
 
 

@@ -273,7 +273,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     @Override
     public <E extends IdBean> List<E> query(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, OrderRequest order) {
-        logger.info("当前查询"+entityVoClz.getTypeName());
+//        logger.info("当前查询"+entityVoClz.getTypeName());
         if (VoBean.class.isAssignableFrom(entityVoClz)) {
             return (List<E>) query((Class<? extends VoBean>) entityVoClz, wrapper, null, order, true);
         } else {
@@ -564,7 +564,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         }
     }
 
-
     /**
      * 查询单一字段报表数据
      */
@@ -576,14 +575,16 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      * 查询一张报表
      */
     public List<Map> report(List<Map> all, ReportWrapper wrapper) {
+        //单指标查询
         QModel<T> model = select(wrapper.getEntityClz());//产生： select * from xxx
         JPAQuery query = model.fromGroupWhere(wrapper); //过滤条件组装 where?
-        List<String> names = new ArrayList<>();
+        List<Tuple> result=query.fetch();//统计结果
+        //查询结果转换
         List<Groups> groups = wrapper.getGroups();
         List<String> columns = groups.stream().map(g -> {
             return g.getColumn() + (g.getFunc() != null ? "_" + g.getFunc() : "");
         }).collect(Collectors.toList());
-        List currList = QueryHelper.tupletoMap(query.fetch(), columns, wrapper.getCode());
+        List currList = QueryHelper.tupletoMap( result,columns, wrapper.getCode());
         if (all.size() == 0) {
             return currList;
         }

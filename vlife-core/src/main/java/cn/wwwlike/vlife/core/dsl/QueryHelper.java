@@ -28,6 +28,7 @@ import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.DataExpressTran;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.tran.JiExpressTran;
+import cn.wwwlike.vlife.query.tran.MonthExpressTran;
 import cn.wwwlike.vlife.query.tran.YearExpressTran;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
@@ -293,21 +294,24 @@ public class QueryHelper {
      * @return
      */
     public static SimpleExpression tran(SimpleExpression expression, String func) {
-        if ("ji".equals(func)) {
+        if ("ji".equals(func)) {//季度
             return new JiExpressTran().tran(expression);
+        } else if ("month".equals(func)) {//月份
+            return new MonthExpressTran().tran(expression);
         } else if ("year".equals(func)) {
             return new YearExpressTran().tran(expression);
         } else  if (CT.ITEM_FUNC.AVG.equals(func)) {
             return ((NumberExpression) expression).avg();
-        } else if (CT.ITEM_FUNC.MAX.equals(func)) {
-            return ((NumberExpression) expression).max();
-        } else if (CT.ITEM_FUNC.MIN.equals(func)) {
-            return ((NumberExpression) expression).min();
         } else if (CT.ITEM_FUNC.SUM.equals(func)) {
             return ((NumberExpression) expression).sum();
         }else if (CT.ITEM_FUNC.COUNT.equals(func)) {
             return expression.count();
         }
+//        else if (CT.ITEM_FUNC.MAX.equals(func)) {
+//            return ((NumberExpression) expression).max();
+//        } else if (CT.ITEM_FUNC.MIN.equals(func)) {
+//            return ((NumberExpression) expression).min();
+//        }
         return expression;
     }
 
@@ -361,7 +365,7 @@ public class QueryHelper {
             lineMap = new HashMap();
             int i = 0;
             for (String g : group) {
-                String columnTitle = t.get(i, String.class);// 行记录的列标题的值
+                Object columnTitle = t.get(i, String.class);// 行记录的列标题的值
                 lineMap.put(g, columnTitle);
                 i++;
             }

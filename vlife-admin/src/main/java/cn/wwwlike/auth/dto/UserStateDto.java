@@ -9,7 +9,9 @@ import lombok.Data;
 
 import java.util.List;
 
-
+/**
+ * 用户状态批量修改
+ */
 @Data
 public class UserStateDto implements SaveBean<SysUser> {
     String id;

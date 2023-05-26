@@ -61,7 +61,7 @@ public class AdminStartInitializer implements ApplicationRunner {
         dictService.sync();
         //模型同步(移除的需要物理删除)
         GlobalData.allModels().stream().forEach(m->{
-           if( service.syncOne(m.getType())){
+           if( service.syncOne(m.getType())){//增加菜单
                //系统字典
                m.getFields().stream().filter(f->((FieldDto)f).getDictCode()!=null).forEach(f->{
                    dictService.createByField(((FieldDto)f).getDictCode(),((FieldDto)f).getTitle());
@@ -71,8 +71,8 @@ public class AdminStartInitializer implements ApplicationRunner {
         List<Form> dbModels=formService.findAll();//干掉的删除
         dbModels.stream().filter(db->GlobalData.allModels().stream().filter(java->java.getType().equals(db.getType())).count()==0).forEach(m->{
             formService.remove(m.getId());
+            //菜单也要物理删除
         });
-
         //用户和权限组初始化
         //字典里没有
 

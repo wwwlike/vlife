@@ -24,9 +24,7 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -38,33 +36,46 @@ public class PackageUtil {
      * @param packageName 包名
      * @return 类的完整名称
      */
-    public static List<String> getClassName(String packageName) {
+    public static Set<String> getClassName(String packageName) {
         return getClassName(packageName, true);
     }
 
     /**
-     * 获取某包下所有类
-     *
-     * @param packageName  包名
+     * 获取指定包下的类信息
+     * @param packageName  包名路径
      * @param childPackage 是否遍历子包
-     * @return 类的完整名称
+     * @return 类的完整名称Arrays.stream(((URLClassLoader) loader).getURLs()).filter(t->t.path.indexOf("classes")!=-1).collect(Collectors.toList())
      */
-    public static List<String> getClassName(ClassLoader loader, String packageName, boolean childPackage) {
-        List<String> fileNames = null;
-        String packagePath = packageName.replace(".", "/");
-        URL url = loader.getResource(packagePath);
-        if (url != null) {
-            String path=url.getPath();
+    public static Set<String> getClassName(ClassLoader loader, String packageName, boolean childPackage) {
+        Set<String> fileNames = new HashSet<>();
+//        String packagePath = packageName.replace(".", "/");
+//        URL url = loader.getResource(packagePath);
+        URL[] urls=((URLClassLoader) loader).getURLs();
+        //遍历取到classes里的类信息(开发时用)
+        for(URL u:urls){
+            String type = u.getProtocol();
+            String path=u.getPath();
             path=path.replace("test-","");
-            String type = url.getProtocol();
-            if (type.equals("file")) {
-                fileNames = getClassNameByFile(path, null, childPackage);
-            } else if (type.equals("jar")) {
-                fileNames = getClassNameByJar(path, childPackage);
+            if (path.endsWith("classes/")) {
+                fileNames.addAll(getClassNameByFile(path, null, childPackage));
             }
-        } else {
-            fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
         }
+        fileNames.addAll(getClassNameByJars(((URLClassLoader) loader).getURLs(), packageName, childPackage));
+        //读取jar文件里的类信息
+
+
+//        if (url != null) {
+//            String path=url.getPath();
+//            path=path.replace("test-","");
+//            String type = url.getProtocol();
+//            if (type.equals("file")) {
+//                fileNames = getClassNameByFile(path, null, childPackage);
+//            } else if (type.equals("jar")) {//生产环境读取jar包
+//                fileNames = getClassNameByJar(path, childPackage);
+//            }
+//        } else {
+//            fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
+//        }
         return fileNames;
     }
 
@@ -75,7 +86,7 @@ public class PackageUtil {
      * @param childPackage 是否遍历子包
      * @return 类的完整名称
      */
-    public static List<String> getClassName(String packageName, boolean childPackage) {
+    public static Set<String> getClassName(String packageName, boolean childPackage) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
        return getClassName(loader,packageName,childPackage);
     }
@@ -169,7 +180,6 @@ public class PackageUtil {
             for (int i = 0; i < urls.length; i++) {
                 URL url = urls[i];
                 String urlPath = url.getPath();
-
                 if (urlPath.endsWith("classes/")) {
                     continue;
                 }

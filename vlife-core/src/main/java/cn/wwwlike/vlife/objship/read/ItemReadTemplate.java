@@ -22,6 +22,7 @@ import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.*;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
@@ -44,14 +45,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -146,7 +145,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
     public static List<String> readPackage(String... packageNames) {
         List<String> classStr = new ArrayList<>();
         for (String packageName : packageNames) {
-            List<String> classNames = PackageUtil.getClassName(packageName, true);
+            Set<String> classNames = PackageUtil.getClassName(packageName, true);
             if (classNames != null) {
                 classStr.addAll(classNames);
             }
@@ -154,7 +153,44 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         return classStr;
     }
 
+    /**
+     * 查询指定接口的实现类信息
+     * @param interfaceClass 接口
+     * @param classLoader 类classloader
+     * @param <T>
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public static <T> List<Class<? extends T>> findImplementations(Class<T> interfaceClass, ClassLoader classLoader) throws IOException, ClassNotFoundException {
+        List<Class<? extends T>> implementations = new ArrayList<>();
 
+        // 在 classpath 中查找所有 jar 包
+        Enumeration<URL> resources = classLoader.getResources("META-INF/services/" + interfaceClass.getName());
+
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+
+            // 读取每个 jar 包中的配置文件里的实现类名
+            try (InputStream in = resource.openStream()) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.isEmpty() || line.startsWith("#")) {
+                        continue;
+                    }
+                    // 加载实现类
+                    Class<?> implClass = Class.forName(line, true, classLoader);
+                    // 判断实现类是否是接口的子类，并添加到结果列表中
+                    if (interfaceClass.isAssignableFrom(implClass)) {
+                        implementations.add((Class<? extends T>) implClass);
+                    }
+                }
+            }
+        }
+        return implementations;
+    }
     /**
      * 读指定包路径的类路径到列表
      *
@@ -162,13 +198,22 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
      * @return 包路径下的所有类路径放入到集合里
      */
     public static List<String> readPackage(ClassLoader classLoader, String... packageNames) {
+//        try {
+//          List a=  findImplementations(SaveBean.class,classLoader);
+//            System.out.println(a.size());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
         List<String> classStr = new ArrayList<>();
         for (String packageName : packageNames) {
-            List<String> classNames = PackageUtil.getClassName(classLoader, packageName, true);
+            Set<String> classNames = PackageUtil.getClassName(classLoader, packageName, true);
             if (classNames != null) {
                 classStr.addAll(classNames);
             }
         }
+        //指定包的数据
         return  classStr.stream().filter(
                 classFullName->(classFullName.indexOf(".entity.")!=-1||
                         classFullName.indexOf(".req.")!=-1||
@@ -176,7 +221,8 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                         classFullName.indexOf(".item.")!=-1||
                         classFullName.indexOf(".do.")!=-1||
                         classFullName.indexOf(".dto.")!=-1)
-                        ).collect(Collectors.toList());
+                        ).filter(classFullName->classFullName.indexOf("VlifeQuery")==-1&&
+                classFullName.indexOf("PageQuery")==-1).collect(Collectors.toList());
     }
 
     /**
@@ -264,11 +310,12 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
      * @param beanInfo
      */
     private T commentPerfect(T beanInfo){
-        if(StringUtils.isEmpty(beanInfo.getTitle())){
+        if(StringUtils.isEmpty(beanInfo.getTitle())&&((ModelDto)beanInfo).getEntityDto()!=null){
             beanInfo.setTitle(((ModelDto)beanInfo).getEntityDto().getTitle() + "(视图)");
         }
         List<FieldDto> fieldDtos = beanInfo.getFields();
         /* 所有字段找对应的实体的字段title,字段是对象则找对象, vo save 存在嵌套注入的情况*/
+        if(fieldDtos!=null ){
         fieldDtos.stream().forEach(modelField -> {
             infos.stream().forEach(entityDto -> {
                 if (modelField.getEntityClz() != null && entityDto.getClz() == modelField.getEntityClz()) {
@@ -289,7 +336,9 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                 }
             });
         });
+        }
         return beanInfo;
+
     }
 
     /**

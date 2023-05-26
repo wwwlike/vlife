@@ -60,4 +60,18 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
         }
         return service.find(QueryWrapper.of(FormField.class).eq("formId", formId));
     }
+
+    /**
+     * 能够后参报表统计的字段
+     * id，日期
+     * @param formId
+     * @return
+     */
+    @GetMapping("/list/report")
+    public List<FormField> listReport(String formId) {
+        if (formId == null) {
+            return new ArrayList<>();
+        }
+        return service.find(QueryWrapper.of(FormField.class).eq("formId", formId));
+    }
 }

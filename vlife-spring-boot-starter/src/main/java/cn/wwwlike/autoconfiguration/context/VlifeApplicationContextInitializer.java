@@ -38,7 +38,7 @@ public class VlifeApplicationContextInitializer implements ApplicationContextIni
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        Integer errNum=new ModelReadCheck().load(loader);
+        Integer errNum=new ModelReadCheck().load(loader,"cn.wwwlike");
         if(errNum>0){
             logger.info("[vlife] 容器初始化失败，请按照规范编写各类模型，注意逻辑关系");
             exitApplication(applicationContext);

@@ -104,9 +104,12 @@ public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
     public List<String> findGroupResourceCodes(String groupId){
         GroupVo vo=queryOne(GroupVo.class,groupId);
         List<String> code=vo.getSysRoleGroup_sysRole_sysResources_code();
-        List<String> menuIds=vo.getSysRoleGroup_sysRole_sysResources_sysMenuId();
-        List<String> code1=resourcesService.findMenuRequireResources(menuIds.toArray(new String[menuIds.size()]));
-        code.addAll(code1);
+        if(code!=null&&vo.getSysRoleGroup_sysRole_sysResources_sysMenuId()!=null){
+            List<String> menuIds=vo.getSysRoleGroup_sysRole_sysResources_sysMenuId();
+            //菜单固定绑定的权限添加
+            List<String> code1=resourcesService.findMenuRequireResources(menuIds.toArray(new String[menuIds.size()]));
+            code.addAll(code1);
+        }
         return code;
     }
 

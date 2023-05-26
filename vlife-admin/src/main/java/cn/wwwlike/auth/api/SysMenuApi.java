@@ -1,6 +1,8 @@
 package cn.wwwlike.auth.api;
 
+import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysMenu;
+import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysMenuPageReq;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.auth.vo.MenuVo;
@@ -10,6 +12,7 @@ import java.lang.Long;
 import java.lang.String;
 import java.util.List;
 
+import cn.wwwlike.web.security.core.SecurityUser;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
   /**
    * 保存菜单;
+   *
    * @param dto 菜单;
    * @return 菜单;
    */
@@ -36,6 +40,7 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
 
   /**
    * 明细查询菜单;
+   *
    * @param id ;
    * @return 菜单;
    */
@@ -47,6 +52,7 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
 
   /**
    * 所有菜单
+   *
    * @return 菜单;
    */
   @GetMapping("/list/all")
@@ -57,6 +63,7 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
 
   /**
    * 菜单查询
+   *
    * @param req
    * @return
    */
@@ -67,6 +74,7 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
 
   /**
    * 逻辑删除;
+   *
    * @param id ;
    * @return 已删除数量;
    */
@@ -77,11 +85,13 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
 
   /**
    * 查找一个角色的资源（角色已绑定的+未被角色绑定的）
+   *
    * @param sysRoleId
    * @return
    */
   @GetMapping("/list/roleResources")
-  public List<MenuVo> roleResources(String sysRoleId){
-     return service.getMenuVos(sysRoleId);
+  public List<MenuVo> roleResources(String sysRoleId) {
+    return service.getMenuVos(sysRoleId);
   }
+
 }

@@ -45,6 +45,7 @@ public abstract class ReqVoDto<T> extends BeanDto<T> implements ModelDto {
        if (leftPathClz == null||leftPathClz.size()==0||(leftPathClz.size()>0&&leftPathClz.get(0)==null)) {
             leftPathClz = new ArrayList<>();
             List<FieldDto> fields = getFields();
+            if(fields!=null){
             for (FieldDto field : fields) {
                 if (VCT.ITEM_TYPE.BASIC.equals(field.getFieldType())) {
                     if(field.leftJoinPath()!=null&&field.leftJoinPath().size()>0){
@@ -52,7 +53,7 @@ public abstract class ReqVoDto<T> extends BeanDto<T> implements ModelDto {
                     }
                 }
             }
-        }
+        }}
         return leftPathClz;
     }
 

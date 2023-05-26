@@ -360,10 +360,11 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
 
 
     /**
-     * 16 实体类对象保存
-     *
-     * @param
-     * @return 保存成功的id
+     * 16 批量更新实体的指定字段的值
+     * @param field 更新字段
+     * @param val 更新值
+     * @param ids 更新的对象id集合
+     * @return 更新的ids集合
      */
     public List<String> save(String field,Object val,String ... ids) {
         List<String> savedIds=new ArrayList<>();

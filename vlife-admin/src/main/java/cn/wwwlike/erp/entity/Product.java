@@ -41,4 +41,14 @@ public class Product  extends DbEntity {
      * 数据标题
      */
     public String title;
+    /**
+     * 当前售价
+     */
+    public Double price;
+    /**
+     * 当前成本价格
+     */
+    public Double  total;
+
+
 }

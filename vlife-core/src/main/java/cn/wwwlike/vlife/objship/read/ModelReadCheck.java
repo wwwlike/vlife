@@ -84,8 +84,12 @@ public class ModelReadCheck {
     public Integer load(ClassLoader loader) {
         return load(loader,"");
     }
+
     /**
-     * 返回异常错误数量
+     * 读模型信息到GlobalData里
+     * @param loader 加载类loader(maven插件和app直接运行时不同)
+     * @param path 常错误数量
+     * @return
      */
     public Integer load(ClassLoader loader,String path) {
         List<String> list = ItemReadTemplate.readPackage(loader,path);

@@ -112,7 +112,7 @@ public class VlifeDataProcess extends DataProcess {
                 this.assigns.add("modifyId");
             }
             mm.put("modifyDate", new Date());
-            mm.put("modifyId",SecurityConfig.getCurrUser().getId());
+            mm.put("modifyId",SecurityConfig.getCurrUser()!=null?SecurityConfig.getCurrUser().getId():null);
         }
     }
 

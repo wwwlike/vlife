@@ -405,17 +405,17 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             SimpleExpression groupException = (SimpleExpression) ReflectionUtils.getFieldValue(entityPathBase, group.getColumn());
             if (group.getFunc() != null) {
                 groupException = QueryHelper.tran(groupException, group.getFunc());
-                filterQuery.groupBy(groupException);
+                filterQuery.groupBy(groupException);//直接加入到fiulterQuery
             }
-            groupExpression[i] = groupException;
+            groupExpression[i] = groupException; // 这里也加入了，会加入两次
             i++;
         }
-        filterQuery.groupBy(groupExpression);
+        filterQuery.groupBy(groupExpression);//加入
 
         //2. select 分组 聚合的
         SimpleExpression fieldExpression = (SimpleExpression) ReflectionUtils.getFieldValue(entityPathBase, wrapper.getItemField());
         SimpleExpression[] selectExpression = selectExpression = ArrayUtils.addAll(groupExpression,
-                QueryHelper.tran(fieldExpression, wrapper.getFunc()).as(wrapper.getCode()));
+                QueryHelper.tran(fieldExpression, wrapper.getFunc()).as(wrapper.getCode()));//分组的字段和查询的字段（code）都加入进来
         filterQuery.select(selectExpression);
 
         //group by加入
@@ -459,12 +459,20 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         Method method = null;
         BooleanExpression re = null;
         if (fieldlDsl != null) {
-
             if (element.getVal() != null || element.getVals() != null) {
-
                 if (opt == Opt.between) {
-                    method = ReflectionUtils.findMethod(fieldlDsl.getClass(), opt.name(), vals[0].getClass(), vals[1].getClass());
-                    re = (BooleanExpression) org.springframework.util.ReflectionUtils.invokeMethod(method, fieldlDsl, vals[0], vals[1]);
+                    if(vals.length>1){
+                        if(vals[0]!=null&&vals[1]!=null){
+                            method = ReflectionUtils.findMethod(fieldlDsl.getClass(), opt.name(), vals[0].getClass(), vals[1].getClass());
+                            re = (BooleanExpression) org.springframework.util.ReflectionUtils.invokeMethod(method, fieldlDsl, vals[0], vals[1]);
+                        }else if(vals[0]==null&&vals[1]!=null){
+                            method = ReflectionUtils.findMethod(fieldlDsl.getClass(), Opt.loe.name(), vals[1].getClass());
+                            re = (BooleanExpression) org.springframework.util.ReflectionUtils.invokeMethod(method, fieldlDsl, vals[1]);
+                        }else if(vals[1]==null&&vals[0]!=null){
+                            method = ReflectionUtils.findMethod(fieldlDsl.getClass(), Opt.goe.name(), vals[0].getClass());
+                            re = (BooleanExpression) org.springframework.util.ReflectionUtils.invokeMethod(method, fieldlDsl, vals[0]);
+                        }
+                    }
                 } else if (opt == Opt.in) {
                     re = ((SimpleExpression) fieldlDsl).in(vals);
                 } else {

@@ -45,6 +45,10 @@ public class SysUser extends DbEntity implements IUser,IFkItem {
      */
     public String name;
     /**
+     * 年龄
+     */
+    public Integer age;
+    /**
      * 用户名
      */
     public String username;
@@ -79,10 +83,6 @@ public class SysUser extends DbEntity implements IUser,IFkItem {
      * 邮箱
      */
     public String email;
-//    /**
-//     * 单位
-//     */
-//    public String sysOrgId;
 
     /**
      * 部门

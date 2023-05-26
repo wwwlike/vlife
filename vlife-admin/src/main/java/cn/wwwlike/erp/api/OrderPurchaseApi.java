@@ -4,10 +4,13 @@ import cn.wwwlike.erp.dto.OrderPurchaseDto;
 import cn.wwwlike.erp.entity.OrderPurchase;
 import cn.wwwlike.erp.req.OrderPurchasePageReq;
 import cn.wwwlike.erp.service.OrderPurchaseService;
+import cn.wwwlike.util.EntityStateDto;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +42,7 @@ public class OrderPurchaseApi extends VLifeApi<OrderPurchase, OrderPurchaseServi
    */
   @PostMapping("/save/orderPurchaseDto")
   public OrderPurchaseDto saveOrderPurchaseDto(@RequestBody OrderPurchaseDto dto) {
+    dto.setState("2");
     return service.save(dto);
   }
 
@@ -61,4 +65,17 @@ public class OrderPurchaseApi extends VLifeApi<OrderPurchase, OrderPurchaseServi
   public Long remove(@PathVariable String id) {
     return service.remove(id);
   }
+
+
+
+  /**
+   * 更新用户状态
+   * @param dto
+   * @return
+   */
+  @PostMapping("/state")
+  public List<String> state(@RequestBody EntityStateDto dto){
+    return service.save("state",dto.getState(),dto.getIds().toArray(new String[dto.getIds().size()]));
+  }
+
 }

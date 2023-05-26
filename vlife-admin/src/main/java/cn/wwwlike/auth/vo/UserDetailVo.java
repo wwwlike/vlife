@@ -18,6 +18,7 @@
 
 package cn.wwwlike.auth.vo;
 
+import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.sys.entity.SysArea;
 import cn.wwwlike.sys.entity.SysDept;
@@ -33,7 +34,7 @@ import java.util.List;
  * 用户详细信息
  */
 @Data
-public class UserDetailVo implements VoBean<SysUser> {
+public class  UserDetailVo implements VoBean<SysUser> {
     public String id;
 
     /**
@@ -56,6 +57,7 @@ public class UserDetailVo implements VoBean<SysUser> {
     public String username;
 
     public SysDept sysDept;
+
 
 //    /**
 //     * 机构名称
@@ -122,7 +124,12 @@ public class UserDetailVo implements VoBean<SysUser> {
     /**
      * 角色里资源对应的菜单
      */
-    @VField(pathName = "sysGroup_sysRoleGroup_sysRole_sysResources_sysMenuId")
-    public List<String> menus;
+//    @VField(pathName = "sysGroup_sysRoleGroup_sysRole_sysResources_sysMenuId")
+//    public List<String> menus;
+    /**
+     * 用户能够访问到的所有菜单信息
+     */
+    @VField(skip = true)
+    public List<SysMenu> menus;
 
 }

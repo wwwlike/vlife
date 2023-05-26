@@ -12,12 +12,15 @@ import cn.wwwlike.form.service.FormReactionService;
 import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.form.vo.*;
 import cn.wwwlike.vlife.base.ITree;
+import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
+import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.ModelService;
+import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.utils.FileUtil;
 import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import cn.wwwlike.web.security.core.SecurityUser;
@@ -36,10 +39,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
+import cn.wwwlike.vlife.ts.ReadTitle;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 列表字段接口;
@@ -70,7 +77,10 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return new ArrayList<>();
     }
 
-
+    @GetMapping("/page")
+    public PageVo<Form> page(FormPageReq req){
+        return service.findPage(req);
+    }
 
     /**
      * 已启用的模型信息过滤
@@ -78,8 +88,8 @@ public class FormApi extends VLifeApi<Form, FormService> {
      * @return
      */
     @GetMapping("/list")
-    public  List<Form> list(FormPageReq req){
-        return service.find(req);
+    public  List<FormVo> list(FormPageReq req){
+        return service.query(FormVo.class,req);
     }
 
     @Autowired
@@ -137,6 +147,41 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @Autowired
     public SysGroupService groupService;
 
+
+//    @GetMapping("/model")
+//    public FormVo model(FormPageReq req) {
+//        SecurityUser currUser= SecurityConfig.getCurrUser();
+//        CommonResponseEnum.CANOT_CONTINUE.assertNotNull(req.getType(),"模型标识type没有传入");
+//        List<FormVo> published = service.query(FormVo.class, req);
+//        BeanDto dto=GlobalData.findBeanDtoByName(req.getItemType(),req.getType());
+//        FormVo form = null;
+//        if (dto!=null) {
+//            if (published != null && published.size() > 0) {
+//                form = published.get(0);
+//                form.setParentsName(dto.getParentsName());
+//            } else if(req.getType()!=null) {
+//                form = (FormVo)service.tran(dto);
+//            }
+//            //查询模型需要过滤掉和行级数据过滤无关的字段
+//            if (!req.isDesign()&&form!=null &&VCT.ITEM_TYPE.REQ.equals(form.getItemType())&& currUser.getGroupId()!=null) {
+//                SysGroup group=groupService.findOne( currUser.getGroupId());
+//                String groupFilterType=group.getFilterType();
+//                if(group.getFilterType()!=null&&!"".equals(groupFilterType)&&groupFilterType.split("_").length==2){
+//                    String[] filterType=groupFilterType.split("_");
+//                    String filterEntityType=filterType[0]; //根据哪个外键过滤
+//                    String level=filterType[1];// "1" 本级  2 本级和下级
+//                    EntityDto userEntityDto=GlobalData.entityDto("sysUser");
+//                    EntityDto reqEntityDto=GlobalData.entityDto(form.entityType);
+//                    EntityDto filterEntityDto=GlobalData.entityDto(filterEntityType);
+//                    List<String> reqEntityRelationTableNames=reqEntityDto.getRelationFields().stream().map(f->f.getEntityType()).collect(Collectors.toList());
+//                    List<String> userFkTableNames=userEntityDto.fields.stream().filter(f->!f.entityType.equals("sysUser")).map(f->f.getEntityType()).collect(Collectors.toList());
+//                    form.setFields(service.reqModelFilter(form,reqEntityRelationTableNames,userFkTableNames,filterEntityType,level,
+//                            ITree.class.isAssignableFrom( filterEntityDto.getClz())));
+//                }
+//            }
+//        }
+//        return form;
+//    }
     /**
      * 查询指定模型信息
      * @return
@@ -144,22 +189,28 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @GetMapping("/model")
     public FormVo model(FormPageReq req) {
         SecurityUser currUser= SecurityConfig.getCurrUser();
-        CommonResponseEnum.CANOT_CONTINUE.assertNotNull(req.getType(),"模型标识type没有传入");
         List<FormVo> published = service.query(FormVo.class, req);
-        BeanDto dto=GlobalData.findBeanDtoByName(req.getItemType(),req.getType());
         FormVo form = null;
-        if (dto!=null) {
-            if (published != null && published.size() > 0) {
-                form = published.get(0);
-                form.setParentsName(dto.getParentsName());
-            } else if(req.getType()!=null) {
-                form = (FormVo)service.tran(dto);
+        BeanDto dto=null;
+        if (published != null && published.size() > 0) {
+            dto=  GlobalData.findBeanDtoByName(published.get(0).getItemType(),published.get(0).getType());
+            if(dto==null){
+                return form;
             }
-        //查询模型需要过滤掉和行级数据过滤无关的字段
-            if (!req.isDesign()&&form!=null &&VCT.ITEM_TYPE.REQ.equals(form.getItemType())&& currUser.getGroupId()!=null) {
-                SysGroup group=groupService.findOne( currUser.getGroupId());
-                String groupFilterType=group.getFilterType();
-                if(group.getFilterType()!=null&&!"".equals(groupFilterType)&&groupFilterType.split("_").length==2){
+            form = published.get(0);
+            form.setParentsName(dto.getParentsName());
+        } else if(req.getType()!=null) {
+            dto=GlobalData.findBeanDtoByName(req.getItemType(),req.getType());
+            if(dto==null){
+                return form;
+            }
+            form = (FormVo)service.tran(dto);
+        }
+            //查询模型需要过滤掉和行级数据过滤无关的字段
+        if (!req.isDesign()&&form!=null &&VCT.ITEM_TYPE.REQ.equals(form.getItemType())&& currUser.getGroupId()!=null) {
+            SysGroup group=groupService.findOne( currUser.getGroupId());
+            String groupFilterType=group.getFilterType();
+            if(group.getFilterType()!=null&&!"".equals(groupFilterType)&&groupFilterType.split("_").length==2){
                 String[] filterType=groupFilterType.split("_");
                 String filterEntityType=filterType[0]; //根据哪个外键过滤
                 String level=filterType[1];// "1" 本级  2 本级和下级
@@ -170,7 +221,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
                 List<String> userFkTableNames=userEntityDto.fields.stream().filter(f->!f.entityType.equals("sysUser")).map(f->f.getEntityType()).collect(Collectors.toList());
                 form.setFields(service.reqModelFilter(form,reqEntityRelationTableNames,userFkTableNames,filterEntityType,level,
                         ITree.class.isAssignableFrom( filterEntityDto.getClz())));
-                }
             }
         }
         return form;
@@ -263,5 +313,26 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @DeleteMapping("/remove/{id}")
     public Long remove(@PathVariable String id) {
         return service.remove(id);
+    }
+
+    /**
+     * 模型初始化
+     * @return
+     */
+    @PostMapping("/init/{id}")
+    public FormVo init(@PathVariable String id){
+       String type=service.deleteModel(id);
+       if(type!=null){
+           GlobalData.allModels().stream().forEach(m->{
+               service.syncOne(m.getType());
+           });
+       }
+       QueryWrapper qw=QueryWrapper.of(Form.class);
+       qw.eq("type",type);
+       List<FormVo> list= service.query(FormVo.class,qw);
+       if(list!=null&& list.size()>0){
+           return list.get(0);
+       }
+       return null;
     }
 }

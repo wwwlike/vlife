@@ -29,7 +29,6 @@ public class AuthDict {
     public static final class vlife {
     }
 
-
     @Named("用户类型")
     public static final class USER_TYPE {
     }

@@ -24,6 +24,7 @@ import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.ComponentParam;
 import cn.wwwlike.vlife.utils.GenericsUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,6 +76,9 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
      */
     @GetMapping("/exist")
     public Long exist(String fieldName,  String fieldVal,String id) {
+        if(StringUtils.isEmpty(fieldVal)){
+            return 0L;
+        }
         QueryWrapper<T> qw = QueryWrapper.of(entityClz).eq(fieldName, fieldVal);
         if(id!=null){
             qw.ne("id",id);

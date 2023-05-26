@@ -17,9 +17,12 @@ import cn.wwwlike.auth.vo.UserVo;
 import cn.wwwlike.sys.service.SysAreaService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.web.exception.enums.CommonResponseEnum;
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -28,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static cn.wwwlike.auth.service.SysUserService.encode;
 
 /**
  * 用户表接口;
@@ -72,7 +77,7 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
     public Integer reset(@RequestBody String[] ids) {
         List<SysUser> users=service.findByIds(ids);
         for(SysUser user:users) {
-            user.setPassword("{F4T9t2BE3HCvD9khLCxL/nyib/AdM1WqR/tMx5eJJ2k=}f0afa783ba7607063606fdb43c2e55fb");
+            user.setPassword(encode("123456"));
             service.save(user);
         }
         return ids.length;
@@ -83,11 +88,9 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
      */
     @PostMapping("/save/userPasswordModifyDto")
     public boolean saveUserPasswordModifyDto(@RequestBody UserPasswordModifyDto dto) {
-       if(!dto.getPassword().equals(dto.getNewPassword())){
-           //两次密码不一致
-       }else{
-           service.save("password",dto.getNewPassword(),dto.getId());
-       }
+       SysUser user=service.findOne(dto.getId());
+       CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(new MessageDigestPasswordEncoder("MD5").matches(dto.getPassword(), user.getPassword()),"原密码不正确");
+       service.save("password",encode(dto.getNewPassword()),dto.getId());
        return true;
     }
 
@@ -105,7 +108,10 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
     @PostMapping("/save")
     public SysUser save(@RequestBody SysUser dto) {
         if (dto.getPassword() == null && dto.getId() == null) {
-            dto.setPassword("{F4T9t2BE3HCvD9khLCxL/nyib/AdM1WqR/tMx5eJJ2k=}f0afa783ba7607063606fdb43c2e55fb");
+            dto.setPassword(encode("123456"));
+        }
+        if (dto.getState() == null) {
+            dto.setState("1");
         }
         return service.save(dto);
     }
@@ -146,19 +152,7 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
      */
     @GetMapping("/currUser")
     public UserDetailVo currUser() {
-        UserDetailVo vo = service.queryOne(UserDetailVo.class, SecurityConfig.getCurrUser().getId());
-        SysUser user = service.findOne(vo.getId());
-        user.setLoginNum(user.getLoginNum() == null ? 1 : user.getLoginNum() + 1);
-        service.save(user);
-        if(user.getSysGroupId().equals("super")){
-            List<String> codes = resourcesService.findApiResources().stream().map(t->t.getCode()).collect(Collectors.toList());
-            vo.setResourceCodes(codes);
-        }else{
-            List<String> codes = groupService.findGroupResourceCodes(vo.getSysGroupId());
-            vo.setResourceCodes(codes);
-        }
-
-        return vo;
+       return service.getUserDetailVo( SecurityConfig.getCurrUser());
     }
 
 

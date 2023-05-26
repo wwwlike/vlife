@@ -173,7 +173,7 @@ public class CommentParser {
             /*过滤接口*/
             List<MethodDeclaration> methodDeclarations= (List<MethodDeclaration>) typeDeclaration
                     .getMembers().stream().filter(t->(t instanceof MethodDeclaration)).filter(t->((MethodDeclaration)t).getAnnotations().size()>0).collect(Collectors.toList());
-            final String [] types={"GetMapping","PostMapping","RequestMapping","DeleteMappting","PutMappting"};
+            final String [] types={"GetMapping","PostMapping","RequestMapping","DeleteMapping","PutMapping"};
             ApiTag apiTag = null;
             for (MethodDeclaration method : methodDeclarations) {
                 List annotations=method.getAnnotations().stream().filter(t->

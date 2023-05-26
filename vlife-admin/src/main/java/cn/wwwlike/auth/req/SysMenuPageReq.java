@@ -29,6 +29,8 @@ import lombok.Data;
  */
 @Data
 public class SysMenuPageReq extends PageQuery<SysMenu> {
-   @VField(opt =Opt.like)
-   public String name;
+//   @VField(opt =Opt.like)
+//   public String name;
+   @VField(opt =Opt.startsWith)
+   public String code;
 }
