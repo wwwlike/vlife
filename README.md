@@ -88,6 +88,13 @@
 > 如果需要商业服务，请微信联系vlifeboot
 
 ### 反馈与共建
+<p align="center">
+     <a href="#" >微信群
+      <img style="width: 200px; height: 200px;" src="https://wwwlike.gitee.io/vlife-img/wxq.jpg" alt="star" />
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#" >QQ群
+      <img style="width: 200px; height: 200px;" src="https://wwwlike.gitee.io/vlife-img/qqq.png" alt="star" />
+    </a>
+</p>
 
-![反馈与共建](https://wwwlike.gitee.io/vlife-img/link.png)
              
