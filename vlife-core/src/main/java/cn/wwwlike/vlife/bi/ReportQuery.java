@@ -41,6 +41,7 @@ public class ReportQuery<T extends Item> extends CustomQuery<T, ReportWrapper<T>
      * 报表编码
      */
     public String reportCode;
+
     /**
      * 分组字段
      * 字段+'_'+tran名如  createDate_ji ->根据根据季度分组

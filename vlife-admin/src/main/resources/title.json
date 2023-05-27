@@ -1,9 +1,6 @@
 [
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysFileApi",
     "typeName": "SysFile",
     "title": "文件存储接口;",
@@ -63,23 +60,11 @@
         "returnClz": "SysFile",
         "methodType": "PostMapping",
         "methodName": "save"
-      },
-      {
-        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysGroupApi",
     "typeName": "SysGroup",
     "title": "角色聚合组接口;",
@@ -124,23 +109,11 @@
         "returnClz": "SysGroup",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysMenuApi",
     "typeName": "SysMenu",
     "title": "菜单接口;",
@@ -148,7 +121,7 @@
     "tags": {},
     "apiTagList": [
       {
-        "title": "\n   * 保存菜单;\n   *\n   * @param dto 菜单;\n   * @return 菜单;\n   ",
+        "title": "\n   * 保存菜单;\n   * @param dto 菜单;\n   * @return 菜单;\n   ",
         "path": "/save",
         "paramWrapper": "SysMenu",
         "param": "dto",
@@ -157,7 +130,7 @@
         "methodName": "save"
       },
       {
-        "title": "\n   * 明细查询菜单;\n   *\n   * @param id ;\n   * @return 菜单;\n   ",
+        "title": "\n   * 明细查询菜单;\n   * @param id ;\n   * @return 菜单;\n   ",
         "path": "/detail/{id}",
         "paramWrapper": "String",
         "param": "id",
@@ -166,14 +139,14 @@
         "methodName": "detail"
       },
       {
-        "title": "\n   * 所有菜单\n   *\n   * @return 菜单;\n   ",
+        "title": "\n   * 所有菜单\n   * @return 菜单;\n   ",
         "path": "/list/all",
         "returnClz": "List<SysMenu>",
         "methodType": "GetMapping",
         "methodName": "listAll"
       },
       {
-        "title": "\n   * 菜单查询\n   *\n   * @param req\n   * @return\n   ",
+        "title": "\n   * 菜单查询\n   * @param req\n   * @return\n   ",
         "path": "/page",
         "paramWrapper": "SysMenuPageReq",
         "param": "req",
@@ -182,16 +155,7 @@
         "methodName": "page"
       },
       {
-        "title": "\n   * 逻辑删除;\n   *\n   * @param id ;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
-        "title": "\n   * 查找一个角色的资源（角色已绑定的+未被角色绑定的）\n   *\n   * @param sysRoleId\n   * @return\n   ",
+        "title": "\n   * 查找一个角色的资源（角色已绑定的+未被角色绑定的）\n   * @param sysRoleId\n   * @return\n   ",
         "path": "/list/roleResources",
         "paramWrapper": "String",
         "param": "sysRoleId",
@@ -203,9 +167,6 @@
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysResourcesApi",
     "typeName": "SysResources",
     "title": "权限资源接口;",
@@ -250,15 +211,6 @@
         "returnClz": "List<SysResources>",
         "methodType": "GetMapping",
         "methodName": "listMenu"
-      },
-      {
-        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       },
       {
         "title": "",
@@ -309,9 +261,6 @@
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysRoleApi",
     "typeName": "SysRole",
     "title": "用户角色接口;",
@@ -374,23 +323,11 @@
         "returnClz": "List<SysRole>",
         "methodType": "GetMapping",
         "methodName": "listAll"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysRoleGroupApi",
     "typeName": "SysRoleGroup",
     "title": "角色聚合组接口;",
@@ -414,23 +351,11 @@
         "returnClz": "SysRoleGroup",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysUserApi",
     "typeName": "SysUser",
     "title": "用户表接口;",
@@ -532,15 +457,6 @@
         "methodName": "usesrDetailVoDetail"
       },
       {
-        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
         "title": "\r\n     * 返回当前用户信息\r\n     *\r\n     * @return\r\n     ",
         "path": "/currUser",
         "returnClz": "UserDetailVo",
@@ -587,9 +503,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "GroupDto",
     "typeName": "SysGroup",
     "title": "角色组dto",
@@ -625,9 +538,6 @@
   },
   {
     "superName": "IModel",
-    "parentsName": [
-      "IModel"
-    ],
     "entityName": "RegisterDto",
     "typeName": "SysUser",
     "title": "注册信息",
@@ -652,9 +562,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "ResourcesDto",
     "typeName": "SysResources",
     "title": "资源角色dto",
@@ -690,9 +597,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "RoleDto",
     "typeName": "SysRole",
     "title": "角色dto",
@@ -723,9 +627,6 @@
   },
   {
     "superName": "IModel",
-    "parentsName": [
-      "IModel"
-    ],
     "entityName": "ThirdAccountDto",
     "typeName": "SysUser",
     "title": "第三方账号信息",
@@ -776,9 +677,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "UserPasswordModifyDto",
     "typeName": "SysUser",
     "title": "密码修改dto",
@@ -804,12 +702,8 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "UserStateDto",
     "typeName": "SysUser",
-    "title": "用户状态批量修改",
     "tags": {
       "ids": {
         "fieldName": "ids",
@@ -831,9 +725,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "SysFile",
     "title": "文件存储",
     "tags": {
@@ -908,9 +799,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "SysGroup",
     "title": "权限组",
     "tags": {
@@ -970,10 +858,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity",
-      "ITree"
-    ],
     "entityName": "SysMenu",
     "title": "菜单",
     "tags": {
@@ -1063,9 +947,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "SysResources",
     "title": "权限资源",
     "tags": {
@@ -1170,9 +1051,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "SysRole",
     "title": "用户角色",
     "tags": {
@@ -1227,9 +1105,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "SysRoleGroup",
     "title": "角色聚合组",
     "tags": {
@@ -1284,11 +1159,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity",
-      "IUser",
-      "IFkItem"
-    ],
     "entityName": "SysUser",
     "title": "用户表",
     "tags": {
@@ -1376,11 +1246,6 @@
         "fieldType": "String",
         "title": "用户类型"
       },
-      "age": {
-        "fieldName": "age",
-        "fieldType": "Integer",
-        "title": "年龄"
-      },
       "sysGroupId": {
         "fieldName": "sysGroupId",
         "fieldType": "String",
@@ -1413,9 +1278,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysGroupPageReq",
     "typeName": "SysGroup",
     "title": "角色组分页查询条件",
@@ -1435,26 +1297,20 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysMenuPageReq",
     "typeName": "SysMenu",
     "title": "角色查询",
     "tags": {
-      "code": {
-        "fieldName": "code",
+      "name": {
+        "fieldName": "name",
         "fieldType": "String",
-        "title": "public String name;"
+        "title": "菜单名称"
       }
     },
     "apiTagList": []
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysResourcesPageReq",
     "typeName": "SysResources",
     "title": "资源页面",
@@ -1474,9 +1330,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysRolePageReq",
     "typeName": "SysRole",
     "title": "角色查询",
@@ -1496,9 +1349,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysUserPageReq",
     "typeName": "SysUser",
     "title": "用户列表查询",
@@ -1527,20 +1377,12 @@
         "fieldName": "sysGroupId",
         "fieldType": "String",
         "title": "权限组"
-      },
-      "age": {
-        "fieldName": "age",
-        "fieldType": "List<Integer>",
-        "title": "年龄"
       }
     },
     "apiTagList": []
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "GroupVo",
     "typeName": "SysGroup",
     "title": "权限组数据对象封装",
@@ -1581,9 +1423,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "MenuVo",
     "typeName": "SysMenu",
     "tags": {
@@ -1638,9 +1477,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "ResourcesVo",
     "typeName": "SysResources",
     "title": "类说明",
@@ -1671,9 +1507,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "RoleEditVo",
     "typeName": "SysRole",
     "title": "取到编辑页面展示的数据",
@@ -1699,9 +1532,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "UserDetailVo",
     "typeName": "SysUser",
     "title": "用户详细信息",
@@ -1734,8 +1564,8 @@
       },
       "menus": {
         "fieldName": "menus",
-        "fieldType": "List<SysMenu>",
-        "title": "用户能够访问到的所有菜单信息"
+        "fieldType": "List<String>",
+        "title": "角色里资源对应的菜单"
       },
       "sysDept": {
         "fieldName": "sysDept",
@@ -1767,9 +1597,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "UserVo",
     "typeName": "SysUser",
     "title": "用户列表信息",
@@ -1825,9 +1652,6 @@
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "CustomerApi",
     "typeName": "Customer",
     "title": "客户接口;",
@@ -1878,23 +1702,11 @@
         "returnClz": "Customer",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "LinkManApi",
     "typeName": "LinkMan",
     "title": "联系人接口;",
@@ -1927,23 +1739,11 @@
         "returnClz": "LinkMan",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "OrderPurchaseApi",
     "typeName": "OrderPurchase",
     "title": "采购单接口;",
@@ -1976,32 +1776,11 @@
         "returnClz": "OrderPurchase",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
-        "title": "\n   * 更新用户状态\n   * @param dto\n   * @return\n   ",
-        "path": "/state",
-        "paramWrapper": "EntityStateDto",
-        "param": "dto",
-        "returnClz": "List<String>",
-        "methodType": "PostMapping",
-        "methodName": "state"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "OrderPurchaseDetailApi",
     "typeName": "OrderPurchaseDetail",
     "title": "采购单接口;",
@@ -2025,23 +1804,11 @@
         "returnClz": "OrderPurchaseDetail",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "OrderSaleApi",
     "typeName": "OrderSale",
     "title": "销售单接口;",
@@ -2074,23 +1841,11 @@
         "returnClz": "OrderSale",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "OrderSaleDetailApi",
     "typeName": "OrderSaleDetail",
     "title": "销售明细接口;",
@@ -2114,23 +1869,11 @@
         "returnClz": "OrderSaleDetail",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "ProductApi",
     "typeName": "Product",
     "title": "产品接口;",
@@ -2163,23 +1906,11 @@
         "returnClz": "Product",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SupplierApi",
     "typeName": "Supplier",
     "title": "供应商接口;",
@@ -2221,23 +1952,11 @@
         "returnClz": "Supplier",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "CustomerDto",
     "typeName": "Customer",
     "title": "客户信息登记",
@@ -2303,10 +2022,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean",
-      "INo"
-    ],
     "entityName": "OrderPurchaseDto",
     "typeName": "OrderPurchase",
     "title": "采购单据",
@@ -2362,187 +2077,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean",
-      "INo"
-    ],
-    "entityName": "OrderSaleDemo1Dto",
-    "typeName": "OrderSale",
-    "title": "销售单据",
-    "tags": {
-      "no": {
-        "fieldName": "no",
-        "fieldType": "String",
-        "title": "订单编号"
-      },
-      "totalPrice": {
-        "fieldName": "totalPrice",
-        "fieldType": "Double",
-        "title": "销售总额(元)"
-      },
-      "customerId": {
-        "fieldName": "customerId",
-        "fieldType": "String",
-        "title": "客户"
-      },
-      "remark": {
-        "fieldName": "remark",
-        "fieldType": "String",
-        "title": "备注"
-      },
-      "details": {
-        "fieldName": "details",
-        "fieldType": "List<OrderSaleDetail>",
-        "title": "销售明细"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "sysUserId": {
-        "fieldName": "sysUserId",
-        "fieldType": "String",
-        "title": "销售员"
-      },
-      "state": {
-        "fieldName": "state",
-        "fieldType": "String",
-        "title": "订单状态"
-      },
-      "orderDate": {
-        "fieldName": "orderDate",
-        "fieldType": "Date",
-        "title": "下单日期"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean",
-      "INo"
-    ],
-    "entityName": "OrderSaleDemo2Dto",
-    "typeName": "OrderSale",
-    "title": "销售单据",
-    "tags": {
-      "no": {
-        "fieldName": "no",
-        "fieldType": "String",
-        "title": "订单编号"
-      },
-      "totalPrice": {
-        "fieldName": "totalPrice",
-        "fieldType": "Double",
-        "title": "销售总额(元)"
-      },
-      "customerId": {
-        "fieldName": "customerId",
-        "fieldType": "String",
-        "title": "客户"
-      },
-      "remark": {
-        "fieldName": "remark",
-        "fieldType": "String",
-        "title": "备注"
-      },
-      "details": {
-        "fieldName": "details",
-        "fieldType": "List<OrderSaleDetail>",
-        "title": "销售明细"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "sysUserId": {
-        "fieldName": "sysUserId",
-        "fieldType": "String",
-        "title": "销售员"
-      },
-      "state": {
-        "fieldName": "state",
-        "fieldType": "String",
-        "title": "订单状态"
-      },
-      "orderDate": {
-        "fieldName": "orderDate",
-        "fieldType": "Date",
-        "title": "下单日期"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean",
-      "INo"
-    ],
-    "entityName": "OrderSaleDemo3Dto",
-    "typeName": "OrderSale",
-    "title": "销售单据",
-    "tags": {
-      "no": {
-        "fieldName": "no",
-        "fieldType": "String",
-        "title": "订单编号"
-      },
-      "totalPrice": {
-        "fieldName": "totalPrice",
-        "fieldType": "Double",
-        "title": "销售总额(元)"
-      },
-      "customerId": {
-        "fieldName": "customerId",
-        "fieldType": "String",
-        "title": "客户"
-      },
-      "remark": {
-        "fieldName": "remark",
-        "fieldType": "String",
-        "title": "备注"
-      },
-      "details": {
-        "fieldName": "details",
-        "fieldType": "List<OrderSaleDetail>",
-        "title": "销售明细"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "sysUserId": {
-        "fieldName": "sysUserId",
-        "fieldType": "String",
-        "title": "销售员"
-      },
-      "state": {
-        "fieldName": "state",
-        "fieldType": "String",
-        "title": "订单状态"
-      },
-      "orderDate": {
-        "fieldName": "orderDate",
-        "fieldType": "Date",
-        "title": "下单日期"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean",
-      "INo"
-    ],
     "entityName": "OrderSaleDto",
     "typeName": "OrderSale",
     "title": "销售单据",
@@ -2598,9 +2132,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "SupplierDto",
     "typeName": "Supplier",
     "title": "供应商信息登记",
@@ -2651,9 +2182,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "Customer",
     "title": "客户",
     "tags": {
@@ -2743,9 +2271,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "LinkMan",
     "title": "联系人",
     "tags": {
@@ -2825,10 +2350,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity",
-      "INo"
-    ],
     "entityName": "OrderPurchase",
     "title": "采购单",
     "tags": {
@@ -2908,9 +2429,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "OrderPurchaseDetail",
     "title": "采购明细",
     "tags": {
@@ -2975,10 +2493,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity",
-      "INo"
-    ],
     "entityName": "OrderSale",
     "title": "销售单",
     "tags": {
@@ -3058,9 +2572,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "OrderSaleDetail",
     "title": "销售明细",
     "tags": {
@@ -3125,9 +2636,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "Product",
     "title": "产品",
     "tags": {
@@ -3162,16 +2670,6 @@
         "fieldName": "unit",
         "fieldType": "String",
         "title": "计量单位"
-      },
-      "total": {
-        "fieldName": "total",
-        "fieldType": "Double",
-        "title": "当前成本价格"
-      },
-      "price": {
-        "fieldName": "price",
-        "fieldType": "Double",
-        "title": "当前售价"
       },
       "createId": {
         "fieldName": "createId",
@@ -3217,9 +2715,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "Supplier",
     "title": "供应商",
     "tags": {
@@ -3294,9 +2789,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "CustomerPageReq",
     "typeName": "Customer",
     "title": "客户查询",
@@ -3316,9 +2808,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "LinkManPageReq",
     "typeName": "LinkMan",
     "title": "联系人查询",
@@ -3348,9 +2837,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "OrderPurchasePageReq",
     "typeName": "OrderPurchase",
     "title": "采购单查询",
@@ -3385,9 +2871,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "OrderSalePageReq",
     "typeName": "OrderSale",
     "title": "销售单查询",
@@ -3417,9 +2900,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "ProductPageReq",
     "typeName": "Product",
     "title": "产品查询",
@@ -3439,9 +2919,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SupplierPageReq",
     "typeName": "Supplier",
     "title": "供应商查询",
@@ -3461,9 +2938,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "CustomerVo",
     "typeName": "Customer",
     "title": "客户详情",
@@ -3484,9 +2958,6 @@
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "FormApi",
     "typeName": "Form",
     "title": "列表字段接口;",
@@ -3515,10 +2986,6 @@
       "eventService": {
         "fieldName": "eventService",
         "fieldType": "FormEventService"
-      },
-      "thirdLoginService": {
-        "fieldName": "thirdLoginService",
-        "fieldType": "ThirdLoginService"
       }
     },
     "apiTagList": [
@@ -3532,20 +2999,11 @@
         "methodName": "javaModels"
       },
       {
-        "title": "",
-        "path": "/page",
-        "paramWrapper": "FormPageReq",
-        "param": "req",
-        "returnClz": "PageVo<Form>",
-        "methodType": "GetMapping",
-        "methodName": "page"
-      },
-      {
         "title": "\r\n     * 已启用的模型信息过滤\r\n     * @param req 根究模型类型查询itemType,根据关联的实体名称entityName查询vo,save,req模型\r\n     * @return\r\n     ",
         "path": "/list",
         "paramWrapper": "FormPageReq",
         "param": "req",
-        "returnClz": "List<FormVo>",
+        "returnClz": "List<Form>",
         "methodType": "GetMapping",
         "methodName": "list"
       },
@@ -3559,7 +3017,7 @@
         "methodName": "tsCode"
       },
       {
-        "title": "\r\n     * 接收客户端发来的代码请求\r\n     * 不提交的代码\r\n     ",
+        "title": "\r\n     * 接收客户端发来的代码请求\r\n     ",
         "path": "/tsCode/remote/{type}",
         "paramWrapper": "MultipartFile",
         "param": "file",
@@ -3641,32 +3099,11 @@
         "returnClz": "Map<String,String>",
         "methodType": "GetMapping",
         "methodName": "groupField"
-      },
-      {
-        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id null;\r\n     * @return 已删除数量;\r\n     ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
-        "title": "\r\n     * 模型初始化\r\n     * @return\r\n     ",
-        "path": "/init/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "FormVo",
-        "methodType": "PostMapping",
-        "methodName": "init"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "FormEventApi",
     "typeName": "FormEvent",
     "title": "触发事件接口;",
@@ -3708,23 +3145,11 @@
         "returnClz": "List<FormEventVo>",
         "methodType": "GetMapping",
         "methodName": "listFormEventVo"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "FormFieldApi",
     "typeName": "FormField",
     "title": "列表字段接口;",
@@ -3750,15 +3175,6 @@
         "methodName": "detail"
       },
       {
-        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id null;\r\n     * @return 已删除数量;\r\n     ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
         "title": "\r\n     * 查询表的字段信息\r\n     * @param formId\r\n     * @return\r\n     ",
         "path": "/list/all",
         "paramWrapper": "String",
@@ -3766,23 +3182,11 @@
         "returnClz": "List<FormField>",
         "methodType": "GetMapping",
         "methodName": "listAll"
-      },
-      {
-        "title": "\r\n     * 能够后参报表统计的字段\r\n     * id，日期\r\n     * @param formId\r\n     * @return\r\n     ",
-        "path": "/list/report",
-        "paramWrapper": "String",
-        "param": "formId",
-        "returnClz": "List<FormField>",
-        "methodType": "GetMapping",
-        "methodName": "listReport"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "FormReactionApi",
     "typeName": "FormReaction",
     "title": "表单响应接口;",
@@ -3806,23 +3210,11 @@
         "returnClz": "FormReaction",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "FormTabApi",
     "typeName": "FormTab",
     "title": "表单页签接口;",
@@ -3846,23 +3238,11 @@
         "returnClz": "FormTab",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id ;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "PageApiParamApi",
     "typeName": "PageApiParam",
     "title": "API参数接口;",
@@ -3886,23 +3266,11 @@
         "returnClz": "PageApiParam",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "PageComponentApi",
     "typeName": "PageComponent",
     "title": "单元组件信息接口;",
@@ -3926,23 +3294,11 @@
         "returnClz": "PageComponent",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "PageComponentPropApi",
     "typeName": "PageComponentProp",
     "title": "组件属性接口;",
@@ -3966,23 +3322,11 @@
         "returnClz": "PageComponentProp",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "FormDto",
     "typeName": "Form",
     "title": "表单保存对象",
@@ -4083,9 +3427,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "FormEventDto",
     "typeName": "FormEvent",
     "title": "字段事件响应表单",
@@ -4141,9 +3482,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "FormFieldDto",
     "typeName": "FormField",
     "title": "字段信息视图",
@@ -4383,9 +3721,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "FormTabDto",
     "typeName": "FormTab",
     "title": "页签dto",
@@ -4425,9 +3760,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "PageComponentDto",
     "typeName": "PageComponent",
     "tags": {
@@ -4497,9 +3829,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
     "entityName": "PageComponentPropDto",
     "typeName": "PageComponentProp",
     "tags": {
@@ -4564,9 +3893,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "Form",
     "title": "模型表",
     "tags": {
@@ -4691,9 +4017,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "FormEvent",
     "title": "触发事件",
     "tags": {
@@ -4778,9 +4101,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "FormField",
     "title": "模型字段信息",
     "tags": {
@@ -5049,9 +4369,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "FormReaction",
     "title": "表单响应",
     "tags": {
@@ -5121,9 +4438,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "FormTab",
     "title": "表单页签",
     "tags": {
@@ -5188,9 +4502,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "PageApiParam",
     "title": "组件API参数设置",
     "tags": {
@@ -5255,9 +4566,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "PageComponent",
     "title": "单元组件信息",
     "tags": {
@@ -5357,9 +4665,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "PageComponentProp",
     "title": "组件属性",
     "tags": {
@@ -5449,9 +4754,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "FormEventPageReq",
     "typeName": "FormEvent",
     "title": "事件查询条件",
@@ -5466,9 +4768,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "FormPageReq",
     "typeName": "Form",
     "tags": {
@@ -5503,9 +4802,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "FormEventVo",
     "typeName": "FormEvent",
     "title": "字段响应视图",
@@ -5556,9 +4852,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "FormFieldVo",
     "typeName": "FormField",
     "title": "字段信息vo",
@@ -5808,9 +5101,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "FormReactionVo",
     "typeName": "FormReaction",
     "title": "响应信息VO",
@@ -5851,9 +5141,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "FormVo",
     "typeName": "Form",
     "title": "模型信息视图",
@@ -5959,1038 +5246,6 @@
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
-    "entityName": "PageLayoutApi",
-    "typeName": "PageLayout",
-    "title": "页面布局接口;",
-    "path": "/pageLayout",
-    "tags": {},
-    "apiTagList": [
-      {
-        "title": "\n   * 页面布局保存\n   ",
-        "path": "/save/pageConfDto",
-        "paramWrapper": "PageConfDto",
-        "param": "dto",
-        "returnClz": "PageConfDto",
-        "methodType": "PostMapping",
-        "methodName": "savePageConfDto"
-      },
-      {
-        "title": "\n   * 明细查询页面布局;\n   * @param urlOrId 页面路由地址或者id\n   * @return 页面布局;\n   ",
-        "path": "/detail/{urlOrId}",
-        "paramWrapper": "String",
-        "param": "urlOrId",
-        "returnClz": "PageConfDto",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
-        "title": "\n   * 全量数据\n   ",
-        "path": "/list/all",
-        "returnClz": "List<PageLayout>",
-        "methodType": "GetMapping",
-        "methodName": "listAll"
-      }
-    ]
-  },
-  {
-    "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
-    "entityName": "PageConfDto",
-    "typeName": "PageLayout",
-    "title": "页面配置模型",
-    "tags": {
-      "border": {
-        "fieldName": "border",
-        "fieldType": "Boolean",
-        "title": "是否有边框"
-      },
-      "img": {
-        "fieldName": "img",
-        "fieldType": "String",
-        "title": "预览图片"
-      },
-      "bgColor": {
-        "fieldName": "bgColor",
-        "fieldType": "String",
-        "title": "背景色"
-      },
-      "auth": {
-        "fieldName": "auth",
-        "fieldType": "Boolean",
-        "title": "是否需要权限登录"
-      },
-      "componentOver": {
-        "fieldName": "componentOver",
-        "fieldType": "Boolean",
-        "title": "内部组件支持覆盖"
-      },
-      "module": {
-        "fieldName": "module",
-        "fieldType": "Boolean",
-        "title": "是否作为模块使用"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "页面名称"
-      },
-      "h": {
-        "fieldName": "h",
-        "fieldType": "Integer",
-        "title": "页面高度"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "url": {
-        "fieldName": "url",
-        "fieldType": "String",
-        "title": "动态路由地址"
-      },
-      "content": {
-        "fieldName": "content",
-        "fieldType": "List<PageComponentDto>",
-        "title": "单元组件信息"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
-    "entityName": "PageLayout",
-    "title": "页面布局",
-    "tags": {
-      "border": {
-        "fieldName": "border",
-        "fieldType": "Boolean",
-        "title": "边框"
-      },
-      "img": {
-        "fieldName": "img",
-        "fieldType": "String",
-        "title": "预览图片"
-      },
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "修改时间"
-      },
-      "auth": {
-        "fieldName": "auth",
-        "fieldType": "Boolean",
-        "title": "是否需要权限登录"
-      },
-      "componentOver": {
-        "fieldName": "componentOver",
-        "fieldType": "Boolean",
-        "title": "内部组件支持覆盖"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "修订人"
-      },
-      "module": {
-        "fieldName": "module",
-        "fieldType": "Boolean",
-        "title": "是否作为模块使用"
-      },
-      "h": {
-        "fieldName": "h",
-        "fieldType": "Integer",
-        "title": "页面高度"
-      },
-      "url": {
-        "fieldName": "url",
-        "fieldType": "String",
-        "title": "动态路由地址"
-      },
-      "bgColor": {
-        "fieldName": "bgColor",
-        "fieldType": "String",
-        "title": "背景色"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "创建人"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "页面名称"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "创建时间"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
-    "entityName": "ReportItemApi",
-    "typeName": "ReportItem",
-    "title": "报表统计项接口;",
-    "path": "/reportItem",
-    "tags": {},
-    "apiTagList": [
-      {
-        "title": "\n   * 分页查询报表统计项;\n   * @param req 统计项目查询条件;\n   * @return 报表统计项;\n   ",
-        "path": "/page",
-        "paramWrapper": "ReportItemPageReq",
-        "param": "req",
-        "returnClz": "PageVo<ReportItem>",
-        "methodType": "GetMapping",
-        "methodName": "page"
-      },
-      {
-        "title": "\n   * 保存报表统计项;\n   * @param dto 报表统计项;\n   * @return 报表统计项;\n   ",
-        "path": "/save",
-        "paramWrapper": "ReportItem",
-        "param": "dto",
-        "returnClz": "ReportItem",
-        "methodType": "PostMapping",
-        "methodName": "save"
-      },
-      {
-        "title": "\n   * 明细查询报表统计项;\n   * @param id 主键id;\n   * @return 报表统计项;\n   ",
-        "path": "/detail/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "ReportItem",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
-        "title": "\n   * 所有统计项\n   * @param req\n   * @return\n   ",
-        "path": "/list/all",
-        "paramWrapper": "ReportItemPageReq",
-        "param": "req",
-        "returnClz": "List<ReportItem>",
-        "methodType": "GetMapping",
-        "methodName": "listAll"
-      }
-    ]
-  },
-  {
-    "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
-    "entityName": "ReportKpiApi",
-    "typeName": "ReportKpi",
-    "title": "关键指标接口;",
-    "path": "/reportKpi",
-    "tags": {},
-    "apiTagList": [
-      {
-        "title": "\n   * 分页查询关键指标;\n   * @param req kpi指标项查询条件;\n   * @return 关键指标;\n   ",
-        "path": "/page",
-        "paramWrapper": "ReportKpiPageReq",
-        "param": "req",
-        "returnClz": "PageVo<ReportKpi>",
-        "methodType": "GetMapping",
-        "methodName": "page"
-      },
-      {
-        "title": "\n   * 保存关键指标;\n   * @param dto 关键指标;\n   * @return 关键指标;\n   ",
-        "path": "/save",
-        "paramWrapper": "ReportKpi",
-        "param": "dto",
-        "returnClz": "ReportKpi",
-        "methodType": "PostMapping",
-        "methodName": "save"
-      },
-      {
-        "title": "\n   * 明细查询关键指标;\n   * @param id 主键id;\n   * @return 关键指标;\n   ",
-        "path": "/detail/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "ReportKpi",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
-        "title": "\n   * 所有指标\n   * @return\n   ",
-        "path": "/list/all",
-        "returnClz": "List<ReportKpi>",
-        "methodType": "GetMapping",
-        "methodName": "listAll"
-      }
-    ]
-  },
-  {
-    "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
-    "entityName": "ReportTableApi",
-    "typeName": "ReportTable",
-    "title": "报表配置(主)接口;",
-    "path": "/reportTable",
-    "tags": {},
-    "apiTagList": [
-      {
-        "title": "\n   * 明细查询报表配置(主);\n   * @param id 主键id;\n   * @return 报表配置(主);\n   ",
-        "path": "/detail/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "ReportTableVo",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
-        "title": "\n   * 报表保存\n   ",
-        "path": "/save/reportTableSaveDto",
-        "paramWrapper": "ReportTableSaveDto",
-        "param": "dto",
-        "returnClz": "ReportTableSaveDto",
-        "methodType": "PostMapping",
-        "methodName": "saveReportTableSaveDto"
-      },
-      {
-        "title": "\n   * 分页查询配置报表\n   ",
-        "path": "/page",
-        "paramWrapper": "ReportTablePageReq",
-        "param": "req",
-        "returnClz": "PageVo<ReportTable>",
-        "methodType": "GetMapping",
-        "methodName": "page"
-      },
-      {
-        "title": "\n   * 所有配置报表\n   ",
-        "path": "/list/all",
-        "returnClz": "List<ReportTableSaveDto>",
-        "methodType": "GetMapping",
-        "methodName": "listAll"
-      },
-      {
-        "title": "\n   * 报表查询\n   * list里放的是一行记录，记录的形式是map; 每个统计项/指标项/分组项 的code是key，值就是统计出来的数值；\n   * [\n   {createid:123,avg:1,total:2},{createid:2222,avg:1,total:2}\n   * ]\n   * @param req\n   * @return\n   ",
-        "path": "/report",
-        "paramWrapper": "ReportQuery",
-        "param": "req",
-        "returnClz": "List<Map>",
-        "methodType": "GetMapping",
-        "methodName": "report"
-      },
-      {
-        "title": "\n   * 单个统计值指标code查询\n   * @return\n   ",
-        "path": "/total/{code}",
-        "paramWrapper": "String",
-        "param": "code",
-        "returnClz": "Number",
-        "methodType": "GetMapping",
-        "methodName": "total"
-      }
-    ]
-  },
-  {
-    "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
-    "entityName": "ReportTableItemApi",
-    "typeName": "ReportTableItem",
-    "title": "报表配置明细接口;",
-    "path": "/reportTableItem",
-    "tags": {},
-    "apiTagList": [
-      {
-        "title": "\n   * 保存报表配置明细;\n   * @param dto 报表配置明细;\n   * @return 报表配置明细;\n   ",
-        "path": "/save",
-        "paramWrapper": "ReportTableItem",
-        "param": "dto",
-        "returnClz": "ReportTableItem",
-        "methodType": "PostMapping",
-        "methodName": "save"
-      },
-      {
-        "title": "\n   * 明细查询报表配置明细;\n   * @param id 主键id;\n   * @return 报表配置明细;\n   ",
-        "path": "/detail/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "ReportTableItem",
-        "methodType": "GetMapping",
-        "methodName": "detail"
-      },
-      {
-        "title": "\n   * 逻辑删除;\n   * @param id 主键id;\n   * @return 已删除数量;\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      }
-    ]
-  },
-  {
-    "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
-    "entityName": "ReportTableDto",
-    "typeName": "ReportTable",
-    "title": "报表及关联统计项和指标传输的dto",
-    "tags": {
-      "formId": {
-        "fieldName": "formId",
-        "fieldType": "String",
-        "title": "实体模型"
-      },
-      "code": {
-        "fieldName": "code",
-        "fieldType": "String",
-        "title": "报表编码"
-      },
-      "func": {
-        "fieldName": "func",
-        "fieldType": "String",
-        "title": "分组聚合函数"
-      },
-      "kpiIds": {
-        "fieldName": "kpiIds",
-        "fieldType": "List<String>",
-        "title": "指标项"
-      },
-      "itemIds": {
-        "fieldName": "itemIds",
-        "fieldType": "List<String>",
-        "title": "统计项"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "报表名称"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "groupColumn": {
-        "fieldName": "groupColumn",
-        "fieldType": "String",
-        "title": "分组字段"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean"
-    ],
-    "entityName": "ReportTableSaveDto",
-    "typeName": "ReportTable",
-    "title": "报表及关联统计项和指标保存",
-    "tags": {
-      "formId": {
-        "fieldName": "formId",
-        "fieldType": "String",
-        "title": "实体模型"
-      },
-      "code": {
-        "fieldName": "code",
-        "fieldType": "String",
-        "title": "报表编码"
-      },
-      "func": {
-        "fieldName": "func",
-        "fieldType": "String",
-        "title": "分组聚合函数"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "报表名称"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "items": {
-        "fieldName": "items",
-        "fieldType": "List<ReportTableItem>",
-        "title": "报表配置明细"
-      },
-      "groupColumn": {
-        "fieldName": "groupColumn",
-        "fieldType": "String",
-        "title": "分组字段"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
-    "entityName": "ReportItem",
-    "title": "统计项",
-    "tags": {
-      "formId": {
-        "fieldName": "formId",
-        "fieldType": "String",
-        "title": "所在模型"
-      },
-      "code": {
-        "fieldName": "code",
-        "fieldType": "String",
-        "title": "统计项编码"
-      },
-      "fieldName": {
-        "fieldName": "fieldName",
-        "fieldType": "String",
-        "title": "统计字段"
-      },
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "修订人"
-      },
-      "conditionJson": {
-        "fieldName": "conditionJson",
-        "fieldType": "String",
-        "title": "过滤条件"
-      },
-      "groupBy": {
-        "fieldName": "groupBy",
-        "fieldType": "String",
-        "title": ""
-      },
-      "func": {
-        "fieldName": "func",
-        "fieldType": "String",
-        "title": "聚合方式"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "创建人"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "统计项名称"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "创建时间"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
-    "entityName": "ReportKpi",
-    "title": "关键指标",
-    "tags": {
-      "formId": {
-        "fieldName": "formId",
-        "fieldType": "String",
-        "title": "所属模块"
-      },
-      "reportItemId": {
-        "fieldName": "reportItemId",
-        "fieldType": "String",
-        "title": "统计项(分子)"
-      },
-      "code": {
-        "fieldName": "code",
-        "fieldType": "String",
-        "title": "指标编码"
-      },
-      "reportItemOtherId": {
-        "fieldName": "reportItemOtherId",
-        "fieldType": "String",
-        "title": "统计项(分母)"
-      },
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "创建人"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "指标名称"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "创建时间"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
-    "entityName": "ReportTable",
-    "title": "报表配置(主)",
-    "tags": {
-      "formId": {
-        "fieldName": "formId",
-        "fieldType": "String",
-        "title": "实体模型"
-      },
-      "code": {
-        "fieldName": "code",
-        "fieldType": "String",
-        "title": "报表编码"
-      },
-      "func": {
-        "fieldName": "func",
-        "fieldType": "String",
-        "title": "分组聚合函数"
-      },
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "修改时间"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "创建人"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "报表名称"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "groupColumn": {
-        "fieldName": "groupColumn",
-        "fieldType": "String",
-        "title": "分组字段"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "创建时间"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
-    "entityName": "ReportTableItem",
-    "title": "报表配置明细",
-    "tags": {
-      "reportItemId": {
-        "fieldName": "reportItemId",
-        "fieldType": "String",
-        "title": "统计项"
-      },
-      "modifyDate": {
-        "fieldName": "modifyDate",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "修改时间"
-      },
-      "reportTableId": {
-        "fieldName": "reportTableId",
-        "fieldType": "String",
-        "title": "所属报表"
-      },
-      "modifyId": {
-        "fieldName": "modifyId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "修订人"
-      },
-      "createId": {
-        "fieldName": "createId",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "创建人"
-      },
-      "reportKpiId": {
-        "fieldName": "reportKpiId",
-        "fieldType": "String",
-        "title": "指标项"
-      },
-      "sort": {
-        "fieldName": "sort",
-        "fieldType": "Integer",
-        "title": "排序号"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "string",
-        "extendsField": true,
-        "title": "删除状态"
-      },
-      "createDate": {
-        "fieldName": "status",
-        "fieldType": "Date",
-        "extendsField": true,
-        "title": "创建时间"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
-    "entityName": "ReportItemPageReq",
-    "typeName": "ReportItem",
-    "title": "统计项目查询条件",
-    "tags": {
-      "formId": {
-        "fieldName": "formId",
-        "fieldType": "String",
-        "title": "所在模型"
-      },
-      "search": {
-        "fieldName": "search",
-        "fieldType": "String",
-        "title": "统计项名称/编码"
-      },
-      "func": {
-        "fieldName": "func",
-        "fieldType": "String",
-        "title": "聚合方式"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
-    "entityName": "ReportKpiPageReq",
-    "typeName": "ReportKpi",
-    "title": "kpi指标项查询条件",
-    "tags": {
-      "formId": {
-        "fieldName": "formId",
-        "fieldType": "String",
-        "title": "所属模块"
-      },
-      "search": {
-        "fieldName": "search",
-        "fieldType": "String",
-        "title": "指标名称"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
-    "entityName": "ReportTablePageReq",
-    "typeName": "ReportTable",
-    "title": "报表查询条件",
-    "tags": {
-      "formId": {
-        "fieldName": "formId",
-        "fieldType": "String",
-        "title": "业务模型"
-      },
-      "search": {
-        "fieldName": "search",
-        "fieldType": "String",
-        "title": "报表名称/编码"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "VlifeReportItem",
-    "parentsName": [
-      "VlifeReportItem",
-      "VoBean"
-    ],
-    "entityName": "ReportItemVo",
-    "title": "报表视图",
-    "tags": {
-      "code": {
-        "fieldName": "code",
-        "fieldType": "String",
-        "title": "项目编码"
-      },
-      "fieldName": {
-        "fieldName": "fieldName",
-        "fieldType": "String",
-        "title": "聚合字段"
-      },
-      "form": {
-        "fieldName": "form",
-        "fieldType": "Form",
-        "title": "模型表"
-      },
-      "func": {
-        "fieldName": "func",
-        "fieldType": "String",
-        "title": "聚合方式"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "项目名称"
-      },
-      "conditionJson": {
-        "fieldName": "conditionJson",
-        "fieldType": "String",
-        "title": "过滤条件"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
-    "entityName": "ReportTableItemVo",
-    "typeName": "ReportTableItem",
-    "title": "报表明细项视图",
-    "tags": {
-      "item": {
-        "fieldName": "item",
-        "fieldType": "ReportItem",
-        "title": "统计项"
-      },
-      "kpi": {
-        "fieldName": "kpi",
-        "fieldType": "ReportKpi",
-        "title": "指标"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "sort": {
-        "fieldName": "sort",
-        "fieldType": "Integer",
-        "title": "排序号"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
-    "entityName": "ReportTableVo",
-    "typeName": "ReportTable",
-    "title": "报表配置视图",
-    "tags": {
-      "formVo": {
-        "fieldName": "formVo",
-        "fieldType": "FormVo",
-        "title": "实体模型"
-      },
-      "code": {
-        "fieldName": "code",
-        "fieldType": "String",
-        "title": "报表编码"
-      },
-      "func": {
-        "fieldName": "func",
-        "fieldType": "String",
-        "title": "分组聚合函数"
-      },
-      "name": {
-        "fieldName": "name",
-        "fieldType": "String",
-        "title": "报表名称"
-      },
-      "id": {
-        "fieldName": "id",
-        "fieldType": "String",
-        "extendsField": true,
-        "title": "主键id"
-      },
-      "items": {
-        "fieldName": "items",
-        "fieldType": "List<ReportTableItemVo>",
-        "title": "报表项目"
-      },
-      "groupColumn": {
-        "fieldName": "groupColumn",
-        "fieldType": "String",
-        "title": "分组字段"
-      }
-    },
-    "apiTagList": []
-  },
-  {
-    "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysAreaApi",
     "typeName": "SysArea",
     "title": "行政区划接口;",
@@ -7032,23 +5287,11 @@
         "returnClz": "SysArea",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\r\n   * 有\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysDeptApi",
     "typeName": "SysDept",
     "title": "接口;",
@@ -7097,23 +5340,11 @@
         "returnClz": "SysDept",
         "methodType": "GetMapping",
         "methodName": "detail"
-      },
-      {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
       }
     ]
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysDictApi",
     "typeName": "SysDict",
     "title": "字典表接口;",
@@ -7162,15 +5393,6 @@
         "methodName": "detail"
       },
       {
-        "title": "\r\n     * 逻辑删除;\r\n     *\r\n     * @param id 主键id;\r\n     * @return 已删除数量;\r\n     ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
         "title": "",
         "path": "/sync",
         "returnClz": "List<SysDict>",
@@ -7190,9 +5412,6 @@
   },
   {
     "superName": "VLifeApi",
-    "parentsName": [
-      "VLifeApi"
-    ],
     "entityName": "SysOrgApi",
     "typeName": "SysOrg",
     "title": "机构接口;",
@@ -7227,15 +5446,6 @@
         "methodName": "detail"
       },
       {
-        "title": "\r\n   * 逻辑删除;\r\n   * @param id 主键id;\r\n   * @return 已删除数量;\r\n   ",
-        "path": "/remove/{id}",
-        "paramWrapper": "String",
-        "param": "id",
-        "returnClz": "Long",
-        "methodType": "DeleteMapping",
-        "methodName": "remove"
-      },
-      {
         "title": "\r\n   * 所有机构查询(机构树时使用)\r\n   * @return\r\n   ",
         "path": "/list/all",
         "paramWrapper": "String",
@@ -7248,10 +5458,6 @@
   },
   {
     "superName": "SaveBean",
-    "parentsName": [
-      "SaveBean",
-      "ITree"
-    ],
     "entityName": "SysDeptUserDto",
     "typeName": "SysDept",
     "tags": {
@@ -7286,11 +5492,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity",
-      "ITree",
-      "IBus"
-    ],
     "entityName": "SysArea",
     "title": "区划",
     "tags": {
@@ -7360,11 +5561,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity",
-      "ITree",
-      "IOrg"
-    ],
     "entityName": "SysDept",
     "title": "科室部门",
     "tags": {
@@ -7429,9 +5625,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity"
-    ],
     "entityName": "SysDict",
     "title": "字典表",
     "tags": {
@@ -7511,11 +5704,6 @@
   },
   {
     "superName": "DbEntity",
-    "parentsName": [
-      "DbEntity",
-      "ITree",
-      "IBus"
-    ],
     "entityName": "SysOrg",
     "title": "机构",
     "tags": {
@@ -7595,9 +5783,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysAreaPageReq",
     "typeName": "SysArea",
     "title": "地区查询条件",
@@ -7622,9 +5807,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysDeptPageReq",
     "typeName": "SysDept",
     "title": "部门查询条件",
@@ -7644,9 +5826,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysDictPageReq",
     "typeName": "SysDict",
     "title": "类说明",
@@ -7661,9 +5840,6 @@
   },
   {
     "superName": "PageQuery",
-    "parentsName": [
-      "PageQuery"
-    ],
     "entityName": "SysOrgPageReq",
     "typeName": "SysOrg",
     "title": "机构查询条件",
@@ -7693,9 +5869,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "AreaVo",
     "typeName": "SysArea",
     "tags": {
@@ -7719,9 +5892,6 @@
   },
   {
     "superName": "VoBean",
-    "parentsName": [
-      "VoBean"
-    ],
     "entityName": "OrgVo",
     "typeName": "SysOrg",
     "title": "类说明",

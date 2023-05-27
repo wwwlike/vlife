@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
+ * @author xiaoyu
  * @date 2022/6/17
  */
+//打开出参数据包装
 @EnableRespWrap
 @SpringBootApplication(scanBasePackages ={
         "cn.wwwlike.auth",
@@ -16,9 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         "cn.wwwlike.form",
         "cn.wwwlike.vlife.ts",
         "cn.wwwlike.vlife.gitee",
-        "cn.wwwlike.plus.report",
-        "cn.wwwlike.plus.page"
-})
+        "cn.wwwlike.form"})
 public class AdminApplication {
     public static void main(String[] args) {
         //请注意，使用本项目需要安装Java环境并使用JDK8。

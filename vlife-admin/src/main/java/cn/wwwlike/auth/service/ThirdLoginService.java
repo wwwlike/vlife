@@ -195,47 +195,4 @@ public class ThirdLoginService {
         return null;
     }
 
-
-    /**
-     * 邮件发送
-     * to 目标地址
-     * fromIp 发送来源IP
-     * title  邮件标题
-     * content 发送邮件内容
-     */
-    public  String sendEmail(String to,String fromIp,String title,String content) {
-        if( emailFrom==null|| emailPwd==null){
-            return "邮件服务信息服务端未设置，不能发送邮件";
-        }
-        Properties props = new Properties();
-        props.setProperty("mail.smtp.host", "smtp.163.com");
-        props.put("mail.smtp.host", "smtp.163.com");
-        props.put("mail.smtp.auth", "true");
-        Session session = Session.getDefaultInstance(props);
-        session.setDebug(true);
-        MimeMessage message = new MimeMessage(session);
-        try {
-            message.setSentDate(new Date());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
-            message.setFrom(new InternetAddress(emailFrom));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to)); // 加载收件人地址
-            message.setSubject("同步前端代码"+fromIp,"utf-8");
-            Multipart multipart = new MimeMultipart(); // 向multipart对象中添加邮件的各个部分内容，包括文本内容和附件
-            BodyPart contentPart = new MimeBodyPart(); // 设置邮件的文本内容
-            String str = "";
-            contentPart.setContent(str, "text/html;charset=utf-8");
-            multipart.addBodyPart(contentPart);
-            message.setContent(multipart);
-            message.saveChanges(); // 保存变化
-            Transport transport = session.getTransport("smtp"); // 连接服务器的邮箱
-            transport.connect("smtp.163.com", emailFrom, emailPwd); // 把邮件发送出去
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return "发送失败："+e.getMessage();
-        }
-        return null;
-    }
-
 }

@@ -2,10 +2,7 @@
 target/
 /design/
 /logs/
-/vlifeadmin_help/
+/doc/
 /vlife-plus/
 /old_doc/
 .gitignore
-vlife-admin-pro/
-img/
-vlife-admin/logs/

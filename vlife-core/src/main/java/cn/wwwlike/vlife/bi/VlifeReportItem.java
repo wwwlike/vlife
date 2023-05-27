@@ -27,6 +27,7 @@ import lombok.Data;
  */
 @Data
 public class VlifeReportItem {
+
     /**
      * 项目名称
      */
@@ -52,5 +53,10 @@ public class VlifeReportItem {
      * 过滤条件
      */
     private Conditions conditions;
+    /**
+     * 聚合过滤条件
+     */
+    private String havings;
+
 
 }
