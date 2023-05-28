@@ -15,10 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         "cn.wwwlike.auth",
         "cn.wwwlike.erp",
         "cn.wwwlike.sys",
-        "cn.wwwlike.form",
-        "cn.wwwlike.vlife.ts",
-        "cn.wwwlike.vlife.gitee",
-        "cn.wwwlike.form"})
+        "cn.wwwlike.form"
+        })
 public class AdminApplication {
     public static void main(String[] args) {
         //请注意，使用本项目需要安装Java环境并使用JDK8。
