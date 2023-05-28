@@ -96,18 +96,18 @@ public class FormService extends VLifeService<Form, FormDao> {
                 x_component="InputNumber";
             }
         }else if(dto.getDataType().equals("array")&&itemType.equals("save")){
-           x_component="table";
-           dto.setHideLabel(true);
-           dto.setX_decorator_props$layout("vertical");
-           dto.setX_decorator_props$gridSpan(3);
-           dto.setX_decorator_props$labelAlign("left");
-           dto.setDivider(true);
-           dto.setDividerLabel(dto.getTitle());
-           PageComponentPropDto pageComponentProp=new PageComponentPropDto();
-           pageComponentProp.setPropName("type");
-           pageComponentProp.setPropVal("entityType");
-           pageComponentProp.setSourceType("sys");
-           dto.setPageComponentPropDtos(Arrays.asList(pageComponentProp));
+            x_component="table";
+            dto.setHideLabel(true);
+            dto.setX_decorator_props$layout("vertical");
+            dto.setX_decorator_props$gridSpan(3);
+            dto.setX_decorator_props$labelAlign("left");
+            dto.setDivider(true);
+            dto.setDividerLabel(dto.getTitle());
+            PageComponentPropDto pageComponentProp=new PageComponentPropDto();
+            pageComponentProp.setPropName("type");
+            pageComponentProp.setPropVal("entityType");
+            pageComponentProp.setSourceType("sys");
+            dto.setPageComponentPropDtos(Arrays.asList(pageComponentProp));
         }
         if(dto.getFieldType().equals("date")){
             x_component="DatePicker";
@@ -136,7 +136,7 @@ public class FormService extends VLifeService<Form, FormDao> {
         if(published!=null&& published.size()>0){
             formDto=queryOne(FormDto.class,published.get(0).getId());
         }
-       BeanDto javaDto= GlobalData.findModel(modelName);
+        BeanDto javaDto= GlobalData.findModel(modelName);
         //有关联title读取到，则进行同步
         if(javaDto.commentRead) {
             if (formDto != null) {//更新
@@ -209,9 +209,9 @@ public class FormService extends VLifeService<Form, FormDao> {
                     SysMenu menu=new SysMenu();
                     menu.setName(javaDto.getTitle());
                     menu.setEntityType(javaDto.getEntityType());
-                    menu.setPcode("000");
+                    menu.setPcode("009_005");
                     menu.setIcon("IconComponent");
-                    menu.setUrl("/page/*");
+                    menu.setUrl("/vlife/*");
                     menu.setPlaceholderUrl(StringUtils.uncapitalize(javaDto.getEntityType()));
                     menuService.save(menu);
                 }
@@ -259,8 +259,8 @@ public class FormService extends VLifeService<Form, FormDao> {
      */
     public Integer sync(List<? extends BeanDto> javaModels){
         //所有已经发布的模型信息
-       final List<FormVo> published=queryAll(FormVo.class);
-       int[] count={0};
+        final List<FormVo> published=queryAll(FormVo.class);
+        int[] count={0};
         //发布过的同步数据(字段会更新)，增减字段
         published.forEach(vo->{
             List<FormField> adds=new ArrayList<>();
@@ -324,26 +324,26 @@ public class FormService extends VLifeService<Form, FormDao> {
 //        return published;
     }
 
-   public  FormFieldVo fieldTran(FieldDto fieldDto){
-       FormFieldVo formFieldVo=new FormFieldVo();
-       BeanUtils.copyProperties(fieldDto,formFieldVo,"fieldType","dataType");//
-       formFieldVo.setDataType(getDataType(fieldDto.getFieldType()));
-       formFieldVo.setFieldType(getFileType(fieldDto.getType()));
-       String pathName=fieldDto.getPathName();
-       int last_index=pathName.lastIndexOf("_");
-       if(pathName.endsWith("Id")){
-           String entityType=pathName.substring(last_index+1,pathName.length()-2);
-           if(GlobalData.findBeanDtoByName("entity",entityType)!=null){
-               formFieldVo.setEntityFieldName("id");
-               formFieldVo.setEntityType(entityType);
-           }else{
-               System.out.println(entityType);
-           }
+    public  FormFieldVo fieldTran(FieldDto fieldDto){
+        FormFieldVo formFieldVo=new FormFieldVo();
+        BeanUtils.copyProperties(fieldDto,formFieldVo,"fieldType","dataType");//
+        formFieldVo.setDataType(getDataType(fieldDto.getFieldType()));
+        formFieldVo.setFieldType(getFileType(fieldDto.getType()));
+        String pathName=fieldDto.getPathName();
+        int last_index=pathName.lastIndexOf("_");
+        if(pathName.endsWith("Id")){
+            String entityType=pathName.substring(last_index+1,pathName.length()-2);
+            if(GlobalData.findBeanDtoByName("entity",entityType)!=null){
+                formFieldVo.setEntityFieldName("id");
+                formFieldVo.setEntityType(entityType);
+            }else{
+                System.out.println(entityType);
+            }
 
-       }
+        }
 
-       return formFieldVo;
-   }
+        return formFieldVo;
+    }
 
     /**beanDto转换成formVO ,字段加上排序号**/
     public FormVo tran(BeanDto f){
@@ -400,14 +400,14 @@ public class FormService extends VLifeService<Form, FormDao> {
             //查询字段隐藏的2个条件，1字段来源是用户表的外键,2和行级过滤条件实体类需要一致（待）
             if(userLeftTableNames.contains(fieldEntityName)){
                 if("1".equals(filterLevel)&&querySub){//能查询子集的过滤条件，但是当前查询是查本级，group上的查询条件，不能用；可扩展成该实体的外键表上的查询条件，如查本机构，那么其实是按照本机构的部门进行查询
-                   //查本部门，那么前端不展示部门，展示用户，用户表里有部门id relation；前提是req模型里面有用户
+                    //查本部门，那么前端不展示部门，展示用户，用户表里有部门id relation；前提是req模型里面有用户
                     if(relationTableNames.contains(fieldEntityName)){
                         return true;
                     }else{
                         return false;
                     }
                 }else  if(!fieldEntityName.equals(filterType)){// 查本级和下级只能是group上的实体查询条件
-                   return false;
+                    return false;
                 }
             }
             return true;
