@@ -84,7 +84,7 @@
 ### 反馈与共建
 <div >
     <div style="display: inline-block;width:200px">
-      <img style="width: 200px; height: 200px;" src="https://wwwlike.gitee.io/vlife-img/wxq.jpg" alt="微信">
+      <img style="width: 200px; height: 200px;" src="https://wwwlike.gitee.io/vlife-img/wxq.png" alt="微信">
       <p style="text-align: center;">微信群</p>
     </div>&nbsp;&nbsp;&nbsp;&nbsp;
     <div style="display: inline-block;width:200px">
