@@ -39,14 +39,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-import cn.wwwlike.vlife.ts.ReadTitle;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 列表字段接口;
