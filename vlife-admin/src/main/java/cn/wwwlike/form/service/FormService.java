@@ -2,6 +2,8 @@ package cn.wwwlike.form.service;
 
 import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysGroup;
+import cn.wwwlike.auth.entity.SysMenu;
+import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.common.BaseService;
 import cn.wwwlike.form.dao.FormDao;
 import cn.wwwlike.form.dto.FormDto;
@@ -22,16 +24,15 @@ import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.ReqDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
+import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.web.security.core.SecurityUser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -44,8 +45,12 @@ public class FormService extends VLifeService<Form, FormDao> {
     @Autowired
     public FormFieldService fieldService;
 
+    @Autowired
+    public SysMenuService menuService;
+
 
     private FormFieldDto  initComponent(FormFieldDto dto,String itemType,BeanDto javaDto){
+
         if(dto.getFieldName().equals("id")){
             dto.setX_hidden(true);
         }
@@ -63,7 +68,7 @@ public class FormService extends VLifeService<Form, FormDao> {
 
         PageComponentPropDto prop=null;
 //        { propName: "optionList", propVal: ff.dictCode, sourceType: "dict" },
-        String x_component=null;
+        String x_component="Input";
         if(dto.getDictCode()!=null){
             prop=new PageComponentPropDto();
             if(itemType.equals("req")){
@@ -90,11 +95,24 @@ public class FormService extends VLifeService<Form, FormDao> {
             }else if(dto.getFieldType().equals("number")){
                 x_component="InputNumber";
             }
+        }else if(dto.getDataType().equals("array")&&itemType.equals("save")){
+           x_component="table";
+           dto.setHideLabel(true);
+           dto.setX_decorator_props$layout("vertical");
+           dto.setX_decorator_props$gridSpan(3);
+           dto.setX_decorator_props$labelAlign("left");
+           dto.setDivider(true);
+           dto.setDividerLabel(dto.getTitle());
+           PageComponentPropDto pageComponentProp=new PageComponentPropDto();
+           pageComponentProp.setPropName("type");
+           pageComponentProp.setPropVal("entityType");
+           pageComponentProp.setSourceType("sys");
+           dto.setPageComponentPropDtos(Arrays.asList(pageComponentProp));
         }
         if(dto.getFieldType().equals("date")){
             x_component="DatePicker";
         }
-        if(dto.getFieldName().equals("code")){
+        if(dto.getFieldName().equals("code")||dto.getFieldName().equals("sysUserId")||dto.getFieldName().equals("sysDeptId")){
             dto.setX_hidden(true);
         }
         if(dto.getFieldName().equals("no")&&INo.class.isAssignableFrom(javaDto.getClz())){
@@ -123,6 +141,9 @@ public class FormService extends VLifeService<Form, FormDao> {
         if(javaDto.commentRead) {
             if (formDto != null) {//更新
                 if (!formDto.getTitle().equals(javaDto.getTitle())) {
+                    if(formDto.getTitle().equals(formDto.getName())){
+                        formDto.setName(javaDto.getTitle());
+                    }
                     formDto.setTitle(javaDto.getTitle());
                     save(formDto);
                 }
@@ -183,6 +204,17 @@ public class FormService extends VLifeService<Form, FormDao> {
                     }
                 }
             } else if (javaDto != null && javaDto.getFields() != null && javaDto.getFields().size() > 0) {//模型新增
+                //menuService 增加一个临时菜单
+                if((javaDto.getItemType().equals("entity")||javaDto.getItemType().equals("save"))&& menuService.find("entityType",javaDto.getEntityType()).size()==0){
+                    SysMenu menu=new SysMenu();
+                    menu.setName(javaDto.getTitle());
+                    menu.setEntityType(javaDto.getEntityType());
+                    menu.setPcode("000");
+                    menu.setIcon("IconComponent");
+                    menu.setUrl("/page/*");
+                    menu.setPlaceholderUrl(StringUtils.uncapitalize(javaDto.getEntityType()));
+                    menuService.save(menu);
+                }
                 FormVo vo = tran(javaDto);
                 FormDto dto = new FormDto();
                 dto.setVersion(0);
@@ -200,18 +232,6 @@ public class FormService extends VLifeService<Form, FormDao> {
                             d = initComponent(d, vo.getItemType(),javaDto);
                             return d;
                         }).collect(Collectors.toList()));
-
-//            VClazz v= (VClazz) javaDto.getClz().getAnnotation(VClazz.class);
-//            if(v!=null&&v.module()!=null){
-//                dto.setModule(v.module());
-//            }else{
-//                Pattern pattern = Pattern.compile("[A-Z]");
-//                Matcher matcher = pattern.matcher(vo.getEntityType());
-//                //字段初始化
-//                if (matcher.find()) {
-//                    dto.setModule(vo.getEntityType().substring(0,matcher.start()));
-//                }
-//            }
                 //页面布局相关
                 if (dto.getItemType().equals("req")) {
                     dto.setModelSize(1);
@@ -220,6 +240,7 @@ public class FormService extends VLifeService<Form, FormDao> {
                     dto.setModelSize(size > 16 ? 4 : size > 10 ? 3 : 2);
                 }
                 dto.setPageSize(10);
+                dto.setName(dto.getTitle());
                 save(dto);
             } else {
                 System.out.println(modelName);
@@ -392,6 +413,54 @@ public class FormService extends VLifeService<Form, FormDao> {
             return true;
         }).collect(Collectors.toList());
         return fieldVos;
+    }
+
+
+    /**
+     * 字段重新加载
+     */
+
+    @Autowired
+    public PageComponentPropService propService;
+
+    @Autowired
+    public PageApiParamService paramService;
+    /**
+     * 物理删除指定实体模型，以及相关所有模型;
+     * @param id
+     */
+    public String deleteModel(String id){
+        FormVo formVo=queryOne(FormVo.class,id);
+        if(formVo!=null){
+//            QueryWrapper qw=QueryWrapper.of(Form.class);
+//            qw.eq("entityType",formVo.getType());
+//            //删除关联模型
+//            List<FormVo> models=query(FormVo.class,qw);
+//            if(models==null){
+//                models=new ArrayList<>();
+//            }
+//            models.add(formVo);
+//            for(FormVo model:models){
+            formVo.fields.forEach(f->{
+                fieldService.delete(f.getId());
+                if(f.getPageComponentPropDtos()!=null){
+                    f.getPageComponentPropDtos().forEach(p->{
+                        propService.delete(p.getId());
+                        if(p.getParams()!=null){
+                            p.getParams().forEach(a->{
+                                paramService.delete(a.getId());
+                            });
+                        }
+                    });
+                }
+            });
+            delete(formVo.getId());
+
+//            }
+            return  formVo.getType();
+        }else{
+            return null;
+        }
 
     }
 }

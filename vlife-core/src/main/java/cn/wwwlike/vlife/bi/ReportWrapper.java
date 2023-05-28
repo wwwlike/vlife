@@ -49,6 +49,7 @@ public class ReportWrapper<T extends Item> extends AbstractWrapper<T, String, Re
     protected List<Groups> groups = new ArrayList<Groups>();
     /**
      * 分组后的过滤条件
+     * 应该用不到
      */
     protected List<Havings> havings = new ArrayList<Havings>();
 
