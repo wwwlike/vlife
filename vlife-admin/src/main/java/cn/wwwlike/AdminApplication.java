@@ -15,7 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         "cn.wwwlike.auth",
         "cn.wwwlike.erp",
         "cn.wwwlike.sys",
-        "cn.wwwlike.form"
+        "cn.wwwlike.form",
+        "cn.wwwlike.bank"
         })
 public class AdminApplication {
     public static void main(String[] args) {
