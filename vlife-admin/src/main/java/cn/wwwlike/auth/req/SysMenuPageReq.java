@@ -18,7 +18,6 @@
 
 package cn.wwwlike.auth.req;
 import cn.wwwlike.auth.entity.SysMenu;
-import cn.wwwlike.auth.entity.SysRole;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;

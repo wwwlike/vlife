@@ -1,5 +1,6 @@
 package cn.wwwlike.erp.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "erp_order_sale_detail")
+@VClazz(module = "erp")
 public class OrderSaleDetail extends DbEntity {
     /**
      * 销售产品

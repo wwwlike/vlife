@@ -1,8 +1,8 @@
 package cn.wwwlike.auth.service;
 
-import cn.wwwlike.auth.dao.SysGroupDao;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.entity.SysResources;
+import cn.wwwlike.auth.dao.SysGroupDao;
 import cn.wwwlike.auth.vo.GroupVo;
 import cn.wwwlike.common.BaseService;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
     @Autowired
     public SysResourcesService resourcesService;
-
 
     @Autowired
     public SysGroupService sysGroupService;

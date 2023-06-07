@@ -25,6 +25,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -198,5 +200,41 @@ public class VlifeUtils {
         return newArray;
     }
 
+    /**
+     * 取首个单词
+     * @param input
+     * @return
+     */
+    public static String getFirstWordFromCamelCase(String input) {
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
+        // 使用正则表达式提取第一个单词
+        String regex = "^([^A-Z]+).*";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
+    }
 
+    /**
+     * code补齐 形成001_001这样的规范
+     */
+    public static String code(String rootCode,String i){
+        if(rootCode!=null&& rootCode.length()>0){
+            rootCode=rootCode+"_";
+        }else{
+            rootCode="";
+        }
+        if(i.length()==1){
+            return rootCode+"00"+i;
+        }else if(i.length()==2){
+            return rootCode+"0"+i;
+        }else {
+            return rootCode+i;
+        }
+
+    }
 }

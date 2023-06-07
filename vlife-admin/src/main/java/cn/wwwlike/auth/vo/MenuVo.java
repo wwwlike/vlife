@@ -1,6 +1,5 @@
 package cn.wwwlike.auth.vo;
 
-import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.vlife.base.VoBean;
@@ -41,6 +40,10 @@ public class MenuVo implements VoBean<SysMenu> {
      * 可快速将相关接口与其关联
      */
     public String entityType;
+    /**
+     * 实体名前缀
+     */
+    public String   entityPrefix;
     /**
      * 菜单下属资源
      */

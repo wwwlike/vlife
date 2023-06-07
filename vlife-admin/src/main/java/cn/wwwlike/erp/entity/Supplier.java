@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "erp_supplier")
+@VClazz(module = "erp")
 public class Supplier extends DbEntity {
     /**
      * 供应商名称

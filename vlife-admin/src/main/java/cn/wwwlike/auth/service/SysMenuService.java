@@ -5,7 +5,6 @@ import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.vo.MenuVo;
 import cn.wwwlike.common.BaseService;
-import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +76,7 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
     public List<SysMenu> findAllMenusByResources(List<SysResources> userResources){
         List<SysMenu> menus=new ArrayList<>();
         //添加有权限资源对应的菜单
-        if(userResources!=null){
+        if(userResources!=null&&userResources.size()>0){
             menus.addAll(findByIds(userResources.stream().map(f->f.getSysMenuId()).collect(Collectors.toList()).toArray(new String[0]))) ;
         }
         //没有权限的那一部分菜单加进来

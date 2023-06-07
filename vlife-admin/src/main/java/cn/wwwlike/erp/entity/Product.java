@@ -1,4 +1,5 @@
 package cn.wwwlike.erp.entity;
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
@@ -11,6 +12,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "erp_product")
+@VClazz(module = "erp")
 public class Product  extends DbEntity {
     /**
      * 产品编号

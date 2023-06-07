@@ -18,8 +18,8 @@
 
 package cn.wwwlike.auth.config;
 
-import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.auth.service.SysUserService;
+import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.web.security.core.*;
 import cn.wwwlike.web.security.filter.MyUsernamePasswordAuthenticationFilter;
 import cn.wwwlike.web.security.filter.VerifyTokenFilter;

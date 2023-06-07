@@ -24,9 +24,6 @@ import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  * 资源页面
  */

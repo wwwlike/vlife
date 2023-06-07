@@ -17,8 +17,7 @@ public class SecurityUser implements UserDetails, IUser {
     protected String username; //用户名
     protected String password;
     protected String groupId;
-    public Object sysUser;//用户表
-
+    public Object useDetailVo;//用户综合信息
     public SecurityUser(){
     }
 

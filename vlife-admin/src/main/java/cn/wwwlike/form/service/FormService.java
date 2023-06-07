@@ -1,10 +1,7 @@
 package cn.wwwlike.form.service;
 
-import cn.wwwlike.auth.config.SecurityConfig;
-import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.service.SysMenuService;
-import cn.wwwlike.common.BaseService;
 import cn.wwwlike.form.dao.FormDao;
 import cn.wwwlike.form.dto.FormDto;
 import cn.wwwlike.form.dto.FormFieldDto;
@@ -13,28 +10,19 @@ import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.form.vo.FormFieldVo;
 import cn.wwwlike.form.vo.FormVo;
-import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.base.INo;
-import cn.wwwlike.vlife.base.Item;
-import cn.wwwlike.vlife.base.SaveBean;
-import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
-import cn.wwwlike.vlife.objship.dto.ReqDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
-import cn.wwwlike.vlife.query.QueryWrapper;
-import cn.wwwlike.web.security.core.SecurityUser;
+import cn.wwwlike.vlife.utils.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.annotation.Annotation;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.*;
@@ -94,6 +82,10 @@ public class FormService extends VLifeService<Form, FormDao> {
                 x_component="Input";
             }else if(dto.getFieldType().equals("number")){
                 x_component="InputNumber";
+            }else if(dto.getFieldType().equals("boolean")){
+                x_component="VfCheckbox";
+            }else if("imgImgIMAGEPHOTOphoto".indexOf(dto.getFieldName())!=-1){
+                x_component="VfImage";
             }
         }else if(dto.getDataType().equals("array")&&itemType.equals("save")){
             x_component="table";
@@ -137,14 +129,23 @@ public class FormService extends VLifeService<Form, FormDao> {
             formDto=queryOne(FormDto.class,published.get(0).getId());
         }
         BeanDto javaDto= GlobalData.findModel(modelName);
+
         //有关联title读取到，则进行同步
         if(javaDto.commentRead) {
             if (formDto != null) {//更新
+                boolean formChange=false;
                 if (!formDto.getTitle().equals(javaDto.getTitle())) {
                     if(formDto.getTitle().equals(formDto.getName())){
                         formDto.setName(javaDto.getTitle());
                     }
+                    formChange=true;
                     formDto.setTitle(javaDto.getTitle());
+                }
+                if (formDto.itemType.equals("entity")&&!ReflectionUtils.getFieldValue(javaDto,"module").equals(formDto.getModule())) {
+                    formDto.setModule(ReflectionUtils.getFieldValue(javaDto,"module").toString());
+                    formChange=true;
+                }
+                if(formChange){
                     save(formDto);
                 }
                 List<FieldDto> javaFields = javaDto.getFields();

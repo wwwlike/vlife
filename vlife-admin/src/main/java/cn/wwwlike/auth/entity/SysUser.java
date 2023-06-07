@@ -18,8 +18,6 @@
 
 package cn.wwwlike.auth.entity;
 
-import cn.wwwlike.auth.common.IDept;
-import cn.wwwlike.auth.common.IOrg;
 import cn.wwwlike.base.model.IUser;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.IFkItem;

@@ -1,6 +1,5 @@
 package cn.wwwlike.auth.api;
 
-import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.dto.GroupDto;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.req.SysGroupPageReq;
@@ -9,15 +8,11 @@ import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.common.BaseService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 角色聚合组接口;
@@ -47,7 +42,7 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
   public GroupDto saveGroupDto(@RequestBody GroupDto dto) {
 //    filterDetailService.filterClear();
     service.save(dto,true);
-    BaseService.groups=new HashMap<>();
+    BaseService.groups=new HashMap<>();//刷新权限组
 //    GroupFilterDto filterDto=service.queryOne(GroupFilterDto.class,dto.getId());
 //    filterDto=sysFilterService.ruleSettings(filterDto,dto.getScope());
 //    saveGroupFilterDto(filterDto);

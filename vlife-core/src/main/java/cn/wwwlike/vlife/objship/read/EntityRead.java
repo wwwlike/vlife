@@ -26,6 +26,7 @@ import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 import cn.wwwlike.vlife.utils.FileUtil;
+import cn.wwwlike.vlife.utils.VlifeUtils;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -107,6 +108,12 @@ public class EntityRead extends ItemReadTemplate<EntityDto> {
                 if (f.orders() != null) {
                     dto.setOrders(f.orders());
                 }
+            }
+
+            if(f != null&&f.module()!=null&&!"".equals(f.module())){
+                dto.setModule(f.module());
+            }else{
+                dto.setModule(VlifeUtils.getFirstWordFromCamelCase(dto.getEntityType()));
             }
             return dto;
         }

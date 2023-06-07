@@ -36,22 +36,21 @@ public class SysUserPageReq extends PageQuery<SysUser> {
      */
     @VField(pathName = "name",opt = Opt.startsWith,orReqFields = {"tel","idno"})
     public String search;
-
-    public String state;
-    /**
-     * 用户类型
-     */
-    public String usetype;
-    /**
-     * 权限组
-     */
-    public String sysGroupId;
+//    public String state;
+//    /**
+//     * 用户类型
+//     */
+//    public String usetype;
+//    /**
+//     * 权限组
+//     */
+//    public String sysGroupId;
     /**
      * 部门
      */
     public String sysDept_code;
-    /*
-     *年龄
-     */
-    public List<Integer> age;
+//    /*
+//     *年龄
+//     */
+//    public List<Integer> age;
 }
