@@ -9,6 +9,7 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * 图片信息表
@@ -30,7 +31,7 @@ public class BankImgData extends DbEntity {
      * 序号
      * 批内码 后续应该long
      * */
-    public Double inccodeinBatch;
+    public Integer inccodeinBatch;
 
     /**  */
     public String dataFlag;
@@ -56,7 +57,7 @@ public class BankImgData extends DbEntity {
      * 拷贝标志
      * 0 未拷贝 >0拷贝数',
      * */
-    public Double copyRec;
+    public Integer copyRec;
     /** 识别倾斜矫正角度  */
     public String correctAng;
     /** 币种 */
@@ -85,25 +86,25 @@ public class BankImgData extends DbEntity {
     /** 扫描仪IA码  */
     public String iaCode;
     /** 图像标志  */
-//    public String imageFlag;
-    /** INDEX_FIELD  */
-//    public String indexField;
+    public Integer imageFlag;
+    /** 索引字段  */
+    public String indexField;
     /**
      * 正反面标志
      *  2 含背面的正面  1 不含背面的正面  0 背面'
      */
-//    public String isFrontPage;
+    @VField(dictCode = "BankImaData_ForntPage")
+    public String isFrontPage;
     /** 彩色图像长度  */
     public Double lengthOfClrImg;
     /** 账号  */
     public String account;
     /** 黑白图像长度  */
-    public Double lengthOfImage;
+    public Integer lengthOfImage;
     /**
      * 凭证类型
-     * 应该是字段，但是给的类型不行
-     * */
-    public Double vouhType;
+     */
+    public String vouhType;
     /** 勾对主流水的唯一序号  */
 //    public String lseqId;
     /** 备注  */
@@ -112,11 +113,11 @@ public class BankImgData extends DbEntity {
      * 新批内码
      * （预留字段）
      */
-//    public String newInccode;
+//    public Integer newInccode;
     /** OCR补录日期  */
-    public String ocrDate;
+    public Date ocrDate;
     /** OCR识别失败标志  */
-//    public String ocrFailCause;
+    public Integer ocrFailCause;
     /**  OCR识别列表  */
     public String  ocrFailList;
     /** 补录人员  */
@@ -126,9 +127,9 @@ public class BankImgData extends DbEntity {
     /** OCR区域列表  */
     public String ocrrectList;
     /**  彩色图像偏移位置 */
-    public Double offsetOfClrImg;
+    public Integer offsetOfClrImg;
     /** 黑白图像偏移位置  */
-    public Double offsetOfImage;
+    public Integer offsetOfImage;
     /**  原点位置 */
     public String oriPoint;
     /** 重点监督日期  */
@@ -171,7 +172,7 @@ public class BankImgData extends DbEntity {
     /** 新账号  */
     public String newAccount;
     /** 发生日期  */
-    public String occurTime;
+    public Date occurTime;
     /**
      * 非金融性描述
      * text类型
@@ -200,7 +201,7 @@ public class BankImgData extends DbEntity {
     /**  校验用户 */
     public String verifyWorker;
     /**  归档日期 */
-    public String archiveDate;
+    public Date archiveDate;
     /**  图像归档ID */
     public String imgId;
 //    /**   */
@@ -214,13 +215,13 @@ public class BankImgData extends DbEntity {
     /** 重点监督分组  */
     public String groupNo;
     /** 上次修改时间  */
-    public String lastModTime;
+    public Date lastModTime;
     /** 城市编号  */
     public String cityNo;
     /**  再监督人员 */
     public String resupervisor;
     /** 再监督具体时间  */
-    public String resuperviseTime;
+    public Date resuperviseTime;
 //    /**   */
 //    public String tellerNo2;
 //    /**   */

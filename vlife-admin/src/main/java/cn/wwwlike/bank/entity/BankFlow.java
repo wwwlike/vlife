@@ -4,6 +4,7 @@ import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 业务流水
@@ -75,7 +76,7 @@ public class BankFlow extends DbEntity{
      */
     public String seqNo;
     /** 反交易标志 */
-//    public String revtranf;
+    public Integer revtranf;
     /** 更新标识 */
     public String updFlag;
     /** 币种 */
@@ -95,6 +96,7 @@ public class BankFlow extends DbEntity{
     /**
      * 流水勾对标志
      * 0 未勾对   1 已勾对  3 已置流水差错
+     * oracle不一致 Integer
      * */
     @VField(dictCode = "BankFlow_CheckFlag")
     public String checkFlag;
@@ -124,7 +126,10 @@ public class BankFlow extends DbEntity{
 //    public String tOperator;
 //    /**  */
 //    public String tReplyTime;
-    /** 交易金额（折美元) */
+    /**
+     * 交易金额（折美元)
+     * 有下划线
+     * */
     public Double t_amt;
     /**  */
 //    public String tChkno;
@@ -132,15 +137,21 @@ public class BankFlow extends DbEntity{
 //    public String tChkdate;
 //    /**  */
 //    public String tExhtime;
-    /** 业务发生时间 */
-    public String occurTime;
+    /**
+     * 业务发生时间
+     * 和oracle不一致 varchar
+     * */
+    public Date occurTime;
     /**  */
 //    public String noFinanceDesc;
 //    /**  */
 //    public String noFinanceCont;
 //    /**  */
 //    public String servTp;
-    /** 合同号 */
+    /**
+     * 合同号
+     * 这里应该是有外键表
+     * */
     public String contractId;
     /** 凭证号 */
     public String vouhNo;
