@@ -20,6 +20,7 @@ package cn.wwwlike.vlife.bi;
 
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.query.AbstractWrapper;
+import cn.wwwlike.vlife.query.QueryWrapper;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -52,6 +53,11 @@ public class ReportWrapper<T extends Item> extends AbstractWrapper<T, String, Re
      * 应该用不到
      */
     protected List<Havings> havings = new ArrayList<Havings>();
+
+    public static <E extends Item> ReportWrapper<E> of(Class<E> clz) {
+        return new ReportWrapper<E>(clz);
+    }
+
 
     public ReportWrapper(Class<T> entity) {
         super.entityClz = entity;

@@ -21,20 +21,13 @@ package cn.wwwlike.auth.config;
 import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
+import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.sys.service.SysDictService;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
-import cn.wwwlike.vlife.objship.read.ModelReadCheck;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.ExitCodeGenerator;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -52,6 +45,9 @@ public class AdminStartInitializer implements ApplicationRunner {
 
     @Autowired
     SysDictService dictService;
+
+    @Autowired
+    SysDeptService sysDeptService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -73,6 +69,8 @@ public class AdminStartInitializer implements ApplicationRunner {
             formService.remove(m.getId());
             //菜单也要物理删除
         });
+        //部门初始化
+        sysDeptService.initEmptyCodeDepts();
         //用户和权限组初始化
         //字典里没有
 

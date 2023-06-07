@@ -86,7 +86,7 @@ public class ReportQuery<T extends Item> extends CustomQuery<T, ReportWrapper<T>
             wrapper.setFunc(item.getFunc());
         }
         //查询条件注入
-        if (item.getConditions() != null) {
+        if (item.getConditions() != null&&item.getConditions().getConditions()!=null) {
             QueryUtils.condition(wrapper, item.getConditions());
         }
         return wrapper;

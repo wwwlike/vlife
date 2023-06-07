@@ -5,8 +5,6 @@ import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * 密码修改dto
  */

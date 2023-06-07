@@ -4,35 +4,28 @@ import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.dto.RegisterDto;
 import cn.wwwlike.auth.dto.UserPasswordModifyDto;
 import cn.wwwlike.auth.dto.UserStateDto;
-import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysUserPageReq;
 import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.auth.service.ThirdLoginService;
-import cn.wwwlike.auth.vo.GroupVo;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.auth.vo.UserVo;
 import cn.wwwlike.sys.service.SysAreaService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.web.exception.enums.CommonResponseEnum;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import static cn.wwwlike.auth.service.SysUserService.encode;
 
 /**
  * 用户表接口;
@@ -77,7 +70,7 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
     public Integer reset(@RequestBody String[] ids) {
         List<SysUser> users=service.findByIds(ids);
         for(SysUser user:users) {
-            user.setPassword(encode("123456"));
+            user.setPassword(SysUserService.encode("123456"));
             service.save(user);
         }
         return ids.length;
@@ -90,7 +83,7 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
     public boolean saveUserPasswordModifyDto(@RequestBody UserPasswordModifyDto dto) {
        SysUser user=service.findOne(dto.getId());
        CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(new MessageDigestPasswordEncoder("MD5").matches(dto.getPassword(), user.getPassword()),"原密码不正确");
-       service.save("password",encode(dto.getNewPassword()),dto.getId());
+       service.save("password", SysUserService.encode(dto.getNewPassword()),dto.getId());
        return true;
     }
 
@@ -108,7 +101,7 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
     @PostMapping("/save")
     public SysUser save(@RequestBody SysUser dto) {
         if (dto.getPassword() == null && dto.getId() == null) {
-            dto.setPassword(encode("123456"));
+            dto.setPassword(SysUserService.encode("123456"));
         }
         if (dto.getState() == null) {
             dto.setState("1");
@@ -173,7 +166,7 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
      * 返回null表示注册成功
      */
     @PostMapping("/register")
-    public String register(@RequestBody  RegisterDto registerDto){
+    public String register(@RequestBody RegisterDto registerDto){
         if(loginService.openCheckCode()){
             if(sendMap.get(registerDto.getEmail())==null){
                 return "还没有给该邮箱发送验证码";

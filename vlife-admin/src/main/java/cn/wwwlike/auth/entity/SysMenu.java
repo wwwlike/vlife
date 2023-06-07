@@ -61,8 +61,8 @@ public class SysMenu extends DbEntity implements ITree {
     public String entityType;
 
     /**
-     * 所属应用
-     * 预留
+     * 实体名前缀
+     *  app应用true时，关联本应用的实体表，不用下级的entityType查找了，多个实体名之间用逗号分隔
      */
-//    public String appId;
+    public String entityPrefix;
 }

@@ -1,5 +1,6 @@
 package cn.wwwlike.erp.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.INo;
 import cn.wwwlike.vlife.bean.DbEntity;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "erp_order_purchase")
+@VClazz(module = "erp")
 public class OrderPurchase extends DbEntity implements INo {
     /**
      * 采购单号

@@ -20,10 +20,7 @@ package cn.wwwlike.auth.vo;
 
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.entity.SysUser;
-import cn.wwwlike.sys.entity.SysArea;
 import cn.wwwlike.sys.entity.SysDept;
-import cn.wwwlike.sys.vo.AreaVo;
-import cn.wwwlike.sys.vo.OrgVo;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
@@ -36,7 +33,6 @@ import java.util.List;
 @Data
 public class  UserDetailVo implements VoBean<SysUser> {
     public String id;
-
     /**
      * 头像
      */

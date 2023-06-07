@@ -48,5 +48,9 @@ public class SysDept extends DbEntity implements ITree, IOrg {
      * 部门所在机构
      */
     public String sysOrgId;
+    /**
+     * 上级部门
+     */
+    public String parentId;
 
 }

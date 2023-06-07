@@ -1,8 +1,6 @@
 package cn.wwwlike.auth.api;
 
-import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysMenu;
-import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysMenuPageReq;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.auth.vo.MenuVo;
@@ -12,7 +10,6 @@ import java.lang.Long;
 import java.lang.String;
 import java.util.List;
 
-import cn.wwwlike.web.security.core.SecurityUser;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,7 +71,6 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
 
   /**
    * 逻辑删除;
-   *
    * @param id ;
    * @return 已删除数量;
    */

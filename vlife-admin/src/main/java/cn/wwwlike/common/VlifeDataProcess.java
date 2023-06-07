@@ -17,10 +17,10 @@
  */
 
 package cn.wwwlike.common;
-import cn.wwwlike.auth.common.*;
+import cn.wwwlike.auth.common.IArea;
+import cn.wwwlike.auth.common.IDept;
+import cn.wwwlike.auth.common.IOrg;
 import cn.wwwlike.auth.config.SecurityConfig;
-import cn.wwwlike.auth.entity.SysUser;
-import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.core.DataProcess;
@@ -88,8 +88,7 @@ public class VlifeDataProcess extends DataProcess {
             mm.put("status", CT.STATUS.NORMAL);
             if(SecurityConfig.getCurrUser()!=null){
               SecurityUser securityUser= SecurityConfig.getCurrUser();
-
-                JSONObject user= (JSONObject)securityUser.getSysUser();
+                JSONObject user= (JSONObject)securityUser.getUseDetailVo();
                 mm.put("createId", user.get("id"));
 //                if(IOrg.class.isAssignableFrom(entityClz)) {
 //                    mm.put("sysOrgId",user.getsys());

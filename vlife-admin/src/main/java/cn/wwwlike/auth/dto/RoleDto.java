@@ -19,7 +19,6 @@
 package cn.wwwlike.auth.dto;
 
 import cn.wwwlike.auth.entity.SysRole;
-import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 

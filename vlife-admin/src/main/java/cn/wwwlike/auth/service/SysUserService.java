@@ -1,11 +1,12 @@
 package cn.wwwlike.auth.service;
 
-import cn.wwwlike.auth.config.SecurityConfig;
+import cn.wwwlike.auth.entity.SysResources;
+import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.dao.SysUserDao;
 import cn.wwwlike.auth.dto.RegisterDto;
-import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.common.BaseService;
+import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.web.security.core.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,11 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.MessageDigest;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +31,7 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
             SecurityUser securityUser = new SecurityUser(user.getId(),
                     user.getUsername(),user.getPassword(),user.getSysGroupId()
             );
-            securityUser.setSysUser(detailVo);
+            securityUser.setUseDetailVo(detailVo);
             securityUser.setGroupId(user.getSysGroupId());
             return securityUser;
         }
@@ -45,7 +42,7 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
        SecurityUser securityUser = new SecurityUser(user.getId(),
                 user.getUsername(),user.getPassword(),user.getSysGroupId()
         );
-        securityUser.setSysUser(detailVo);
+        securityUser.setUseDetailVo(detailVo);
         securityUser.setGroupId(user.getSysGroupId());
         return securityUser;
     }
@@ -73,8 +70,7 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
              codes = groupService.findGroupResourceCodes(vo.getSysGroupId());
              vo.setMenus(menuService.findAllMenusByResources(
                      codes==null?null:
-                     resourcesService.findByIds(
-                     codes.toArray(new String[0]))));
+                     resourcesService.find(QueryWrapper.of(SysResources.class).in("code",codes.toArray(new String[codes.size()])))));
         }
         vo.setResourceCodes(codes);
 

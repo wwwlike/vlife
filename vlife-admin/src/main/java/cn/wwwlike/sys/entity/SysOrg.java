@@ -18,7 +18,6 @@
 
 package cn.wwwlike.sys.entity;
 
-import cn.wwwlike.auth.common.IArea;
 import cn.wwwlike.auth.common.IBus;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.ITree;

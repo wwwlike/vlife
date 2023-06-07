@@ -1,5 +1,6 @@
 package cn.wwwlike.erp.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "erp_order_purchase_detail")
+@VClazz(module = "erp")
 public class OrderPurchaseDetail extends DbEntity {
     /**
      * 采购产品

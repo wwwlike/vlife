@@ -40,9 +40,9 @@ public class CT {
     @Named("是否")
     public static final class TF {
         @Named("是")
-        public final static Boolean T = true;
+        public final static String T = "1";
         @Named("否")
-        public final static Boolean F = false;
+        public final static String F = "0";
     }
 
 
