@@ -6,6 +6,7 @@ import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,11 +17,11 @@ public class BankImgDataPageReq extends PageQuery<BankImgData> {
 
     // 按批次字段查询
     /** 业务日期 */
-    public String bankBatch_occurDate;
+    public List<Date> bankBatch_occurDate;
     /** 网点 */
     public String bankBatch_sysDeptId;
     /** 业务类型 */
-    public Double bankBatch_businessId;
+    public String bankBatch_businessId;
     /**
      * 是否需要处理
      * 是否需要处理标志 0 不需处理 1需要处理',

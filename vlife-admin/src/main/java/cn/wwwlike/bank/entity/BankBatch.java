@@ -58,8 +58,9 @@ public class BankBatch extends DbEntity {
      */
     public String  largeFileName;
     /**
-     * 业务类型
+     * 银行业务类型
      */
+    @VField(dictCode = "BANK_BUSINESS_TYPE")
     public String businessId;
     /**
      * 是否需要处理

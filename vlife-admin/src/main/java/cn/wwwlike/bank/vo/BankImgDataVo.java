@@ -5,11 +5,13 @@ import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class BankImgDataVo implements VoBean<BankImgData> {
     public String id;
     /** 发生日期  */
-    public String occurTime;
+    public Date occurTime;
     /** 账号  */
     public String account;
     /** 户名 */
@@ -51,7 +53,7 @@ public class BankImgDataVo implements VoBean<BankImgData> {
     /** 批次号 */
     public String batchId;
     /** 批内码 */
-    public Double inccodeinBatch;
+    public Integer inccodeinBatch;
 
     //光盘券号无
 
