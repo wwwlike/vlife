@@ -45,6 +45,9 @@ public class UserVo implements VoBean<SysUser> {
 
     @VField(pathName = "sysGroup_name")
     public String groupName;
+
+    @VField(pathName = "sysDept_name")
+    public String deptName;
     /**
      * 证件号码
      */
