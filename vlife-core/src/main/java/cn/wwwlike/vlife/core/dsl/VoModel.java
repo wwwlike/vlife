@@ -447,7 +447,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      * @param element   查询指端的值（值信息里涵盖了匹配方式 like ,between ）
      * @return where条件的表达式
      */
-    public BooleanExpression filter(EntityPathBase path, String fieldName, AbstractWrapper.Element element) {
+    public static BooleanExpression filter(EntityPathBase path, String fieldName, AbstractWrapper.Element element) {
 
         SimpleExpression fieldlDsl = (SimpleExpression) ReflectionUtils.getFieldValue(path, fieldName == null ? "id" : fieldName);
         if (element.getTran() != null) {

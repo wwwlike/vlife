@@ -12,9 +12,12 @@ import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.auth.service.ThirdLoginService;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.auth.vo.UserVo;
+import cn.wwwlike.form.entity.FormField;
+import cn.wwwlike.sys.entity.SysDept;
 import cn.wwwlike.sys.service.SysAreaService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -22,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 用户表接口;
@@ -206,6 +206,20 @@ SysUserApi extends VLifeApi<SysUser, SysUserService> {
     @PostMapping("/state")
     public List<String> state(@RequestBody UserStateDto dto){
         return service.save("state",dto.getState(),dto.getIds().toArray(new String[dto.getIds().size()]));
+    }
+
+
+    /**
+     * 查询单个部门的用户
+     * @param sysDeptId
+     * @return
+     */
+    @GetMapping("/list/all")
+    public List<SysUser> listAll(String sysDeptId) {
+        if (sysDeptId == null) {
+            return new ArrayList<>();
+        }
+        return service.find(QueryWrapper.of(SysUser.class).eq("code", sysDeptId, SysDept.class));
     }
 
 }

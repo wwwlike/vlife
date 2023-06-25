@@ -57,4 +57,9 @@ public class PageComponentDto implements SaveBean<PageComponent> {
      * 组件属性配置
      */
     public List<PageComponentPropDto> props;
+
+    /**
+     * 组件属性数据
+     */
+    public String componentPropJson;
 }

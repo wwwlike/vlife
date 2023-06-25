@@ -34,6 +34,9 @@ public class OrderPurchasePageReq extends PageQuery<OrderPurchase> {
 
     @VField(pathName = "orderPurchaseDetail_productId")
     public String productName;
-
+    /**
+     * 采购员
+     */
+    public String sysUserId;
 
 }

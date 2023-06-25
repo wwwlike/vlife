@@ -44,14 +44,20 @@ public class PageComponentPropDto implements SaveBean<PageComponentProp> {
     public String propVal;
 
     /**
-     * 接口请求后数据的转化方法
-     */
-    public String apiMethod;
-    /**
      * 关联api参数设置
      */
     public List<PageApiParam> params;
 
     public String relateVal;
 
+   /***
+    * 数据转换key
+    * filterFuns->key
+    */
+   public String filterFunc;
+
+//  /**
+//   * 接口请求后数据的转化方法
+//   */
+//  public String apiMethod;
 }

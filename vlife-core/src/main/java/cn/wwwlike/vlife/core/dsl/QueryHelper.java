@@ -294,11 +294,11 @@ public class QueryHelper {
      * @return
      */
     public static SimpleExpression tran(SimpleExpression expression, String func) {
-        if ("ji".equals(func)) {//季度
+        if ("ji".equals(func)||"date_month3".equals(func)) {//季度
             return new JiExpressTran().tran(expression);
-        } else if ("month".equals(func)) {//月份
+        } else if ("month".equals(func)||"date_month".equals(func)) {//月份
             return new MonthExpressTran().tran(expression);
-        } else if ("year".equals(func)) {
+        } else if ("year".equals(func)||"date_year".equals(func)) {
             return new YearExpressTran().tran(expression);
         } else  if (CT.ITEM_FUNC.AVG.equals(func)) {
             return ((NumberExpression) expression).avg();

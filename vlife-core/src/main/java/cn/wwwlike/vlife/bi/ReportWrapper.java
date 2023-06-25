@@ -48,11 +48,6 @@ public class ReportWrapper<T extends Item> extends AbstractWrapper<T, String, Re
      * 分组字段信息
      */
     protected List<Groups> groups = new ArrayList<Groups>();
-    /**
-     * 分组后的过滤条件
-     * 应该用不到
-     */
-    protected List<Havings> havings = new ArrayList<Havings>();
 
     public static <E extends Item> ReportWrapper<E> of(Class<E> clz) {
         return new ReportWrapper<E>(clz);
@@ -71,6 +66,4 @@ public class ReportWrapper<T extends Item> extends AbstractWrapper<T, String, Re
         return query;
     }
 
-    public class Havings {
-    }
 }

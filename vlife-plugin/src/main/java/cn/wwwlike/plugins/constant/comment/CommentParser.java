@@ -73,6 +73,7 @@ public class CommentParser {
             CompilationUnit cu = new JavaParser().parse(file).getResult().get();
             TypeDeclaration typeDeclaration = cu.getTypes().get(0);
             /* 设置父类 */
+            if(typeDeclaration instanceof  ClassOrInterfaceDeclaration){
             if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes()!=null&&
                     ((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes().size()>0) {
                 List<String> parentsName=new ArrayList<>();
@@ -98,7 +99,7 @@ public class CommentParser {
                             ((ClassOrInterfaceDeclaration) typeDeclaration).getImplementedTypes().get(0).getTypeArguments().get().get(0).asString()
                     );
                 }
-            }
+            }}
             BeanDto beanDto= modelReadCheck.find(StringUtils.uncapitalize(clzTag.getEntityName()));
             //不是模型，不是接口层的则排除
             if(beanDto!=null||"VLifeApi".equals(clzTag.getSuperName())||"VLifeApi".equals(clzTag.getEntityName())) {

@@ -68,4 +68,11 @@ public class PageComponent extends DbEntity {
      */
     public Boolean layoutTop;
 
+    /**
+     * 组件属性数据
+     */
+    public String componentPropJson;
+
+
+
 }

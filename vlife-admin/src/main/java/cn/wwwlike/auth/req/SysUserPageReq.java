@@ -32,9 +32,9 @@ import java.util.List;
 @Data
 public class SysUserPageReq extends PageQuery<SysUser> {
     /**
-     * 姓名/手机/证件
+     * 姓名/手机/证件/用户名
      */
-    @VField(pathName = "name",opt = Opt.startsWith,orReqFields = {"tel","idno"})
+    @VField(pathName = "name",opt = Opt.like,orReqFields = {"tel","idno","username"})
     public String search;
 //    public String state;
 //    /**

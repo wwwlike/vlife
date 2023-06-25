@@ -54,14 +54,20 @@ public class PageComponentProp extends DbEntity {
     public String propVal;
 
     /**
-     * 关联值
-     * 选择接口，如果有的接口需要转换，有多种昂转换选择，则可以利用该字段
+     * 接口转换key
+     * match->func-key
      */
     public String relateVal;
 
-    /**
-     * 接口取值到属性值的转换方法名称
+    /***
+     * 数据转换key
+     * filterFuns->key
      */
-    public String apiMethod;
+    public String filterFunc;
+
+    /**
+     //     * 接口取值到属性值的转换方法名称
+     //     */
+//    public String apiMethod;
 
 }
