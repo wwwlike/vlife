@@ -2,10 +2,10 @@
 	<img alt="logo" src="https://wwwlike.gitee.io/vlife-img/logo1.jpg">
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">vlife低代码研发平台</h1>
-<h4 align="center">基于模型驱动企业级研发平台</h4>
+<h4 align="center">基于模型驱动的企业级研发平台</h4>
 <h4 align="center">业务数智化，皆可低代码</h4>
-<h4 align="center"><a target="_blank" href="http://admin.vlife.cc">示例应用</a>&nbsp;&nbsp;
-&nbsp;<a target="_blank" href="https://gitee.com/wwwlike/vlife-admin-react">前端项目</a></h4>
+<h4 align="center"><a target="_blank" href="http://vlife.cc">官网</a>&nbsp;&nbsp;
+&nbsp;<a target="_blank" href="http://admin.vlife.cc/login">平台体验</a></h4>
 <p align="center">
     <a href="https://gitee.com/wwwlike/vlife" target="_blank">
       <img src="https://gitee.com/wwwlike/vlife/badge/star.svg?theme=dark" alt="star" />
@@ -15,30 +15,54 @@
     </a>
 </p>
 
->  vlife由核心组件和权限管理脚手架（vlife-admin）应用组成，主要技术栈为springboot+react;
-#### 地址查看
-- [使用指南] <http://vlife.cc>
-- [入门视频] [5分钟快速体验入门](https://www.bilibili.com/video/BV1sT411c71v/?vd_source=4c025d49e1ac4adb74b6dd2a39ce185e&t=119.6)
-- [示例demo] <http://admin.vlife.cc>
-- [前端项目] <https://gitee.com/wwwlike/vlife-admin-react>
+##  vlife是什么
+vlife是一套采用前后端分离（java+react）架构的企业级低代码研发平台。它基于**模型驱动**的理念，通过编写j**avabean**并结合平台提供的**高级组件**，用户可以轻松完成复杂需求的开发,**提升10倍研发效能**
 
-### V-LIFE要做研发欢迎的低码平台
-#### vlife了解开发过程中各环节存在的痛点和繁琐点。提供了全栈解决方案助力研发专注于逻辑和技能提升。
+## 真开源？
+平台的核心代码、底层代码以及前端、后端、脚手架示例代码全开源；正因为如此所以不存对应用库表数量，表字段数量以及数据行数有任何限制，用户在遵循apache2.0协议的基础上进行二次开发、私有部署无限制。
 
-#### 📦  核心底层代码全量开源
-* 前后端代码、底层核心代码均开源，二次开发私有部署无限制。
-#### 📡 开发流程与原生开发一致
-* 提供与原生企业级开发一致的开发体验。并配合图形化配置+低码开发成倍提升研发效能。
-#### 🏷 极简开发
-* 平台规则约束少，能快速上手，复杂的逻辑由开发来，繁琐的vlife搞定。
-#### 🎨 模型驱动
-* 设计模型(Javabean)、添加注释就能渲染出复杂关系的功能模块，这是vlife已经实现并还在不断深化的平台最显著的特点。
-#### 📋 DSL
-* vlife平台提供了一套DSL，供开发者使用来进行组件和接口的定义，让复杂的组件与数据不匹配的接口也能组合在一起。
-#### 📦 组件化思想
-* 前端封装完善业务组件和页面模版，让后端也能轻松完成全栈开发；在后端封装全量数据库操作接口，可不写SQL对数据库进行复杂操作。
+## 目标群体
+	中小软件企业，个人及外包团队或有全面提升提升研发团队效能，降低研发成本的管理者；
+* vlife是一款独特的低代码平台，专为研发人员而设计。我们深知研发人员对于传统低代码平台的排斥，因此我们致力于打造一款让程序员热爱的低代码平台。
 
-### 技术方案
+## 使用成本
+	vlife平台提供与原生企业级开发一致的开发体验。对于程序员来说，使用vlife进行开发与传统的开发流程方式完全一致，不会有任何不适应的情况。vlife平台在这个过程中帮助用户解决了许多繁琐、重复的开发任务，让开发者可以专注于核心业务逻辑的实现。
+ - 采用前后端分离的单体技术架构，安装部署开发简单，配置数据库连接即可启动项目。
+ - 平台规则、规范少（10几条要求）。初级研发有能快速上手。轻松实现1小时完成1天的开发工作。
+ - 平台封装了完善的数据访问，丰富的表单列表组件。全栈开发也没有难度。
+
+## 研发干什么？
+	vlife平台的显著能力就是将数据接口与组件组织在一起形成业务功能。
+1. 前端：将重点工作转移到公司组件资产研发上来，让复用的组件不断迭代优化，并能提供组件的文档和使用示例；第二块内容是开发复杂的场景交互功能。
+2. 后端：设计合理的数据模型，编写复杂的业务逻辑接口。推荐后端做全栈开发，使用前端封装完善的组件完成全栈项目功能的开发。
+
+
+* 
+
+## 低代码能力
+####  用低码方式为列表加入一个密码重置功能
+``` typescript
+{
+	title:  "密码重置",
+	actionType:  "api",
+	icon:  <IconForward  />, //按钮的标签
+	multiple:  true,//支持对多条数据进行批量重置操作
+	onSaveBefore(data: SysUser[]) {//传到reset之前，需要对数据进行处理
+		return data.map((d) =>  d.id);
+	},
+	saveApi:  reset,//重置接口
+}
+```
+#### 用低码方式实现复杂表单逻辑：
+-  用低码方式增加一个字段的正则校验
+``` typescript
+VF.field("username")
+.regex(/^[a-zA-Z0-9]+$/)
+.then("username")
+.feedback("不能包含特殊字符串")
+```
+
+## 技术方案
 
 #### 前端
 * 前端端采用React18+函数式组件开发、TS4、tailwindcss、Hooks、Semi。
