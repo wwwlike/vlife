@@ -21,6 +21,7 @@ const formatter = new Intl.NumberFormat("zh-CN", {
 });
 export interface ListProps<T extends IdBean> {
   className?: string;
+  columnSearch?: boolean; //列头搜索
   width?: number; //列表宽度（通过外围屏幕宽度减去 搜索宽度）
   model: FormVo; //模型信息
   selected?: T[];
@@ -50,6 +51,7 @@ const TableIndex = <T extends IdBean>({
   model,
   dataSource,
   fkMap,
+  columnSearch = true,
   column,
   parentMap,
   select_more,
@@ -80,7 +82,7 @@ const TableIndex = <T extends IdBean>({
       .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
     return titleStrLength > 0
-      ? titleStrLength * 20 + titleStrLength * (12 - titleStrLength)
+      ? titleStrLength * 25 + titleStrLength * (12 - titleStrLength)
       : 0;
   }, [btns]);
   // 选中的行记录
@@ -172,6 +174,7 @@ const TableIndex = <T extends IdBean>({
             ...f,
             title: (
               <ColumnTitle
+                columnSearch={columnSearch}
                 entityName={model.entityType}
                 option={f.dictCode ? dicts[f.dictCode].data : undefined}
                 field={f}

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
-import { Button, Typography } from "@douyinfe/semi-ui";
+import { Button, Tooltip, Typography } from "@douyinfe/semi-ui";
 import { IdBean, Result } from "@src/api/base";
 import { VfAction } from "@src/components/form/VF";
 import { useAuth } from "@src/context/auth-context";
@@ -47,8 +47,8 @@ export default <T extends IdBean>({
   const { Text } = Typography;
   const { checkBtnPermission } = useAuth();
   const formModal = useNiceModal("formModal");
-  const [loadbtn, setLoadbtn] = useState<string>();
-  const [btnDatas, setBtnDatas] = useState<T[] | undefined>(datas);
+  const [loadbtn, setLoadbtn] = useState<string>(); //正在加载的按钮
+  const [btnDatas, setBtnDatas] = useState<T[] | undefined>(datas); //当前操作的数据
   const confirmModal = useNiceModal("confirmModal");
   useEffect(() => {
     setBtnDatas(datas);
@@ -190,11 +190,11 @@ export default <T extends IdBean>({
 
   //可用性比对检查 false不可用， true可用
   const usableMatch = useCallback(
-    (btn: VFBtn): boolean => {
-      const data = btnDatas ? btnDatas.filter((b) => b.id) : [];
+    (btn: VFBtn, index: number): boolean | string => {
+      // const data = btnDatas ? btnDatas.filter((b) => b.id) : [];
       if (
         btn.actionType !== "create" &&
-        (data === undefined || data?.length === 0)
+        (btnDatas === undefined || btnDatas?.length === 0)
       ) {
         //1 没有选中数据，非创建类按钮不可用
         return false;
@@ -202,25 +202,24 @@ export default <T extends IdBean>({
       if (btn.usableMatch === undefined) {
         return true;
       } else if (typeof btn.usableMatch === "boolean") {
+        //布尔值匹配
         return btn.usableMatch;
-      } else {
-        if (btn.usableMatch instanceof Array) {
-          return (
-            data?.filter((a: any) => {
-              return (
-                btn.usableMatch.filter((b: any) => objectIncludes(a, b))
-                  .length > 0
-              );
-            }).length === data?.length
-          );
+      } else if (typeof btn.usableMatch === "object") {
+        //属性值匹配
+        return (
+          //所有数据都满足
+          btnDatas?.filter((a: any) => objectIncludes(a, btn.usableMatch))
+            .length === btnDatas?.length
+        );
+      } else if (typeof btn.usableMatch === "function") {
+        const btnTooltip = btn.usableMatch(btnDatas);
+        if (typeof btnTooltip === "string") {
+          return btnTooltip;
         } else {
-          return (
-            //所有数据都满足
-            data?.filter((a: any) => objectIncludes(a, btn.usableMatch))
-              .length === data?.length
-          );
+          return true;
         }
       }
+      return true;
     },
     [btnDatas]
   );
@@ -240,10 +239,11 @@ export default <T extends IdBean>({
       );
     } else {
       //明细页按钮
-
       if (btnDatas === undefined || btnDatas[0].id === undefined) {
         //新增
-        toolBarBtns = btns.filter((b) => b.actionType === "create");
+        toolBarBtns = btns
+          .filter((b) => b.actionType === "create")
+          .filter((btn) => (model ? btn.model === model : true));
         return toolBarBtns;
       } else {
         toolBarBtns = btns.filter(
@@ -254,18 +254,20 @@ export default <T extends IdBean>({
       }
     }
     return toolBarBtns
-      .filter((btn) => (model ? btn.model === model : true)) //有传模型名称，则当前场景的按钮都是该模型
+      .filter((btn, index) => (model ? btn.model === model : true)) //有传模型名称，则当前场景的按钮都是该模型
       .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //预览模式下，则只有api直接操作的按钮可用
-      .filter((btn) => permissionCheck(btn)) //没权限不展示
-      .filter((btn) => {
-        return !(btn.disabledHide && !usableMatch(btn)); //disabled且hide的也不展示
-      });
+      .filter((btn) => permissionCheck(btn)); //没权限不展示
+    // .filter((btn) => {
+    //   return !(btn.disabledHide && !usableMatch(btn)); //disabled且hide的也不展示
+    // });
   }, [position, btns, btnDatas, model, readPretty]);
 
   return (
     <div className={`${className} space-x-1`}>
+      {/* {JSON.stringify(tooltip)} */}
       {currBtns.map((btn, index) => {
-        const disabled = !usableMatch(btn);
+        const tooltip = usableMatch(btn, index);
+        const disabled = typeof tooltip === "boolean" ? !tooltip : true;
         const Btn: any = position === "tableLine" ? Text : Button;
         const key = `${position}btn${index}`;
         const BtnComp = (
@@ -286,7 +288,17 @@ export default <T extends IdBean>({
             {btnTitle(btn)}
           </Btn>
         );
-        return <span key={`${position}btn${index}`}>{BtnComp}</span>;
+        return btn.disabledHide && disabled ? (
+          ""
+        ) : (
+          <span key={`${position}btn${index}`}>
+            {typeof tooltip === "string" ? (
+              <Tooltip content={tooltip}>{BtnComp}</Tooltip>
+            ) : (
+              BtnComp
+            )}
+          </span>
+        );
       })}
     </div>
   );

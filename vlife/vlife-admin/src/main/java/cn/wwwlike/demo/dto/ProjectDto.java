@@ -18,7 +18,7 @@ public class ProjectDto implements SaveBean<DemoProject> {
     public String name;
     public String sysUserId;
     public Integer point;
-    public String status;
+    public String state;
     public Double total;
     public Date beginDate;
     public Date endDate;

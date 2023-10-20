@@ -86,6 +86,14 @@ export const page=(req: DemoProjectPageReq): Promise<Result<PageVo<DemoProject>>
 export const saveProjectDto=(projectDto: ProjectDto): Promise<Result<ProjectDto>>=>{
   return apiClient.post(`/demoProject/save/projectDto`  ,projectDto  );
 };
+
+
+/** 
+   * 保存项目
+   */
+ export const save=(demoProject: DemoProject): Promise<Result<DemoProject>>=>{
+  return apiClient.post(`/demoProject/save`  ,demoProject  );
+};
 /** 
    * 明细查询项目表;
    * @param id 主键id;
@@ -94,6 +102,11 @@ export const saveProjectDto=(projectDto: ProjectDto): Promise<Result<ProjectDto>
 export const detail=(id: string): Promise<Result<DemoProject>>=>{
   return apiClient.get(`/demoProject/detail/${id}`  );
 };
+
+export const detailProjectDto=(id: string): Promise<Result<ProjectDto>>=>{
+  return apiClient.get(`/demoProject/detail/projectDto/${id}`  );
+};
+
 /** 
    * 逻辑删除;
    * @param ids ;

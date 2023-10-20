@@ -35,7 +35,12 @@ const Form1Page = lazy(() => import("@src/pages/example/form/Form1"));
 const Form2Page = lazy(() => import("@src/pages/example/form/Form2"));
 const Form3Page = lazy(() => import("@src/pages/example/form/Form3"));
 const Form4Page = lazy(() => import("@src/pages/example/form/Form4"));
-
+const List1Page = lazy(() => import("@src/pages/example/list/List1"));
+const List2Page = lazy(() => import("@src/pages/example/list/List2"));
+const List3Page = lazy(() => import("@src/pages/example/list/List3"));
+const List4Page = lazy(() => import("@src/pages/example/list/List4"));
+const Page1Page = lazy(() => import("@src/pages/example/page/Page1"));
+const Page2Page = lazy(() => import("@src/pages/example/page/Page2"));
 export const allRoute: any[] = [
   //系统业务
   {
@@ -273,8 +278,68 @@ export const allRoute: any[] = [
         path: "form4",
         element: (
           <WrapperRouteComponent
-            element={<Form3Page />}
+            element={<Form4Page />}
             titleId="表单校验"
+            auth
+          />
+        ),
+      },
+      {
+        path: "list1",
+        element: (
+          <WrapperRouteComponent
+            element={<List1Page />}
+            titleId="常规列表"
+            auth
+          />
+        ),
+      },
+      {
+        path: "list2",
+        element: (
+          <WrapperRouteComponent
+            element={<List2Page />}
+            titleId="工具栏按钮"
+            auth
+          />
+        ),
+      },
+      {
+        path: "list3",
+        element: (
+          <WrapperRouteComponent
+            element={<List3Page />}
+            titleId="列表按钮"
+            auth
+          />
+        ),
+      },
+      {
+        path: "list4",
+        element: (
+          <WrapperRouteComponent
+            element={<List4Page />}
+            titleId="详情页按钮"
+            auth
+          />
+        ),
+      },
+      {
+        path: "page1",
+        element: (
+          <WrapperRouteComponent
+            element={<Page1Page />}
+            titleId="项目管理1"
+            auth
+          />
+        ),
+      },
+      {
+        path: "page2",
+        element: (
+          <WrapperRouteComponent
+            element={<Page2Page />}
+            titleId="项目管理2"
             auth
           />
         ),

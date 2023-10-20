@@ -32,6 +32,15 @@ public class DemoProjectApi extends VLifeApi<DemoProject, DemoProjectService> {
     return service.findPage(req);
   }
 
+
+  /**
+   * 保存项目
+   */
+  @PostMapping("/save")
+  public DemoProject save(@RequestBody DemoProject demoProject) {
+    return service.save(demoProject);
+  }
+
   /**
    * 保存项目dto;
    * @param projectDto 项目dto;
@@ -50,6 +59,12 @@ public class DemoProjectApi extends VLifeApi<DemoProject, DemoProjectService> {
   @GetMapping("/detail/{id}")
   public DemoProject detail(@PathVariable String id) {
     return service.findOne(id);
+  }
+
+
+  @GetMapping("/detail/projectDto/{id}")
+  public ProjectDto detailProjectDto(@PathVariable String id) {
+    return service.queryOne(ProjectDto.class,id);
   }
 
   /**

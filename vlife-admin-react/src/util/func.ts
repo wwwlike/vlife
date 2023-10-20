@@ -149,7 +149,7 @@ export function removeNullProperties<T extends object>(obj: T): Partial<T> {
    
     /**
      * 
-     * @param all 查找属性结构的根节点
+     * @param all 查找根节点
      * @param sub 
      * @returns 
      */

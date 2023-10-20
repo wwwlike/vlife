@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 import {
   Layout,
@@ -24,11 +24,8 @@ import {
   UserPasswordModifyDto,
 } from "@src/api/SysUser";
 import { useLocation, useNavigate } from "react-router-dom";
-import { SysMenu } from "@src/api/SysMenu";
+import { MenuVo } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
-import FormModal from "@src/pages/common/modal/formModal";
-import VlifeModal from "@src/pages/common/modal/vlifeModal";
-import ConfirmModal from "@src/pages/common/modal/confirmModal";
 import { MenuItem } from "../../types";
 
 const { Header } = Layout;
@@ -36,12 +33,28 @@ const { Header } = Layout;
  *
  *  当前地址没有和菜单关联，如何定位一级菜单
  */
-const Index: FC = () => {
+const Index = ({
+  appMenus,
+  onAppClick,
+  outApp,
+}: {
+  appMenus: MenuVo[];
+  onAppClick: (menuVo: MenuVo) => void;
+  outApp?: MenuVo; //通过url确定的应用
+}) => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const { loginOut, user, app, setApp, checkBtnPermission } = useAuth();
   const formModal = useNiceModal("formModal");
-  const [menuItems, setMenuItems] = useState<Partial<MenuItem>[]>([]);
+  const { loginOut, user, checkBtnPermission } = useAuth();
+  const [app, setApp] = useState<MenuVo | undefined>(outApp);
+
+  useEffect(() => {
+    if (app === undefined) {
+      setApp(appMenus[0]); //选中第一个
+      onAppClick(appMenus[0]);
+    } else {
+      setApp(outApp);
+    }
+  }, [app, appMenus, outApp]);
 
   function renderIcon(icon: any) {
     if (!icon) {
@@ -52,73 +65,73 @@ const Index: FC = () => {
     }
     return icon.render();
   }
-  useEffect(() => {
-    const menus: SysMenu[] = user?.menus || [];
+  // useEffect(() => {
+  //   const menus: MenuVo[] = user?.menus || []; //当前菜单
+  //   const appMenus: MenuVo[] =
+  //     user?.menus //应用菜单
+  //       .filter((m) => m.app === true)
+  //       ?.sort((a, b) => a.sort - b.sort) || [];
 
-    const filterRootMenus = (): SysMenu[] | undefined => {
-      if (user && user.menus) {
-        return user.menus
-          .filter((m) => m.app === true)
-          ?.sort((a, b) => a.sort - b.sort);
-      } else {
-        return [];
-      }
-    };
-    //应用信息
-    const appMenus = filterRootMenus();
+  //   //桌面页，无需设置appid
+  //   if (pathname && pathname !== "/dashboard/workbeach") {
+  //     //找path的菜单的根节点 初始化appId
+  //     //判断是否一级页面的菜单
+  //     let urlMenus = menus.filter((m) =>
+  //       m.url && m.url.endsWith("*")
+  //         ? m.url.substring(0, m.url.length - 1) + m.placeholderUrl === pathname
+  //         : m.url === pathname
+  //     );
+  //     //二级页面的菜单匹配，则根据路由地址按照规则匹配菜单 /model 配置成菜单 /model/sysUser 明细页不是菜单，是二级页面
+  //     if (urlMenus === undefined || urlMenus.length === 0) {
+  //       urlMenus = menus.filter((m) =>
+  //         m.url && m.url.endsWith("*")
+  //           ? pathname.indexOf(
+  //               m.url.substring(0, m.url.length - 1) + m.placeholderUrl
+  //             ) !== -1
+  //           : pathname.indexOf(m.url) !== -1
+  //       );
+  //     }
+  //     // 递归查找根节点
+  //     function appIdSet(all: SysMenu[], menu: SysMenu) {
+  //       if (menu.pcode === null || menu.pcode === undefined) {
+  //         setApp(menu);
+  //       } else {
+  //         appIdSet(all, all.filter((a) => a.code === menu.pcode)[0]);
+  //       }
+  //     }
 
-    //桌面页，无需设置appid
-    if (pathname && pathname !== "/dashboard/workbeach") {
-      //找path的菜单的根节点 初始化appId
-      //判断是否一级页面的菜单
-      let urlMenus = menus.filter((m) =>
-        m.url && m.url.endsWith("*")
-          ? m.url.substring(0, m.url.length - 1) + m.placeholderUrl === pathname
-          : m.url === pathname
-      );
-      //二级页面的菜单匹配，则根据路由地址按照规则匹配菜单 /model 配置成菜单 /model/sysUser 明细页不是菜单，是二级页面
-      if (urlMenus === undefined || urlMenus.length === 0) {
-        urlMenus = menus.filter((m) =>
-          m.url && m.url.endsWith("*")
-            ? pathname.indexOf(
-                m.url.substring(0, m.url.length - 1) + m.placeholderUrl
-              ) !== -1
-            : pathname.indexOf(m.url) !== -1
-        );
-      }
-      // 递归查找根节点
-      function appIdSet(all: SysMenu[], menu: SysMenu) {
-        if (menu.pcode === null || menu.pcode === undefined) {
-          setApp(menu);
-        } else {
-          appIdSet(all, all.filter((a) => a.code === menu.pcode)[0]);
-        }
-      }
-      if (urlMenus && urlMenus.length > 0) {
-        appIdSet(menus, urlMenus[0]);
-      }
-    }
+  //     if (urlMenus && urlMenus.length > 0) {
+  //       appIdSet(menus, urlMenus[0]);
+  //     }
+  //   }
 
-    if (app == undefined && appMenus && appMenus?.length > 0) {
-      setApp(appMenus[0]);
-    }
+  //   if (app == undefined && appMenus && appMenus?.length > 0) {
+  //     setApp(appMenus[0]);
+  //   }
 
-    //用户拥有模块下任意一个菜单
-    if (appMenus)
-      setMenuItems(
-        appMenus.map((m) => {
-          return {
-            itemKey: m.id,
-            text: m.name,
-            icon: m.icon ? renderIcon(m.icon) : null,
-            onClick: () => {
-              if (m.url) navigate(m.url);
-              setApp(m);
-            },
-          };
-        })
-      );
-  }, []);
+  //   //用户拥有模块下任意一个菜单
+
+  // }, []);
+
+  // if (appMenus)
+  //   setMenuItems(
+
+  //   );
+  // const [menuItems, setMenuItems] = useState<Partial<MenuItem>[]>([]);
+  const menuItems = useMemo((): Partial<MenuItem>[] => {
+    return appMenus.map((m: MenuVo) => {
+      return {
+        itemKey: m.id,
+        text: m.name,
+        icon: m.icon ? renderIcon(m.icon) : null,
+        onClick: () => {
+          if (m.url) navigate(m.url);
+          onAppClick(m);
+          setApp(m);
+        },
+      };
+    });
+  }, [appMenus]);
 
   const editPassword = () => {
     formModal
@@ -145,7 +158,7 @@ const Index: FC = () => {
               className=" flex items-center cursor-pointer "
               onClick={() => {
                 navigate("/");
-                setApp(undefined);
+                // setApp(undefined);
               }}
             >
               <Empty
@@ -292,9 +305,6 @@ const Index: FC = () => {
             </>
           }
         ></Nav>
-        {/* <FormModal />
-        <VlifeModal />
-        <ConfirmModal /> */}
       </Header>
     </>
   );

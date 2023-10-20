@@ -12,6 +12,7 @@ import { where } from "@src/dsl/schema/base";
 interface ColumnTagProps {
   field: FormFieldVo;
   entityName: string;
+  columnSearch: boolean; //是否开启列搜索
   option?: ISelect[];
   where: Partial<where>[] | undefined;
   onFilter?: (where: Partial<where>[] | void) => void;
@@ -26,6 +27,7 @@ const ColumnTitle = ({
   onSort,
   where,
   onFixed,
+  columnSearch,
   onFilter,
   option,
   entityName,
@@ -62,28 +64,30 @@ const ColumnTitle = ({
         )}
         <div className=" pl-1 text-black font-bold rounded">{field.title}</div>
       </div>
-      <div className="w-4">
-        <Popover
-          position="bottom"
-          spacing={20}
-          trigger="click"
-          content={
-            <ColumnFilter
-              //  style={{ width: "300px" }}
-              entityName={entityName}
-              option={option}
-              className=" p-2 w-72 rounded-md shadow-md bg-white"
-              field={field}
-              where={where}
-              onChange={(where: Partial<where>[] | undefined) => {
-                if (onFilter) onFilter(where);
-              }}
-            />
-          }
-        >
-          <IconTriangleDown className="hover:cursor-pointer" size="small" />
-        </Popover>
-      </div>
+      {columnSearch && (
+        <div className="w-4">
+          <Popover
+            position="bottom"
+            spacing={20}
+            trigger="click"
+            content={
+              <ColumnFilter
+                //  style={{ width: "300px" }}
+                entityName={entityName}
+                option={option}
+                className=" p-2 w-72 rounded-md shadow-md bg-white"
+                field={field}
+                where={where}
+                onChange={(where: Partial<where>[] | undefined) => {
+                  if (onFilter) onFilter(where);
+                }}
+              />
+            }
+          >
+            <IconTriangleDown className="hover:cursor-pointer" size="small" />
+          </Popover>
+        </div>
+      )}
     </div>
   );
 };

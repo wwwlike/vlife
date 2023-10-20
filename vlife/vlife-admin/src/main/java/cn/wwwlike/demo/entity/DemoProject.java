@@ -20,11 +20,11 @@ public class DemoProject extends DbEntity {
     public String name;
     //项目负责人
     public String sysUserId;
-    //项目点数
+    //项目工时
     public Integer point;
     //项目状态
-    @VField(dictCode = "project_status")
-    public String status;
+    @VField(dictCode = "project_state")
+    public String state;
     //项目金额
     public Double total;
     //开始日期

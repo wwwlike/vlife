@@ -95,7 +95,7 @@ const TablePage = <T extends IdBean>({
   req,
   model,
   dataSource,
-  // mode = "normal",
+  mode = "normal",
   width,
   btns,
   outSelectedColumn,
@@ -105,7 +105,7 @@ const TablePage = <T extends IdBean>({
   onTableModel,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
-  const mode = import.meta.env.VITE_APP_MODE;
+  const appMode = import.meta.env.VITE_APP_MODE;
   const navigate = useNavigate();
   const { user, getFormInfo } = useAuth();
   const ref = useRef(null);
@@ -510,7 +510,10 @@ const TablePage = <T extends IdBean>({
   // );
 
   return tableModel && apiError === undefined ? (
-    <div ref={ref} className={`${className} relative flex flex-col text-sm  `}>
+    <div
+      ref={ref}
+      className={`${className} h-full relative flex flex-col text-sm  `}
+    >
       <div
         className={`
       ${classNames({
@@ -637,9 +640,10 @@ const TablePage = <T extends IdBean>({
           </div>
         </div>
       )}
+
       {/* {JSON.stringify(searchAndColumnCondition)} */}
-      {model === undefined && mode === "dev" && (
-        <div className=" absolute  top-4  right-2 font-bold text-blue-500 cursor-pointer">
+      {model === undefined && appMode === "dev" && (
+        <div className=" absolute  z-50 top-4  right-2 font-bold text-blue-500 cursor-pointer">
           <IconSetting
             onClick={() => {
               navigate(`/sysConf/tableDesign/${listType}`);

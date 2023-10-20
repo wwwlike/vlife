@@ -1889,6 +1889,15 @@
         "methodName": "page"
       },
       {
+        "title": "\r\n   * 保存项目\r\n   ",
+        "path": "/save",
+        "paramWrapper": "DemoProject",
+        "param": "demoProject",
+        "returnClz": "DemoProject",
+        "methodType": "PostMapping",
+        "methodName": "save"
+      },
+      {
         "title": "\r\n   * 保存项目dto;\r\n   * @param projectDto 项目dto;\r\n   * @return 项目dto;\r\n   ",
         "path": "/save/projectDto",
         "paramWrapper": "ProjectDto",
@@ -1905,6 +1914,15 @@
         "returnClz": "DemoProject",
         "methodType": "GetMapping",
         "methodName": "detail"
+      },
+      {
+        "title": "",
+        "path": "/detail/projectDto/{id}",
+        "paramWrapper": "String",
+        "param": "id",
+        "returnClz": "ProjectDto",
+        "methodType": "GetMapping",
+        "methodName": "detailProjectDto"
       },
       {
         "title": "\r\n   * 逻辑删除;\r\n   * @param ids ;\r\n   * @return 已删除数量;\r\n   ",
@@ -2105,7 +2123,7 @@
       "point": {
         "fieldName": "point",
         "fieldType": "Integer",
-        "title": "项目点数"
+        "title": "项目工时"
       },
       "beginDate": {
         "fieldName": "beginDate",
@@ -2133,6 +2151,11 @@
         "fieldType": "String",
         "title": "项目负责人"
       },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String",
+        "title": "项目状态"
+      },
       "id": {
         "fieldName": "id",
         "fieldType": "string",
@@ -2141,8 +2164,9 @@
       },
       "status": {
         "fieldName": "status",
-        "fieldType": "String",
-        "title": "项目状态"
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
       },
       "createDate": {
         "fieldName": "status",

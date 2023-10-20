@@ -32,41 +32,48 @@ function findMenuByPath(menus: MenuItem[], path: string, keys: any[]): any {
   return [];
 }
 
-const Index: FC = () => {
+const Index = ({
+  menus,
+  app,
+  onClick,
+}: {
+  menus: MenuVo[];
+  app: MenuVo | undefined;
+  onClick: (menuVo: MenuVo) => void;
+}) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [openKeys, setOpenKeys] = useState<string[]>([]); //打开节点
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]); //选中节点
-  const { user, app, setMenuState } = useAuth();
+  const { user, setMenuState } = useAuth();
   /**
    * 当前应用当前用户拥有权限下的所有菜单
    */
   const currAppMenuList = useMemo(() => {
-    if (user && user.menus && user.menus.length > 0 && app) {
-      const nav = (root: MenuVo): MenuItem[] => {
-        return user?.menus
-          .sort((a, b) => a.sort - b.sort)
-          .filter((m) => m.pcode === root.code)
-          .map((menu) => {
-            return {
-              id: menu.id,
-              itemKey: menu.id,
-              text: `${menu.name}`,
-              code: menu.code,
-              icon: menu.icon ? renderIcon(menu.icon) : null,
-              path:
-                menu.url && menu.url.endsWith("*") //通配符页面
-                  ? menu.url.replace("*", menu.placeholderUrl)
-                  : menu.url, //路由配置页面
-              items: nav(menu),
-            };
-          });
-      };
-      return nav(user?.menus.filter((m) => app && m.id === app.id)[0]);
-    } else {
-      return [];
+    const nav = (root: MenuVo): MenuItem[] => {
+      return menus
+        .sort((a, b) => a.sort - b.sort)
+        .filter((m) => m.pcode === root.code)
+        .map((menu) => {
+          return {
+            id: menu.id,
+            itemKey: menu.id,
+            text: `${menu.name}`,
+            code: menu.code,
+            icon: menu.icon ? renderIcon(menu.icon) : null,
+            path:
+              menu.url && menu.url.endsWith("*") //通配符页面
+                ? menu.url.replace("*", menu.placeholderUrl)
+                : menu.url, //路由配置页面
+            items: nav(menu),
+          };
+        });
+    };
+    if (app && menus) {
+      return nav(app);
     }
-  }, [user?.menus, app]);
+    return [];
+  }, [menus, app]);
 
   useEffect(() => {
     if (app && app.url) {
@@ -97,7 +104,6 @@ const Index: FC = () => {
       setSelectedKeys([keys.pop() as string]);
       setOpenKeys(Array.from(new Set([...openKeys, ...keys])));
     }
-
     if (currAppMenuList && currAppMenuList.length === 0) {
       setMenuState("hide");
     } else {
@@ -107,7 +113,6 @@ const Index: FC = () => {
 
   return currAppMenuList && currAppMenuList.length > 0 ? (
     <>
-      {/* {JSON.stringify(currAppMenuList.length)} */}
       <Sider
         className="shadow-lg !border-red-800"
         style={{

@@ -118,13 +118,13 @@ export const  getObjElStr1=(depsIndex:number,condition:VfCondition|undefined,for
         if (condition.opt === FS_OPT.EQ) {
             return `${val}===${isNumber(condition.value)||isBoolean(condition.value)?condition.value:(`"`+condition.value+`"`)}`;
         }else if (condition.opt === FS_OPT.GT) {
-          return `${val}>${condition.value}`;
+          return `${val}&&${val}>${condition.value}`;
         }else if (condition.opt === FS_OPT.GE) {
-          return `${val}>=${condition.value}`;
+          return `${val}&&${val}>=${condition.value}`;
         }else if (condition.opt === FS_OPT.LT) {
-          return `${val}<${condition.value}`;
+          return `${val}&&${val}<${condition.value}`;
         }else if (condition.opt === FS_OPT.LE) {
-          return `${val}<=${condition.value}`;
+          return `${val}&&${val}<=${condition.value}`;
         }else if (condition.opt === FS_OPT.INCLUDES) {//格式化成字符串形式的数组
           return `(${val}&&${JSON.stringify(condition.value)}.includes(${val}))`
         }else if (condition.opt === FS_OPT.NE) {

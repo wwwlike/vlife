@@ -218,6 +218,7 @@ const Content = <T extends IdBean>({
           req={tableReq}
           reaction={props.reaction}
           btns={btns}
+          columnSearch={filterType !== undefined ? false : true}
           // formVo={model}
           //列表数据回传
           //模型信息回传

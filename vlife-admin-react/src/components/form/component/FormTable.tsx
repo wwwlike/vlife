@@ -3,10 +3,11 @@ import FormPage from "@src/pages/common/formPage";
 import TablePage from "@src/pages/common/tablePage";
 import { useSize, useUpdateEffect } from "ahooks";
 import { useEffect, useRef, useState } from "react";
-import { IconPlusStroked } from "@douyinfe/semi-icons";
+import { IconPlusStroked, IconSetting } from "@douyinfe/semi-icons";
 import { FormVo } from "@src/api/Form";
 import { VfBaseProps } from "@src/dsl/schema/component";
 import { VFBtn } from "../../table/types";
+import { useNavigate } from "react-router-dom";
 
 /**
  * 1对多，子表数据列表展示
@@ -27,9 +28,7 @@ export default ({
   fieldName,
   onDataChange,
 }: FormTableProps) => {
-  useEffect(() => {
-    // alert(vf[0].getActions());
-  }, [vf]);
+  const navigate = useNavigate();
   //列表数据
   const [tableData, setTableData] = useState<any[]>(value ? value : []);
   //表单数据
@@ -38,21 +37,21 @@ export default ({
   const [index, setIndex] = useState<number>();
   const btns: VFBtn[] = [
     {
-      title: "删除",
-      multiple: false,
-      actionType: "custom",
-      submitConfirm: false,
-      onClick: (datas: any) => {
-        setTableData(tableData.filter((d, i) => i !== datas.tableSort));
-      },
-    },
-    {
       title: "修改",
       multiple: false,
       actionType: "custom",
       submitConfirm: false,
       onClick: (datas: any) => {
         setIndex(datas.tableSort);
+      },
+    },
+    {
+      title: "删除",
+      multiple: false,
+      actionType: "custom",
+      submitConfirm: false,
+      onClick: (datas: any) => {
+        setTableData(tableData.filter((d, i) => i !== datas.tableSort));
       },
     },
   ];
@@ -64,7 +63,8 @@ export default ({
     onDataChange([...tableData]);
   }, [tableData]);
   return (
-    <div ref={ref} className="">
+    <div ref={ref} className="  ">
+      {/* {JSON.stringify(formData)} */}
       {!read && (
         <Button
           icon={<IconPlusStroked />}
@@ -113,7 +113,6 @@ export default ({
       <TablePage<any>
         className="mt-1"
         key={"table_sub" + fieldName}
-        // btnHide={true}
         mode="hand"
         dataSource={tableData}
         listType={type || fieldInfo.fieldType + ""}
@@ -123,6 +122,15 @@ export default ({
         select_more={undefined} //无checkbox
         read={read}
       />
+      {/* <div className=" absolute  top-4  right-2 font-bold text-blue-500 cursor-pointer">
+        <IconSetting
+          onClick={() => {
+            navigate(
+              `/sysConf/tableDesign/${type || fieldInfo.fieldType + ""}`
+            );
+          }}
+        />
+      </div> */}
     </div>
   );
 };

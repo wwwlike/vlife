@@ -172,7 +172,7 @@ export interface reaction{
       state:FS_STATE.required,value:true
     })
     if(this.otherwiseExec(otherwiseFlag)){
-      this.otherwise(...this.fields).required(false);
+      this.otherwise(...this.fields).optional(false);
     }
     return this;
   }

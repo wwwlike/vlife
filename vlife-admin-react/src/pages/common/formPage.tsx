@@ -277,7 +277,7 @@ const FormPage = <T extends IdBean>({
                   navigate(`/sysConf/formDesign/${type}`);
                 }}
               >
-                <IconSetting></IconSetting>
+                <IconSetting />
               </a>
             </div>
           }
