@@ -11,7 +11,7 @@ export default () => {
     sysUserId: "40288a8182a656740182a659f4d10001",
     total: 8888,
     demoCustomerId: "4028b8818b136277018b13731cf40000",
-    status: "1",
+    state: "1",
     endDate: "2023/10/12",
     beginDate: "2012/10/12",
   };
@@ -60,11 +60,14 @@ export default () => {
           title: "字段只读",
           description: "设置项目状态为只读",
           key: "reaction1",
-          code: `<FormPage type="demoProject" formData={initData} reaction={[VF.then("status").readPretty()]}/>`,
+          code: `<FormPage type="demoProject" design={true} highlight={"state"} formData={initData} 
+          // 低代码的方式设置，这类常规设置用页面的配置功能就能满足
+          reaction={[VF.then("state").readPretty()]}/>`,
         },
         {
           title: "隐藏指定字段",
-          description: "在一些逻辑下面部分字段不做展示可使用ignoredFields属性",
+          description:
+            "对模型内的部分字段不做显示可以使用ignoredFields传值设置",
           key: "depart",
           code: `<FormPage type="demoProject"  ignoredFields={["total","point","beginDate"]}/>`,
         },

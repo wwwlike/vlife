@@ -10,6 +10,7 @@ export default () => {
       editType="roleDto"
       filterType="sysRolePageReq"
       reaction={[
+        VF.field("sysMenuId").isNull().then("resourcesAndMenuIds").hide(),
         VF.field("sysMenuId").change().then("resourcesAndMenuIds").value([]),
       ]}
     />

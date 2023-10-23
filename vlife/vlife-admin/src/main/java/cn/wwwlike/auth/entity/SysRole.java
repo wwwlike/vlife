@@ -31,7 +31,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_role")
-@VClazz(clear = {SysResources.class})
+@VClazz(clear = {SysResources.class,SysMenu.class})
 public class SysRole  extends DbEntity {
    /**
     * 所在应用

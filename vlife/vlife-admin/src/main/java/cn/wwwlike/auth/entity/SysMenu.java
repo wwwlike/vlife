@@ -38,7 +38,7 @@ public class SysMenu extends DbEntity implements ITree {
      */
     public String url;
     /**
-     * 占位符地址
+     * 通配符替换
      * url里的*号替换地址
      */
     public String placeholderUrl;

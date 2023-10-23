@@ -1,6 +1,8 @@
 package cn.wwwlike.demo.req;
 
 import cn.wwwlike.demo.entity.DemoProject;
+import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
 
@@ -12,6 +14,7 @@ import java.util.List;
  */
 @Data
 public class DemoProjectPageReq extends PageQuery<DemoProject> {
+    @VField(opt = Opt.like)
     public String name;
     public List<Double> total;
     public String status;

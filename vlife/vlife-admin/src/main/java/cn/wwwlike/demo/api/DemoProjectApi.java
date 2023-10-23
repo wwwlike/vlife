@@ -32,15 +32,6 @@ public class DemoProjectApi extends VLifeApi<DemoProject, DemoProjectService> {
     return service.findPage(req);
   }
 
-
-  /**
-   * 保存项目
-   */
-  @PostMapping("/save")
-  public DemoProject save(@RequestBody DemoProject demoProject) {
-    return service.save(demoProject);
-  }
-
   /**
    * 保存项目dto;
    * @param projectDto 项目dto;
@@ -50,6 +41,15 @@ public class DemoProjectApi extends VLifeApi<DemoProject, DemoProjectService> {
   public ProjectDto saveProjectDto(@RequestBody ProjectDto projectDto) {
     return service.save(projectDto);
   }
+
+  /**
+   * 保存项目
+   */
+  @PostMapping("/save")
+  public DemoProject save(@RequestBody DemoProject demoProject) {
+    return service.save(demoProject);
+  }
+
 
   /**
    * 明细查询项目表;
