@@ -41,6 +41,10 @@ const List3Page = lazy(() => import("@src/pages/example/list/List3"));
 const List4Page = lazy(() => import("@src/pages/example/list/List4"));
 const Page1Page = lazy(() => import("@src/pages/example/page/Page1"));
 const Page2Page = lazy(() => import("@src/pages/example/page/Page2"));
+
+//demo项目管理
+const ProjectPage = lazy(() => import("@src/pages/demo/project"));
+
 export const allRoute: any[] = [
   //系统业务
   {
@@ -232,6 +236,24 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={<CodeViewPage />}
             titleId="模型代码"
+            auth
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: "/demo",
+    element: (
+      <WrapperRouteComponent element={<LayoutPage />} titleId="项目管理" auth />
+    ),
+    children: [
+      {
+        path: "project",
+        element: (
+          <WrapperRouteComponent
+            element={<ProjectPage />}
+            titleId="项目管理"
             auth
           />
         ),
