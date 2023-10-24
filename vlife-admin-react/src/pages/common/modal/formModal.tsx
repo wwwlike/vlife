@@ -149,13 +149,8 @@ export const FormModal = createNiceModal(
             ? 600
             : 900 //默认900
         }
-        // className="{` w-full`}"
         onOk={handleSubmit}
-        //  okButtonProps={
-        //   {disabled:form&&form.errors.length>0}
-        // }
       >
-        {/* {JSON.stringify(data.state)} */}
         {/* 弹出层不传表单给formPage,并且还从回调接收FormVo */}
         <FormPage
           // className=" h-96"

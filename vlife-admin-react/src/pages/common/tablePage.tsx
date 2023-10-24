@@ -77,15 +77,7 @@ export interface TablePageProps<T extends IdBean> extends ListProps<T> {
   onHttpError: (error: apiError) => void; //异常信息传出，设计阶段时接口没有会用到
   //form表单需要使用的透传给按钮使用props
   reaction: VfAction[]; //form联动关系
-  validate?: {
-    //指定[key]字段的校验函数;校验函数： (val字段值：formData:整个表单数据)=>
-    [key: string]: (
-      val: any,
-      formData?: object
-    ) => string | Promise<Result<string>> | void;
-  };
-  validate1?: validate;
-  // dataComputer?: { funs: (data: any) => any; watchFields?: string[] };
+  otherBtns: VFBtn[]; // 按钮触发的增量功能
 }
 
 const TablePage = <T extends IdBean>({
@@ -98,16 +90,18 @@ const TablePage = <T extends IdBean>({
   mode = "normal",
   width,
   btns,
+  otherBtns,
   outSelectedColumn,
   loadApi,
   onGetData,
   onHttpError,
   onTableModel,
+
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const appMode = import.meta.env.VITE_APP_MODE;
   const navigate = useNavigate();
-  const { user, getFormInfo } = useAuth();
+  const { getFormInfo } = useAuth();
   const ref = useRef(null);
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //模型信息
@@ -321,13 +315,47 @@ const TablePage = <T extends IdBean>({
     JSON.stringify(pager),
     JSON.stringify(pageLoad),
   ]);
+
+  const addMissingButtonAttributes = (b: VFBtn, entity: string): VFBtn => {
+    if (b.actionType !== "custom") {
+      if (
+        b.model === undefined &&
+        b.saveApi &&
+        (b.actionType === "create" || b.actionType === "edit")
+      ) {
+        b.model = entity;
+      }
+      if (
+        b.saveApi &&
+        (b.permissionCode === undefined || b.permissionCode === null)
+      ) {
+        b.permissionCode = entity + ":" + b.saveApi.name;
+      }
+      return {
+        ...b,
+        submitConfirm:
+          b.submitConfirm !== undefined
+            ? b.submitConfirm
+            : b.actionType === "api",
+        onSubmitFinish:
+          b.onSubmitFinish ||
+          (() => {
+            query();
+            setSelected([]);
+          }), //提交完成刷新列表
+        // submitClose: b.submitClose || true, //默认触发关闭
+      };
+    } else {
+      return b;
+    }
+  };
   const defbtn = useMemo((): VFBtn[] => {
     if (tableModel) {
       const savePermissionCode =
         tableModel?.entityType +
         ":save" +
         (tableModel?.entityType !== editModelType ? ":" + editModelType : "");
-      return [
+      const defaultBtns: VFBtn[] = [
         {
           title: "新增",
           actionType: "create",
@@ -368,52 +396,23 @@ const TablePage = <T extends IdBean>({
           },
         },
       ];
+
+      if (otherBtns) {
+        otherBtns.forEach((b) => {
+          defaultBtns.push(
+            addMissingButtonAttributes(b, tableModel.entityType)
+          );
+        });
+      }
+      return defaultBtns;
     }
     return [];
-  }, [tableModel, query]);
+  }, [tableModel, query, otherBtns]);
 
   /*页面所有按钮 */
   const totalBtns = useMemo((): VFBtn[] => {
-    const addMissingButtonAttributes = (b: VFBtn, entity: string): VFBtn => {
-      if (b.actionType !== "custom") {
-        if (
-          b.model === undefined &&
-          b.saveApi &&
-          (b.actionType === "create" || b.actionType === "edit")
-        ) {
-          b.model = entity;
-
-          // b.permissionCode = entity + ":" + b.saveApi.name;
-        }
-        if (
-          b.saveApi &&
-          (b.permissionCode === undefined || b.permissionCode === null)
-        ) {
-          b.permissionCode = entity + ":" + b.saveApi.name;
-          // alert(b.title + b.saveApi.name);
-        }
-
-        return {
-          ...b,
-          submitConfirm:
-            b.submitConfirm !== undefined
-              ? b.submitConfirm
-              : b.actionType === "api",
-          onSubmitFinish:
-            b.onSubmitFinish ||
-            (() => {
-              query();
-              setSelected([]);
-            }), //提交完成刷新列表
-          // submitClose: b.submitClose || true, //默认触发关闭
-        };
-      } else {
-        return b;
-      }
-    };
     if (tableModel) {
       if (btns) {
-        // alert(tableModel?.entityType);
         return btns.map((b) =>
           addMissingButtonAttributes(b, tableModel?.entityType)
         );

@@ -11,7 +11,7 @@ import SelectTag from "@src/components/SelectTag";
 import VfTreeSelect from "@src/components/VfTreeSelect";
 import PageSelect from "@src/components/PageSelect";
 import MenuResourcesSelect from "@src/pages/sysManage/role/component/MenuResourcesSelect";
-import FormTable from "@src/components/form/component/FormTable";
+import VfFormTable from "@src/components/form/component/FormTable";
 import VfListForm from "@src/components/form/component/VfListForm";
 import { FormVo, model } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
@@ -34,6 +34,11 @@ const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
 const Select = connect(SemiSelect, mapReadPretty(VfText));
 const TextArea = connect(SemiTextArea, mapReadPretty(PreviewText.Input));
 const DatePicker = connect(SemiDatePicker, mapReadPretty(VfText));
+
+const FormTable = connect(
+  VfFormTable,
+  mapReadPretty(({ ...props }) => <VfFormTable {...props} read={true} />)
+);
 // const TreeSelect = connect(SemiTreeSelect, mapReadPretty(VfText));
 /**
  * 表单组件资产配置定义

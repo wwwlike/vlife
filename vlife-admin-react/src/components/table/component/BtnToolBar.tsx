@@ -25,7 +25,7 @@ export interface BtnToolBarProps<T extends IdBean> {
   };
   dataComputer?: { funs: (data: any) => any; watchFields?: string[] };
   readPretty?: boolean; //当前页面模式
-  onDataChange: (datas: any[]) => void; //数据修订号传输出去
+  onDataChange: (datas: any[]) => void; //数据修订好传输出去
 }
 
 /**
@@ -149,7 +149,7 @@ export default <T extends IdBean>({
       const modal = (data: any) => {
         formModal.show({
           type: btn.model,
-          formData: data,
+          formData: btn.actionType === "create" ? {} : data,
           btns,
           readPretty: btn.actionType === "api" ? true : false,
           fontBold: btn.actionType === "api" ? true : false,
@@ -264,7 +264,6 @@ export default <T extends IdBean>({
 
   return (
     <div className={`${className} space-x-1`}>
-      {/* {JSON.stringify(tooltip)} */}
       {currBtns.map((btn, index) => {
         const tooltip = usableMatch(btn, index);
         const disabled = typeof tooltip === "boolean" ? !tooltip : true;
