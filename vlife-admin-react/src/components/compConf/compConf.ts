@@ -2,7 +2,7 @@
 import { Result } from '@src/api/base';
 import { FormVo } from '@src/api/Form';
 import { FormFieldVo } from '@src/api/FormField';
-import { DataModel, DataType } from '@src/dsl/schema/base';
+import { DataModel, DataType } from '@src/dsl/base';
 import { ReactNode } from 'react';
 
 //选择项类数据结构

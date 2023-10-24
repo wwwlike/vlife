@@ -9,7 +9,7 @@ import {
 } from "@src/api/SysUser";
 import { IconPlay, IconForward, IconStop } from "@douyinfe/semi-icons";
 import Content from "../../template/content";
-import { VF } from "@src/components/form/VF";
+import { VF } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
 //用户管理主页
 export default () => {

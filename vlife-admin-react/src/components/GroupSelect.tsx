@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Checkbox, Divider } from "@douyinfe/semi-ui";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 
 /**
  实现效果如下

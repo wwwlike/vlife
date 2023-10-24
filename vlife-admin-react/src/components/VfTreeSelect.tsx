@@ -6,7 +6,7 @@ import { Tag } from "@douyinfe/semi-ui";
 import Label from "@douyinfe/semi-ui/lib/es/form/label";
 import Tree, { TreeNodeData, TreeProps } from "@douyinfe/semi-ui/lib/es/tree";
 import { ITree } from "@src/api/base";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 import { checkSubData } from "@src/util/func";
 interface TreeQueryProps extends VfBaseProps<string, ITree[]> {
   /**

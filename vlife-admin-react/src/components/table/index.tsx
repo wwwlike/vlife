@@ -12,7 +12,7 @@ import { IconStoryStroked } from "@douyinfe/semi-icons";
 import ColumnTitle from "./component/ColumnTitle";
 import { orderObj } from "@src/pages/common/orderPage";
 import BtnToolBar from "./component/BtnToolBar";
-import { where } from "@src/dsl/schema/base";
+import { where } from "@src/dsl/base";
 import { VFBtn } from "./types";
 
 const formatter = new Intl.NumberFormat("zh-CN", {

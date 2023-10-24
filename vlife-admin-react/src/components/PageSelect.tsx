@@ -1,6 +1,6 @@
 import React from "react";
 import { Banner, Checkbox } from "@douyinfe/semi-ui";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 
 export interface PageSelectData {
   groupName: string;

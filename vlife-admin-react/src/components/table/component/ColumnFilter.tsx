@@ -7,8 +7,8 @@ import {
 } from "@douyinfe/semi-ui";
 import { FormFieldVo } from "@src/api/FormField";
 import VfSearch from "@src/components/VfSearch";
-import { ISelect } from "@src/dsl/schema/component";
-import { where } from "@src/dsl/schema/base";
+import { ISelect } from "@src/dsl/component";
+import { where } from "@src/dsl/base";
 
 interface ColumnFilterProps {
   entityName: string; //查询模型标识

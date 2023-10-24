@@ -1,5 +1,5 @@
 import { Field, Form } from '@formily/core';
-import {   FS_OPT, FS_PROP, FS_STATE,reaction, VF, VfAction, VfCondition } from './VF';
+import {   FS_OPT, FS_PROP, FS_STATE,reaction, VF, VfAction, VfCondition } from '../../dsl/VF';
 import {  isBoolean, isNull, isNumber } from 'lodash';
 import { SchemaReaction } from '@formily/react';
 //手动级联响应与formily配合使用

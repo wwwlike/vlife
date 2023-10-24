@@ -1,7 +1,7 @@
 import { Form } from '@formily/core';
 import { FormVo } from '@src/api/Form';
 import { FormFieldVo } from '@src/api/FormField';
-import { VF, VfAction } from '@src/components/form/VF';
+import { VF, VfAction } from '@src/dsl/VF';
 import { DataType, Mode, sourceType, TsType } from './base';
 /**
  * 下拉选择数据结构

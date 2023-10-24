@@ -6,8 +6,8 @@ import SelectIcon from "@src/components/SelectIcon";
 import { orderObj } from "@src/pages/common/orderPage";
 import { FormComponents } from "@src/resources/CompDatas";
 import ColumnFilter from "./ColumnFilter";
-import { ISelect } from "@src/dsl/schema/component";
-import { where } from "@src/dsl/schema/base";
+import { ISelect } from "@src/dsl/component";
+import { where } from "@src/dsl/base";
 
 interface ColumnTagProps {
   field: FormFieldVo;

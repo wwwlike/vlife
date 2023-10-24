@@ -18,7 +18,7 @@ import {
   IconUserAdd,
 } from "@douyinfe/semi-icons";
 import apiClient from "@src/api/base/apiClient";
-import { VfAction } from "@src/components/form/VF";
+import { VfAction } from "@src/dsl/VF";
 import { Empty, Pagination } from "@douyinfe/semi-ui";
 import TagFilter from "@src/components/table/component/TagFilter";
 import { orderObj } from "./orderPage";
@@ -30,7 +30,7 @@ import VfSearch from "@src/components/VfSearch";
 import { useNavigate } from "react-router-dom";
 import { validate } from "@src/components/form";
 import { VFBtn } from "@src/components/table/types";
-import { ConditionGroup, FormItemCondition, where } from "@src/dsl/schema/base";
+import { ConditionGroup, FormItemCondition, where } from "@src/dsl/base";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 // 后端排序字符串格式创建

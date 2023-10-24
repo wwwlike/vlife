@@ -1,7 +1,7 @@
 import { ITree } from '@src/api/base';
 import { all, listType, SysDict } from '@src/api/SysDict';
-import { DataModel, DataType } from '@src/dsl/schema/base';
-import { ISelect, ITreeData } from '@src/dsl/schema/component';
+import { DataModel, DataType } from '@src/dsl/base';
+import { ISelect, ITreeData } from '@src/dsl/component';
 import { listAll as deptList, SysDept } from "@src/api/SysDept";
 import { allRouter, listAll as menuList,  SysMenu } from "@src/api/SysMenu";
 import { ApiDatas, selectObj } from '../components/compConf/compConf';

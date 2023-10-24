@@ -1,5 +1,5 @@
 import { ProjectDto, save } from "@src/api/demo/DemoProject";
-import { VF } from "@src/components/form/VF";
+import { VF } from "@src/dsl/VF";
 import Content from "@src/pages/template/content";
 import React from "react";
 

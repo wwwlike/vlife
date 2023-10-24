@@ -8,7 +8,7 @@ import CompConf from "@src/components/compConf";
 import { CompDatas, CompInfo } from "@src/components/compConf/compConf";
 import SelectIcon from "@src/components/SelectIcon";
 import { useAuth } from "@src/context/auth-context";
-import { DataType } from "@src/dsl/schema/base";
+import { DataType } from "@src/dsl/base";
 
 /**
  * 1. 组件选择

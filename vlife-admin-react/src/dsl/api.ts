@@ -3,7 +3,7 @@
  * API的数据结构
  */
 import { Result } from "@src/api/base";
-import { DataType, sourceType, TsType } from '@src/dsl/schema/base';
+import { DataType, sourceType, TsType } from '@src/dsl/base';
  sourceType
  /**
   * 接口参数信息

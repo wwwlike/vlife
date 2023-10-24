@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IconSearch } from "@douyinfe/semi-icons";
 import { Input } from "@douyinfe/semi-ui";
 import { InputProps } from "@douyinfe/semi-ui/lib/es/input";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 import { useUrlQueryParam } from "@src/hooks/useForm";
 import { useDebounceEffect } from "ahooks";
 

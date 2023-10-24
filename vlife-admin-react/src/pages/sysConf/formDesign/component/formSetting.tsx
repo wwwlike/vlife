@@ -1,7 +1,7 @@
 import { ButtonGroup } from "@douyinfe/semi-ui";
 import VfButton from "@src/components/VfButton";
-import { Mode } from "@src/dsl/schema/base";
-import { deps, SchemaClz } from "@src/dsl/schema/field";
+import { Mode } from "@src/dsl/base";
+import { deps, SchemaClz } from "@src/dsl/field";
 import React, { useCallback } from "react";
 
 /**

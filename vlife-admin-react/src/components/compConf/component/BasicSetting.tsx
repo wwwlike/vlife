@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Checkbox, Input, InputNumber, Select } from "@douyinfe/semi-ui";
 import { TimePicker } from "@formily/semi";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
-import { DataModel, sourceType } from "@src/dsl/schema/base";
+import { DataModel, sourceType } from "@src/dsl/base";
 import { useUpdateEffect } from "ahooks";
 import { CompPropInfo, selectObj } from "../compConf";
 import { FormVo } from "@src/api/Form";

@@ -8,7 +8,7 @@ import {
 } from "@douyinfe/semi-ui";
 import { TimePicker } from "@formily/semi";
 import { PageApiParam } from "@src/api/PageApiParam";
-import { DataModel, sourceType } from "@src/dsl/schema/base";
+import { DataModel, sourceType } from "@src/dsl/base";
 import { useUpdateEffect } from "ahooks";
 import { ParamsInfo, selectObj } from "../compConf";
 import { FormVo } from "@src/api/Form";

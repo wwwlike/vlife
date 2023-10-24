@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import { Button, Tooltip, Typography } from "@douyinfe/semi-ui";
 import { IdBean, Result } from "@src/api/base";
-import { VfAction } from "@src/components/form/VF";
+import { VfAction } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
 import { objectIncludes } from "@src/util/func";

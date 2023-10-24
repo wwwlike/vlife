@@ -5,7 +5,7 @@ import { useSize, useUpdateEffect } from "ahooks";
 import { useEffect, useRef, useState } from "react";
 import { IconPlusStroked, IconSetting } from "@douyinfe/semi-icons";
 import { FormVo } from "@src/api/Form";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 import { VFBtn } from "../../table/types";
 import { useNavigate } from "react-router-dom";
 

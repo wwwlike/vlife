@@ -14,7 +14,7 @@ import {
   Responsive,
   Layout as LayoutDataType,
 } from "react-grid-layout";
-import { Mode } from "@src/dsl/schema/base";
+import { Mode } from "@src/dsl/base";
 import VfButton from "@src/components/VfButton";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 //字段排序，隐藏组件

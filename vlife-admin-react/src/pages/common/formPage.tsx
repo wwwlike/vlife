@@ -4,7 +4,7 @@ import { useAuth } from "@src/context/auth-context";
 import { FormVo } from "@src/api/Form";
 import { find } from "@src/api/base/baseService";
 import { IdBean } from "@src/api/base";
-import { VF, VfAction } from "@src/components/form/VF";
+import { VF, VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
 const mode = import.meta.env.VITE_APP_MODE;

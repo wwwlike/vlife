@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { MenuVo, listAll } from "@src/api/SysMenu";
 import { SysResources } from "@src/api/SysResources";
 import SelectIcon from "@src/components/SelectIcon";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 
 interface MenuResourcesSelectProp extends VfBaseProps<string[], undefined> {
   appId: string; //应用id

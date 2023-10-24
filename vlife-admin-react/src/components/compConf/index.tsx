@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
-import { DataType } from "@src/dsl/schema/base";
+import { DataType } from "@src/dsl/base";
 import { CompProp, CompPropInfo } from "./compConf";
 import ArraySetting from "./component/ArraySetting";
 import BasicSetting from "./component/BasicSetting";

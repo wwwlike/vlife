@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, TagInput } from "@douyinfe/semi-ui";
 import { IFkItem } from "@src/api/base";
 import { find } from "@src/api/base/baseService";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 import Content from "@src/pages/template/content";
 interface FilterTableInputProps extends Partial<VfBaseProps<string, IFkItem>> {
   entityType: string;

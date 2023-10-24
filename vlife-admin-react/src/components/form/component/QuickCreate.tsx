@@ -1,21 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Form } from "@formily/core";
 import { Result } from "@src/api/base";
 import apiClient from "@src/api/base/apiClient";
 import { FormVo } from "@src/api/Form";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
-import { VF } from "@src/components/form/VF";
+import { VF } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
-import { useNiceModal } from "@src/redux/modal";
-import { Button, ConfigProvider, Modal } from "@douyinfe/semi-ui";
-import { IconSend } from "@douyinfe/semi-icons";
+import { Modal } from "@douyinfe/semi-ui";
 import FormPage from "@src/pages/common/formPage";
-import BtnToolBar from "@src/components/table/component/BtnToolBar";
 
 interface ConditionSlotProps {
   fieldName: string;
   pathName: string;
-
   entityType: string;
   className: string;
   form: Form;

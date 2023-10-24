@@ -4,7 +4,7 @@ import { IconPlus } from "@douyinfe/semi-icons";
 import { SysFile } from "@src/api/SysFile";
 import { FileItem } from "@douyinfe/semi-ui/lib/es/upload";
 import { Image } from "@douyinfe/semi-ui";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 /**
  * @returns 图片上传组件

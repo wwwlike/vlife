@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Editor, Toolbar } from "@wangeditor/editor-for-react";
 import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor";
 import { useUpdateEffect } from "ahooks";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 interface VfEditorProps extends VfBaseProps<string, string> {}
 

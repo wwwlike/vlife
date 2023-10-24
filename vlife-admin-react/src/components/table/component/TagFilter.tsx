@@ -5,7 +5,7 @@ import { FormVo } from "@src/api/Form";
 import { orderObj } from "@src/pages/common/orderPage";
 import { FormFieldVo } from "@src/api/FormField";
 import { useAuth } from "@src/context/auth-context";
-import { where } from "@src/dsl/schema/base";
+import { where } from "@src/dsl/base";
 export interface TagFilterProps {
   where: Partial<where>[]; //查询条件
   order: orderObj[]; //排序信息

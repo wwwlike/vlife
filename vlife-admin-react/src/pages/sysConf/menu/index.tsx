@@ -1,7 +1,7 @@
 import React from "react";
 import { SysMenu } from "@src/api/SysMenu";
 import Content from "../../template/content";
-import { VF } from "@src/components/form/VF";
+import { VF } from "@src/dsl/VF";
 
 export default () => {
   return (

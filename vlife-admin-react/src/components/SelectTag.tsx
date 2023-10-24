@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Space, Tag } from "@douyinfe/semi-ui";
-import { DataType } from "@src/dsl/schema/base";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { DataType } from "@src/dsl/base";
+import { VfBaseProps } from "@src/dsl/component";
 import { useUpdateEffect } from "ahooks";
 
 interface DictSelectTagProps

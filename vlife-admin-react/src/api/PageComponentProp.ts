@@ -1,6 +1,6 @@
 
 import apiClient from '@src/api/base/apiClient'
-import { sourceType } from '@src/dsl/schema/base';
+import { sourceType } from '@src/dsl/base';
 import {DbEntity,Result, SaveBean} from '@src/api/base'
 import { PageApiParam } from '@src/api/PageApiParam';
 // 组件属性

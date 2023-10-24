@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { InputNumber } from "@douyinfe/semi-ui";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 interface VfNumbersInputProps extends VfBaseProps<any[], undefined> {}
 export default ({ value, onDataChange }: VfNumbersInputProps) => {
   const [begin, setBegin] = useState<number | undefined>(

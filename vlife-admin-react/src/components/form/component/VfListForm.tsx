@@ -4,7 +4,7 @@ import {
   IconCrossStroked,
 } from "@douyinfe/semi-icons";
 import { FormVo } from "@src/api/Form";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 import FormPage from "@src/pages/common/formPage";
 
 interface VfListFormProps extends VfBaseProps<any[], null> {

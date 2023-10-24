@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Select } from "@douyinfe/semi-ui";
 import { PageApiParam } from "@src/api/PageApiParam";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
-import { DataModel, DataType, sourceType } from "@src/dsl/schema/base";
+import { DataModel, DataType, sourceType } from "@src/dsl/base";
 import { useUpdateEffect } from "ahooks";
 import CompConf from "..";
 import { apiDatas } from "../../../resources/ApiDatas";

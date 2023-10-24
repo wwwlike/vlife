@@ -1,6 +1,6 @@
 import React from "react";
 import { Checkbox } from "@douyinfe/semi-ui";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 interface VfCheckboxProps extends VfBaseProps<boolean, null> {}
 const VfCheckbox = ({
   fieldInfo,

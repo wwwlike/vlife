@@ -3,9 +3,8 @@ import apiClient from "@src/api/base/apiClient";
 import { DbEntity, Result } from "@src/api/base";
 import { FormEventVo } from "./FormEvent";
 import { FormReactionVo } from "./FormReaction";
-import { DataType } from '@src/dsl/schema/base';
+import { DataType } from '@src/dsl/base';
 import { PageComponentPropDto } from '@src/api/PageComponentProp';
-import { min } from 'lodash';
 import { Form } from './Form';
 
 // 列表字段

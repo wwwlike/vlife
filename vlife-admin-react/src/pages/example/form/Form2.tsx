@@ -1,6 +1,6 @@
 import React from "react";
 import FormPage from "@src/pages/common/formPage";
-import { VF } from "@src/components/form/VF";
+import { VF } from "@src/dsl/VF";
 import CodeBlock from "@src/components/codeBlock";
 import { FormPropDoc } from "@src/resources/CompProp";
 export default () => {

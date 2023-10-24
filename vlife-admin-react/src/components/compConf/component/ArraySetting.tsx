@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
-import { DataModel, DataType } from "@src/dsl/schema/base";
+import { DataModel, DataType } from "@src/dsl/base";
 import { useUpdateEffect } from "ahooks";
 import { CompPropInfo } from "../compConf";
 import BasicSetting from "./BasicSetting";

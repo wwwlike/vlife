@@ -1,4 +1,4 @@
-import { DataModel, DataType } from "@src/dsl/schema/base";
+import { DataModel, DataType } from "@src/dsl/base";
 import VfCheckbox from "../components/VfCheckbox";
 import VfNumbersInput from "../components/VfNumbersInput";
 import { CompDatas, selectObj } from "../components/compConf/compConf";

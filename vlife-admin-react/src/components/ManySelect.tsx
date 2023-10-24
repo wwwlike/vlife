@@ -3,8 +3,8 @@
  */
 import React, { useEffect, useState } from "react";
 import { findName } from "@src/api/base/baseService";
-import { DataType } from "@src/dsl/schema/base";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { DataType } from "@src/dsl/base";
+import { VfBaseProps } from "@src/dsl/component";
 import RelationTagInput from "./RelationTagInput";
 
 interface ManySelectProps extends VfBaseProps<any[], null> {

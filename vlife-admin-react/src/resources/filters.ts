@@ -2,7 +2,7 @@ import { FormVo } from '@src/api/Form';
 import { FormField } from '@src/api/FormField';
 import { SysDict } from '@src/api/SysDict';
 import { SysMenu } from '@src/api/SysMenu';
-import { DataType, TsType } from '../dsl/schema/base';
+import { DataType, TsType } from '../dsl/base';
 
 /**
  * api数据过滤函数集合

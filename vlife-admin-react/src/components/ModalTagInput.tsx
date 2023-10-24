@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Space, Tag, TagInput } from "@douyinfe/semi-ui";
 import { IFkItem } from "@src/api/base";
-import { DataType } from "@src/dsl/schema/base";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { DataType } from "@src/dsl/base";
+import { VfBaseProps } from "@src/dsl/component";
 import TablePage from "@src/pages/common/tablePage";
 import Scrollbars from "react-custom-scrollbars";
 

@@ -3,7 +3,7 @@ import {
   PageComponentPropDto,
 } from "@src/api/PageComponentProp";
 import { dictObj } from "@src/context/auth-context";
-import { sourceType } from "@src/dsl/schema/base";
+import { sourceType } from "@src/dsl/base";
 import { Field } from "@formily/core";
 import { listAll } from "@src/api/base/baseService";
 import { filterFuns } from "@src/resources/filters";

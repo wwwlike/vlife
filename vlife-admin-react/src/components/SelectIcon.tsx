@@ -463,7 +463,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 
 interface SelectIconProps extends VfBaseProps<string, ReactNode[]> {
   size:

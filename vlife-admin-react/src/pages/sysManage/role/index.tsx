@@ -1,6 +1,6 @@
 import React from "react";
 import { SysRole } from "@src/api/SysRole";
-import { VF } from "@src/components/form/VF";
+import { VF } from "@src/dsl/VF";
 import Content from "../../template/content";
 
 export default () => {

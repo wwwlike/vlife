@@ -1,6 +1,6 @@
 import { Banner, Button, Input } from "@douyinfe/semi-ui";
 import { FormVo } from "@src/api/Form";
-import { Mode } from "@src/dsl/schema/base";
+import { Mode } from "@src/dsl/base";
 import React, { useEffect, useMemo, useState } from "react";
 
 export interface httpError {

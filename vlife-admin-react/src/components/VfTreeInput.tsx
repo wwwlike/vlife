@@ -4,7 +4,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Input, TreeSelect } from "@douyinfe/semi-ui";
 import { ITree } from "@src/api/base";
-import { VfBaseProps } from "@src/dsl/schema/component";
+import { VfBaseProps } from "@src/dsl/component";
 import { checkSubData } from "@src/util/func";
 import { useUpdateEffect } from "ahooks";
 import { TreeSelectProps } from "@douyinfe/semi-ui/lib/es/treeSelect";
