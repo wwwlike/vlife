@@ -1054,7 +1054,7 @@
       "placeholderUrl": {
         "fieldName": "placeholderUrl",
         "fieldType": "String",
-        "title": "占位符地址"
+        "title": "通配符替换"
       },
       "status": {
         "fieldName": "status",
@@ -1698,43 +1698,10 @@
     "typeName": "SysUser",
     "title": "用户详细信息",
     "tags": {
-      "avatar": {
-        "fieldName": "avatar",
-        "fieldType": "String",
-        "title": "头像"
-      },
-      "sysDeptId": {
-        "fieldName": "sysDeptId",
-        "fieldType": "String",
-        "title": "部门id"
-      },
-      "sysDept": {
-        "fieldName": "sysDept",
-        "fieldType": "SysDept"
-      },
-      "codeDept": {
-        "fieldName": "codeDept",
-        "fieldType": "String",
-        "title": "部门代码"
-      },
-      "resourceCodes": {
-        "fieldName": "resourceCodes",
-        "fieldType": "List<String>",
-        "title": "用户有的权限资源代码 权限组->角色权限->角色->资源——资源编码"
-      },
-      "superUser": {
-        "fieldName": "superUser",
-        "fieldType": "Boolean"
-      },
       "groupName": {
         "fieldName": "groupName",
         "fieldType": "String",
         "title": "权限组名称"
-      },
-      "sysOrgId": {
-        "fieldName": "sysOrgId",
-        "fieldType": "String",
-        "title": "机构id"
       },
       "name": {
         "fieldName": "name",
@@ -1746,20 +1713,48 @@
         "fieldType": "String",
         "extendsField": true
       },
+      "avatar": {
+        "fieldName": "avatar",
+        "fieldType": "String",
+        "title": "头像"
+      },
+      "sysDeptId": {
+        "fieldName": "sysDeptId",
+        "fieldType": "String",
+        "title": "部门id"
+      },
       "menus": {
         "fieldName": "menus",
         "fieldType": "List<MenuVo>",
         "title": "用户能够访问到的所有菜单信息"
+      },
+      "sysDept": {
+        "fieldName": "sysDept",
+        "fieldType": "SysDept"
+      },
+      "codeDept": {
+        "fieldName": "codeDept",
+        "fieldType": "String",
+        "title": "部门代码"
       },
       "sysGroupId": {
         "fieldName": "sysGroupId",
         "fieldType": "String",
         "title": "权限组"
       },
+      "resourceCodes": {
+        "fieldName": "resourceCodes",
+        "fieldType": "List<String>",
+        "title": "用户有的权限资源代码 权限组->角色权限->角色->资源——资源编码"
+      },
       "username": {
         "fieldName": "username",
         "fieldType": "String",
         "title": "账号"
+      },
+      "superUser": {
+        "fieldName": "superUser",
+        "fieldType": "Boolean"
       }
     },
     "apiTagList": []
@@ -1889,15 +1884,6 @@
         "methodName": "page"
       },
       {
-        "title": "\r\n   * 保存项目\r\n   ",
-        "path": "/save",
-        "paramWrapper": "DemoProject",
-        "param": "demoProject",
-        "returnClz": "DemoProject",
-        "methodType": "PostMapping",
-        "methodName": "save"
-      },
-      {
         "title": "\r\n   * 保存项目dto;\r\n   * @param projectDto 项目dto;\r\n   * @return 项目dto;\r\n   ",
         "path": "/save/projectDto",
         "paramWrapper": "ProjectDto",
@@ -1905,6 +1891,15 @@
         "returnClz": "ProjectDto",
         "methodType": "PostMapping",
         "methodName": "saveProjectDto"
+      },
+      {
+        "title": "\r\n   * 保存项目\r\n   ",
+        "path": "/save",
+        "paramWrapper": "DemoProject",
+        "param": "demoProject",
+        "returnClz": "DemoProject",
+        "methodType": "PostMapping",
+        "methodName": "save"
       },
       {
         "title": "\r\n   * 明细查询项目表;\r\n   * @param id 主键id;\r\n   * @return 项目表;\r\n   ",
@@ -2027,13 +2022,13 @@
         "fieldName": "sysUserId",
         "fieldType": "String"
       },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String"
+      },
       "point": {
         "fieldName": "point",
         "fieldType": "Integer"
-      },
-      "status": {
-        "fieldName": "status",
-        "fieldType": "String"
       }
     },
     "apiTagList": []
@@ -2526,7 +2521,12 @@
     "typeName": "FormField",
     "title": "列表字段接口;",
     "path": "/formField",
-    "tags": {},
+    "tags": {
+      "formService": {
+        "fieldName": "formService",
+        "fieldType": "FormService"
+      }
+    },
     "apiTagList": [
       {
         "title": "\r\n     * 保存列表字段;\r\n     *\r\n     * @param dto 列表字段;\r\n     * @return 列表字段;\r\n     ",
@@ -2557,12 +2557,30 @@
       },
       {
         "title": "\r\n     * 查询表的字段信息\r\n     * @param formId\r\n     * @return\r\n     ",
+        "path": "/list/groupOption",
+        "paramWrapper": "String",
+        "param": "formId",
+        "returnClz": "List<FieldSelect>",
+        "methodType": "GetMapping",
+        "methodName": "groupOption"
+      },
+      {
+        "title": "\r\n     * 查询表的字段信息\r\n     * @param formId\r\n     * @return\r\n     ",
         "path": "/list/all",
         "paramWrapper": "String",
         "param": "formId",
         "returnClz": "List<FormField>",
         "methodType": "GetMapping",
         "methodName": "listAll"
+      },
+      {
+        "title": "\r\n     * 根据外键关键字段查询关联表的字段信息\r\n     * @param realationFieldId 外键关联字段\r\n     * @return\r\n     ",
+        "path": "/list/relationField",
+        "paramWrapper": "String",
+        "param": "realationFieldId",
+        "returnClz": "List<FormField>",
+        "methodType": "GetMapping",
+        "methodName": "listRelationField"
       },
       {
         "title": "\r\n     * 能够后参报表统计的字段\r\n     * id，日期\r\n     * @param formId\r\n     * @return\r\n     ",
@@ -2857,6 +2875,10 @@
         "fieldType": "String",
         "title": "分页列表api代码路径"
       },
+      "itemName": {
+        "fieldName": "itemName",
+        "fieldType": "String"
+      },
       "name": {
         "fieldName": "name",
         "fieldType": "String"
@@ -2983,11 +3005,6 @@
         "fieldType": "boolean",
         "title": "修改时只读"
       },
-      "listShow": {
-        "fieldName": "listShow",
-        "fieldType": "Boolean",
-        "title": "是否列表展示"
-      },
       "dictCode": {
         "fieldName": "dictCode",
         "fieldType": "String",
@@ -3035,6 +3052,11 @@
         "fieldName": "sort",
         "fieldType": "Integer",
         "title": "顺序"
+      },
+      "listHide": {
+        "fieldName": "listHide",
+        "fieldType": "Boolean",
+        "title": "是否列表展示"
       },
       "validate_unique": {
         "fieldName": "validate_unique",
@@ -3237,10 +3259,10 @@
         "fieldType": "Integer",
         "title": "列宽"
       },
-      "listShow": {
-        "fieldName": "listShow",
+      "listHide": {
+        "fieldName": "listHide",
         "fieldType": "Boolean",
-        "title": "列显示"
+        "title": "列隐藏"
       }
     },
     "apiTagList": []
@@ -3532,6 +3554,11 @@
         "fieldType": "String",
         "title": "分页列表api代码路径"
       },
+      "itemName": {
+        "fieldName": "itemName",
+        "fieldType": "String",
+        "title": "关联表展示字段name"
+      },
       "createId": {
         "fieldName": "createId",
         "fieldType": "string",
@@ -3704,11 +3731,6 @@
         "fieldType": "boolean",
         "title": "修改时只读"
       },
-      "listShow": {
-        "fieldName": "listShow",
-        "fieldType": "Boolean",
-        "title": "是否列表展示"
-      },
       "dbLength": {
         "fieldName": "dbLength",
         "fieldType": "int",
@@ -3781,6 +3803,11 @@
         "fieldName": "labelField",
         "fieldType": "Boolean",
         "title": "是否"
+      },
+      "listHide": {
+        "fieldName": "listHide",
+        "fieldType": "Boolean",
+        "title": "列隐藏"
       },
       "validate_unique": {
         "fieldName": "validate_unique",
@@ -4542,11 +4569,6 @@
         "fieldType": "boolean",
         "title": "修改时只读"
       },
-      "listShow": {
-        "fieldName": "listShow",
-        "fieldType": "Boolean",
-        "title": "是否列表展示"
-      },
       "dictCode": {
         "fieldName": "dictCode",
         "fieldType": "String",
@@ -4599,6 +4621,11 @@
         "fieldName": "sort",
         "fieldType": "Integer",
         "title": "顺序"
+      },
+      "listHide": {
+        "fieldName": "listHide",
+        "fieldType": "Boolean",
+        "title": "是否列表展示"
       },
       "validate_unique": {
         "fieldName": "validate_unique",
@@ -4895,6 +4922,10 @@
         "fieldType": "String",
         "title": "分页列表api代码路径"
       },
+      "itemName": {
+        "fieldName": "itemName",
+        "fieldType": "String"
+      },
       "name": {
         "fieldName": "name",
         "fieldType": "String"
@@ -5104,8 +5135,7 @@
     "superName": "DbEntity",
     "parentsName": [
       "DbEntity",
-      "ITree",
-      "IOrg"
+      "ITree"
     ],
     "entityName": "SysDept",
     "title": "科室部门",
@@ -5137,11 +5167,6 @@
         "fieldType": "string",
         "extendsField": true,
         "title": "创建人"
-      },
-      "sysOrgId": {
-        "fieldName": "sysOrgId",
-        "fieldType": "String",
-        "title": "部门所在机构"
       },
       "name": {
         "fieldName": "name",
