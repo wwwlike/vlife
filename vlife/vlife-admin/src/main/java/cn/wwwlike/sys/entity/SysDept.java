@@ -31,7 +31,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_dept")
-public class SysDept extends DbEntity implements ITree, IOrg {
+public class SysDept extends DbEntity implements ITree {
     /**
      * 部门名称
      */
@@ -44,10 +44,10 @@ public class SysDept extends DbEntity implements ITree, IOrg {
      * 上级部门
      */
     public String pcode;
-    /**
-     * 部门所在机构
-     */
-    public String sysOrgId;
+//    /**
+//     * 部门所在机构
+//     */
+//    public String sysOrgId;
     /**
      * 上级部门id
      * 冗余导入数据时采用

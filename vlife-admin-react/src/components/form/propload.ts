@@ -2,10 +2,8 @@ import {
   PageComponentProp,
   PageComponentPropDto,
 } from "@src/api/PageComponentProp";
-import { dictObj } from "@src/context/auth-context";
 import { sourceType } from "@src/dsl/base";
 import { Field } from "@formily/core";
-import { listAll } from "@src/api/base/baseService";
 import { filterFuns } from "@src/resources/filters";
 import {
   CompInfo,
@@ -124,17 +122,19 @@ isBasic;
  * 已设置在数据库里的配置信息组装
  */
 export const fetchStaticPropObj = (
-  props: Partial<PageComponentPropDto>[],
-  field?: Field //formily的字段信息
+  props: Partial<PageComponentPropDto>[], //数据库信息
+  field?: Field, //formily的字段信息,
+  compProps?: CompProp //组件信息
 ): any => {
-  // alert("123");
   let propsObj: any = {};
   if (props) {
     props.forEach((p) => {
-      //db里是fiexed类型值瓶
-      if (p.sourceType === sourceType.fixed && p.propName && p.propVal) {
+      // fromField=true的情况
+      if (field&& compProps&&p.propName&& typeof compProps[p.propName] ==="object" 
+      && (compProps[p.propName] as CompPropInfo).fromField===true ) {
+        valueAdd(p, propsObj, field.query(p.propVal).get("value"));
+      }else if (p.sourceType === sourceType.fixed && p.propName && p.propVal) {
         valueAdd(p, propsObj, p.propVal);
-        // propsObj[p.propName] = p.propVal;
       } else if (
         field &&
         p.sourceType === sourceType.field &&
@@ -159,7 +159,7 @@ export const fetchFieldObj = (
   field: Field //formily的字段信息
 ): any => {
   const fromField = infos.fromField;
-  if (fromField) {
+  if (fromField&&fromField!==true) {
     const fieldInfo: FormFieldVo[] = formVo.fields
       .filter((f) => f.entityType === fromField.entity)
       .filter((f) => f.dataType !== "array")
@@ -193,7 +193,7 @@ export const fetchPropObj = (
 ): Promise<Field> => {
   let propsObj: any = {}; //组件属性对象
   //1 db存储的静态值提取
-  let staticObj = fetchStaticPropObj(props, field);
+  let staticObj = fetchStaticPropObj(props, field,componentInfo.props);
   //2. 属性来自于其他field字段的值提取
   let fromFieldObj: any = {};
   if (componentInfo && componentInfo.props) {
@@ -202,18 +202,18 @@ export const fetchPropObj = (
       .filter(
         (k) =>
           typeof compProp[k] === "object" &&
-          (compProp[k] as ParamsInfo).fromField
+          (compProp[k] as CompPropInfo).fromField&&(compProp[k] as CompPropInfo).fromField!==true
       )
       .forEach((key) => {
         fromFieldObj[key] = fetchFieldObj(
           formVo,
-          compProp[key] as ParamsInfo,
+          compProp[key] as CompPropInfo,
           parentData,
           field
         );
       });
   }
-
+  //3.接口取值
   if (props) {
     return Promise.all(
       props
@@ -223,79 +223,46 @@ export const fetchPropObj = (
         .map(async (prop) => {
           if (prop.propVal && prop.propName) {
             if (prop.sourceType === sourceType.api) {
-              const apiInfo = apiDatas[prop.propVal]; //取得接口信息
-              const allParam = apiInfo?.params; //接口参数信息
+              const apiInfo = apiDatas[prop.propVal]; //接口配置信息
+              const allParam = apiInfo?.params; //接口入参配置信息
               const paramNames: string[] =
-                allParam !== undefined ? Object.keys(allParam) : []; //所有参数名称
+                allParam !== undefined ? Object.keys(allParam) : []; //所有参数name数组
               let mustFlag: boolean = true; //必填入参是否都满足标识
               const paramObj: any = {}; //参数对象
               //参数来源于同表单/页面的其他字段(组件)
-              // let paramsFromFieldObj: any = {};
-              if (apiInfo && apiInfo.params) {
-                const params: {
-                  [key: string]: ParamsInfo | string | boolean | number;
-                } = apiInfo.params;
-                Object.keys(params)
+              if (allParam) {
+                //在fromfield配置里指定了固定类型的来源字段
+                paramNames
                   .filter(
                     (k) =>
-                      typeof params[k] === "object" &&
-                      (params[k] as ParamsInfo).fromField
+                      typeof allParam[k] === "object" &&
+                      (allParam[k] as ParamsInfo).fromField && typeof (allParam[k] as ParamsInfo).fromField=== "object"
                   )
                   .forEach((key) => {
                     paramObj[key] = fetchFieldObj(
                       formVo,
-                      params[key] as ParamsInfo,
+                      allParam[key] as ParamsInfo,
                       parentData,
                       field
                     );
-                    // alert(paramObj[key]);
                   });
-              }
-
-              paramNames.forEach((name) => {
-                if (
-                  allParam &&
-                  typeof allParam[name] !== "string" &&
-                  typeof allParam[name] !== "boolean" &&
-                  typeof allParam[name] !== "number"
-                ) {
+              //2读取存储到数据库配置的值
+              paramNames.filter(name=> 
+                typeof allParam[name] !== "string" &&
+                typeof allParam[name] !== "boolean" &&
+                typeof allParam[name] !== "number"
+              ).forEach((name) => {
                   const paramInfo: ParamsInfo = allParam[name] as ParamsInfo;
                   //数据库里查找param字段
                   const db = prop.params?.filter((p) => p.paramName === name);
-                  if (db && db?.length > 0 && db[0].paramVal) {
-                    //一  取自db配置
-                    if (db[0].sourceType === sourceType.fixed) {
-                      //1 接口入参固定值: fixed从数据库取存储的值 paramVal
-                      paramObj[name] = db[0].paramVal;
-                    } else if (db[0].sourceType === sourceType.field) {
-                      // if (getValueByKey(formName, db[0].paramVal) !== undefined) {
-                      //   // const parentProp =
-                      //   //   getValueByKey(formame, db[0].paramVal) || "";
-                      //   // paramObj[name] = pareNntData[parentProp];
-                      // } else {
+                  if (db && db?.length > 0 && db[0].paramVal) {//转换
+                     if (paramInfo.fromField===true) {
                       paramObj[name] = field.query(db[0].paramVal).get("value");
-                      // }
+                    }else if (db[0].sourceType === sourceType.fixed) {//直接使用
+                      paramObj[name] = db[0].paramVal;
+                    }else if (db[0].sourceType === sourceType.field) {
+                      paramObj[name] = field.query(db[0].paramVal).get("value");
                     }
-                    // else if (db[0].sourceType === sourceType.field && field) {
-                    //   //2 接口来自表单里指定field的值，
-                    //   const paramVal = db[0].paramVal;
-                    //   if (
-                    //     paramVal.indexOf(",") === -1 &&
-                    //     paramVal.indexOf(":") === -1
-                    //   ) {
-                    //     //来源于当前表单的字段
-                    //     const fieldVal = field.query(paramVal).get("value");
-                    //     paramObj[name] = fieldVal;
-                    //   } else if (
-                    //     getValueByKey(formName, paramVal) !== undefined
-                    //   ) {
-                    //     //来源于关联表单的字段 包涵“，：”的形式就表示取自其他模型里的字段
-                    //     const parentProp =
-                    //       getValueByKey(formName, paramVal) || "";
-                    //     paramObj[name] = parentData[parentProp];
-                    //   }
-                    // }
-                  }
                   //必填的是否都有
                   if (
                     paramInfo.must === true &&
@@ -303,12 +270,17 @@ export const fetchPropObj = (
                   ) {
                     mustFlag = false; //不满足
                   }
-                } else if (allParam) {
-                  //固定写死
-                  paramObj[name] = allParam[name];
                 }
               });
-
+              //传参配置里是固定值
+              paramNames.filter(name=> 
+                typeof allParam[name] == "string" ||
+                typeof allParam[name] == "boolean" ||
+                typeof allParam[name] == "number"
+              ).forEach((name) => {
+                paramObj[name] = allParam[name];
+              })
+              }
               const propinfo: CompPropInfo | undefined =
                 componentInfo.props && prop.propName
                   ? (componentInfo.props[prop.propName] as CompPropInfo)
@@ -418,115 +390,6 @@ export const fieldComponentFetchData = (
  * 页面的(非form)组件属性创建
  * @param props  组件属性DB数据
  * @param componentInfo 组件信息
- * @param setComponentPropFunc set到指定对象里去
- */
-export const componentPropCreate1 = (
-  props: Partial<PageComponentPropDto>[],
-  componentInfo: CompInfo,
-  setComponentPropFunc: (prop: any) => void,
-  setEventChangeData: (prop: any) => void,
-  allDict: dictObj
-) => {
-  (async () => {
-    let propsObj: any = {};
-    //属性固定值拼接
-    if (componentInfo && componentInfo.props) {
-      const propInfo = componentInfo.props;
-      const keys = Object.keys(propInfo);
-      keys.forEach((k) => {
-        if (
-          typeof propInfo[k] === "string" ||
-          typeof propInfo[k] === "boolean" ||
-          typeof propInfo[k] === "number"
-        ) {
-          propsObj[k] = propInfo[k];
-        }
-      });
-    }
-    /**
-     * 2. 本地属性prop静态数据提取
-     */
-    propsObj = {
-      ...propsObj,
-      ...fetchStaticPropObj(props),
-    };
-    // 3. 事件属性，组装传入(暂去)
-    // propsObj = fetchEventPropObj(
-    //   props,
-    //   componentInfo,
-    //   propsObj,
-    //   setEventChangeData
-    // );
-    // 4.远程数据提取 . api异步数据提取 (table是指定了api的异步取数据)
-    if (
-      props?.filter(
-        (p) => p.propName && p.propVal && p.sourceType === sourceType.api //???  || p.sourceType === "table"
-      ).length > 0
-    ) {
-      Promise.all(
-        props
-          ?.filter(
-            (p) => p.propName && p.propVal && p.sourceType === sourceType.api //|| p.sourceType === "table"
-          )
-          .map(async (prop) => {
-            if (prop.propVal) {
-              if (prop.sourceType === sourceType.api) {
-                // 接口参数没有先不去请求数据
-                const allParam = apiDatas[prop.propVal].params;
-                const paramNames: string[] =
-                  allParam !== undefined ? Object.keys(allParam) : [];
-                let load: boolean = true;
-                const paramObj: any = {};
-                if (paramNames.length > 0) {
-                  paramNames.forEach((name) => {
-                    const db = prop.params?.filter((p) => p.paramName === name);
-                    if (db && db?.length > 0 && db[0].paramVal) {
-                      paramObj[name] = db[0].paramVal;
-                    } else {
-                      load = false;
-                    }
-                  });
-                }
-                if (load) {
-                  const apiFunc = apiDatas[prop.propVal].api;
-                  if (apiFunc) {
-                    propsObj = await apiFunc(paramObj).then((d) => {
-                      // const dt = getDataType(
-                      //   componentInfo,
-                      //   prop.propName,
-                      //   prop.subName
-                      // );
-                      propsObj = valueAdd(prop, propsObj, d.data);
-                      return propsObj;
-                    });
-                  }
-                }
-                // return propsObj;
-              } else {
-                // table方式
-                propsObj = await listAll({ entityType: "form" }).then((d) => {
-                  propsObj = valueAdd(prop, propsObj, d.data);
-                  return propsObj;
-                });
-              }
-              return propsObj;
-            }
-          })
-      ).then((d) => {
-        if (d.length > 0) {
-          setComponentPropFunc({ ...d[d.length - 1] }); //执行回调函数
-        }
-      });
-    } else {
-      setComponentPropFunc(propsObj);
-    }
-  })();
-};
-
-/**
- * 页面的(非form)组件属性创建
- * @param props  组件属性DB数据
- * @param componentInfo 组件信息
  * @param setComponentPropFunc 组件属性回写
  */
 export const componentPropCreate = (
@@ -555,7 +418,7 @@ export const componentPropCreate = (
      */
     propsObj = {
       ...propsObj,
-      ...fetchStaticPropObj(props),
+      ...fetchStaticPropObj(props,undefined,componentInfo.props),
     };
     setComponentPropFunc(propsObj);
     // /**

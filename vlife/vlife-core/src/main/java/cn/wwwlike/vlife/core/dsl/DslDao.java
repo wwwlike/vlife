@@ -240,6 +240,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         return find(entityClz, wq, null, null);
     }
 
+
     /**
      * 通过终端入参的分页查询对象进行实体分页查询
      */
@@ -263,7 +264,14 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     @Override
     public <E extends VoBean<T>, N extends PageQuery<T>> PageVo<E> queryPage(Class<E> vo, N pageRequest) {
-        QueryResults queryResults = dslQuery(vo, pageRequest.qw(entityClz), pageRequest.getPager(), pageRequest.getOrder()).fetchResults();
+        QueryWrapper qw=pageRequest.qw(entityClz);
+        if(pageRequest.getConditions()!=null){
+            QueryUtils.condition(qw,pageRequest.getConditions());
+        }
+        if(pageRequest.getConditionGroups()!=null){
+            QueryUtils.condition(qw,pageRequest.getConditionGroups());
+        }
+        QueryResults queryResults = dslQuery(vo, qw, pageRequest.getPager(), pageRequest.getOrder()).fetchResults();
         List mainResult = queryResults.getResults();
         VoDto voDto = GlobalData.voDto(vo);
         if (mainResult.size() > 0) {

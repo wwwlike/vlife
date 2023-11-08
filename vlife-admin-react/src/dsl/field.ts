@@ -77,7 +77,7 @@ export const types: { title: string; value: string,icon?:any }[] = [
     tag: "layout",
     mode:Mode.form
   },
-  // listShow: {
+  // listHide: {
   //   name: "列表",
   //   type: "switch",
   //   tag: "layout",

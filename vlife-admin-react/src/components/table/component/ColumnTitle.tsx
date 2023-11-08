@@ -12,7 +12,7 @@ import { where } from "@src/dsl/base";
 interface ColumnTagProps {
   field: FormFieldVo;
   entityName: string;
-  columnSearch: boolean; //是否开启列搜索
+  opt?: "search" | "sort" | true; //支持的操作，true都支持
   option?: ISelect[];
   where: Partial<where>[] | undefined;
   onFilter?: (where: Partial<where>[] | void) => void;
@@ -27,7 +27,7 @@ const ColumnTitle = ({
   onSort,
   where,
   onFixed,
-  columnSearch,
+  opt = true,
   onFilter,
   option,
   entityName,
@@ -64,7 +64,7 @@ const ColumnTitle = ({
         )}
         <div className=" pl-1 text-black font-bold rounded">{field.title}</div>
       </div>
-      {columnSearch && (
+      {(opt === true || opt === "search") && (
         <div className="w-4">
           <Popover
             position="bottom"

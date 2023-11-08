@@ -23,7 +23,7 @@ interface FieldSelectProps {
   className?: string;
   fields: FormFieldVo[]; //参与排序的字段
   outSelectedField?: string; //外部选中字段
-  hide: any; //隐藏的满足条件 如：{x_hidden:true}  {listShow:false}
+  // hide: any; //隐藏的满足条件 如：{x_hidden:true}  {listHide:false}
   onDataChange: (ang: FormFieldVo[]) => void; //数据返回出去
   onSelect: (field: string) => void; //当前选中字段
 }
@@ -32,7 +32,7 @@ const FieldSelect = ({
   mode,
   outSelectedField,
   onSelect,
-  hide,
+  // hide,
   className,
   onDataChange,
 }: FieldSelectProps) => {
@@ -104,26 +104,33 @@ const FieldSelect = ({
   return (
     <div className={`${className}  bottom-1 border-black p-4`}>
       <div className="  text-xs font-bold font-serif mx-4 bottom-1 border-black flex items-center">
-        {JSON.stringify(content?.map((d) => d.i + d.x + d.y))}
-        {mode === Mode.form || mode === Mode.filter ? (
-          <>
-            <div className="mt-3">
-              可见字段(
+        <div className="mt-3">
+          可见字段(
+          {mode === Mode.form || mode === Mode.filter ? (
+            <>
               {
                 fields.filter(
-                  (f) => f.x_hidden === false || f.x_hidden === undefined
+                  (f) =>
+                    f.x_hidden === false ||
+                    f.x_hidden === undefined ||
+                    f.x_hidden === null
                 ).length
               }
-              )
-            </div>
-            <div
-              className=" absolute right-2 cursor-pointer hover:text-blue-500"
-              onClick={() => setDraggable(!draggable)}
-            ></div>
-          </>
-        ) : (
-          <div>列表字段</div>
-        )}
+            </>
+          ) : (
+            <>
+              {
+                fields.filter(
+                  (f) =>
+                    f.listHide === false ||
+                    f.listHide === undefined ||
+                    f.listHide === null
+                ).length
+              }
+            </>
+          )}
+          )
+        </div>
       </div>
       <Divider margin="12px" align="left"></Divider>
       <div className="flex">
@@ -145,10 +152,13 @@ const FieldSelect = ({
         >
           {fields
             ?.filter((f) => {
-              return (
-                Object.keys(hide).filter((key) => f[key] === hide[key])
-                  .length !== Object.keys(hide).length
-              );
+              return mode === Mode.list
+                ? f.listHide === false ||
+                    f.listHide === undefined ||
+                    f.listHide === null
+                : f.x_hidden === false ||
+                    f.x_hidden === undefined ||
+                    f.x_hidden === null;
             })
             .sort(
               (a, b) =>
@@ -194,8 +204,9 @@ const FieldSelect = ({
                       type="tertiary"
                       theme="borderless"
                       onClick={() => {
-                        const a = { ...field, ...hide };
-                        quickField([a]);
+                        mode === Mode.list
+                          ? quickField([{ ...field, listHide: true }])
+                          : quickField([{ ...field, x_hidden: true }]);
                       }}
                       className={` text-blue-500`}
                       icon={<IconDeleteStroked />}
@@ -211,24 +222,20 @@ const FieldSelect = ({
       <Divider margin="12px" align="left" />
       <div className=" text-xs font-bold font-serif mx-4 bottom-1 border-black">
         不展示字段(
-        {
-          fields?.filter((f) => {
-            return (
-              Object.keys(hide).filter((key) => f[key] === hide[key]).length ===
-              Object.keys(hide).length
-            );
-          }).length
-        }
+        {mode === Mode.form || mode === Mode.filter ? (
+          <>{fields.filter((f) => f.x_hidden === true).length}</>
+        ) : (
+          <>{fields.filter((f) => f.listHide === true).length}</>
+        )}
         )
       </div>
       <Divider margin="8px" align="left"></Divider>
       <div className="  space-y-0 p-1">
         {fields
           ?.filter((f) => {
-            return (
-              Object.keys(hide).filter((key) => f[key] === hide[key]).length ===
-              Object.keys(hide).length
-            );
+            return mode === Mode.list
+              ? f.listHide === true
+              : f.x_hidden === true;
           })
           ?.map((field: FormFieldVo, index: number) => {
             return (
@@ -257,13 +264,9 @@ const FieldSelect = ({
                   type="tertiary"
                   theme="borderless"
                   onClick={() => {
-                    const openObj = Object.fromEntries(
-                      Object.entries(hide).map(([key, value]) => [
-                        key,
-                        typeof value === "boolean" ? !value : value,
-                      ])
-                    );
-                    quickField([{ ...field, ...openObj }]);
+                    mode === Mode.list
+                      ? quickField([{ ...field, listHide: false }])
+                      : quickField([{ ...field, x_hidden: false }]);
                   }}
                   icon={<IconPlus />}
                   style={{ margin: 12 }}

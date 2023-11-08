@@ -33,7 +33,10 @@ import cn.wwwlike.vlife.query.tran.MonthExpressTran;
 import cn.wwwlike.vlife.query.tran.YearExpressTran;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
+import com.querydsl.core.JoinExpression;
+import com.querydsl.core.QueryMetadata;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.SimpleExpression;
@@ -453,5 +456,16 @@ public class QueryHelper {
 //        }
 //        return list;
 //    }
+
+
+   //得到查询里用到的所有 entityPath对象
+    public static List<EntityPathBase> getQueryEntityPath(JPAQuery query){
+        QueryMetadata queryMetadata = query.getMetadata();
+        List<EntityPathBase> entityPaths = new ArrayList<>();
+        for (JoinExpression expression : queryMetadata.getJoins()) {
+                entityPaths.add((EntityPathBase) expression.getTarget());
+        }
+        return entityPaths;
+    }
 
 }

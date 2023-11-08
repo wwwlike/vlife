@@ -57,7 +57,6 @@ import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 /**
  * 条件过来的查询模型
- *
  * @param <T>
  */
 @Getter

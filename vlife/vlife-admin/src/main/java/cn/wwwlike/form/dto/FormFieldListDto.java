@@ -11,9 +11,9 @@ import lombok.Data;
 public class FormFieldListDto implements SaveBean<FormField> {
     public String id;
     /**
-     * 列显示
+     * 列隐藏
      */
-    public Boolean listShow;
+    public Boolean listHide;
     /**
      * 列宽
      */

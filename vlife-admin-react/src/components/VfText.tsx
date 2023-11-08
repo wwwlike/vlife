@@ -17,6 +17,7 @@ export const VfText = ({
   value,
   fieldInfo,
   optionList,
+  ...props
 }: {
   value: string | number | boolean | any[];
   fieldInfo: FormFieldVo;
@@ -33,6 +34,6 @@ export const VfText = ({
         : findOptionLabel(optionList, value)}
     </div>
   ) : (
-    <>{value}</>
+    <div className="formily-semi-text">{value}</div>
   );
 };

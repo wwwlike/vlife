@@ -122,7 +122,7 @@ export default ({
       )}
       {/* 填单属性数组，或者是,复杂对象数组且支持设置单个sub的 */}
       {propInfo.dataType === DataType.array &&
-        propInfo.dataSub !== undefined && (
+        (propInfo.dataSub !== undefined || propInfo.dataModel === "string") && (
           <div className="flex w-full justify-between text-sm ">
             <div
               onClick={create}

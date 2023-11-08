@@ -2,6 +2,7 @@ import { Field, Form } from '@formily/core';
 import {   FS_OPT, FS_PROP, FS_STATE,reaction, VF, VfAction, VfCondition } from '../../dsl/VF';
 import {  isBoolean, isNull, isNumber } from 'lodash';
 import { SchemaReaction } from '@formily/react';
+
 //手动级联响应与formily配合使用
 
 /**
@@ -19,14 +20,18 @@ export const execVfAction = (actions: VfAction[], form: Form,parentData:any) => 
         const prop: string = FS_STATE[r.state];
         if(typeof r.value==="function"){//1函数方式设置value
           const funcResult=r.value({...form.values,parent:parentData});
-          //1.1异步函数设置value
-          if (typeof funcResult === "object") {
+          if (funcResult instanceof Promise) {
             funcResult.then((d:any) => {
               form.setFieldState(fieldName, (state: any) => {
-                state[prop] = d;
+                if(d.code&&d.data){
+                  state[prop] = d.data;
+                }else{
+                  state[prop] = d;
+                }
               });
             });
           }else{//1.2同步函数设置value
+            // alert(fieldName+prop+JSON.stringify(funcResult))
             form.setFieldState(fieldName, (state: any) => {
               state[prop] =funcResult;
             });
@@ -84,7 +89,7 @@ export const  getObjElStr1=(depsIndex:number,condition:VfCondition|undefined,for
       }else if (condition.opt === FS_OPT.iSNOTNULL) {
         results.push(!isNull(leftVal))
       }else if (condition.opt === FS_OPT.iSNULL) {
-        results.push(isNull(leftVal))
+        results.push(leftVal===undefined||  isNull(leftVal))
       }else if (condition.opt === FS_OPT.LIKE) {
       }else if (condition.opt === FS_OPT.START_WITH) {
         results.push(leftVal.startsWith(rightFixedVal))

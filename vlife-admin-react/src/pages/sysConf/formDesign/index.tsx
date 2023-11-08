@@ -205,7 +205,6 @@ export default () => {
           key={currModel.type + "_fieldSelect"}
           fields={currModel.fields}
           mode={Mode.form}
-          hide={{ x_hidden: true }} //什么情况隐藏
           outSelectedField={currField}
           onDataChange={(fields: FormFieldVo[]) => {
             // 在更新 obj 时同时包含 num 属性

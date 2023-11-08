@@ -129,9 +129,8 @@ export default () => {
         <FieldSelect
           className=" bg-white w-64 h-full"
           key={currModel.type + "_fieldSelect"}
-          fields={currModel.fields.filter((x) => x.x_hidden !== true)}
+          fields={currModel.fields.filter((x) => x.fieldName !== "id")}
           mode={Mode.list}
-          hide={{ listShow: false }}
           outSelectedField={currField}
           onDataChange={(fields: FormFieldVo[]) => {
             // alert(fields.map((f) => f.fieldName + f.listSort).toString());

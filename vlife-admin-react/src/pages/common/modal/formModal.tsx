@@ -122,6 +122,7 @@ export const FormModal = createNiceModal(
           formBtns &&
           formBtns.length > 0 && (
             <BtnToolBar
+              entityName={modelInfo?.entityType || ""}
               key={"modalBtn"}
               btns={formBtns}
               model={props.type}

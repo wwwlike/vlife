@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Space, TagInput } from "@douyinfe/semi-ui";
 import { IFkItem } from "@src/api/base";
-import { find } from "@src/api/base/baseService";
+import { find, useDetail } from "@src/api/base/baseService";
 import { DataType } from "@src/dsl/base";
 import { VfBaseProps } from "@src/dsl/component";
 import TablePage from "@src/pages/common/tablePage";
 import { useUpdateEffect } from "ahooks";
+import FormPage from "@src/pages/common/formPage";
 
 interface RelationInputProps
   extends Partial<VfBaseProps<string | string[], IFkItem[]>> {
   req: any; //列表过滤条件
+  viewModel: string;
 }
 
 function queryData(
@@ -21,7 +23,7 @@ function queryData(
   });
 }
 /**
- * 外键关系的tagInput组件
+ * 外键关联选择预览
  */
 const RelationTagInput = ({
   datas, //选中的数据，已经将value里封装在里面了
@@ -30,6 +32,7 @@ const RelationTagInput = ({
   value,
   req,
   className,
+  viewModel,
   onDataChange,
 }: RelationInputProps) => {
   // 当前选中数据
@@ -46,10 +49,22 @@ const RelationTagInput = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (tagData && tagData[0]) {
+      getDetail(tagData[0].id, viewModel).then((d) => {
+        setFormData(d.data);
+      });
+    }
+  }, [tagData, viewModel]);
   /**
    * 列表选中的数据
    */
   const [tableSelectData, setTableSelectData] = useState<IFkItem[]>();
+
+  const { runAsync: getDetail } = useDetail({
+    entityType: fieldInfo?.entityType || "",
+  });
+  const [formData, setFormData] = useState<any>();
 
   useUpdateEffect(() => {
     onDataChange && onDataChange(tagData.map((d) => d.id));
@@ -98,24 +113,24 @@ const RelationTagInput = ({
         />
       </Modal>
       <>
-        {/* {JSON.stringify(tagData)} */}
-        <TagInput
-          className={className}
-          // showClear
-          placeholder={fieldInfo && fieldInfo.title}
-          value={tagData?.map((m) => m.name || m.no)}
-          defaultValue={tagData?.map((m) => m?.id)}
-          onFocus={() => setModalState(true)}
-          onRemove={(v, i) => {
-            const obj = [
-              ...tagData.filter((d, index) => {
-                return i !== index;
-              }),
-            ];
-            // alert(obj.length);
-            setTagData([...obj]);
-          }}
-        />
+        {tagData === undefined ||
+          (tagData.length === 0 && (
+            <TagInput
+              className={className}
+              placeholder={fieldInfo && fieldInfo.title}
+              onFocus={() => setModalState(true)}
+            />
+          ))}
+        {formData && tagData !== undefined && tagData.length > 0 && (
+          <FormPage
+            formData={formData}
+            className=" bg-slate-50 p-4 border rounded-xl "
+            type={viewModel}
+            fontBold={true}
+            terse={true}
+            readPretty={true}
+          />
+        )}
       </>
     </>
   );

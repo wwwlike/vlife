@@ -51,7 +51,7 @@ export interface FormField extends DbEntity {
   modify_read:boolean;//修改时只读
   divider:boolean;//该列之前加入分割线
   dividerLabel:string;//分割线标题
-  listShow: boolean; //列表展示
+  listHide: boolean; //列表展示
   listWidth:number;//列宽
   money:boolean;//是否金额
   listSort:number;//列排序
@@ -91,7 +91,7 @@ export interface FormFieldDto extends FormField {
   listWidth:number;//列宽
   money:boolean;//是否金额
   listSort:number;//列排序
-  listShow:boolean
+  listHide:boolean
   listAlign:"left"|"center"|"right"; //对其方式 left|center|right
   listSearch:boolean; //列表的搜索条件模糊搜索
   safeStr:boolean;//安全展示的字符串（张**）
@@ -168,6 +168,23 @@ export const remove = (id: string): Promise<Result<number>> => {
 export const listAll = (params: {
   formId: string;
 }): Promise<Result<FormField[]>> => {
-
   return apiClient.get(`/formField/list/all${params.formId?"?formId="+params.formId:""}`);
+};
+
+
+export const listGroupOption = (params: {
+  formId: string;
+}): Promise<Result<FormField[]>> => {
+  return apiClient.get(`/formField/list/groupOption${params.formId?"?formId="+params.formId:""}`);
+};
+
+/**
+ * 指定模块字段全量查询
+ * 后期支持查询指定字段类型
+ */
+ export const listRelationField = (params: {
+  realationFieldId: string;
+}): Promise<Result<FormField[]>> => {
+
+  return apiClient.get(`/formField/list/relationField${params.realationFieldId?"?realationFieldId="+params.realationFieldId:""}`);
 };

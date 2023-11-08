@@ -1,5 +1,7 @@
 import React from "react";
 import { FormItem, IFormItemProps } from "@formily/semi";
+import classNames from "classnames";
+import { Empty } from "@douyinfe/semi-ui";
 
 interface DesignFormItemProps extends IFormItemProps {
   children: any;
@@ -43,6 +45,11 @@ export default ({
                 highlight === fieldName ? "" : "hidden"
               }  group-hover:block  rounded-md left-0 top-0  absolute h-full w-full `}
             >
+              <div
+                className={` absolute bottom-0 right-0 text-sm text-red-300 hidden group-hover:block `}
+              >
+                左侧拖动排序
+              </div>
               {/* 屏蔽在按钮上进行隐藏和必填，存在bug() */}
               {/* {itemType !== "req" && (
                 <div className=" absolute items-center  right-0 bottom-1  bg-slate-50 rounded-md w-15  flex space-x-1">
@@ -79,13 +86,15 @@ export default ({
           }
           gridSpan={gridSpan}
           {...props}
-          className={`${
-            highlight === fieldName
-              ? "border-blue-300 border-2 "
-              : "hover:border-blue-100 hover:border-2 "
-          }  h-full pt-2 px-2 group cursor-pointer rounded-md  `}
+          className={`${classNames({
+            "border-blue-300 ": highlight === fieldName,
+            "border-white hover:border-blue-100": highlight !== fieldName,
+          })}  border-2  h-full pt-2 px-2 group cursor-pointer rounded-md  `}
         />
       }
     </>
   );
 };
+
+// ?
+// : " hover:border-2"

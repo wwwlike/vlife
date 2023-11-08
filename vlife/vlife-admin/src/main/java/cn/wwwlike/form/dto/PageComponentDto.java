@@ -1,6 +1,8 @@
 package cn.wwwlike.form.dto;
 
 import cn.wwwlike.form.entity.PageComponent;
+import cn.wwwlike.plus.report.dto.ReportFormDto;
+import cn.wwwlike.plus.report.entity.ReportForm;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 
@@ -66,15 +68,22 @@ public class PageComponentDto implements SaveBean<PageComponent> {
      * 组件置顶
      */
     public Boolean layoutTop;
+    /**
+     * 组件属性数据
+     * 待移除
+     */
+    public String componentPropJson;
 
     /**
      * 组件属性配置
+     * 自定义prop方式配置组件属性
      */
     public List<PageComponentPropDto> props;
 
     /**
-     * 组件属性数据
+     * 图表配置的组件属性配置
+     * 配置表单方式设置的组件属性
      */
-    public String componentPropJson;
+    public List<ReportFormDto> reportFormDto;
 
 }

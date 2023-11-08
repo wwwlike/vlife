@@ -103,6 +103,10 @@ public class VCT {
     public static final class DATE_WD{
         @Named("按年")
         public final static String Date_Year = "date_year";
+        @Named("按月")
+        public final static String Date_Month = "date_month";
+        @Named("按季")
+        public final static String Date_Month3 = "date_month3";
     }
 
 

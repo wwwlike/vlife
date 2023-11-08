@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Checkbox, Input, InputNumber, Select } from "@douyinfe/semi-ui";
+import {
+  Checkbox,
+  Input,
+  InputNumber,
+  Select,
+  Tooltip,
+} from "@douyinfe/semi-ui";
 import { TimePicker } from "@formily/semi";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
 import { DataModel, sourceType } from "@src/dsl/base";
@@ -40,9 +46,8 @@ export default ({
     subName,
     listNo,
   });
-
   const [selectOptions, setSelectOptions] = useState<Partial<selectObj>[]>();
-  //sourcetYpe 默认是固定值
+  //sourceType 默认是固定值
   const [type, setType] = useState<sourceType>(sourceType.fixed);
   //options非数组的另外两种模式产生数组数据
   useEffect(() => {
@@ -74,7 +79,6 @@ export default ({
   }, [propInfo]);
 
   useUpdateEffect(() => {
-    // alert(JSON.stringify(data));
     onDataChange({ ...data, sourceType: type });
   }, [data, type]);
 
@@ -95,7 +99,9 @@ export default ({
             </label>
           </div>
           {/* 1. 基础数据采用选项方式录入 */}
-          {propInfo.options ? (
+          {propInfo.fromField ? (
+            <>字段下拉选择</>
+          ) : propInfo.options ? (
             <>
               {/* 固定值域 */}
               {Array.isArray(propInfo.options) && (
@@ -170,6 +176,42 @@ export default ({
                 />
               )}
             </>
+          )}
+        </div>
+      )}
+
+      {propInfo.fromField === true && (
+        <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
+          <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-1 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
+            <label>
+              <i
+                style={{ fontSize: "14px" }}
+                className={` text-red-400 pr-2   entryIcon icon icon-laptop_mac z-40 `}
+              />
+              {propInfo.remark ? (
+                <Tooltip className="hide" content={propInfo.remark}>
+                  {propInfo.label}
+                </Tooltip>
+              ) : (
+                propInfo.label
+              )}
+            </label>
+          </div>
+          {formVo && (
+            <Select
+              showClear
+              className="w-full"
+              optionList={formVo.fields.map((f) => {
+                return {
+                  label: `${f.title}(${f.fieldName})`,
+                  value: f.fieldName,
+                };
+              })}
+              value={data.propVal}
+              onChange={(v) => {
+                setData({ ...data, propVal: v });
+              }}
+            />
           )}
         </div>
       )}

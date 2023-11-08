@@ -26,9 +26,7 @@ import cn.wwwlike.vlife.query.req.ComponentParam;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -108,6 +106,14 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
     public List<T> findName(ComponentParam params) {
         QueryWrapper<T> qw = QueryWrapper.of(entityClz).in("id", params.getIds());
         return service.find(qw);
+    }
+
+    /**
+     * 逻辑删除;
+     */
+    @DeleteMapping("/remove")
+    public Long remove(@RequestBody String[] ids) {
+        return service.remove(ids);
     }
 
 }

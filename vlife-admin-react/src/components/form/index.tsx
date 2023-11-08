@@ -80,14 +80,15 @@ export interface FormProps<T> {
   vf?: VF[]; //字段配置
   //单字段模式，只显示fieldMode里的一个字段
   fieldMode?: string;
+  componentProp?: { [fieldName: string]: object }; //为特定字段传入固定的入参属性
   //指定字段校验
-  validate?: {
-    //指定[key]字段的校验函数;校验函数： (val字段值：formData:整个表单数据)=>
-    [key: string]: (
-      val: any,
-      formData?: T
-    ) => string | Promise<Result<string>> | void;
-  };
+  // validate?: {
+  //   //指定[key]字段的校验函数;校验函数： (val字段值：formData:整个表单数据)=>
+  //   [key: string]: (
+  //     val: any,
+  //     formData?: T
+  //   ) => string | Promise<Result<string>> | void;
+  // };
   //表单数据改变时触发
   onDataChange?: (
     data: any, //表单数据
@@ -148,12 +149,13 @@ export default <T extends IdBean>({
   highlight,
   fieldMode,
   ignoredFields,
-  validate,
+  // validate,
   parentFormData,
   design = false,
   vf,
   terse = false,
   fontBold = false,
+  componentProp,
   onClickFieldComponent,
   onError,
   onDataChange,
@@ -208,11 +210,19 @@ export default <T extends IdBean>({
             //promise的typeof是object
             //1 异步promise函数
             funcResult.then((d) => {
-              execVfAction(
-                f.actions.filter((a) => (d.data ? a.fill : !a.fill)),
-                m,
-                parentFormData
-              );
+              if (typeof d === "boolean") {
+                execVfAction(
+                  f.actions.filter((a) => (d ? a.fill : !a.fill)),
+                  m,
+                  parentFormData
+                );
+              } else {
+                execVfAction(
+                  f.actions.filter((a) => (d.data ? a.fill : !a.fill)),
+                  m,
+                  parentFormData
+                );
+              }
             });
           } else {
             //2 同步函数
@@ -622,7 +632,7 @@ export default <T extends IdBean>({
             //     highlight === f.fieldName ? "rgba(33, 150, 243, 0.15)" : "",
             // },
             itemType: modelInfo.itemType,
-            feedbackLayout: terse ? "terse" : "",
+            feedbackLayout: terse || readPretty ? "terse" : "",
             // extra: "描述文案",
             onClick: (fieldName: string, opt: "click" | "delete" | "must") => {
               //点击组件上的按钮
@@ -758,6 +768,7 @@ export default <T extends IdBean>({
         if (!sysComponents.includes(f.x_component)) {
           prop["x-component-props"] = {
             ...prop["x-component-props"],
+            ...componentProp?.[f.fieldName],
             design: design,
             onForm: (subForm: Form | Form[]) => {},
             onDataChange: (data: any) => {
@@ -930,6 +941,7 @@ export default <T extends IdBean>({
     parentFormData,
     highlight,
     form,
+    componentProp,
     vf,
   ]);
 

@@ -5,6 +5,7 @@ import { useAuth } from "@src/context/auth-context";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuVo } from "@src/api/SysMenu";
 import { MenuItem } from "../../types";
+import { useSize } from "ahooks";
 
 const { Sider } = Layout;
 export function renderIcon(icon: any) {
@@ -42,6 +43,18 @@ const Index = ({
   onClick: (menuVo: MenuVo) => void;
 }) => {
   const navigate = useNavigate();
+
+  const [height, setHeight] = useState(window.innerHeight);
+  useEffect(() => {
+    const handleResize = () => {
+      setHeight(window.innerHeight);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const { pathname } = useLocation();
   const [openKeys, setOpenKeys] = useState<string[]>([]); //打开节点
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]); //选中节点
@@ -50,6 +63,7 @@ const Index = ({
    * 当前应用当前用户拥有权限下的所有菜单
    */
   const currAppMenuList = useMemo(() => {
+    // const size useSize()
     const nav = (root: MenuVo): MenuItem[] => {
       return menus
         .sort((a, b) => a.sort - b.sort)
@@ -112,41 +126,35 @@ const Index = ({
   }, [pathname, currAppMenuList]);
 
   return currAppMenuList && currAppMenuList.length > 0 ? (
-    <>
-      <Sider
-        className="shadow-lg !border-red-800"
-        style={{
-          height: "100%",
-          // backgroundColor: "var(--semi-color-bg-1)",
+    <Sider>
+      <Nav
+        bodyStyle={{ height: `${height - 110}px` }}
+        className="!overflow-y-auto  "
+        items={currAppMenuList}
+        openKeys={
+          openKeys && openKeys.length > 0 ? openKeys : [currAppMenuList[0].id]
+        } //打开父节点
+        selectedKeys={
+          selectedKeys
+          // && selectedKeys.length > 0
+          //   ? selectedKeys
+          //   : currAppMenuList &&
+          //     currAppMenuList.length > 0 &&
+          //     currAppMenuList[0].items &&
+          //     currAppMenuList[0].items.length > 0
+          //   ? [currAppMenuList[0].items[0].id]
+          //   : []
+        } //选中的子节点
+        onSelect={onSelect}
+        onOpenChange={onOpenChange}
+        style={{ maxWidth: 220, height: "100%" }}
+        onCollapseChange={(open: boolean) => {
+          setMenuState(open ? "mini" : "show");
         }}
       >
-        <Nav
-          items={currAppMenuList}
-          openKeys={
-            openKeys && openKeys.length > 0 ? openKeys : [currAppMenuList[0].id]
-          } //打开父节点
-          selectedKeys={
-            selectedKeys
-            // && selectedKeys.length > 0
-            //   ? selectedKeys
-            //   : currAppMenuList &&
-            //     currAppMenuList.length > 0 &&
-            //     currAppMenuList[0].items &&
-            //     currAppMenuList[0].items.length > 0
-            //   ? [currAppMenuList[0].items[0].id]
-            //   : []
-          } //选中的子节点
-          onSelect={onSelect}
-          onOpenChange={onOpenChange}
-          style={{ maxWidth: 220, height: "100%" }}
-          onCollapseChange={(open: boolean) => {
-            setMenuState(open ? "mini" : "show");
-          }}
-        >
-          <Nav.Footer collapseButton={true} />
-        </Nav>
-      </Sider>
-    </>
+        <Nav.Footer className=" absolute bottom-0" collapseButton={true} />
+      </Nav>
+    </Sider>
   ) : (
     <></>
   );

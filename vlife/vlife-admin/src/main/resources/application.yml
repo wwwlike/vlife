@@ -18,7 +18,10 @@ spring:
     　max-wait-millis: 20000        #等待连接获取的最大超时时间
   aop:
     proxy-target-class: true
-
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write-dates-as-timestamps: false
 security:
   basic:
     enable: true # 避免跳到security的登录界面

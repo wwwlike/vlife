@@ -10,6 +10,7 @@ import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
 import { Button, Space, SplitButtonGroup } from "@douyinfe/semi-ui";
 import { useSize } from "ahooks";
+import { VfAction } from "@src/dsl/VF";
 const mode = import.meta.env.VITE_APP_MODE;
 
 /**
@@ -19,6 +20,7 @@ const mode = import.meta.env.VITE_APP_MODE;
 export interface ContentProps<T extends IdBean> extends TablePageProps<T> {
   title: string; //页面标题
   filterType: string; //左侧布局查询条件模型
+  filterReaction: VfAction[];
   onReq?: (req: any) => void; //过滤条件回传
 }
 
@@ -149,6 +151,7 @@ const Content = <T extends IdBean>({
           <FormPage
             title={`${tableModel?.name}查询`}
             key={`filter${filterType}`}
+            reaction={props.filterReaction}
             formData={req}
             // fontBold={true}
             onDataChange={(data) => {
@@ -218,7 +221,7 @@ const Content = <T extends IdBean>({
           req={tableReq}
           reaction={props.reaction}
           btns={btns}
-          columnSearch={filterType !== undefined ? false : true}
+          columnTitle={filterType !== undefined ? "sort" : true}
           // formVo={model}
           //列表数据回传
           //模型信息回传

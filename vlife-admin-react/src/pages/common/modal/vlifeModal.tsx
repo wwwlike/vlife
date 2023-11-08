@@ -5,6 +5,7 @@ import React, { ReactNode, useCallback, useEffect } from "react";
  */
 export interface modalProps {
   width?: number; //宽度
+  height?: number;
   title?: string; //
   children: ReactNode; // 子函数
   okFun: () => Promise<any>; //点击确认回调的方法
@@ -14,7 +15,14 @@ export interface modalProps {
  */
 export const vlifeModal = createNiceModal(
   "vlifeModal",
-  ({ children, width = 800, title = "", okFun, ...prop }: modalProps) => {
+  ({
+    children,
+    width = 800,
+    height = 900,
+    title = "",
+    okFun,
+    ...prop
+  }: modalProps) => {
     const modal = useNiceModal("vlifeModal");
     useEffect(() => {}, [title]);
     return (
@@ -22,6 +30,7 @@ export const vlifeModal = createNiceModal(
         id="vlifeModal"
         title={title}
         width={width}
+        height={height}
         onOk={() => {
           okFun();
           modal.hide();

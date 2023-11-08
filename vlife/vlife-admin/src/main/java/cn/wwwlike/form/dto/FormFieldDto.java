@@ -241,7 +241,7 @@ public class FormFieldDto  implements SaveBean<FormField> {
     /**
      * 是否列表展示
      */
-    public Boolean listShow;
+    public Boolean listHide;
     /**
      * 列宽
      */

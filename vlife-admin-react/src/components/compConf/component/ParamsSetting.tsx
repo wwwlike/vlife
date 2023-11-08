@@ -13,6 +13,8 @@ import { useUpdateEffect } from "ahooks";
 import { ParamsInfo, selectObj } from "../compConf";
 import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
+import { Field } from "@formily/core";
+import { frFR } from "handsontable/i18n";
 
 /**
  * 接口入参设置
@@ -192,6 +194,42 @@ export default ({
                 />
               )}
             </>
+          )}
+        </div>
+      )}
+      {paramInfo.fromField === true && (
+        <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
+          <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-1 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
+            <label>
+              <i
+                style={{ fontSize: "14px" }}
+                className={` text-red-400 pr-2   entryIcon icon icon-laptop_mac z-40 `}
+              />
+              {paramInfo.remark ? (
+                <Tooltip className="hide" content={paramInfo.remark}>
+                  {paramInfo.label}
+                </Tooltip>
+              ) : (
+                paramInfo.label
+              )}
+            </label>
+          </div>
+          {formVo && (
+            <Select
+              showClear
+              className="w-full"
+              optionList={formVo.fields.map((f) => {
+                return { label: f.title, value: f.fieldName };
+              })}
+              value={data.paramVal}
+              onChange={(v) => {
+                setData({
+                  ...data,
+                  sourceType: type,
+                  paramVal: v?.toString(),
+                });
+              }}
+            />
           )}
         </div>
       )}

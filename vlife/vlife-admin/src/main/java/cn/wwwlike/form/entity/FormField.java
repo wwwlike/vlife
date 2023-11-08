@@ -235,9 +235,9 @@ public class FormField extends DbEntity {
      */
     public Integer listSort;
     /**
-     * 是否列表展示
+     * 列隐藏
      */
-    public Boolean listShow;
+    public Boolean listHide;
     /**
      * 列宽
      */

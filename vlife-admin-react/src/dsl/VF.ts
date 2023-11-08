@@ -2,7 +2,8 @@ import {  Result } from '@src/api/base';
 
 //when条件是复杂逻辑的函数接口
 export interface whenResult {
-  (formData:any):boolean|Promise<Result<boolean>>
+  // 同步校验|
+  (formData:any):boolean|Promise<boolean>|Promise<Result<boolean>>
 }
 
 //数据对比模式
@@ -65,6 +66,8 @@ export interface reaction{
     //响应内容
     public reations:reaction[]=[];
 
+    
+
     getFields():string[]{
       return this.fields
     }
@@ -107,7 +110,7 @@ export interface reaction{
     va.fill=false;//不满足时响应
     return va;
   }
-  // fetch,//远程数据
+  // any为函数时则支持数据计算，函数需要支持返回的是Promise结果
   value(value:any):VfAction{
     this.reations.push({
       state:FS_STATE.value,value

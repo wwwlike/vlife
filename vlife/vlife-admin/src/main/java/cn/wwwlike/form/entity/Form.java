@@ -109,11 +109,10 @@ public class Form extends DbEntity {
      */
     public String prefixNo;
 
-//    /**
-//     * 紧凑布局
-//     * terse
-//     */
-//    public boolean terse;
-
+    /**
+     * 关联表展示字段name
+     * 作为外键表展示字段name,为空则依次是name.title,no,id
+     */
+    public String itemName;
 
 }

@@ -14,6 +14,7 @@
     "@formily/core": "^2.1.4",
     "@formily/react": "^2.1.4",
     "@formily/semi": "^1.0.1-beta.2",
+    "@handsontable/react": "^13.1.0",
     "@semi-bot/semi-theme-doucreator": "^1.0.18",
     "@semi-bot/semi-theme-universedesign": "^1.0.12",
     "@tailwindcss/jit": "^0.1.18",

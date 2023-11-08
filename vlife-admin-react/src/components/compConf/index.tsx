@@ -57,7 +57,7 @@ export default ({
       {Object.keys(propInfos).map((propName) => {
         const dType = propInfos[propName].dataType; //数据大类
         return (
-          <div key={propName}>
+          <div key={propName} className=" border-b border-dashed">
             {dType === DataType.basic && (
               <>
                 <BasicSetting
@@ -116,23 +116,20 @@ export default ({
               </>
             )}
             {dType === DataType.object && (
-              <>
-                object
-                <ObjectSetting
-                  lineNo={lineNo}
-                  formVo={formVo}
-                  field={field}
-                  propName={parentName || propName}
-                  propInfo={propInfos[propName]}
-                  value={filterPropDbSettingInfo(propName)}
-                  onDataChange={(datas: Partial<PageComponentPropDto>[]) => {
-                    onDataChange([
-                      ...value.filter((v) => v.propName !== propName),
-                      ...datas,
-                    ]);
-                  }}
-                />
-              </>
+              <ObjectSetting
+                lineNo={lineNo}
+                formVo={formVo}
+                field={field}
+                propName={parentName || propName}
+                propInfo={propInfos[propName]}
+                value={filterPropDbSettingInfo(propName)}
+                onDataChange={(datas: Partial<PageComponentPropDto>[]) => {
+                  onDataChange([
+                    ...value.filter((v) => v.propName !== propName),
+                    ...datas,
+                  ]);
+                }}
+              />
             )}
             {dType === DataType.array && (
               <ArraySetting

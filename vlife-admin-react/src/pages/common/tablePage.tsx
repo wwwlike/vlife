@@ -325,6 +325,25 @@ const TablePage = <T extends IdBean>({
       ) {
         b.model = entity;
       }
+      //编辑模型和列表模型不一致，并且没有给出加载数据的方法，则使用通用方法
+      if (
+        b.model &&
+        b.model !== listType &&
+        b.loadApi === undefined &&
+        b.actionType !== "create"
+      ) {
+        b.loadApi = (id: string): Promise<Result<any>> => {
+          return getDetail(id, b.model);
+        };
+      }
+
+      if (
+        b.model === undefined &&
+        b.saveApi === undefined &&
+        b.actionType === "view"
+      ) {
+        b.model = listType;
+      }
       if (
         b.saveApi &&
         (b.permissionCode === undefined || b.permissionCode === null)
@@ -365,7 +384,7 @@ const TablePage = <T extends IdBean>({
           saveApi: save(tableModel?.entityType || "", editModelType),
         },
         {
-          title: "查看",
+          title: "修改",
           actionType: "edit",
           multiple: false,
           permissionCode: savePermissionCode,
@@ -429,9 +448,9 @@ const TablePage = <T extends IdBean>({
     let fkObj: any = {};
     const fkField = tableModel?.fields.filter((f: FormFieldVo) => {
       return (
-        (f.listShow === undefined ||
-          f.listShow === null ||
-          f.listShow === true) &&
+        (f.listHide === undefined ||
+          f.listHide === null ||
+          f.listHide === false) &&
         f.entityFieldName === "id" &&
         tableModel?.entityType !== f.entityType
       );
@@ -446,7 +465,7 @@ const TablePage = <T extends IdBean>({
           const d = async () =>
             await find(f.entityType, "id", ids).then((data) => {
               data.data?.forEach((e: any) => {
-                fkObj[e.id] = e.name || e.title;
+                fkObj[e.id] = e.name || e.title || e.no;
               });
               return fkObj;
             });
@@ -525,6 +544,7 @@ const TablePage = <T extends IdBean>({
       >
         {/* 1. 按钮组 */}
         <BtnToolBar<T>
+          entityName={tableModel.entityType}
           key={"tableBtn"}
           onDataChange={(datas: any[]): void => {
             //根据id更新行数据，则可以不强制刷新

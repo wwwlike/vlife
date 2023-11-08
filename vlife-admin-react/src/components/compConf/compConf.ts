@@ -11,10 +11,11 @@ export type selectObj={label:string,value:any,default ?:boolean,remark?:string}
 export type optionObj=
 {func:()=>Promise<Result<any[]>>,labelKey:string,valueKey:string}
 // 固定值类型选项结构
-export type Options=selectObj[]| //手写指定选项范围
-optionObj |//从指定函数返回值取2个字段作为选项名和值
+export type Options=
+selectObj[]| //手写指定选项范围
+optionObj |//指定接口
  ((form?:FormVo,field?:FormFieldVo)=>Promise<Partial<selectObj>[]>)// 异步函数可封装逻辑组装options  
-export  type CompProp={[key:string]:(CompPropInfo|string|boolean|number|Date|Array<any>|ReactNode|Function)};
+export  type CompProp={[key:string]:(CompPropInfo|string|boolean|number|Date|Array<any>|ReactNode|Function|object)};
 
 export interface ViewComponentProps{
   title?:string; //标题
@@ -45,6 +46,7 @@ export interface CompInfo{
   props?:CompProp//属性配置/固定值  组件属性配置方法1
   //页面级组件使用
   propForm?:any;// any是组件实例；采用formily表单方式来进行组件属性设置 组件属性配置方法2
+  propFormComponentProp?:any;// 固定传的属性值
   key?:string; //组件标识(页面组件使用)
   w?: number,//组件在grid布局里的宽度
   h?: number,//组件在grid布局里的高度
@@ -57,10 +59,13 @@ export interface ParamsInfo{
   label:string, //参数名称
   must?:boolean;//必填参数
   dataModel:DataModel|string //参数类型
+  // sourceType:"field"|"fixed"//接口入参数据来源 取字段
   remark?:string;//参数说明
   // 参数(接口参数/组件属性)来源选择
   options?:Options, //来源于指定selectObj/接口组装的范围；对于出参是ISelect的也可以
-  fromField?:{entity:string,field:string}//指定使用某个字段，如当前没有则使用父组件上的该字段 （page方式不支持）
+  //true:提供select进行选择；
+  //{entity:string,field:string} 查找指定的字段，如当前没有则使用父组件上的该字段；已经实现，在propload时进行
+  fromField?:true|{entity:string,field:string}
 
 }
 

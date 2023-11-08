@@ -52,7 +52,7 @@ public class FormService extends VLifeService<Form, FormDao> {
                 dto.setRequired(true);
             }
             if(dto.getFieldName().equals("password")){
-                dto.setListShow(false);
+                dto.setListHide(true);
             }
         }
         PageComponentPropDto prop=null;
@@ -116,7 +116,7 @@ public class FormService extends VLifeService<Form, FormDao> {
         }
         if(dto.getFieldName().equals("no")&&INo.class.isAssignableFrom(javaDto.getClz())){
             dto.setX_hidden(true);
-            dto.setListShow(true);
+            dto.setListHide(false);
         }
         dto.setX_component(x_component);
         return dto;

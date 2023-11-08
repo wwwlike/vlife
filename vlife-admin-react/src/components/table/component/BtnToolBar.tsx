@@ -7,11 +7,13 @@ import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
 import { objectIncludes } from "@src/util/func";
 import { VFBtn } from "../types";
+import { IconButtonStroked } from "@douyinfe/semi-icons";
 
 /**
  * 区块按钮组定义
  */
 export interface BtnToolBarProps<T extends IdBean> {
+  entityName: string; //当前模块
   btns: VFBtn[]; //按钮对象
   model?: string; //模型名称 只取该模型相关的按钮
   datas?: T[]; //操作的数据
@@ -26,6 +28,7 @@ export interface BtnToolBarProps<T extends IdBean> {
   dataComputer?: { funs: (data: any) => any; watchFields?: string[] };
   readPretty?: boolean; //当前页面模式
   onDataChange: (datas: any[]) => void; //数据修订好传输出去
+  onBtnNum?: (num: number) => void; //当前按钮数量
 }
 
 /**
@@ -42,6 +45,8 @@ export default <T extends IdBean>({
   model,
   readPretty,
   onDataChange,
+  entityName,
+  onBtnNum,
   ...props
 }: BtnToolBarProps<T>) => {
   const { Text } = Typography;
@@ -54,44 +59,50 @@ export default <T extends IdBean>({
     setBtnDatas(datas);
   }, [datas]);
   //数据提交
-  const submit = useCallback((vfBtn: VFBtn, saveApiObj: T[], index: number) => {
-    const savaData = vfBtn.onSaveBefore
-      ? vfBtn.onSaveBefore(vfBtn.multiple ? saveApiObj : saveApiObj[0])
-      : vfBtn.multiple
-      ? saveApiObj
-      : saveApiObj[0];
-    const save = (btn: VFBtn, saveApiFunc: any) => {
-      setLoadbtn(`${position}btn${index}`);
-      return saveApiFunc(savaData).then(
-        (d: Result<any>) => {
-          onDataChange([d.data]);
-          setTimeout(() => {
-            if (btn.submitClose) {
-              formModal.hide();
-            }
-            if (btn.onSubmitFinish) {
-              btn.onSubmitFinish(d.data);
-            }
-            setLoadbtn(undefined);
-          }, 500);
-        },
-        (error: any) => {
-          setTimeout(() => {
-            setLoadbtn(undefined);
-          }, 500);
-        }
-      );
-    };
-    if (vfBtn.saveApi && saveApiObj) {
-      return vfBtn.onFormilySubmitCheck
-        ? vfBtn.onFormilySubmitCheck().then((dLboolean) => {
-            return save(vfBtn, vfBtn.saveApi);
-          })
-        : save(vfBtn, vfBtn.saveApi);
-    } else if (vfBtn.onClick) {
-      vfBtn.onClick(savaData);
-    }
-  }, []);
+  const submit = useCallback(
+    (vfBtn: VFBtn, saveApiObj: T[], index: number) => {
+      // if(position==="line")
+
+      const savaData = vfBtn.onSaveBefore
+        ? vfBtn.onSaveBefore(vfBtn.multiple ? saveApiObj : saveApiObj[0])
+        : vfBtn.multiple
+        ? saveApiObj
+        : saveApiObj[0];
+
+      const save = (btn: VFBtn, saveApiFunc: any) => {
+        setLoadbtn(`${position}btn${index}`);
+        return saveApiFunc(savaData).then(
+          (d: Result<any>) => {
+            onDataChange([d.data]);
+            setTimeout(() => {
+              if (btn.submitClose) {
+                formModal.hide();
+              }
+              if (btn.onSubmitFinish) {
+                btn.onSubmitFinish(d.data);
+              }
+              setLoadbtn(undefined);
+            }, 500);
+          },
+          (error: any) => {
+            setTimeout(() => {
+              setLoadbtn(undefined);
+            }, 500);
+          }
+        );
+      };
+      if (vfBtn.saveApi && saveApiObj) {
+        return vfBtn.onFormilySubmitCheck
+          ? vfBtn.onFormilySubmitCheck().then((dLboolean) => {
+              return save(vfBtn, vfBtn.saveApi);
+            })
+          : save(vfBtn, vfBtn.saveApi);
+      } else if (vfBtn.onClick) {
+        vfBtn.onClick(savaData);
+      }
+    },
+    [position]
+  );
 
   //按钮点击
   const btnClick = useCallback(
@@ -136,7 +147,11 @@ export default <T extends IdBean>({
   const btnTitle = useCallback(
     (btn: VFBtn): string => {
       //对于编辑类型按钮(actionType=edit)在表单页且按钮模型和表单模型一致，则名称改为保存
-      if (btn.actionType !== "api" && position === "formFooter") {
+      if (
+        btn.actionType !== "api" &&
+        position === "formFooter" &&
+        (btn.title === "新增" || btn.title === "修改")
+      ) {
         return "保存";
       }
       return btn.title;
@@ -151,23 +166,21 @@ export default <T extends IdBean>({
           type: btn.model,
           formData: btn.actionType === "create" ? {} : data,
           btns,
-          readPretty: btn.actionType === "api" ? true : false,
-          fontBold: btn.actionType === "api" ? true : false,
+          terse: btn.actionType === "view" ? true : false,
+          readPretty:
+            btn.actionType === "api" || btn.actionType === "view"
+              ? true
+              : false,
+          fontBold: btn.actionType === "view" ? true : false,
           onDataChange(d: any) {
             setBtnDatas([d]);
           },
-          ...props,
+          reaction: btn.reaction || props.reaction,
+          // ...props,
         });
       };
       if (btn.loadApi === undefined) {
-        modal(
-          btnDatas?.[0] || btn.initData || {}
-          // btn.actionType === "create"
-          //   ? btn.initData || {}
-          //   : btnDatas
-          //   ? btnDatas[0]
-          //   : undefined
-        );
+        modal(btnDatas?.[0] || btn.initData || {});
       } else if (btnDatas) {
         btn.loadApi(btnDatas[0].id).then((d) => {
           modal(d.data);
@@ -188,18 +201,24 @@ export default <T extends IdBean>({
     [btnDatas]
   );
 
-  //可用性比对检查 false不可用， true可用
-  const usableMatch = useCallback(
-    (btn: VFBtn, index: number): boolean | string => {
-      // const data = btnDatas ? btnDatas.filter((b) => b.id) : [];
+  //可用性比对检查 false&&string不可用， true可用
+  const btnUsableMatch = useCallback(
+    (btn: VFBtn): boolean | string => {
       if (
         btn.actionType !== "create" &&
+        btn.actionType !== "createEdit" &&
         (btnDatas === undefined || btnDatas?.length === 0)
       ) {
         //1 没有选中数据，非创建类按钮不可用
         return false;
-      }
-      if (btn.usableMatch === undefined) {
+      } else if (
+        (btn.actionType === "create" || btn.actionType === "createEdit") &&
+        (btnDatas === undefined ||
+          btnDatas?.length === 0 ||
+          btnDatas[0].id === undefined)
+      ) {
+        return true;
+      } else if (btn.usableMatch === undefined) {
         return true;
       } else if (typeof btn.usableMatch === "boolean") {
         //布尔值匹配
@@ -212,8 +231,14 @@ export default <T extends IdBean>({
             .length === btnDatas?.length
         );
       } else if (typeof btn.usableMatch === "function") {
-        const btnTooltip = btn.usableMatch(btnDatas);
-        if (typeof btnTooltip === "string") {
+        const btnTooltip = btn.usableMatch(
+          position === "tableToolbar"
+            ? btnDatas
+            : btnDatas
+            ? btnDatas[0]
+            : undefined
+        );
+        if (typeof btnTooltip === "string" || typeof btnTooltip === "boolean") {
           return btnTooltip;
         } else {
           return true;
@@ -221,11 +246,11 @@ export default <T extends IdBean>({
       }
       return true;
     },
-    [btnDatas]
+    [btnDatas, position]
   );
 
-  //当前模式下的可用按钮数组
-  const currBtns = useMemo(() => {
+  //支持在当前场景下使用的按钮
+  const currBtns = useMemo((): VFBtn[] => {
     let toolBarBtns: VFBtn[] = [];
     if (position === "tableToolbar") {
       //列表工具栏 新增和操作多个数据的按钮
@@ -241,38 +266,56 @@ export default <T extends IdBean>({
       //明细页按钮
       if (btnDatas === undefined || btnDatas[0].id === undefined) {
         //新增
-        toolBarBtns = btns
-          .filter((b) => b.actionType === "create")
-          .filter((btn) => (model ? btn.model === model : true));
+        toolBarBtns = btns.filter(
+          (b) =>
+            (b.actionType === "create" || b.actionType === "createEdit") &&
+            (model ? b.model === model : true)
+        );
         return toolBarBtns;
       } else {
         toolBarBtns = btns.filter(
           (b) =>
             b.actionType !== "create" &&
+            b.actionType !== "view" &&
             (b.multiple === false || b.multiple === undefined)
         );
       }
     }
-    return toolBarBtns
-      .filter((btn, index) => (model ? btn.model === model : true)) //有传模型名称，则当前场景的按钮都是该模型
-      .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //预览模式下，则只有api直接操作的按钮可用
-      .filter((btn) => permissionCheck(btn)); //没权限不展示
-    // .filter((btn) => {
-    //   return !(btn.disabledHide && !usableMatch(btn)); //disabled且hide的也不展示
-    // });
+
+    const buttons: VFBtn[] = toolBarBtns
+      .filter((btn) => (model ? btn.model === model : true))
+      .filter((btn) => (readPretty ? btn.actionType === "api" : true))
+      .filter((btn) => permissionCheck(btn))
+      .map((btn) => {
+        const tooltip = btnUsableMatch(btn);
+        const disabled = typeof tooltip === "boolean" ? !tooltip : true;
+        return typeof tooltip === "string"
+          ? { ...btn, tooltip, disabled: disabled }
+          : { ...btn, disabled };
+      })
+      .filter((btn) => {
+        return !(btn.disabledHide === true && btn.disabled);
+      });
+    return buttons;
   }, [position, btns, btnDatas, model, readPretty]);
+
+  useEffect(() => {
+    onBtnNum && onBtnNum(currBtns.length);
+  }, [currBtns]);
 
   return (
     <div className={`${className} space-x-1`}>
       {currBtns.map((btn, index) => {
-        const tooltip = usableMatch(btn, index);
-        const disabled = typeof tooltip === "boolean" ? !tooltip : true;
+        // const tooltip = btnUsableMatch(btn);
+        // const disabled = typeof tooltip === "boolean" ? !tooltip : true;
         const Btn: any = position === "tableLine" ? Text : Button;
         const key = `${position}btn${index}`;
         const BtnComp = (
           <Btn
             onClick={() => {
-              btnClick(btn, index);
+              if (!btn.disabled) {
+                btnClick(btn, index);
+              }
             }}
             loading={loadbtn && loadbtn === key}
             theme={`${btnTitle(btn) === "保存" ? "solid" : "light"}`}
@@ -282,17 +325,16 @@ export default <T extends IdBean>({
             })} `}
             key={key}
             icon={position === "tableLine" ? undefined : btn.icon}
-            disabled={disabled}
+            disabled={btn.disabled}
           >
+            {/* {JSON.stringify(btn.disabled)} */}
             {btnTitle(btn)}
           </Btn>
         );
-        return btn.disabledHide && disabled ? (
-          ""
-        ) : (
+        return (
           <span key={`${position}btn${index}`}>
-            {typeof tooltip === "string" ? (
-              <Tooltip content={tooltip}>{BtnComp}</Tooltip>
+            {btn.tooltip ? (
+              <Tooltip content={btn.tooltip}>{BtnComp}</Tooltip>
             ) : (
               BtnComp
             )}

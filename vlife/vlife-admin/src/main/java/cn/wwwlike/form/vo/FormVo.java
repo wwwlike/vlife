@@ -119,6 +119,8 @@ public class FormVo implements VoBean<Form> {
   @VField(skip = true)
   public List<FormVo> subForm;
 
+
+  public String  itemName;
 //  /**
 //   * 紧凑布局
 //   * terse

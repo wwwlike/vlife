@@ -21,7 +21,7 @@ const formatter = new Intl.NumberFormat("zh-CN", {
 });
 export interface ListProps<T extends IdBean> {
   className?: string;
-  columnSearch?: boolean; //列头搜索
+  columnTitle?: "search" | "sort" | true | false; //列头展示形式
   width?: number; //列表宽度（通过外围屏幕宽度减去 搜索宽度）
   model: FormVo; //模型信息
   selected?: T[];
@@ -51,7 +51,7 @@ const TableIndex = <T extends IdBean>({
   model,
   dataSource,
   fkMap,
-  columnSearch = true,
+  columnTitle = true,
   column,
   parentMap,
   select_more,
@@ -71,20 +71,11 @@ const TableIndex = <T extends IdBean>({
 }: ListProps<T>) => {
   //字典集
   const { dicts } = useAuth();
+  const [lineBtnMax, setListBtnMax] = useState<number>(0);
 
   const btnWidth = useMemo((): number => {
-    const filterBtns = btns.filter(
-      (b) => b.actionType !== "create" && b.multiple !== true
-    );
-    //所有button标题字符串长度
-    const titleStrLength = filterBtns
-      .map((b) => b.title.length)
-      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-    return titleStrLength > 0
-      ? titleStrLength * 25 + titleStrLength * (12 - titleStrLength)
-      : 0;
-  }, [btns]);
+    return lineBtnMax === 0 ? 100 : lineBtnMax * 50 + 20;
+  }, [lineBtnMax]);
   // 选中的行记录
   const [selectedRow, setSelectedRow] = useState<T[]>(selected || []);
   useEffect(() => {});
@@ -116,8 +107,8 @@ const TableIndex = <T extends IdBean>({
     const columnshow: Partial<ColumnProps>[] = [];
     if (model && model.fields) {
       let temp: ColumnProps[] = [];
-      //column->手工指定展示的列
       if (column) {
+        //指定列展示
         model.fields
           .filter((f) => column.includes(f.fieldName))
           .forEach((d) => {
@@ -133,16 +124,17 @@ const TableIndex = <T extends IdBean>({
           })
         );
       } else {
-        const list = model.fields // 根据配置展示需要的列 是editor组件类型的列不展示
+        //根据配置展示
+        const list = model.fields
           .filter(
             (f) =>
-              f.x_hidden !== true && //表单隐藏则列表页隐藏
-              f.listShow !== false && //
+              f.listHide !== true &&
               !ignores.includes(f.fieldName) &&
-              f.x_component !== "VfEditor"
+              f.fieldName !== "id" &&
+              f.x_component !== "VfEditor" &&
+              f.dataType !== "array"
           )
           .sort((a, b) => a.listSort - b.listSort);
-
         // 已经占用的宽度(设置的宽度和+按钮组宽度)
         const usedWidth =
           list
@@ -172,32 +164,37 @@ const TableIndex = <T extends IdBean>({
         list.forEach((f) => {
           columnshow.push({
             ...f,
-            title: (
-              <ColumnTitle
-                columnSearch={columnSearch}
-                entityName={model.entityType}
-                option={f.dictCode ? dicts[f.dictCode].data : undefined}
-                field={f}
-                where={wheres?.filter((w) => w.fieldId === f.id)}
-                onFilter={(where: Partial<where>[] | void) => {
-                  if (onColumnFilter) {
-                    if (where) {
-                      onColumnFilter([
-                        ...wheres.filter((t) => t.fieldId !== f.id),
-                        ...where,
-                      ]);
-                    } else {
-                      onColumnFilter(wheres.filter((t) => t.fieldId !== f.id));
+            title:
+              columnTitle !== false ? (
+                <ColumnTitle
+                  opt={columnTitle}
+                  entityName={model.entityType}
+                  option={f.dictCode ? dicts[f.dictCode]?.data : undefined}
+                  field={f}
+                  where={wheres?.filter((w) => w.fieldId === f.id)}
+                  onFilter={(where: Partial<where>[] | void) => {
+                    if (onColumnFilter) {
+                      if (where) {
+                        onColumnFilter([
+                          ...wheres.filter((t) => t.fieldId !== f.id),
+                          ...where,
+                        ]);
+                      } else {
+                        onColumnFilter(
+                          wheres.filter((t) => t.fieldId !== f.id)
+                        );
+                      }
                     }
-                  }
-                }}
-                onSort={(data: orderObj) => {
-                  if (onColumnSort) {
-                    onColumnSort(data);
-                  }
-                }}
-              />
-            ),
+                  }}
+                  onSort={(data: orderObj) => {
+                    if (onColumnSort) {
+                      onColumnSort(data);
+                    }
+                  }}
+                />
+              ) : (
+                f.title
+              ),
             width: f.listWidth
               ? f.listWidth + avgAddWidth
               : fieldDefaultWidthObj[f.fieldType] + avgAddWidth,
@@ -304,16 +301,20 @@ const TableIndex = <T extends IdBean>({
         }
       });
       //行按钮添加
-      if (read !== true && btnWidth > 0) {
+      if (read !== true && btns.length > 0) {
         columnshow?.push({
           title: "操作",
           align: "center",
           fixed: "right",
           fieldName: "operate",
-          width: `${btnWidth}px`,
+          width: btnWidth,
           render: (text, record, index) => {
             return (
               <BtnToolBar
+                onBtnNum={(v) => {
+                  setListBtnMax((m) => (v > m ? v : m));
+                }}
+                entityName={model.entityType}
                 key={"lineBtn"}
                 onDataChange={() => {}}
                 position="tableLine"
@@ -329,7 +330,7 @@ const TableIndex = <T extends IdBean>({
       return columnshow;
     }
     return [];
-  }, [model, column, fkMap, btns, dataSource, read, selectedColumn]);
+  }, [model, column, fkMap, btns, dataSource, read, selectedColumn, btnWidth]);
 
   const onRow = useMemo(
     () => (record: any, index: any) => {

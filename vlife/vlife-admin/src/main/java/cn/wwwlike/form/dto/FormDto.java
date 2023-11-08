@@ -113,7 +113,7 @@ public class FormDto implements SaveBean<Form> {
 
     public List<FormTabDto> formTabDtos;
 
-
+    public String  itemName;
     /**
      * 紧凑布局
      * terse
