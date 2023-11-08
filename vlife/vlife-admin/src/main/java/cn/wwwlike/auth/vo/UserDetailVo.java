@@ -97,7 +97,7 @@ public class  UserDetailVo implements VoBean<SysUser> {
     /**
      * 机构id
      */
-    public String sysOrgId;
+//    public String sysOrgId;
 
     /**
      * 权限组名称
