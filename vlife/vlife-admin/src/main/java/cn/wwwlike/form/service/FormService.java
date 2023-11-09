@@ -141,7 +141,7 @@ public class FormService extends VLifeService<Form, FormDao> {
         if(javaDto!=null&&javaDto.commentRead) {
             if (formDto != null) {//更新
                 boolean formChange=false;
-                if ((javaDto.getTitle()!=null&&javaDto.getTitle().equals(formDto.getTitle()))) {
+                if ((javaDto.getTitle()!=null&&!javaDto.getTitle().equals(formDto.getTitle()))) {
                     if(formDto.getTitle()==null||formDto.getTitle().equals(formDto.getName())){
                         formDto.setName(javaDto.getTitle());
                     }

@@ -94,7 +94,7 @@ public  class BeanDto<T> extends ItemInfo {
 
     /**
      * 注释信息是否读取完成
-     * 没有运行mavne install则无注释，则也不会给到前端
+     * 没有运行maven install则无注释，则也不会给到前端
      */
     public boolean commentRead;
 }
