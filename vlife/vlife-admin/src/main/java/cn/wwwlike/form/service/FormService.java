@@ -502,6 +502,9 @@ public class FormService extends VLifeService<Form, FormDao> {
      * @return
      */
     public List<FormVo> querySubForms(Form form){
+        if(form==null){
+            return null;
+        }
         List<FormVo> formVos= query(FormVo.class,QueryWrapper.of(Form.class).eq("itemType","entity").ne("id",form.getId()));
         return formVos.stream().filter(subForm->subForm.getFields().stream().filter(field-> field.getEntityType().equals(form.getType())).count()>0).collect(Collectors.toList());
     }

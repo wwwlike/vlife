@@ -83,11 +83,22 @@ export default () => {
                             navigate(`/sysConf/${key}/${model.type}`);
                           }}
                         >
-                          <div className="relative block w-full h-24 border-2 border-gray-300 border-dashed rounded-lg p-2 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                          <div className="group relative cursor-pointer block w-full h-24 border-2 border-gray-300 border-dashed rounded-lg p-2 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             <span className="mt-2 block text-sm font-medium text-gray-900">
                               {model.title}
                             </span>
                             <p>{model.type}</p>
+                            <div className=" hidden absolute group-hover:block justify-center  bottom-1 space-x-2">
+                              <Button
+                                size="small"
+                                className=" text-sm"
+                                onClick={() => {
+                                  navigate(`/sysConf/${key}/${model.type}`);
+                                }}
+                              >
+                                模型管理
+                              </Button>
+                            </div>
                           </div>
                         </li>
                       ))}

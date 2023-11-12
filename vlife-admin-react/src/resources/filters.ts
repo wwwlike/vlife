@@ -66,8 +66,10 @@ export const filterFuns:filterObj={
     title:"数值类型字段",
     dataModel:"FormField",
     func:(fields:FormField[])=>{
-      return fields.filter((ff: FormField) =>ff.dataType === "basic" &&ff.fieldType === "number"
-      );
+      return fields.filter((ff: FormField) =>ff.dataType === "basic" &&(ff.fieldType === "number"||ff.fieldName==="id")
+      ).map(f=>{return  f.fieldName!=="id"?f:{
+        ...f,name:"数据总量",title:"数据总量"
+      }})
     },
    },
    appMenu:{
