@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   flow,
   remove,
@@ -11,21 +11,35 @@ import { IconPlay, IconForward, IconStop } from "@douyinfe/semi-icons";
 import Content from "../../template/content";
 import { VF } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
+import TablePage from "@src/pages/common/tablePage";
 //用户管理主页
 export default () => {
   const { user } = useAuth();
+
+  useEffect(() => {
+    // console.log(VF.field("id").default("123"));
+  }, []);
   return (
     <Content<SysUser>
       listType="sysUser"
       filterType="sysUserPageReq"
       reaction={[
-        VF.result(user?.superUser === true)
-          .then("superUser")
-          .show(),
-        VF.field("username")
-          .regex(/^[a-zA-Z0-9]+$/)
-          .then("username")
-          .feedback("不能包含特殊字符串"),
+        VF.field("name")
+          .eq("12345")
+          .then("usetype")
+          .componentProps({ optionList: [{ label: "a", value: 123 }] }),
+        // .otherwise()
+        // .componentProps({ optionList: [{ label: "bvvvvvv", value: 123 }] }),
+        // VF.result(user?.superUser === true)
+        //   .then("superUser")
+        //   .show(),
+        // VF.result(true)
+        //   .then("usetype")
+        //   .component({ optionList: [{ label: "a", value: 123 }] }),
+        // VF.field("username")
+        //   .regex(/^[a-zA-Z0-9]+$/)
+        //   .then("username")
+        //   .feedback("不能包含特殊字符串"),
         // VF.result(() => true)
         //   .then("name")
         //   .feedback("姓名不合理"),
