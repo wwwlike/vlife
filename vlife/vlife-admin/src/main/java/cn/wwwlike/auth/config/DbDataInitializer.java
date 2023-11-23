@@ -132,9 +132,8 @@ public class DbDataInitializer implements ApplicationRunner {
     public void dataRestore()  throws IOException {
         Set<String> table=new HashSet<String>();
         ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
-       String  dbType=getDatabaseType();
-       //数据插入脚本为初始化和active命名一致的sql
-        Resource[] resources = resolver.getResources("classpath:"+getActiveProfile()+".sql");
+        String  dbType=getDatabaseType();
+        Resource[] resources = resolver.getResources("classpath:initData.sql");
         if (resources.length > 0) {
             EncodedResource encodedResource = new EncodedResource(resources[0], "UTF-8");
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(encodedResource.getInputStream()))) {
