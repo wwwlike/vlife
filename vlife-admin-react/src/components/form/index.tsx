@@ -52,7 +52,6 @@ import { execVfAction, vfEventReaction, whenEl2 } from "./vfReactions";
 import { VF } from "../../dsl/VF";
 import { isFunction } from "lodash";
 import { FormComponents } from "@src/resources/CompDatas";
-import { CompPropInfo } from "../compConf/compConf";
 import useDelayedExecution from "@src/hooks/useDelayedExecution";
 
 export interface validate {
@@ -300,7 +299,6 @@ export default <T extends IdBean>({
             if (onForm) {
               onForm(m);
             }
-            // formAttrInit(m); //属性初始化
             formDynamicReaction(m); //动态/空条件响应
             formStaticReaction(m); //静态条件动态响应
           }),
@@ -719,7 +717,7 @@ export default <T extends IdBean>({
           (f.x_component === "Select" || f.x_component === "DictSelectTag") &&
           f.dictCode
         ) {
-          prop.enum = fieldEnum(f.dictCode, f.fieldType);
+          // prop.enum = fieldEnum(f.dictCode, f.fieldType);
         } else if (f.x_component === "DatePicker") {
           if (f.dataType === DataType.array) {
             prop["x-component-props"] = {
@@ -828,17 +826,21 @@ export default <T extends IdBean>({
             fontBold,
           };
         }
-        // 组件属性提取
-        // 1. 组件定义配置里的固定值提取  VfListForm:{...,props: {showInput: false}} showInput里给固定的值false
+        // 组件配置里CompData里props配置的固定属性值提取（boolean,string,number,date,ReactNode）
         const propInfo = FormComponents[f.x_component]?.props;
         if (propInfo) {
           const keys = Object.keys(propInfo);
           keys.forEach((k) => {
-            //非CompPropInfo类型属性值（boolean,string,number,date）
-            if ((propInfo[k] as CompPropInfo).label === undefined) {
+            if (
+              typeof propInfo[k] === "string" ||
+              propInfo[k] instanceof Date ||
+              typeof propInfo[k] === "number" ||
+              typeof propInfo[k] === "boolean" ||
+              React.isValidElement(propInfo[k])
+            ) {
               prop["x-component-props"] = {
                 ...prop["x-component-props"],
-                //reactNode类型的节点属性，如：select的底部slot
+                //reactNode类型的节点属性对应的组件创建，如：select的底部slot
                 [k]: React.isValidElement(propInfo[k])
                   ? React.Children.map(propInfo[k] as ReactNode, (child) => {
                       if (React.isValidElement(child)) {
@@ -855,13 +857,12 @@ export default <T extends IdBean>({
                       }
                       return child;
                     })
-                  : propInfo[k], //一般属性
+                  : propInfo[k], //一般属性string boolean ,number date
               };
-              // }
             }
           });
         }
-        // 2在formDesign里配置的组件属性数据进行提取，和**转换**
+        // 2在formDesign设计器里配置的组件属性数据进行提取，和**转换**
         if (prop["x-reactions"]) {
           prop["x-reactions"] = [
             ...prop["x-reactions"],

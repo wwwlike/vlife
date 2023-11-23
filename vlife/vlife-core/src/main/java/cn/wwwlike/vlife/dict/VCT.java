@@ -91,11 +91,11 @@ public class VCT {
 
     @Named("统计类型")
     public static final class ITEM_FUNC {
-        @Named("数量")
+        @Named("计数")
         public final static String COUNT = "count";
-        @Named("合计")
+        @Named("求和")
         public final static String SUM = "sum";
-        @Named("均值")
+        @Named("平均")
         public final static String AVG = "avg";
     }
 

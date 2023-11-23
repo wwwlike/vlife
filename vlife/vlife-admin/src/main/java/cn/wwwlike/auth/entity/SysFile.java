@@ -21,6 +21,7 @@ package cn.wwwlike.auth.entity;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -64,7 +65,7 @@ public class SysFile extends DbEntity {
     /**
      * 文件大小
      */
-    public String size;
+    public String fieldSize;
 
     /**
      * 文件展现形式

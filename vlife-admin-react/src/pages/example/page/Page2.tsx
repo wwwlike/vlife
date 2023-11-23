@@ -7,7 +7,7 @@ export default () => {
       viewPosition="tabPanel"
       title={"与列模型一致"}
       code={` <Content
-      title="只有列表"
+      editType="projectDto"
       listType="demoProject" />`}
       scope={{
         Content,

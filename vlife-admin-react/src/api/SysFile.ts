@@ -3,7 +3,7 @@ import { DbEntity, Result } from "@src/api/base/";
 // 文件存储
 export interface SysFile extends DbEntity {
   fileName: string; // 存放文件名
-  size: string; // 文件大小
+  fileSize: string; // 文件大小
   name: string; // 原文件名
   url: string; // 访问地址
   viewMode: string; // 文件展现形式

@@ -35,7 +35,7 @@ export default ({ formVo, onDataChange, ...props }: formSettingProp) => {
         onClick: () => {
           formModal.show({
             type: "formTab",
-            title: "增加页签",
+            // title: "增加页签",
             saveFun: (data: FormTabDto) => {
               const tab: FormTabDto = {
                 ...data,

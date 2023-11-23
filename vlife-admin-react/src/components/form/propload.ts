@@ -245,6 +245,9 @@ export const fetchPropObj = (
                       parentData,
                       field
                     );
+                    if((allParam[key] as ParamsInfo).must&&paramObj[key]===undefined){
+                      mustFlag=false; 
+                    }
                   });
               //2读取存储到数据库配置的值
               paramNames.filter(name=> 
@@ -269,6 +272,7 @@ export const fetchPropObj = (
                     (paramObj[name] === undefined || paramObj[name] === null)
                   ) {
                     mustFlag = false; //不满足
+                    propsObj =null;
                   }
                 }
               });
@@ -290,33 +294,29 @@ export const fetchPropObj = (
                 propsObj = await apiInfo.api({ ...paramObj }).then((d) => {
                   //异步请求到的数据
                   let datas = d.data;
-                  //1. 内部过滤器
+                  //1. api里指定的过滤器
                   if (apiInfo.filter) {
                     datas = apiInfo.filter(datas, paramObj);
                   }
                   //放到缓存里
-                  window.localStorage.setItem(
-                    `fetchData_${rootFormName}_${field.path}`,
-                    JSON.stringify(datas)
-                  );
-                  //异步请求数据的数据存储起来(fetchData,提供给有需要的组件使用)
-                  // field.setComponentProps({
-                  //   ...field.componentProps,
-                  //   fetchData: datas,
-                  // });
-                  propsObj = valueAdd(
-                    { propName: "fetchData" },
-                    propsObj,
-                    datas
-                  );
 
-                  //某个字段异步请求的数据，最后取代上面的
-                  propsObj = valueAdd(
-                    { propName: `fetchData_${prop.propName}` },
-                    propsObj,
-                    datas
-                  );
-                  //执行数据过滤
+                  // window.localStorage.setItem(
+                  //   `fetchData_${rootFormName}_${field.path}`,
+                  //   JSON.stringify(datas)
+                  // );
+                  // propsObj = valueAdd(
+                  //   { propName: "fetchData" },
+                  //   propsObj,
+                  //   datas
+                  // );
+                  // //某个字段异步请求的数据，最后取代上面的
+                  // propsObj = valueAdd(
+                  //   { propName: `fetchData_${prop.propName}` },
+                  //   propsObj,
+                  //   datas
+                  // );
+                  
+                  //2 用户配置的数据过滤执行
                   if (prop.filterFunc && filterFuns[prop.filterFunc] && datas) {
                     datas = filterFuns[prop.filterFunc].func(datas); //数据过滤
                   }

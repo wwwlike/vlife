@@ -106,7 +106,9 @@ const VfImage = ({
             src={`${apiUrl}/sysFile/image/${value}`}
           />
         ) : (
-          value?.map((d) => (
+          value &&
+          value.length > 0 &&
+          value.map((d) => (
             <Image
               width={viewSize.width}
               height={viewSize.height}

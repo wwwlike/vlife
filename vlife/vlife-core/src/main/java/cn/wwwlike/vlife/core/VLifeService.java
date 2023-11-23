@@ -159,7 +159,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     /**
      * 6.条件包装对象查询实体列表
      */
-    public <S extends QueryWrapper, E extends CustomQuery<T, S>> List<T> find(E request) {
+    public <S extends QueryWrapper, R extends CustomQuery<T, S>> List<T> find(R request) {
         request = addQueryFilter(request);
         return dao.find(request);
     }
@@ -191,7 +191,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
     /**
-     * 8.条件包装对象实体分页查询
+     * 8.分页req模型对象实体分页查询
      */
     public <E extends PageQuery<T>> PageVo<T> findPage(E pageRequest) {
         pageRequest = addQueryFilter(pageRequest);
@@ -226,26 +226,28 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
     /**
+     * 10. 根据条件包装对象和Vo类信息来查询List<Vo>的集合数据
+     */
+    public <E extends VoBean<T>, S extends QueryWrapper, R extends CustomQuery<T, S>> List<E> query(Class<E> vo, R request) {
+        request = addQueryFilter(request);
+        return dao.query(vo, request.qw(entityClz), request.getOrder());
+    }
+
+    /**
      * 10-1. 根据条件包装对象和Vo类信息来查询List<Vo>的集合数据
      */
-    public <D extends VoBean<T>, S extends QueryWrapper, E extends CustomQuery<T, S>> List<D> query(Class<D> vo, QueryWrapper<T> qw) {
+    public <E extends VoBean<T>> List<E> query(Class<E> vo, QueryWrapper<T> qw) {
         qw = addQueryFilter(qw);
         return dao.query(vo, qw, null);
     }
 
-    /**
-     * 10. 根据条件包装对象和Vo类信息来查询List<Vo>的集合数据
-     */
-    public <D extends VoBean<T>, S extends QueryWrapper, E extends CustomQuery<T, S>> List<D> query(Class<D> vo, E request) {
-        request = addQueryFilter(request);
-        return dao.query(vo, request.qw(entityClz), request.getOrder());
-    }
+
 
 
     /**
      * 根据B端配置的查询条件来进行查询
      */
-    public <D extends IdBean> List<D> query(Class<D> clz, Conditions conditions) {
+    public <E extends IdBean> List<E> query(Class<E> clz, Conditions conditions) {
         VlifeQuery<?> request = null;
         if (Item.class.isAssignableFrom((clz))) {
             request = new VlifeQuery(clz);
@@ -260,7 +262,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     /**
      * 10.1 查询所有vo视图模型数据
      */
-    public <D extends VoBean<T>, S extends QueryWrapper, E extends CustomQuery<T, S>> List<D> queryAll(Class<D> vo) {
+    public <E extends VoBean<T>, S extends QueryWrapper> List<E> queryAll(Class<E> vo) {
         QueryWrapper qw = addQueryFilter(QueryWrapper.of(entityClz));
         return dao.query(vo, qw, null);
     }
@@ -268,7 +270,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     /**
      * 11. 根据条件分页包装对象和Vo类信息来查询PageVO<Vo>的分页数据
      */
-    public <E extends VoBean<T>, N extends PageQuery<T>> PageVo<E> queryPage(Class<E> vo, N request) {
+    public <E extends VoBean<T>, R extends PageQuery<T>> PageVo<E> queryPage(Class<E> vo, R request) {
         request = addQueryFilter(request);
         return dao.queryPage(vo, request);
     }
@@ -287,12 +289,26 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         return remove(entityClz, ids);
     }
 
+    /**
+     * 15 批量逻辑删除
+     */
+    public long batchRm(String... ids) {
+        if (ids == null || ids.length == 0) {
+            logger.error("batchRm-> ids is null or length=0");
+            return 0;
+        }
+        long i = 0;
+        for (String id : ids) {
+            i += remove(entityClz, id);
+        }
+        return i;
+    }
 
 
     /**
      * 13 物理删除
      */
-    public long delete(String id) {
+    public long delete(String  id) {
         if (id == null) {
             logger.error("delete-> id is null");
             return 0;
@@ -315,20 +331,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         return i;
     }
 
-    /**
-     * 15 批量逻辑删除
-     */
-    public long batchRm(String... ids) {
-        if (ids == null || ids.length == 0) {
-            logger.error("batchRm-> ids is null or length=0");
-            return 0;
-        }
-        long i = 0;
-        for (String id : ids) {
-            i += remove(entityClz, id);
-        }
-        return i;
-    }
+
 
     /**----------------------------  dto数据保存 -----------------------------**/
 
@@ -408,15 +411,15 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     /**
      * 19 保存之前调用callBackMethod方法进行逻辑处理后在save
      */
-    public <E extends SaveBean<T>> E save(E t, UnaryOperator<DataProcess> callBackMethod, boolean isfull) {
-        return saveBean(t, null, null, callBackMethod, isfull);
+    public <E extends SaveBean<T>> E save(E saveBean, UnaryOperator<DataProcess> callBackMethod, boolean isfull) {
+        return saveBean(saveBean, null, null, callBackMethod, isfull);
     }
 
     /**
      * 20 保存之前调用callBackMethod方法进行逻辑处理后在save (默认非全量数据)
      */
-    public <E extends SaveBean<T>> E save(E t, UnaryOperator<DataProcess> callBackMethod) {
-        return saveBean(t, null, null, callBackMethod, false);
+    public <E extends SaveBean<T>> E save(E saveBean, UnaryOperator<DataProcess> callBackMethod) {
+        return saveBean(saveBean, null, null, callBackMethod, false);
     }
 
     /**

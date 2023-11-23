@@ -17,8 +17,6 @@
  */
 
 package cn.wwwlike.vlife.base;
-import cn.wwwlike.base.model.IdBean;
-
 /**
  * 终端提交给服务端进行保存的DTO数据模型接口
  */

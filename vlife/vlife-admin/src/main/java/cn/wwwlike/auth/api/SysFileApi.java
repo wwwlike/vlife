@@ -70,7 +70,7 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
         SysFile ff = new SysFile();
         ff.setName(file.getOriginalFilename());
         ff.setFileName(fileName);
-        ff.setSize(file.getSize() + "kb");
+        ff.setFieldSize(file.getSize() + "kb");
         service.save(ff);
         return ff;
     }

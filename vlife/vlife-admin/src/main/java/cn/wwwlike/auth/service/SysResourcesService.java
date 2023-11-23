@@ -259,7 +259,7 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
                 String  remark=bean.getRemark();
                 bean.setRemark(findTitleString(remark).replaceAll("\r\n   ","").replaceAll(" ","").replaceAll("\\*","")
                         .replaceAll("/",""));
-                if(!remark.equals(bean.getRemark())){
+                if(!bean.getRemark().equals(remark)){
                     save(bean);
                 }
                }
@@ -268,6 +268,9 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
 
 
     public static String findTitleString(String input) {
+        if(input==null){
+            return "";
+        }
         int start = input.indexOf('*');
         int end = -1;
 

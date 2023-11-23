@@ -83,7 +83,7 @@ public abstract class DbEntity implements Item {
     }
 
     @Id
-    @Column(length = 50, nullable = true,columnDefinition = "VARCHAR(32) COMMENT '主键id'")
+    @Column(length = 50, nullable = true)
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
     public String getId() {

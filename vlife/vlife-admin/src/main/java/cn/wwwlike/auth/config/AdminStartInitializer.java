@@ -28,12 +28,14 @@ import cn.wwwlike.vlife.objship.read.GlobalData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 
 @Component
+@Order(2)
 public class AdminStartInitializer implements ApplicationRunner {
     @Autowired
     FormService service;

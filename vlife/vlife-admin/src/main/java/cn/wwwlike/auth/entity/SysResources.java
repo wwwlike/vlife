@@ -32,7 +32,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "sys_reources")
+@Table
 public class SysResources  extends DbEntity{
     /**
      * 资源名称

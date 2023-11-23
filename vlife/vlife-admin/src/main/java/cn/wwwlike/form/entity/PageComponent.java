@@ -1,20 +1,22 @@
 package cn.wwwlike.form.entity;
 
 import cn.wwwlike.vlife.annotation.VClazz;
-import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import static java.awt.SystemColor.text;
 
 /**
  * 单元组件信息
  * 页面关联的组件设置信息
  */
 @Entity
-@Data
 @Table(name="page_component")
 @VClazz(module = "conf")
 public class PageComponent extends DbEntity {
@@ -78,11 +80,133 @@ public class PageComponent extends DbEntity {
     /**
      * 组件属性数据
      */
-    @Column(length = 4000)
     public String componentPropJson;
 
     /**
      * 视图过滤
      */
     public String conditionJson;
+
+
+    @Column(length = 4000)
+    public String  getComponentPropJson(){
+        return componentPropJson;
+    }
+
+    @Column(length = 4000)
+    public String  getConditionJson(){
+        return conditionJson;
+    }
+
+    public String getPageLayoutId() {
+        return pageLayoutId;
+    }
+
+    public void setPageLayoutId(String pageLayoutId) {
+        this.pageLayoutId = pageLayoutId;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
+    public String getPageKey() {
+        return pageKey;
+    }
+
+    public void setPageKey(String pageKey) {
+        this.pageKey = pageKey;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getComponent() {
+        return component;
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
+    }
+
+    public String getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(String moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    public Integer getX() {
+        return x;
+    }
+
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
+    public Integer getW() {
+        return w;
+    }
+
+    public void setW(Integer w) {
+        this.w = w;
+    }
+
+    public Integer getH() {
+        return h;
+    }
+
+    public void setH(Integer h) {
+        this.h = h;
+    }
+
+    public String getI() {
+        return i;
+    }
+
+    public void setI(String i) {
+        this.i = i;
+    }
+
+    public Integer getZ() {
+        return z;
+    }
+
+    public void setZ(Integer z) {
+        this.z = z;
+    }
+
+    public Boolean getLayoutTop() {
+        return layoutTop;
+    }
+
+    public void setLayoutTop(Boolean layoutTop) {
+        this.layoutTop = layoutTop;
+    }
+
+    public void setComponentPropJson(String componentPropJson) {
+        this.componentPropJson = componentPropJson;
+    }
+
+    public void setConditionJson(String conditionJson) {
+        this.conditionJson = conditionJson;
+    }
 }

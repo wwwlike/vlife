@@ -19,7 +19,12 @@ export const execVfAction = (actions: VfAction[], form: Form,parentData:any) => 
         // form.formily里的form对象需要获得指定useranme的 field对象，应该如何调用form对象的方法
         const prop: string = FS_STATE[r.state];
         if(typeof r.value==="function"){//1函数方式设置value
-          const funcResult=r.value({...form.values,parent:parentData});
+          const componentProps = form.query("usetype").take()?.componentProps
+          // const fieldState = form.getFieldState(fieldName);
+          // fieldState.componentProps;
+          // alert(JSON.stringify(fieldState.componentProps))
+
+          const funcResult=r.value({...form.values,parent:parentData,componentProps});
           if (funcResult instanceof Promise) {
             funcResult.then((d:any) => {
               form.setFieldState(fieldName, (state: any) => {
@@ -193,12 +198,16 @@ export const vfEventReaction = (
           when: whenElStr1(f, deps, form),
           fulfill: {
             state: {
-              ...stateFulfill(f.actions.filter((ff) => ff.fill),form),
+            //  "componentProps":{"abc":"12345"},
+            //  props:{"abc":"12345"},
+            //   "abc":"12345"
+              //这里如何设置组件的属性的联动？？？？？
+             ...stateFulfill(f.actions.filter((ff) => ff.fill),form),
             },
           },
           otherwise: {
             state: {
-              ...stateFulfill(f.actions.filter((ff) => !ff.fill),form),
+             ...stateFulfill(f.actions.filter((ff) => !ff.fill),form),
             },
           },
         },

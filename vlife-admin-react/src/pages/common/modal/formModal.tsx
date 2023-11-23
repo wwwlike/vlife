@@ -6,6 +6,7 @@ import { FormVo } from "@src/api/Form";
 import FormPage, { FormPageProps } from "../formPage";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
 import { VFBtn } from "@src/components/table/types";
+import { Button } from "@douyinfe/semi-ui";
 /**
  * 表单弹出层属性
  */
@@ -113,28 +114,36 @@ export const FormModal = createNiceModal(
       return [];
     }, [btns, form, formVo]);
 
+    const footer = useMemo(() => {
+      if (formBtns && formBtns.length > 0) {
+        return (
+          <BtnToolBar
+            entityName={modelInfo?.entityType || ""}
+            key={"modalBtn"}
+            btns={formBtns}
+            model={props.type}
+            position="formFooter"
+            datas={[form?.values || formData]}
+            readPretty={props.readPretty}
+            onDataChange={(d) => {
+              setModifyData(d[0]);
+            }}
+          />
+        );
+      } else {
+        return (
+          <div>
+            <Button onClick={handleSubmit}>确定</Button>
+          </div>
+        );
+      }
+    }, [formBtns, form]);
+
     return (
       <NiceModal
         id="formModal"
         height={(windowSize.height / 3) * 2}
-        footer={
-          //弹出层上的按钮组
-          formBtns &&
-          formBtns.length > 0 && (
-            <BtnToolBar
-              entityName={modelInfo?.entityType || ""}
-              key={"modalBtn"}
-              btns={formBtns}
-              model={props.type}
-              position="formFooter"
-              datas={[form?.values || formData]}
-              readPretty={props.readPretty}
-              onDataChange={(d) => {
-                setModifyData(d[0]);
-              }}
-            />
-          )
-        }
+        footer={footer}
         title={title}
         className=" max-h-96"
         width={

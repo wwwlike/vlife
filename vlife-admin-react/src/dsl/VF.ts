@@ -41,6 +41,7 @@ export enum FS_STATE{
   feedbacks,//提醒信息 
   fetch,//远程数据
   pattern,// 交互模式 'editable' | 'disabled' | 'readOnly' | 'readPretty'
+  componentProps,
   "x-decorator-props",
 }
 
@@ -117,7 +118,7 @@ export interface reaction{
     })
     return this;
   }
-  //默认值
+  //默认值,
   default(value:any):VfAction{
     this.reations.push({
       state:FS_STATE.initialValue,value
@@ -136,6 +137,13 @@ export interface reaction{
   clearValue():VfAction{
     this.reations.push({
       state:FS_STATE.value,value:null
+    })
+    return this;
+  }
+  //属性常量值设置
+  componentProps(value:any|((props:any)=>any)):VfAction{
+    this.reations.push({
+      state:FS_STATE.componentProps,value
     })
     return this;
   }
@@ -308,9 +316,18 @@ export interface reaction{
   /**    ---------------比对方式------------------ */
   public eq(val:any):VF{
     this.opt=FS_OPT.EQ;
-   this.value=val;
+    this.value=val;
     return this._vf;
   }
+
+  public default(val:any):VfAction{
+    const action= VF.field("id").isNull().then(this.field)
+    action.reations.push({
+      state:FS_STATE.initialValue,value:val
+    })
+    return action;
+  }
+
   ne(val: any): VF {
     this.opt=FS_OPT.NE;
    this.value=val;
@@ -456,7 +473,6 @@ export class VF{
     const vf=new VF(subName);
     const vc=new VfCondition(vf,field);
     vf.conditions.push(vc);
-  
     return vc;
   }
   
@@ -513,5 +529,4 @@ export class VF{
     this.conn="or"
     return vc;
   }
-
 }

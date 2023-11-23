@@ -6,7 +6,7 @@ spring:
     add-mappings: false
     static-locations: classpath:/static/, classpath:/templates/
   profiles:
-    active: basic
+    active: mysql
   datasource:
   　type: com.alibaba.druid.pool.DruidDataSource   #配置当前要使用的数据源的操作类型那个
   　driver-class-name: org.gjt.mm.mysql.Driver       #配置MySQL的驱动程序类
