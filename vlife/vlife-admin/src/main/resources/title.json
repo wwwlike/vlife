@@ -842,8 +842,8 @@
         "fieldType": "String",
         "title": "存放文件名"
       },
-      "size": {
-        "fieldName": "size",
+      "fieldSize": {
+        "fieldName": "fieldSize",
         "fieldType": "String",
         "title": "文件大小"
       },
@@ -1034,6 +1034,10 @@
         "fieldType": "String",
         "title": "应用标识前缀"
       },
+      "confPage": {
+        "fieldName": "confPage",
+        "fieldType": "Boolean"
+      },
       "createId": {
         "fieldName": "createId",
         "fieldType": "string",
@@ -1044,6 +1048,10 @@
         "fieldName": "name",
         "fieldType": "String",
         "title": "菜单名称"
+      },
+      "pageLayoutId": {
+        "fieldName": "pageLayoutId",
+        "fieldType": "String"
       },
       "id": {
         "fieldName": "id",
