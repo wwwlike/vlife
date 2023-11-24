@@ -79,14 +79,29 @@ public class DbDataInitializer implements ApplicationRunner {
             return "Unknown";
         }
     }
-    //是否空库
-    public boolean isDatabaseEmpty() {
+
+    //获得所有表信息
+    public List<Map<String, Object>> getAllTable(){
         List<Map<String, Object>> tables =new ArrayList<>();
         if("Oracle".equals(getDatabaseType())){
             tables=  jdbcTemplate.queryForList("SELECT table_name FROM user_tables");
         }else if("MySQL".equals(getDatabaseType())){//mysql
             tables = jdbcTemplate.queryForList("SHOW TABLES");
-        }else{//未知数据库，不允许做数据初始化
+        }
+        return tables;
+    }
+
+    public void clearTable(){
+        List<Map<String, Object>> tables =getAllTable();
+        for (Map<String, Object> table : tables) {
+            String tableName = table.values().iterator().next().toString();
+            jdbcTemplate.execute("delete from "+tableName+"");
+        }
+    }
+    //是否空库
+    public boolean isDatabaseEmpty() {
+        List<Map<String, Object>> tables =getAllTable();
+        if(tables.size()==0){
             return false;
         }
         for (Map<String, Object> table : tables) {
