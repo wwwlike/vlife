@@ -62,20 +62,18 @@ public class PackageUtil {
         }
         fileNames.addAll(getClassNameByJars(((URLClassLoader) loader).getURLs(), packageName, childPackage));
         //读取jar文件里的类信息
-
-
-//        if (url != null) {
-//            String path=url.getPath();
-//            path=path.replace("test-","");
-//            String type = url.getProtocol();
-//            if (type.equals("file")) {
-//                fileNames = getClassNameByFile(path, null, childPackage);
-//            } else if (type.equals("jar")) {//生产环境读取jar包
-//                fileNames = getClassNameByJar(path, childPackage);
-//            }
-//        } else {
-//            fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
-//        }
+    //        if (url != null) {
+    //            String path=url.getPath();
+    //            path=path.replace("test-","");
+    //            String type = url.getProtocol();
+    //            if (type.equals("file")) {
+    //                fileNames = getClassNameByFile(path, null, childPackage);
+    //            } else if (type.equals("jar")) {//生产环境读取jar包
+    //                fileNames = getClassNameByJar(path, childPackage);
+    //            }
+    //        } else {
+    //            fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
+    //        }
         return fileNames;
     }
 
@@ -99,6 +97,35 @@ public class PackageUtil {
      * @param childPackage 是否遍历子包
      * @return 类的完整名称
      */
+    private static List<String> getClassNameByFile1(String filePath, List<String> className, boolean childPackage) {
+        List<String> myClassName = new ArrayList<String>();
+        File file = new File(filePath);
+        File[] childFiles = file.listFiles();
+        for (File childFile : childFiles) {
+            if (childFile.isDirectory()) {
+                if (childPackage) {
+                    myClassName.addAll(getClassNameByFile1(childFile.getPath(), myClassName, childPackage));
+                }
+            } else {
+                String childFilePath = childFile.getPath();
+                if (childFilePath.endsWith(".class")) {
+                    childFilePath = childFilePath.substring(childFilePath.indexOf("\\classes") + 9, childFilePath.lastIndexOf("."));
+                    childFilePath = childFilePath.replace("\\", ".");
+                    myClassName.add(childFilePath);
+                }
+            }
+        }
+
+        return myClassName;
+    }
+
+    /**
+     * 从项目文件获取某包下所有类
+     * @param filePath     文件路径
+     * @param className    类名集合
+     * @param childPackage 是否遍历子包
+     * @return 类的完整名称
+     */
     private static List<String> getClassNameByFile(String filePath, List<String> className, boolean childPackage) {
         List<String> myClassName = new ArrayList<String>();
         File file = new File(filePath);
@@ -111,8 +138,11 @@ public class PackageUtil {
             } else {
                 String childFilePath = childFile.getPath();
                 if (childFilePath.endsWith(".class")) {
-                    childFilePath = childFilePath.substring(childFilePath.indexOf("\\classes") + 9, childFilePath.lastIndexOf("."));
-                    childFilePath = childFilePath.replace("\\", ".");
+                    String classesPath = File.separator + "classes" + File.separator;
+                    int start = childFilePath.indexOf(classesPath) + classesPath.length();
+                    int end = childFilePath.lastIndexOf(".");
+                    childFilePath = childFilePath.substring(start, end);
+                    childFilePath = childFilePath.replace(File.separator, ".");
                     myClassName.add(childFilePath);
                 }
             }
