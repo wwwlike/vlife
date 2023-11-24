@@ -25,12 +25,15 @@ import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.sys.service.SysDictService;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
+import javafx.application.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.net.URL;
 import java.util.List;
 
 
@@ -51,8 +54,24 @@ public class AdminStartInitializer implements ApplicationRunner {
     @Autowired
     SysDeptService sysDeptService;
 
+
+    private void printErrorMessage() {
+        System.out.println("╔════════════════════════════════════════════════════════════════╗");
+        System.out.println("║          系统检测到没有运行maven install命令                     ║");
+        System.out.println("║        运行后会产生title.json文件，该文件记录了模型信息           ║");
+        System.out.println("║              please run 'mvn install' command.                  ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════╝");
+    }
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        //检查是否有title.json文件（是否运行过title.json）
+        URL url = getClass().getClassLoader().getResource("title.json");
+        if (url == null) {
+            printErrorMessage();
+            System.exit(0); // Exit without starting the application
+//            SpringApplication.exit(SpringApplication.run(Application.class, args.getSourceArgs()));
+        }
         //资源同步
         resourcesService.sync();
         //字典同步
