@@ -11,7 +11,7 @@ import com.querydsl.core.types.dsl.SimpleExpression;
  * 日期数据转换成年度(整型)
  */
 public  class MonthExpressTran extends DataExpressTran<SimpleExpression,NumberExpression> {
-    public  NumberExpression tran(SimpleExpression expression) {
+    public  NumberExpression tran(SimpleExpression expression,String dbType) {
         if(expression instanceof DatePath)
             return ((DatePath)expression).yearMonth();
         else

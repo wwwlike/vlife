@@ -5,7 +5,10 @@ import cn.wwwlike.auth.service.SysFileService;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.web.params.bean.NativeResult;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +59,24 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
                 !imgPath.startsWith("/")) {
             imgPath = "/" + imgPath;
         }
-        FileInputStream input =new FileInputStream(new File(imgPath + "/" + fileName));
-        byte[] bytes = new byte[input.available()];
-        input.read(bytes);
-        return bytes;
+
+        File img=new File(imgPath + "/" + fileName);
+
+        if (img.exists()) {
+            try (FileInputStream input =new FileInputStream(img)) {
+                byte[] bytes = new byte[input.available()];
+                input.read(bytes);
+                return bytes;
+            } catch (IOException e) {
+            }
+        }else{
+            Resource notFoundImage = new ClassPathResource("logo.png");
+            try (InputStream inputStream = notFoundImage.getInputStream()) {
+                byte[] data = StreamUtils.copyToByteArray(inputStream);
+                return data;
+            }catch (IOException ee) {}
+        }
+        return null;
     }
 
     /**

@@ -115,20 +115,20 @@ public interface VLifeDao<T extends Item> {
      */
     public long remove(Class<? extends Item> clazz, String id);
 
-    /**
-     * 报表查询，查询单个指标数据
-     */
-    public List report(ReportWrapper t);
-
-    /**
-     * 报表查询，查询单个指标数据
-     */
-    public List report(List<Map> all, ReportWrapper t);
-
-    /**
-     * 单指标数据计算
-     * @param wrapper
-     * @return
-     */
-    public List dataCount(ReportWrapper wrapper);
+//    /**
+//     * 报表查询，查询单个指标数据
+//     */
+//    public List report(ReportWrapper t);
+//
+//    /**
+//     * 报表查询，查询单个指标数据
+//     */
+//    public List report(List<Map> all, ReportWrapper t);
+//
+//    /**
+//     * 单指标数据计算
+//     * @param wrapper
+//     * @return
+//     */
+//    public List dataCount(ReportWrapper wrapper);
 }

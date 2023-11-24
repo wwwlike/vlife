@@ -133,34 +133,36 @@ public class DbDataInitializer implements ApplicationRunner {
         Set<String> table=new HashSet<String>();
         ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
         String  dbType=getDatabaseType();
-        Resource[] resources = resolver.getResources("classpath:initData.sql");
+        Resource[] resources = resolver.getResources("classpath:initData/*.sql");
         if (resources.length > 0) {
-            EncodedResource encodedResource = new EncodedResource(resources[0], "UTF-8");
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(encodedResource.getInputStream()))) {
-                String line;
-                StringBuilder sqlBuilder = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
+            for(Resource resource:resources){
+                EncodedResource encodedResource=new EncodedResource(resource, "UTF-8");
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(encodedResource.getInputStream()))) {
+                    String line;
+                    StringBuilder sqlBuilder = new StringBuilder();
+                    while ((line = reader.readLine()) != null) {
 //                   sqlBuilder.append(line).append("\n");  // 每行加上换行符\
-                    if(line!=null&& line.startsWith("INSERT")){
-                        Pattern pattern = Pattern.compile("`(.*?)`");
-                        Matcher matcher = pattern.matcher(line);
-                        if (matcher.find()) {
-                            String tableName = matcher.group(1);
-                            if(table.contains(tableName)==false){
-                                jdbcTemplate.execute("delete from "+tableName+"");
-                                table.add(tableName);
+                        if(line!=null&& line.startsWith("INSERT")){
+                            Pattern pattern = Pattern.compile("`(.*?)`");
+                            Matcher matcher = pattern.matcher(line);
+                            if (matcher.find()) {
+                                String tableName = matcher.group(1);
+                                if(table.contains(tableName)==false){
+                                    jdbcTemplate.execute("delete from "+tableName+"");
+                                    table.add(tableName);
+                                }
                             }
-                        }
-                        if("Oracle".equals(dbType)){
-                            line=convertToOracleInsert(line);
-                        }
-                        try{
+                            if("Oracle".equals(dbType)){
+                                line=convertToOracleInsert(line);
+                            }
+                            try{
 //                            line="INSERT INTO form (id, create_date, create_id, modify_date, modify_id, status, entity_type, icon, item_type, label_field, list_api_path, model_size, module, name, page_size, prefix_no, save_api_path, sort, title, type, type_parents_str, version, item_name) VALUES ('4028b8818aea03bb018aea03c84f00f9', TO_TIMESTAMP('2023-10-01 14:54:44.000', 'YYYY-MM-DD HH24:MI:SS.FF3'), NULL, TO_TIMESTAMP('2023-10-01 14:54:44.000', 'YYYY-MM-DD HH24:MI:SS.FF3'), NULL, '1', 'sysFile', NULL, 'entity', NULL, NULL, 2, 'sys', '文件存储', 10, NULL, NULL, NULL, '文件存储', 'sysFile', NULL, NULL, NULL);";
-                            jdbcTemplate.execute(line);
-                        }catch (Exception ex){
-                            System.out.println(line);
-                            ex.printStackTrace();
+                                jdbcTemplate.execute(line);
+                            }catch (Exception ex){
+                                System.out.println(line);
+                                ex.printStackTrace();
 
+                            }
                         }
                     }
                 }

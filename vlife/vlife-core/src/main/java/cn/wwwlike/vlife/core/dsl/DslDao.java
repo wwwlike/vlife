@@ -51,14 +51,27 @@ import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.internal.SessionFactoryImpl;
+import org.hibernate.jpa.HibernateEntityManager;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,6 +84,9 @@ import static cn.wwwlike.vlife.objship.read.ItemReadTemplate.GSON;
  * @date 2022/5/30
  */
 public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
+
+
+
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
@@ -93,6 +109,24 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     protected Class<T> entityClz;
 
+    private static String dbType;
+
+    public void getDbType(){
+        if(dbType==null){
+            // 将 EntityManager 转换为 Hibernate 的 SessionFactory
+            HibernateEntityManagerFactory entityManagerFactory = em.getEntityManagerFactory().unwrap(HibernateEntityManagerFactory.class);
+            // 获取当前使用的数据库方言
+            Dialect dialect = entityManagerFactory.getSessionFactory().getDialect();
+            String dialectClassName = dialect.getClass().getName();
+            if (dialectClassName.toLowerCase().contains("mysql")) {
+                dbType = "MySQL";
+            } else if (dialectClassName.toLowerCase().contains("oracle")) {
+                dbType = "Oracle";
+            } else {
+                dbType = "Unknown";
+            }
+        }
+    }
     /**
      * 属性初始化
      */
@@ -101,15 +135,32 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         entityClz = GenericsUtils.getSuperClassGenricType(this.getClass());
         entityDto = GlobalData.entityDto(entityClz);
         factory = new JPAQueryFactory(em);
+        getDbType();
     }
 
+
+//    private  DataSource dataSource;
+//
+//    public DslDao(DataSource dataSource) {
+//        this.dataSource=dataSource;
+//    }
+//    public String getDatabaseType() {
+//        try (Connection connection = dataSource.getConnection()) {
+//            DatabaseMetaData metaData = connection.getMetaData();
+//            String databaseType = metaData.getDatabaseProductName();
+//            return databaseType;
+//        }catch (SQLException e) {
+//            return "Unknown";
+//        }
+//    }
+//    public  String dbType=getDatabaseType();
     /**
      * 通过视图VO类信息得到Dao封装的VO的查询模型
      */
     protected QModel select(Class<? extends IdBean> voClz) {
 //        return new VoModel(factory, voClz);
         if (models.get(voClz) == null) {
-            models.put(voClz, new VoModel(factory, voClz));
+            models.put(voClz, new VoModel(factory, voClz,dbType));
         }
         return models.get(voClz);
     }
@@ -148,6 +199,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     protected <E extends IdBean> JPAQuery dslQuery(Class<E> entityVoClz, QueryWrapper<? extends Item> wrapper, PageableRequest page, OrderRequest order) {
         QModel model = select(entityVoClz);
         JPAQuery query = model.fromWhere(wrapper);
+
         if (page != null) {
             query = page(query, page);
         }
@@ -585,41 +637,8 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         }
     }
 
-    /**
-     * 查询单一字段报表数据
-     */
-    public List report(ReportWrapper wrapper) {
-        return report(new ArrayList<>(), wrapper);
-    }
 
-    /**
-     * 查询一张报表
-     */
-    public List<Map> report(List<Map> all, ReportWrapper wrapper) {
-        //单指标查询
-        QModel<T> model = select(wrapper.getEntityClz());//产生： select * from xxx
-        JPAQuery query = model.fromGroupWhere(wrapper); //过滤条件组装 where?
-        List<Tuple> result=query.fetch();//统计结果
-        //查询结果转换
-        List<Groups> groups = wrapper.getGroups();
-        List<String> columns = groups.stream().map(g -> {
-            return g.getColumn() + (g.getFunc() != null ? "_" + g.getFunc() : "");
-        }).collect(Collectors.toList());
-        List currList = QueryHelper.tupletoMap( result,columns, wrapper.getCode());
-        if (all.size() == 0) {
-            return currList;
-        }
-        all = QueryHelper.join(currList, all, columns, wrapper.getCode());
-        return all;
-    }
 
-    @Override
-    public List dataCount(ReportWrapper wrapper) {
-        QModel<T> model = select(wrapper.getEntityClz());//产生： select * from xxx
-        JPAQuery query = model.fromGroupWhere(wrapper); //过滤条件组装 where?
-        List<Tuple> result=query.fetch();//统计结果
-        return result;
-    }
 
 
 }

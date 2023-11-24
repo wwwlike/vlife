@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
  * 查询字段长度
  */
 public  class LengthTran extends DataExpressTran<SimpleExpression,NumberExpression> {
-    public  NumberExpression tran(SimpleExpression expression) {
+    public  NumberExpression tran(SimpleExpression expression,String dbType) {
         return ((StringPath)expression).length();
     }
 }

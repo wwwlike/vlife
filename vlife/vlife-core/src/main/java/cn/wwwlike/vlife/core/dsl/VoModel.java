@@ -97,12 +97,14 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
     private JPAQuery filterQuery;
     private String prefix = "";
 
+    private String dbType;
 
-    public VoModel(JPAQueryFactory factory, Class<? extends IdBean> vo, String prefix) {
+    public VoModel(JPAQueryFactory factory, Class<? extends IdBean> vo, String prefix,String dbType) {
         this.prefix = prefix;
         this.factory = factory;
         this.vo = vo;
         this.voFromQuery = from(vo);
+        this.dbType=dbType;
         //vo模型组装查询字段
         if (VoBean.class.isAssignableFrom(vo)) {
             Expression[] selects = selectExpression();
@@ -115,8 +117,8 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         voJoin.putAll(alljoin);
     }
 
-    public VoModel(JPAQueryFactory factory, Class<? extends IdBean> vo) {
-        this(factory, vo, "");
+    public VoModel(JPAQueryFactory factory, Class<? extends IdBean> vo,String dbType) {
+        this(factory, vo, "",dbType);
     }
 
     public VoModel(JPAQueryFactory factory) {
@@ -256,7 +258,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             try {
                 SimpleExpression fieldExpression = (SimpleExpression) ReflectionUtils.getFieldValue(fieldInPath, fieldDto.getEntityFieldName());
                 if (fieldDto.getTran() != null) {
-                    fieldExpression = fieldDto.getTran().tran(fieldExpression);
+                    fieldExpression = fieldDto.getTran().tran(fieldExpression,dbType);
                 }
                 fieldExpression = fieldExpression.as(fieldDto.getFieldName());
                 paths.add(fieldExpression);
@@ -281,7 +283,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         for (AbstractWrapper.Element element : wrapper.getElements()) {
             EntityPathBase path = alljoin.get(getPrefix() + element.queryPathNames());
-            BooleanExpression filterExp = filter(path, (String) element.getColumn(), element);
+            BooleanExpression filterExp = filter(path, (String) element.getColumn(), element,dbType);
             if (filterExp != null) {
                 if (wrapper.getJoin() == Join.and) {
                     booleanBuilder.and(filterExp);
@@ -405,7 +407,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         for (Groups group : groups) {
             SimpleExpression groupException = (SimpleExpression) ReflectionUtils.getFieldValue(entityPathBase, group.getColumn());
             if (group.getFunc() != null) {
-                groupException = QueryHelper.tran(groupException, group.getFunc());
+                groupException = QueryHelper.tran(groupException, group.getFunc(),dbType);
                 filterQuery.groupBy(groupException);//直接加入到fiulterQuery
             }
             groupExpression[i] = groupException; // 这里也加入了，会加入两次
@@ -416,7 +418,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         //2. select 分组 聚合的
         SimpleExpression fieldExpression = (SimpleExpression) ReflectionUtils.getFieldValue(entityPathBase, wrapper.getItemField());
         SimpleExpression[] selectExpression = selectExpression = ArrayUtils.addAll(groupExpression,
-                QueryHelper.tran(fieldExpression, wrapper.getFunc()).as(wrapper.getCode()));//分组的字段和查询的字段（code）都加入进来
+                QueryHelper.tran(fieldExpression, wrapper.getFunc(),dbType).as(wrapper.getCode()));//分组的字段和查询的字段（code）都加入进来
         filterQuery.select(selectExpression);
 
         //group by加入
@@ -448,11 +450,11 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      * @param element   查询指端的值（值信息里涵盖了匹配方式 like ,between ）
      * @return where条件的表达式
      */
-    public static BooleanExpression filter(EntityPathBase path, String fieldName, AbstractWrapper.Element element) {
+    public static BooleanExpression filter(EntityPathBase path, String fieldName, AbstractWrapper.Element element,String dbType) {
 
         SimpleExpression fieldlDsl = (SimpleExpression) ReflectionUtils.getFieldValue(path, fieldName == null ? "id" : fieldName);
         if (element.getTran() != null) {
-            fieldlDsl = element.getTran().tran(fieldlDsl);
+            fieldlDsl = element.getTran().tran(fieldlDsl,dbType);
         }
 
         Opt opt = element.getOpt();

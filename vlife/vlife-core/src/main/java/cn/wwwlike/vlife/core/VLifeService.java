@@ -423,28 +423,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
     /**
-     * 报表查询
-     * 1. 根据报表编码查询报表数据
-     * 2. 根据指标code查询单项数据
-     */
-    public List report(ReportWrapper qw) {
-        return dao.report(qw);
-    }
-
-    public List report(List<Map> maplist, ReportWrapper qw) {
-        return dao.report(maplist, qw);
-    }
-
-    /**
-     * 图表统计
-     * @param qw
-     * @return
-     */
-    public List dataCount( ReportWrapper qw) {
-        return dao.dataCount(qw);
-    }
-
-    /**
      * -------------------------------------数据处理逻辑的封装方法(私有)-----------------------------------------------------
      * <p>
      * /**

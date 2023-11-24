@@ -297,13 +297,13 @@ public class QueryHelper {
      * @param func 聚合函数名
      * @return
      */
-    public static SimpleExpression tran(SimpleExpression expression, String func) {
+    public static SimpleExpression tran(SimpleExpression expression, String func,String dbType) {
         if ("ji".equals(func)||"date_month3".equals(func)) {//季度
-            return new JiExpressTran().tran(expression);
+            return new JiExpressTran().tran(expression,dbType);
         } else if ("month".equals(func)||"date_month".equals(func)) {//月份
-            return new MonthExpressTran().tran(expression);
+            return new MonthExpressTran().tran(expression,dbType);
         } else if ("year".equals(func)||"date_year".equals(func)) {
-            return new YearExpressTran().tran(expression);
+            return new YearExpressTran().tran(expression,dbType);
         } else  if (VCT.ITEM_FUNC.AVG.equals(func)) {
             return ((NumberExpression) expression).avg();
         } else if (VCT.ITEM_FUNC.SUM.equals(func)) {

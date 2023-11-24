@@ -15,7 +15,7 @@ public  class SubStrTran extends DataExpressTran<SimpleExpression,StringExpressi
     private Integer len;
 
 
-    public  StringExpression tran(SimpleExpression expression) {
+    public  StringExpression tran(SimpleExpression expression,String dbType) {
         if(expression instanceof StringPath ==false ){
             return null;// 入参错误
         }

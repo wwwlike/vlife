@@ -25,6 +25,5 @@ import com.querydsl.core.types.dsl.SimpleExpression;
  * 数据转换定义接口(queryDsl方式的转换)
  */
 public abstract class DataExpressTran<T extends SimpleExpression, R extends SimpleExpression> {
-    public abstract R tran(T expression);
-
+    public abstract R tran(T expression,String dbType);
 }
