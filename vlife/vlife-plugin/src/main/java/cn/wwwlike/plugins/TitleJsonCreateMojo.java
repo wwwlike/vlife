@@ -35,8 +35,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
-import sun.security.krb5.internal.ccache.Tag;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +44,6 @@ import java.util.Map;
 
 /**
  * 读取entity里类及字段注释信息到resources里的title.json里
- *
  * @requiresDependencyResolution compile
  */
 @Mojo(name = "titleJson", defaultPhase = LifecyclePhase.INSTALL)

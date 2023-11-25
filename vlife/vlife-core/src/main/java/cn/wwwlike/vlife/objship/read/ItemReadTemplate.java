@@ -198,14 +198,6 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
      * @return 包路径下的所有类路径放入到集合里
      */
     public static List<String> readPackage(ClassLoader classLoader, String... packageNames) {
-//        try {
-//          List a=  findImplementations(SaveBean.class,classLoader);
-//            System.out.println(a.size());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
         List<String> classStr = new ArrayList<>();
         for (String packageName : packageNames) {
             Set<String> classNames = PackageUtil.getClassName(classLoader, packageName, true);

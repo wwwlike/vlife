@@ -22,8 +22,6 @@ import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 

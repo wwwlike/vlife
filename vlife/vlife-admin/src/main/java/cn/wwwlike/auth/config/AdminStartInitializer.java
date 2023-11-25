@@ -25,7 +25,6 @@ import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.sys.service.SysDictService;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
-import javafx.application.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

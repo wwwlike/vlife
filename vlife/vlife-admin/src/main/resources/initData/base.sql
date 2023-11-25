@@ -2,6 +2,20 @@
 -- 初始化数据
 
 -- ----------------------------
+-- Records of demo_customer
+-- ----------------------------
+INSERT INTO `demo_customer` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `name`) VALUES ('4028b8818c03cff2018c03d2660b0000', '2023-11-25 08:12:49.543000', NULL, NULL, NULL, '1', '甲方客户');
+
+-- ----------------------------
+-- Records of demo_project
+-- ----------------------------
+INSERT INTO `demo_project` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `begin_date`, `demo_customer_id`, `end_date`, `name`, `point`, `state`, `sys_user_id`, `total`) VALUES ('4028b8818c03cff2018c03d305cf0001', '2023-11-25 08:13:30.445000', NULL, '2023-11-25 08:14:37.027000', NULL, '1', '2023-11-23 00:00:00.000000', '4028b8818c03cff2018c03d2660b0000', '2023-11-09 00:00:00.000000', '项目名称', 123, '2', '40288a8182a656740182a659f4d10001', 123333);
+
+-- ----------------------------
+-- Records of demo_task
+-- ----------------------------
+INSERT INTO `demo_task` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `demo_project_id`, `name`, `point`, `remark`, `sys_user_id`, `type`) VALUES ('4028b8818c03cff2018c03d305d10002', '2023-11-25 08:13:30.448000', NULL, '2023-11-25 08:13:43.649000', NULL, '1', '4028b8818c03cff2018c03d305cf0001', '333', 123, '33', '4028b8818b215481018b22a196ae0009', '1');
+-- ----------------------------
 -- Records of form
 -- ----------------------------
 INSERT INTO `form` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `entity_type`, `icon`, `item_type`, `label_field`, `list_api_path`, `model_size`, `module`, `name`, `page_size`, `prefix_no`, `save_api_path`, `sort`, `title`, `type`, `type_parents_str`, `version`, `item_name`) VALUES ('4028b8818aea03bb018aea03c84f00f9', '2023-10-01 14:53:51.053000', NULL, '2023-11-08 22:01:36.543000', NULL, '1', 'sysFile', NULL, 'entity', NULL, NULL, 2, 'sys', '文件存储', 10, NULL, NULL, NULL, '文件存储', 'sysFile', NULL, NULL, NULL);

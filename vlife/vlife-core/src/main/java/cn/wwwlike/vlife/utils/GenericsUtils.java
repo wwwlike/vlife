@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.utils;
 
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
+//import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -44,13 +44,22 @@ public class GenericsUtils {
         if (types.length == 0) {
             return getSuperClassGenricType(clazz);
         }
+//        if (types[0] instanceof ParameterizedType) {
+//            Type[] types2 = ((ParameterizedTypeImpl) types[0]).getActualTypeArguments();
+//            if (types2.length == 0) {
+//                return getSuperClassGenricType(clazz);
+//            }
+//
+//            Class entityClz = (Class) types2[0];
+//            return entityClz;
+//        }
         if (types[0] instanceof ParameterizedType) {
-            Type[] types2 = ((ParameterizedTypeImpl) types[0]).getActualTypeArguments();
+            Type[] types2 = ((ParameterizedType) types[0]).getActualTypeArguments();
             if (types2.length == 0) {
                 return getSuperClassGenricType(clazz);
             }
 
-            Class entityClz = (Class) types2[0];
+            Class<?> entityClz = (Class<?>) types2[0];
             return entityClz;
         }
         return getSuperClassGenricType(clazz);

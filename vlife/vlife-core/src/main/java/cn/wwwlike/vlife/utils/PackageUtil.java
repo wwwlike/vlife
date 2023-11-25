@@ -22,6 +22,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -48,10 +49,24 @@ public class PackageUtil {
      */
     public static Set<String> getClassName(ClassLoader loader, String packageName, boolean childPackage) {
         Set<String> fileNames = new HashSet<>();
-//        String packagePath = packageName.replace(".", "/");
-//        URL url = loader.getResource(packagePath);
+        try {
+            Enumeration<URL> resources = loader.getResources(packageName.replace('.', '/'));
+            while (resources.hasMoreElements()) {
+                URL resource = resources.nextElement();
+                String protocol = resource.getProtocol();
+                if ("file".equals(protocol)) {//开发环境可以读取到目录
+                    String path = resource.getPath();
+                    fileNames.addAll(getClassNameByFile(path, null, childPackage));
+                } else if ("jar".equals(protocol)) {
+                    System.out.println("jarjarjarjarjar");
+                }
+            }
+        }catch (IOException exception){
+            exception.printStackTrace();
+        }
+    /** java8方式取类信息
         URL[] urls=((URLClassLoader) loader).getURLs();
-        //遍历取到classes里的类信息(开发时用)
+        //开发时环境:用遍历取到classes里的类信息
         for(URL u:urls){
             String type = u.getProtocol();
             String path=u.getPath();
@@ -59,21 +74,24 @@ public class PackageUtil {
             if (path.endsWith("classes/")) {
                 fileNames.addAll(getClassNameByFile(path, null, childPackage));
             }
+        }*/
+
+        try {
+            Enumeration<URL> resources = loader.getResources("");
+            while (resources.hasMoreElements()) {
+                URL resource = resources.nextElement();
+                String protocol = resource.getProtocol();
+               if ("jar".equals(protocol)) {
+                   List<String> jarClass=getClassNameByJars1(packageName, childPackage,resource);
+                   fileNames.addAll(jarClass);
+               }
+            }
+        }catch (IOException exception){
+            exception.printStackTrace();
         }
-        fileNames.addAll(getClassNameByJars(((URLClassLoader) loader).getURLs(), packageName, childPackage));
-        //读取jar文件里的类信息
-    //        if (url != null) {
-    //            String path=url.getPath();
-    //            path=path.replace("test-","");
-    //            String type = url.getProtocol();
-    //            if (type.equals("file")) {
-    //                fileNames = getClassNameByFile(path, null, childPackage);
-    //            } else if (type.equals("jar")) {//生产环境读取jar包
-    //                fileNames = getClassNameByJar(path, childPackage);
-    //            }
-    //        } else {
-    //            fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
-    //        }
+           //生产环境：从jar包里指定包路径[packageName]的class
+//        List<String> jarClass=getClassNameByJars(((URLClassLoader) loader).getURLs(), packageName, childPackage);
+//        fileNames.addAll(jarClass);
         return fileNames;
     }
 
@@ -205,6 +223,23 @@ public class PackageUtil {
      * @return 类的完整名称
      */
     private static List<String> getClassNameByJars(URL[] urls, String packagePath, boolean childPackage) {
+        List<String> myClassName = new ArrayList<String>();
+        if (urls != null) {
+            for (int i = 0; i < urls.length; i++) {
+                URL url = urls[i];
+                String urlPath = url.getPath();
+                if (urlPath.endsWith("classes/")) {
+                    continue;
+                }
+                String jarPath = urlPath + "!/" + packagePath;
+                myClassName.addAll(getClassNameByJar(jarPath, childPackage));
+            }
+        }
+        return myClassName;
+    }
+
+
+    private static List<String> getClassNameByJars1(String packagePath, boolean childPackage,URL...urls) {
         List<String> myClassName = new ArrayList<String>();
         if (urls != null) {
             for (int i = 0; i < urls.length; i++) {

@@ -40,7 +40,7 @@ public class VlifeApplicationContextInitializer implements ApplicationContextIni
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         Integer errNum=new ModelReadCheck().load(loader,"cn.wwwlike");
         if(errNum>0){
-            logger.info("[vlife] 容器初始化失败，请按照规范编写各类模型，注意逻辑关系");
+            logger.info("[vlife] 容器初始化失败，请按照规范编写各类模型(http://vlife.cc)");
             exitApplication(applicationContext);
         }
         logger.info("[vlife] 模型关系读取完毕");
