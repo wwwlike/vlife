@@ -10,7 +10,11 @@ const PrivateRoute = ({ ...props }) => {
   const logged = user?.name ? true : false;
   return logged ? (
     pathname === "/" ? (
-      <Navigate to={{ pathname: `/dashboard/workbeach` }} replace />
+      // <Navigate to={{ pathname: `/dashboard/workbeach` }} replace />
+      <Navigate
+        to={{ pathname: `/sysConf/model`, search: "?type=sysUser" }}
+        replace
+      />
     ) : (
       props.element
     )

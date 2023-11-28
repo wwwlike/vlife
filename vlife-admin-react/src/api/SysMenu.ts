@@ -15,6 +15,8 @@ export interface SysMenu extends DbEntity {
   sort: number; //排序号
   entityPrefix: string; //实体名前缀
   sysRoleId: string; //绑定的角色
+  confPage:boolean;
+  pageLayoutId:string;
 }
 
 /**
@@ -33,6 +35,8 @@ export interface MenuVo extends DbEntity {
   sysResourcesList: SysResources[]; //接口数据
   sysRoleId: string; //绑定的角色
   placeholderUrl:string;
+  confPage:boolean;
+  pageLayoutId:string;
 }
 /**
  * 保存菜单;

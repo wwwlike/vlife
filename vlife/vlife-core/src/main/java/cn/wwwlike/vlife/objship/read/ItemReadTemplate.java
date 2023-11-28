@@ -98,6 +98,10 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                 json = FileUtil.getFileContent(is);
             }else{
                 File jsonFile =ResourceUtils.getFile("./src/main/resources/title.json");
+                //整体项目运行install
+                if(!jsonFile.exists()){
+                    jsonFile =ResourceUtils.getFile("./vlife-admin/src/main/resources/title.json");
+                }
                 if(jsonFile.isFile()){//插件使用
                     json= FileUtils.readFileToString(jsonFile,"UTF-8");
                 }else{// jar包使用

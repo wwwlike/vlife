@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { IdBean } from "@src/api/base";
 import FormPage from "@src/pages/common/formPage";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +40,7 @@ const Content = <T extends IdBean>({
   ...props
 }: Partial<ContentProps<T>> & { listType: string }) => {
   const navigate = useNavigate();
-  const { user, menuState } = useAuth();
+  const { user } = useAuth();
   const [tableModel, setTableModel] = useState<FormVo>();
   const confirmModal = useNiceModal("vlifeModal");
   const [formData, setFormData] = useState<any>({});
@@ -49,19 +49,23 @@ const Content = <T extends IdBean>({
     return { ...req, ...formData };
   }, [req, formData]);
 
-  const windowWidth = useSize(document.querySelector("body"))?.width;
+  // const windowWidth = useSize(document.querySelector("body"))?.width;
+
+  const ref = useRef(null);
+  const size = useSize(ref);
+
   const [filterOpen, setFilterOpen] = useState(filterType ? true : false);
   //动态计算table区块宽度
   const tableWidth = useMemo((): number => {
-    let width = windowWidth || 0;
+    let width = size?.width || 0;
     if (filterOpen === true) {
       width = width - 280;
     } else {
       width = width - 0;
     }
-    width = menuState === "mini" ? width - 80 : width - 240;
+    // width = menuState === "mini" ? width - 80 : width - 240;
     return width;
-  }, [windowWidth, filterOpen, menuState]);
+  }, [size, filterOpen]);
 
   const menu = useMemo((): DropDownMenuItem[] => {
     let arrays: DropDownMenuItem[] = [
@@ -91,7 +95,7 @@ const Content = <T extends IdBean>({
         node: "item",
         name: "前端代码",
         onClick: () => {
-          navigate(`/sysConf/model/code/${tableModel?.entityType}`);
+          navigate(`/sysConf/model/codeView/${tableModel?.entityType}`);
         },
       },
     ];
@@ -140,7 +144,7 @@ const Content = <T extends IdBean>({
   }, [btns, tableModel]);
 
   return (
-    <div className="flex relative   ">
+    <div ref={ref} className="flex relative   ">
       <div
         style={{ width: `${filterType && filterOpen ? 280 : 0}px` }}
         className={`${

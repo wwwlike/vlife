@@ -15,9 +15,9 @@ import { IconButtonStroked } from "@douyinfe/semi-icons";
 export interface BtnToolBarProps<T extends IdBean> {
   entityName: string; //当前模块
   btns: VFBtn[]; //按钮对象
-  model?: string; //模型名称 只取该模型相关的按钮
+  model?: string; //主模型 只取该模型相关的按钮
   datas?: T[]; //操作的数据
-  position: "tableToolbar" | "tableLine" | "formFooter"; //显示场景 列表工具栏|列表行|表单底部
+  position: "tableToolbar" | "tableLine" | "formFooter" | "page"; //显示场景 列表工具栏|列表行|表单底部|page其他场景页面
   className?: string;
   //form表单需要;
   line?: number; //行号 tableLine模式下使用 临时数据可用行号当索引进行操作
@@ -107,10 +107,7 @@ export default <T extends IdBean>({
   //按钮点击
   const btnClick = useCallback(
     (btn: VFBtn, index: number) => {
-      if (
-        (position === "tableToolbar" || position === "tableLine") &&
-        btn.model
-      ) {
+      if (position !== "formFooter" && btn.model) {
         //1 页面(非modal)的按钮有模型信息打开页面
         show(btn);
       } else if (btn.saveApi && btnDatas) {
@@ -150,7 +147,9 @@ export default <T extends IdBean>({
       if (
         btn.actionType !== "api" &&
         position === "formFooter" &&
-        (btn.title === "新增" || btn.title === "修改")
+        (btn.title === "新增" ||
+          btn.title === "修改" ||
+          btn.saveApi?.name === "save")
       ) {
         return "保存";
       }
@@ -182,7 +181,7 @@ export default <T extends IdBean>({
       if (btn.loadApi === undefined) {
         modal(btnDatas?.[0] || btn.initData || {});
       } else if (btnDatas) {
-        btn.loadApi(btnDatas[0].id).then((d) => {
+        btn.loadApi(btnDatas[0]).then((d) => {
           modal(d.data);
         });
       }
@@ -203,8 +202,33 @@ export default <T extends IdBean>({
 
   //可用性比对检查 false&&string不可用， true可用
   const btnUsableMatch = useCallback(
-    (btn: VFBtn): boolean | string => {
-      if (
+    (btn: VFBtn): boolean | string | Promise<boolean | string> => {
+      //布尔值匹配
+      if (typeof btn.usableMatch === "boolean") {
+        return btn.usableMatch;
+      } else if (typeof btn.usableMatch === "string") {
+        return btn.usableMatch;
+      } else if (btn.usableMatch instanceof Promise<boolean | string>) {
+        const result = btn.usableMatch;
+        return result;
+        //异步函数转同步返回
+      } else if (typeof btn.usableMatch === "object") {
+        //属性值匹配
+        return (
+          //所有数据都满足
+          btnDatas?.filter((a: any) => objectIncludes(a, btn.usableMatch))
+            .length === btnDatas?.length
+        );
+      } else if (typeof btn.usableMatch === "function") {
+        //同步函数
+        return btn.usableMatch(
+          position === "tableToolbar"
+            ? btnDatas
+            : btnDatas
+            ? btnDatas[0]
+            : undefined
+        );
+      } else if (
         btn.actionType !== "create" &&
         btn.actionType !== "createEdit" &&
         (btnDatas === undefined || btnDatas?.length === 0)
@@ -220,91 +244,128 @@ export default <T extends IdBean>({
         return true;
       } else if (btn.usableMatch === undefined) {
         return true;
-      } else if (typeof btn.usableMatch === "boolean") {
-        //布尔值匹配
-        return btn.usableMatch;
-      } else if (typeof btn.usableMatch === "object") {
-        //属性值匹配
-        return (
-          //所有数据都满足
-          btnDatas?.filter((a: any) => objectIncludes(a, btn.usableMatch))
-            .length === btnDatas?.length
-        );
-      } else if (typeof btn.usableMatch === "function") {
-        const btnTooltip = btn.usableMatch(
-          position === "tableToolbar"
-            ? btnDatas
-            : btnDatas
-            ? btnDatas[0]
-            : undefined
-        );
-        if (typeof btnTooltip === "string" || typeof btnTooltip === "boolean") {
-          return btnTooltip;
-        } else {
-          return true;
-        }
       }
       return true;
     },
     [btnDatas, position]
   );
 
-  //支持在当前场景下使用的按钮
-  const currBtns = useMemo((): VFBtn[] => {
-    let toolBarBtns: VFBtn[] = [];
-    if (position === "tableToolbar") {
-      //列表工具栏 新增和操作多个数据的按钮
-      toolBarBtns = btns.filter(
-        (b) => b.multiple === true || b.actionType === "create"
-      );
-    } else if (position === "tableLine") {
-      //行按钮->排除新增和多个操作的按钮
-      toolBarBtns = btns.filter(
-        (b) => b.actionType !== "create" && b.multiple !== true
-      );
-    } else {
-      //明细页按钮
-      if (btnDatas === undefined || btnDatas[0].id === undefined) {
-        //新增
-        toolBarBtns = btns.filter(
-          (b) =>
-            (b.actionType === "create" || b.actionType === "createEdit") &&
-            (model ? b.model === model : true)
-        );
-        return toolBarBtns;
-      } else {
-        toolBarBtns = btns.filter(
-          (b) =>
-            b.actionType !== "create" &&
-            b.actionType !== "view" &&
-            (b.multiple === false || b.multiple === undefined)
-        );
-      }
-    }
+  //筛选出应该在当前场景下可以使用的按钮
 
-    const buttons: VFBtn[] = toolBarBtns
-      .filter((btn) => (model ? btn.model === model : true))
-      .filter((btn) => (readPretty ? btn.actionType === "api" : true))
-      .filter((btn) => permissionCheck(btn))
-      .map((btn) => {
-        const tooltip = btnUsableMatch(btn);
-        const disabled = typeof tooltip === "boolean" ? !tooltip : true;
+  const [currBtns, setCurrBtns] = useState<VFBtn[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let toolBarBtns: VFBtn[] = [];
+      if (position === "tableToolbar") {
+        //列表工具栏 新增和操作多个数据的按钮
+        toolBarBtns = btns.filter(
+          (b) => b.multiple === true || b.actionType === "create"
+        );
+      } else if (position === "tableLine") {
+        //行按钮->排除新增和多个操作的按钮
+        toolBarBtns = btns.filter(
+          (b) => b.actionType !== "create" && b.multiple !== true
+        );
+      } else if (position === "formFooter") {
+        //明细页按钮
+        if (btnDatas === undefined || btnDatas?.[0]?.id === undefined) {
+          //新增
+          toolBarBtns = btns.filter(
+            (b) =>
+              (b.actionType === "create" || b.actionType === "createEdit") &&
+              (model ? b.model === model : true)
+          );
+        } else {
+          toolBarBtns = btns.filter(
+            (b) =>
+              b.actionType !== "create" &&
+              b.actionType !== "view" &&
+              (b.multiple === false || b.multiple === undefined)
+          );
+        }
+      } else {
+        toolBarBtns = btns;
+      }
+
+      const filteredBtns = toolBarBtns
+        .filter((btn) => (model ? btn.model === model : true)) //模型过滤
+        .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //只读过滤
+        .filter((btn) => permissionCheck(btn)); //权限过滤
+      const btnPromises = filteredBtns.map(async (btn, index) => {
+        let tooltip = btnUsableMatch(btn);
+        if (tooltip instanceof Promise) {
+          // 取出异步的提示信息
+          tooltip = await tooltip;
+        }
+        let disabled = typeof tooltip === "boolean" ? !tooltip : true; //是否可用
         return typeof tooltip === "string"
           ? { ...btn, tooltip, disabled: disabled }
           : { ...btn, disabled };
-      })
-      .filter((btn) => {
-        return !(btn.disabledHide === true && btn.disabled);
       });
-    return buttons;
+
+      const results = await Promise.all(btnPromises);
+      const filteredResults = results.filter((d) =>
+        d.disabled && d.disabledHide ? false : true
+      );
+      setCurrBtns((d) => filteredResults);
+    };
+
+    fetchData();
   }, [position, btns, btnDatas, model, readPretty]);
 
+  // //根据useableMatch属性判断产生按钮的disabled属性
+  // useEffect(() => {
+  //   positionBtns.forEach(async (btn, index) => {
+  //     //每个按钮进行能否访问判断
+  //     const tooltip = btnUsableMatch(btn);
+  //     if (tooltip instanceof Promise) {
+  //       const d = await tooltip; //异步返回的数据
+  //       const disabled = typeof d === "boolean" ? !d : true;
+  //       setCurrBtns((cbtns) => {
+  //         const newCurrBtns = (cbtns.length > 0 ? cbtns : positionBtns)
+  //           .map((currBtn, i) => {
+  //             if (i === index) {
+  //               return typeof d === "string"
+  //                 ? { ...btn, tooltip: d, disabled: disabled }
+  //                 : { ...btn, disabled };
+  //             } else {
+  //               return currBtn;
+  //             }
+  //           })
+  //           .filter((d) => (d.disabled && d.disabledHide ? false : true));
+  //         return newCurrBtns;
+  //       });
+  //     } else {
+  //       console.log("1111111111");
+  //       const disabled = typeof tooltip === "boolean" ? !tooltip : true;
+  //       setCurrBtns((cbtns) => {
+  //         const newCurrBtns = (cbtns.length > 0 ? cbtns : positionBtns)
+  //           .map((currBtn, i) => {
+  //             if (i === index) {
+  //               return typeof tooltip === "string"
+  //                 ? { ...btn, tooltip, disabled: disabled }
+  //                 : { ...btn, disabled };
+  //             } else {
+  //               return currBtn;
+  //             }
+  //           })
+  //           .filter((d) => (d.disabled && d.disabledHide ? false : true));
+  //         return newCurrBtns;
+  //       });
+  //     }
+  //   });
+  // }, [positionBtns, setCurrBtns, currBtns]);
+
   useEffect(() => {
+    //返回按钮数量
     onBtnNum && onBtnNum(currBtns.length);
   }, [currBtns]);
 
   return (
     <div className={`${className} space-x-1`}>
+      {/* {currBtns.length} */}
+      {/* {position} */}
       {currBtns.map((btn, index) => {
         // const tooltip = btnUsableMatch(btn);
         // const disabled = typeof tooltip === "boolean" ? !tooltip : true;

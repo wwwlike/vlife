@@ -10,10 +10,13 @@ import ConfirmModal from "../common/modal/confirmModal";
 import { MenuVo, SysMenu } from "@src/api/SysMenu";
 import { useAuth } from "@src/context/auth-context";
 import { findSubs, findTreeRoot } from "@src/util/func";
+import FullScreenHeader from "./components/header/FullScreenHeader";
 const { Content } = Layout;
 
 const Index: React.FC = () => {
   const { pathname } = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const menuId = searchParams.get("menuId") || undefined;
   const userMenus: MenuVo[] = useAuth().user?.menus || []; //所有菜单
   const apps: MenuVo[] = //所有应用
     useAuth()
@@ -41,26 +44,46 @@ const Index: React.FC = () => {
 
   return (
     <Layout className="layout-page">
-      {/* {JSON.stringify(currAppMenuList)} */}
-      <Header
-        appMenus={apps}
-        outApp={currApp}
-        onAppClick={(app) => {
-          setCurrApp(app);
-          if (!app.url) {
-          }
-        }}
-      />
-      <Layout>
-        <Sider menus={currAppMenuList} app={currApp} onClick={setCurrMenu} />
-        <Content className="layout-content bg-gray-50 pl-2 pt-2 pr-2">
-          <Suspense fallback={<SuspendFallbackLoading message="正在加载中" />}>
-            <Outlet />
-          </Suspense>
-          {/* <Scrollbars autoHide={true}></Scrollbars> */}
-        </Content>
-        {/* <Footer /> */}
-      </Layout>
+      {menuId === undefined ? (
+        <>
+          <Header
+            appMenus={apps}
+            outApp={currApp}
+            onAppClick={(app) => {
+              setCurrApp(app);
+              if (!app.url) {
+              }
+            }}
+          />
+          <Layout>
+            <Sider
+              menus={currAppMenuList}
+              app={currApp}
+              onClick={setCurrMenu}
+            />
+            <Content className="layout-content bg-gray-50 pl-2 pt-2 pr-2">
+              <Suspense
+                fallback={<SuspendFallbackLoading message="正在加载中" />}
+              >
+                <Outlet />
+              </Suspense>
+              {/* <Scrollbars autoHide={true}></Scrollbars> */}
+            </Content>
+          </Layout>
+        </>
+      ) : (
+        <>
+          <FullScreenHeader menuId={menuId} />
+          <Content className="layout-content bg-gray-50 pl-2 pt-2 pr-2">
+            <Suspense
+              fallback={<SuspendFallbackLoading message="正在加载中" />}
+            >
+              <Outlet />
+            </Suspense>
+            {/* <Scrollbars autoHide={true}></Scrollbars> */}
+          </Content>
+        </>
+      )}
       <FormModal />
       <VlifeModal />
       <ConfirmModal />
