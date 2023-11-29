@@ -58,7 +58,7 @@ public class PackageUtil {
                     String path = resource.getPath();
                     fileNames.addAll(getClassNameByFile(path, null, childPackage));
                 } else if ("jar".equals(protocol)) {
-                    System.out.println("jarjarjarjarjar");
+//                    System.out.println("jarjarjarjarjar");
                 }
             }
         }catch (IOException exception){

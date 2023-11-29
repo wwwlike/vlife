@@ -8,6 +8,7 @@ import {
   Dropdown,
   Empty,
   SplitButtonGroup,
+  Tooltip,
 } from "@douyinfe/semi-ui";
 import {
   IconDesktop,
@@ -65,59 +66,6 @@ const Index = ({
     }
     return icon.render();
   }
-  // useEffect(() => {
-  //   const menus: MenuVo[] = user?.menus || []; //当前菜单
-  //   const appMenus: MenuVo[] =
-  //     user?.menus //应用菜单
-  //       .filter((m) => m.app === true)
-  //       ?.sort((a, b) => a.sort - b.sort) || [];
-
-  //   //桌面页，无需设置appid
-  //   if (pathname && pathname !== "/dashboard/workbeach") {
-  //     //找path的菜单的根节点 初始化appId
-  //     //判断是否一级页面的菜单
-  //     let urlMenus = menus.filter((m) =>
-  //       m.url && m.url.endsWith("*")
-  //         ? m.url.substring(0, m.url.length - 1) + m.placeholderUrl === pathname
-  //         : m.url === pathname
-  //     );
-  //     //二级页面的菜单匹配，则根据路由地址按照规则匹配菜单 /model 配置成菜单 /model/sysUser 明细页不是菜单，是二级页面
-  //     if (urlMenus === undefined || urlMenus.length === 0) {
-  //       urlMenus = menus.filter((m) =>
-  //         m.url && m.url.endsWith("*")
-  //           ? pathname.indexOf(
-  //               m.url.substring(0, m.url.length - 1) + m.placeholderUrl
-  //             ) !== -1
-  //           : pathname.indexOf(m.url) !== -1
-  //       );
-  //     }
-  //     // 递归查找根节点
-  //     function appIdSet(all: SysMenu[], menu: SysMenu) {
-  //       if (menu.pcode === null || menu.pcode === undefined) {
-  //         setApp(menu);
-  //       } else {
-  //         appIdSet(all, all.filter((a) => a.code === menu.pcode)[0]);
-  //       }
-  //     }
-
-  //     if (urlMenus && urlMenus.length > 0) {
-  //       appIdSet(menus, urlMenus[0]);
-  //     }
-  //   }
-
-  //   if (app == undefined && appMenus && appMenus?.length > 0) {
-  //     setApp(appMenus[0]);
-  //   }
-
-  //   //用户拥有模块下任意一个菜单
-
-  // }, []);
-
-  // if (appMenus)
-  //   setMenuItems(
-
-  //   );
-  // const [menuItems, setMenuItems] = useState<Partial<MenuItem>[]>([]);
   const menuItems = useMemo((): Partial<MenuItem>[] => {
     return appMenus.map((m: MenuVo) => {
       return {
@@ -182,56 +130,48 @@ const Index = ({
           items={menuItems}
           footer={
             <>
+              <Button
+                theme="borderless"
+                icon={<i className="iconfont icon-qq text-xl text-blue-500 " />}
+                style={{
+                  color: "var(--semi-color-text-2)",
+                  marginRight: "12px",
+                }}
+                onClick={() => {
+                  var qqGroupLink =
+                    "https://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zznRalE15vpDdHf5BWsBzVo_5A73mC_C&authKey=W5yiKOuVWgPY5UVAIhbiX1nvO62%2Fewf4vnrpi2shCZI7VgOqEsqsfKb7y6xI8qUi&noverify=0&group_code=786134846"; // 替换成你指定的QQ群链接
+                  window.open(qqGroupLink);
+                }}
+              >
+                加入QQ群
+              </Button>
+
+              <Button
+                theme="borderless"
+                icon={
+                  <i className="iconfont icon-weixin text-xl text-blue-500 " />
+                }
+                style={{
+                  color: "var(--semi-color-text-2)",
+                  marginRight: "12px",
+                }}
+                className=" "
+              >
+                <Tooltip content="商务服务">微信vlifeboot</Tooltip>
+              </Button>
               {user?.superUser && (
-                <SplitButtonGroup>
-                  <Button
-                    theme="borderless"
-                    style={{
-                      color: "var(--semi-color-text-2)",
-                    }}
-                    icon={<IconSetting />}
-                  >
-                    常用菜单
-                  </Button>
-                  <Dropdown
-                    menu={[
-                      {
-                        node: "item",
-                        name: "模型管理",
-                        onClick: () => {
-                          window.open(`/sysConf/model`, "_blank");
-                          // navigate(`/sysConf/model`);
-                        },
-                      },
-                      {
-                        node: "item",
-                        name: "菜单管理",
-                        onClick: () => {
-                          window.open(`/sysConf/menu`, "_blank");
-                        },
-                      },
-                      {
-                        node: "item",
-                        name: "资源管理",
-                        onClick: () => {
-                          window.open(`/sysConf/resources`, "_blank");
-                        },
-                      },
-                    ]}
-                    trigger="click"
-                    position="bottomRight"
-                  >
-                    <Button
-                      style={{
-                        padding: "8px 4px",
-                        color: "var(--semi-color-text-2)",
-                      }}
-                      theme="borderless"
-                      className=" hover:bg-slate-400"
-                      icon={<IconTreeTriangleDown />}
-                    ></Button>
-                  </Dropdown>
-                </SplitButtonGroup>
+                <Button
+                  theme="borderless"
+                  onClick={() => {
+                    navigate("/sysConf/model");
+                  }}
+                  style={{
+                    color: "var(--semi-color-text-2)",
+                  }}
+                  icon={<IconSetting />}
+                >
+                  配置中心
+                </Button>
               )}
 
               <Button
@@ -260,19 +200,6 @@ const Index = ({
                 }}
               >
                 GITEE
-              </Button>
-              <Button
-                theme="borderless"
-                icon={<IconGithubLogo size="large" />}
-                style={{
-                  color: "var(--semi-color-text-2)",
-                  marginRight: "12px",
-                }}
-                onClick={() => {
-                  window.open("https://github.com/wwwlike/vlife");
-                }}
-              >
-                GITHUB
               </Button>
 
               <Dropdown

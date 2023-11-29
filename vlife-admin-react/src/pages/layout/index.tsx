@@ -16,7 +16,7 @@ const { Content } = Layout;
 const Index: React.FC = () => {
   const { pathname } = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const menuId = searchParams.get("menuId") || undefined;
+  const fullTitle = searchParams.get("fullTitle") || undefined;
   const userMenus: MenuVo[] = useAuth().user?.menus || []; //所有菜单
   const apps: MenuVo[] = //所有应用
     useAuth()
@@ -44,7 +44,19 @@ const Index: React.FC = () => {
 
   return (
     <Layout className="layout-page">
-      {menuId === undefined ? (
+      {fullTitle ? (
+        <>
+          <FullScreenHeader title={fullTitle} />
+          <Content className="layout-content bg-gray-50 pl-2 pt-2 pr-2">
+            <Suspense
+              fallback={<SuspendFallbackLoading message="正在加载中" />}
+            >
+              <Outlet />
+            </Suspense>
+            {/* <Scrollbars autoHide={true}></Scrollbars> */}
+          </Content>
+        </>
+      ) : (
         <>
           <Header
             appMenus={apps}
@@ -70,18 +82,6 @@ const Index: React.FC = () => {
               {/* <Scrollbars autoHide={true}></Scrollbars> */}
             </Content>
           </Layout>
-        </>
-      ) : (
-        <>
-          <FullScreenHeader menuId={menuId} />
-          <Content className="layout-content bg-gray-50 pl-2 pt-2 pr-2">
-            <Suspense
-              fallback={<SuspendFallbackLoading message="正在加载中" />}
-            >
-              <Outlet />
-            </Suspense>
-            {/* <Scrollbars autoHide={true}></Scrollbars> */}
-          </Content>
         </>
       )}
       <FormModal />

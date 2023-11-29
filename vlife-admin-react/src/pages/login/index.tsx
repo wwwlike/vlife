@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { localHistoryLoginUserName, useAuth } from "@src/context/auth-context";
 import "./login.css";
-import { useForm } from "@src/hooks/useForm";
+import { useForm, useUrlQueryParam } from "@src/hooks/useForm";
 import { useNavigate } from "react-router-dom";
-import { giteeUrl } from "@src/api/SysUser";
+import { giteeUrl, openCheckCode, ThirdAccountDto } from "@src/api/SysUser";
 import backgroundImage from "@src/assets/login_bg.jpg";
 import loginLeftImage from "@src/assets/login_left.png";
+import { Button, Tooltip } from "@douyinfe/semi-ui";
 const Index: React.FC = () => {
   const localUsername = window.localStorage.getItem(localHistoryLoginUserName);
   const { user, login, error, giteeLogin } = useAuth();
@@ -35,6 +36,17 @@ const Index: React.FC = () => {
     });
   };
 
+  const [urlParam, setUrlParam] = useUrlQueryParam(["code", "from"]);
+  useEffect(() => {
+    if (urlParam.code !== undefined) {
+      if (urlParam.from === "gitee") {
+        giteeLogin(urlParam.code).then(
+          (account: ThirdAccountDto | undefined) => {}
+        );
+      }
+    }
+  }, [urlParam]);
+
   return (
     <div
       style={{
@@ -59,14 +71,14 @@ const Index: React.FC = () => {
           style={{ width: "358px", height: "334px" }}
           className="relative  flex justify-center items-center bg-white rounded-r-3xl shadow-xl shadow-right shadow-top shadow-bottom"
         >
-          {/* <div className=" absolute top-1 right-3  ">
+          <div className=" absolute top-1 right-3  ">
             <img
               src="https://wwwlike.gitee.io/vlife-img/wxgzh.jpg"
               className=" w-24 "
             />
             关注获取账号
           </div>
-          <div className="gitee" onClick={gitLogin}>
+          {/* <div className="gitee" onClick={gitLogin}>
             <div className="switch-tip">Gitee登录</div>
           </div> */}
           <div
@@ -104,6 +116,38 @@ const Index: React.FC = () => {
             >
               登 录
             </button>
+            <div className="absolute bottom-3 flex">
+              <Button
+                theme="borderless"
+                icon={<i className="iconfont icon-qq text-xl text-blue-500 " />}
+                style={{
+                  color: "var(--semi-color-text-2)",
+                  marginRight: "12px",
+                }}
+                className=" "
+                onClick={() => {
+                  var qqGroupLink =
+                    "https://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zznRalE15vpDdHf5BWsBzVo_5A73mC_C&authKey=W5yiKOuVWgPY5UVAIhbiX1nvO62%2Fewf4vnrpi2shCZI7VgOqEsqsfKb7y6xI8qUi&noverify=0&group_code=786134846"; // 替换成你指定的QQ群链接
+                  window.open(qqGroupLink);
+                }}
+              >
+                <Tooltip content="需要技术支持请加群">QQ群</Tooltip>
+              </Button>
+
+              <Button
+                theme="borderless"
+                icon={
+                  <i className="iconfont icon-weixin text-xl text-blue-500 " />
+                }
+                style={{
+                  color: "var(--semi-color-text-2)",
+                  marginRight: "12px",
+                }}
+                className=" "
+              >
+                <Tooltip content="商务服务">微信vlifeboot</Tooltip>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

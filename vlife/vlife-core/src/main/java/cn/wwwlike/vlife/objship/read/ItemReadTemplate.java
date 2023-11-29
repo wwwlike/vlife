@@ -249,7 +249,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                 if(url.startsWith("BOOT-INF.classes.")){
                     url=url.substring(17);
                 }
-                logger.info("url:"+url);
+//                logger.info("url:"+url);
                 clazz = loader.loadClass(url);
             } catch (Exception ex) {
                 ex.printStackTrace();

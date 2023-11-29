@@ -9,11 +9,8 @@ const { Header } = Layout;
  *
  *  当前地址没有和菜单关联，如何定位一级菜单
  */
-export default ({ menuId }: { menuId: string }) => {
+export default ({ title }: { title: string }) => {
   const [menu, setMenu] = useState<SysMenu>();
-  useEffect(() => {
-    detail(menuId).then((d) => setMenu(d.data));
-  }, [menuId]);
   const navigate = useNavigate();
   return (
     <Header className="layout-header shadow">
@@ -27,10 +24,10 @@ export default ({ menuId }: { menuId: string }) => {
                 navigate(-1);
               }}
             />
-            <div className=" text-base font-bold "></div>
+            <div className=" text-base font-bold ">{title}</div>
           </div>
         }
-        footer={<>footer</>}
+        footer={<></>}
       ></Nav>
     </Header>
   );

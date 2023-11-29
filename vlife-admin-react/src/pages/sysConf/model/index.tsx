@@ -1,14 +1,12 @@
-import react, { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, TabPane, Tabs, Tag, Tooltip } from "@douyinfe/semi-ui";
-import { FormVo, list, restore, save } from "@src/api/Form";
-
+import react, { useCallback, useEffect, useState } from "react";
+import { TabPane, Tabs } from "@douyinfe/semi-ui";
+import { FormVo, list } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
 import { renderIcon } from "@src/pages/layout/components/sider";
 import Scrollbars from "react-custom-scrollbars";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  IconCode,
-  IconCodeStroked,
+  IconClose,
   IconCrop,
   IconList,
   IconMenu,
@@ -44,20 +42,17 @@ const Model = () => {
     }
   }, [entityType]);
 
+  const [back, setBack] = useState(false);
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const newValue = searchParams.get("type") || undefined;
+    setBack(searchParams.get("goBack") ? true : false);
     setEntityType(newValue);
   }, [location.search]);
-
   //全部实体模型
   const [dbEntitys, setDbEntitys] = useState<FormVo[]>([]);
-
   //全部IModel模型
   const [imodel, setIModel] = useState<FormVo[]>([]);
-
-  //当前选中的模型
-  // const [optModel, setOptModel] = useState<FormVo>();
 
   const color: any = {
     sys: "bg-yellow-50",
@@ -101,7 +96,7 @@ const Model = () => {
             onDoubleClick={() => {
               navigate(`/sysConf/formDesign/${entityType}`);
             }}
-            className={`!cursor-pointer group relative block w-full h-24 border
+            className={`flex !cursor-pointer group relative  w-full h-24 border items-center justify-center
         ${color[e.module] !== undefined ? color[e.module] : "bg-white"} 
 
         ${classNames({
@@ -110,32 +105,12 @@ const Model = () => {
         })}
          border-dashed rounded-lg p-2 text-center   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
           >
-            {/* <Tooltip content="前端代码">
-            <Button
-              size="small"
-              className=" rounder-br-lg absolute bottom-0 right-0"
-              onClick={() => {
-                navigate("/sysConf/model/codeView/" + e.type);
-              }}
-              icon={<IconCode />}
-            />
-          </Tooltip> */}
-            <span className="mt-2 block text-sm font-medium text-gray-900">
-              {e.title}
-            </span>
-            <p>{e.type}</p>
-
-            {/* <div className=" hidden absolute group-hover:block justify-center  bottom-1 space-x-2">
-            <Button
-              size="small"
-              className=" text-sm"
-              onClick={() => {
-                navigate("/sysConf/model/detail/" + e.type);
-              }}
-            >
-              模型管理
-            </Button>
-          </div> */}
+            <div>
+              <span className="block text-sm font-medium text-gray-900">
+                {e.title}
+              </span>
+              <p>{e.type}</p>
+            </div>
           </div>
         </Link>
       );
@@ -195,8 +170,15 @@ const Model = () => {
           setEntityType(undefined);
           setTabKey(key);
         }}
+        className="relative"
         onChange={() => {}}
       >
+        {back && (
+          <IconClose
+            onClick={() => navigate(-1)}
+            className=" absolute top-2 right-2 cursor-pointer hover:bg-blue-100"
+          />
+        )}
         {apps.map((m, index) => (
           <TabPane
             icon={renderIcon(m.icon)}
@@ -212,6 +194,7 @@ const Model = () => {
                     dbEntitys.filter((d) => d.entityType === entityType)?.[0]
                       ?.title
                   }
+                  {`->`}
                 </div>
                 <BtnToolBar
                   className=" bg-white"
@@ -222,22 +205,63 @@ const Model = () => {
                   }}
                   btns={[
                     {
+                      title: "前端代码",
+                      disabledHide: false,
+                      actionType: "custom",
+                      icon: <IconTerminal />,
+                      onClick: () => {
+                        navigate(
+                          `/sysConf/model/codeView/${entityType}?fullTitle=TS代码查看和下载`
+                        );
+                      },
+                    },
+                    {
+                      title: "相关模型",
+                      disabledHide: false,
+                      actionType: "custom",
+                      icon: <IconPuzzle />,
+                      onClick: () => {
+                        navigate(`/sysConf/model/detail/${entityType}`);
+                      },
+                    },
+                    {
+                      title: "表单设计",
+                      disabledHide: false,
+                      actionType: "custom",
+                      icon: <IconRankingCardStroked />,
+                      onClick: () => {
+                        navigate(
+                          `/sysConf/formDesign/${entityType}?fullTitle=表单设计`
+                        );
+                      },
+                    },
+                    {
+                      title: "列表设计",
+                      disabledHide: false,
+                      actionType: "custom",
+                      icon: <IconList />,
+                      onClick: () => {
+                        navigate(`/sysConf/tableDesign/${entityType}`);
+                      },
+                    },
+                    {
+                      title: "资源绑定",
+                      disabledHide: false,
+                      actionType: "custom",
+                      usableMatch:
+                        menu !== undefined ? true : "请先创建模型关联的菜单",
+                      icon: <IconCrop />,
+                      onClick: () => {
+                        navigate(`/sysConf/resources`);
+                      },
+                    },
+                    {
                       title: "创建菜单",
                       disabledHide: true,
                       actionType: "create",
                       model: "sysMenu",
                       icon: <IconMenu></IconMenu>,
-                      usableMatch: entityType
-                        ? listAll().then((menus) => {
-                            return (
-                              entityType &&
-                              !menus.data
-                                ?.filter((m) => m.entityType)
-                                ?.map((m) => m.entityType)
-                                .includes(entityType)
-                            );
-                          })
-                        : false,
+                      usableMatch: !menu,
                       saveApi: menuSave,
                       reaction: [
                         VF.then(
@@ -271,17 +295,7 @@ const Model = () => {
                         });
                         // return und;
                       },
-                      usableMatch: entityType
-                        ? listAll().then((menus) => {
-                            return (
-                              entityType &&
-                              menus.data
-                                ?.filter((m) => m.entityType)
-                                ?.map((m) => m.entityType)
-                                .includes(entityType)
-                            );
-                          })
-                        : false,
+                      usableMatch: menu ? true : "请创建关联菜单",
                       saveApi: menuSave,
                       reaction: [
                         VF.then(
@@ -306,68 +320,7 @@ const Model = () => {
                         ? true
                         : "还没有功能与该模型关联,请先创建菜单",
                       onClick: () => {
-                        navigate(`${menu?.url}?menuId=${menu?.id}`);
-                      },
-                    },
-
-                    {
-                      title: "前端代码",
-                      disabledHide: false,
-                      actionType: "custom",
-                      icon: <IconTerminal />,
-                      onClick: () => {
-                        navigate(`/sysConf/model/codeView/${entityType}`);
-                      },
-                    },
-                    {
-                      title: "关联模型",
-                      disabledHide: false,
-                      actionType: "custom",
-                      icon: <IconPuzzle />,
-                      onClick: () => {
-                        navigate(`/sysConf/model/detail/${entityType}`);
-                      },
-                    },
-                    {
-                      title: "表单设计",
-                      disabledHide: false,
-                      actionType: "custom",
-                      icon: <IconRankingCardStroked />,
-                      onClick: () => {
-                        navigate(`/sysConf/formDesign/${entityType}`);
-                      },
-                    },
-                    {
-                      title: "列表设计",
-                      disabledHide: false,
-                      actionType: "custom",
-                      icon: <IconList />,
-                      onClick: () => {
-                        navigate(`/sysConf/tableDesign/${entityType}`);
-                      },
-                    },
-                    // {
-                    //   title: "模型重置",
-                    //   disabledHide: false,
-                    //   actionType: "api",
-                    //   icon: <IconCrop />,
-                    //   saveApi: restore,
-                    //   submitConfirm: true,
-                    //   onSubmitFinish: (formVo: FormVo) => {
-                    //     setIModel((imodel) => {
-                    //       return imodel.map((i) => i);
-                    //     });
-                    //   },
-                    // },
-                    {
-                      title: "资源绑定",
-                      disabledHide: false,
-                      actionType: "custom",
-                      usableMatch:
-                        menu !== undefined ? true : "请先创建模型关联的菜单",
-                      icon: <IconCrop />,
-                      onClick: () => {
-                        navigate(`/sysConf/resources`);
+                        navigate(`${menu?.url}?fullTitle=${menu?.name}`);
                       },
                     },
                   ]}
@@ -385,7 +338,7 @@ const Model = () => {
 
             <div
               role="list"
-              className="   border-t mt-2 border-dashed grid  p-2 gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
+              className="   border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
             >
               {liEntity(m).map((e) => {
                 return card(e);
@@ -417,6 +370,19 @@ const Model = () => {
           </div>
         </TabPane>
       </Tabs>
+      <div className="p-4 font-sm text-blue-600 font-chinese space-y-2 top-2 w-full  bg-white">
+        <p>配置中心</p>
+        <span className="block">
+          1.
+          负责对entity及其关联的req\vo\dto模型使用表单和列表设计器进行功能设计
+        </span>
+        <span className="block">2. 可以获取前端模型和接口调用的代码</span>
+        <span className="block">3. 可以将接口与菜单进行绑定</span>
+        <p>注意</p>
+        <span className="block">
+          1. 后端需要运行maven install，前端才能获取同步的模型和接口数据。
+        </span>
+      </div>
     </Scrollbars>
   );
 };

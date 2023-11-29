@@ -223,7 +223,7 @@ export default <T extends IdBean>({
         //同步函数
         return btn.usableMatch(
           position === "tableToolbar"
-            ? btnDatas
+            ? btnDatas || []
             : btnDatas
             ? btnDatas[0]
             : undefined

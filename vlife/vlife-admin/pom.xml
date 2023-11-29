@@ -152,7 +152,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>titleJson</goal>
                             <goal>codeCreate</goal>

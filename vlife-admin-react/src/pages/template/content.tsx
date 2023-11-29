@@ -2,13 +2,12 @@ import React, { useMemo, useRef, useState } from "react";
 import { IdBean } from "@src/api/base";
 import FormPage from "@src/pages/common/formPage";
 import { useNavigate } from "react-router-dom";
-import { IconSetting, IconTreeTriangleDown } from "@douyinfe/semi-icons";
-import Dropdown, { DropDownMenuItem } from "@douyinfe/semi-ui/lib/es/dropdown";
+import { IconSetting } from "@douyinfe/semi-icons";
 import TablePage, { TablePageProps } from "@src/pages/common/tablePage";
 import { useNiceModal } from "@src/store";
 import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
-import { Button, Space, SplitButtonGroup } from "@douyinfe/semi-ui";
+import { Button, Space } from "@douyinfe/semi-ui";
 import { useSize } from "ahooks";
 import { VfAction } from "@src/dsl/VF";
 const mode = import.meta.env.VITE_APP_MODE;
@@ -67,82 +66,6 @@ const Content = <T extends IdBean>({
     return width;
   }, [size, filterOpen]);
 
-  const menu = useMemo((): DropDownMenuItem[] => {
-    let arrays: DropDownMenuItem[] = [
-      {
-        node: "item",
-        name: `[列表]${listType}`,
-        onClick: () => {
-          navigate(`/sysConf/tableDesign/${listType}`);
-        },
-      },
-      { node: "divider" },
-      {
-        node: "item",
-        name: "接口导入",
-        onClick: () => {
-          navigate(`/sysConf/resources`);
-        },
-      },
-      {
-        node: "item",
-        name: "模型管理",
-        onClick: () => {
-          navigate(`/sysConf/model/${tableModel?.entityType}`);
-        },
-      },
-      {
-        node: "item",
-        name: "前端代码",
-        onClick: () => {
-          navigate(`/sysConf/model/codeView/${tableModel?.entityType}`);
-        },
-      },
-    ];
-
-    if (filterType) {
-      //插入到前面
-      arrays.unshift({
-        node: "item",
-        name: `[查询]${filterType}`,
-        onClick: () => {
-          navigate(`/sysConf/formDesign/${filterType}`);
-        },
-      });
-    }
-    if (editType || tableModel?.entityType) {
-      arrays.unshift({
-        node: "item",
-        name: `[表单]${editType || tableModel?.entityType}`,
-        onClick: () => {
-          navigate(`/sysConf/formDesign/${editType || tableModel?.entityType}`);
-        },
-      });
-    }
-    //其他表单模型
-    const otherEdits = Array.from(
-      new Set(
-        btns
-          ?.filter((btn) => btn.model && btn.model !== editType)
-          .map((btn) => btn.model)
-      )
-    );
-
-    if (otherEdits) {
-      otherEdits.forEach((l) => {
-        arrays.unshift({
-          node: "item",
-          name: `[表单]${l}`,
-          onClick: () => {
-            navigate(`/sysConf/formDesign/${l}`);
-          },
-        });
-      });
-    }
-
-    return arrays;
-  }, [btns, tableModel]);
-
   return (
     <div ref={ref} className="flex relative   ">
       <div
@@ -191,26 +114,18 @@ const Content = <T extends IdBean>({
           {/* 按钮组 */}
           <div className=" text-base flex flex-1 justify-end space-x-1 pr-4">
             <Space>
-              {(user?.superUser || mode === "dev") && (
-                <SplitButtonGroup style={{ marginRight: 10 }}>
-                  <Button theme="light" icon={<IconSetting />}>
-                    配置
-                  </Button>
-                  <Dropdown
-                    // onVisibleChange={(v) => handleVisibleChange(2, v)}
-                    menu={menu}
-                    trigger="click"
-                    position="bottomRight"
-                  >
-                    <Button
-                      style={{
-                        padding: "8px 4px",
-                      }}
-                      className=" hover:bg-slate-400"
-                      icon={<IconTreeTriangleDown />}
-                    ></Button>
-                  </Dropdown>
-                </SplitButtonGroup>
+              {(user?.superUser || mode === "dev") && tableModel && (
+                <Button
+                  onClick={() => {
+                    navigate(
+                      `/sysConf/model?type=${tableModel?.entityType}&goBack=true`
+                    );
+                  }}
+                  theme="light"
+                  icon={<IconSetting />}
+                >
+                  配置
+                </Button>
               )}
             </Space>
           </div>

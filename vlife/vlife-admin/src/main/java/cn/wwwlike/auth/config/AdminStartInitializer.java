@@ -53,12 +53,11 @@ public class AdminStartInitializer implements ApplicationRunner {
     @Autowired
     SysDeptService sysDeptService;
 
-
     private void printErrorMessage() {
-        System.out.println("╔════════════════════════════════════════════════════════════════╗");
+        System.out.println("╔═══════════════════════════════════════════════════=═════════════╗");
         System.out.println("║          系统检测到没有运行maven install命令                     ║");
-        System.out.println("║        运行后会产生title.json文件，该文件记录了模型信息           ║");
-        System.out.println("║              please run 'mvn install' command.                  ║");
+        System.out.println("║      运行后会产生title.ijson文件，该文件记录了模型信息            ║");
+        System.out.println("║              please run 'mvn install' command.                 ║");
         System.out.println("╚════════════════════════════════════════════════════════════════╝");
     }
 
