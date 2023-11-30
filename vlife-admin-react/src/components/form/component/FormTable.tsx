@@ -52,7 +52,7 @@ export default ({
       btns.push({
         title: "修改",
         multiple: false,
-        actionType: "custom",
+        actionType: "click",
         submitConfirm: false,
         onClick: (datas: any) => {
           setIndex(datas.tableSort);
@@ -63,7 +63,7 @@ export default ({
       btns.push({
         title: "删除",
         multiple: false,
-        actionType: "custom",
+        actionType: "click",
         submitConfirm: false,
         onClick: (datas: any) => {
           setTableData((data) => {

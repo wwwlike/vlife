@@ -317,7 +317,7 @@ const TablePage = <T extends IdBean>({
   ]);
 
   const addMissingButtonAttributes = (b: VFBtn, entity: string): VFBtn => {
-    if (b.actionType !== "custom") {
+    if (b.actionType !== "click") {
       if (
         b.model === undefined &&
         b.saveApi &&
@@ -337,11 +337,7 @@ const TablePage = <T extends IdBean>({
         };
       }
 
-      if (
-        b.model === undefined &&
-        b.saveApi === undefined &&
-        b.actionType === "view"
-      ) {
+      if (b.model === undefined && b.saveApi === undefined) {
         b.model = listType;
       }
       if (
@@ -542,9 +538,9 @@ const TablePage = <T extends IdBean>({
       })}
       flex bg-white items-center p-2 border border-b-0  border-gray-100  justify-start  `}
       >
-        {/* 1. 按钮组 */}
+        {/* 1. tableToolBar列表工具栏 */}
         <BtnToolBar<T>
-          entityName={tableModel.entityType}
+          // model={tableModel.entityType}
           key={"tableBtn"}
           onDataChange={(datas: any[]): void => {
             //根据id更新行数据，则可以不强制刷新

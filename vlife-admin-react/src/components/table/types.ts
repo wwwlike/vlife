@@ -6,12 +6,22 @@ import {  ReactNode } from 'react';
  * ------------------------------
  * 2.0完成0代码配置
  */
+/**
+ * 按钮动作类型
+ * create:需要对模型进行操作
+ * edit: 模型编辑，保存修改
+ * view: 模型预览，只读查看
+ * api ：
+ * click:自定义点击事件的按钮
+ */
+export type actionType= "create"|"edit"|"api"|"click";
+
 export interface VFBtn{
   title:string;//按钮名称 ●
   tooltip?:string;// 不可用时候的提醒
   disabled?:boolean;// 当前是否不可用
   icon?:ReactNode;
-  actionType:"create"|"edit"|"createEdit"|"view"|"api"|"custom" //动作类型：和模型表单有关的：create|edit|createEdit|view；
+  actionType:actionType //动作类型：和模型表单有关的：create|edit|createEdit|view；
   //1:boolean判断能否使用|2:属性对象完全匹配|3：函数校验(同步异步)string表示不能使用原因
   usableMatch?:boolean|any|((...datas:any[])=>string|boolean|Promise<string|boolean>);
   className?:string//按钮样式

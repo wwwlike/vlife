@@ -18,6 +18,7 @@ import { listAll, SysMenu, save as menuSave, MenuVo } from "@src/api/SysMenu";
 import classNames from "classnames";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
 import { VF } from "@src/dsl/VF";
+import VfTour from "@src/components/VfTour";
 
 const Model = () => {
   const { user } = useAuth();
@@ -140,7 +141,7 @@ const Model = () => {
     [user?.menus, dbEntitys]
   );
 
-  const [tabKey, setTabKey] = useState<string>();
+  const [tabKey, setTabKey] = useState<string>("009");
 
   useEffect(() => {
     if (apps && dbEntitys && entityType) {
@@ -163,192 +164,234 @@ const Model = () => {
   //   return "";
   // }, [apps,dbEntitys, entityType]);
   return (
-    <Scrollbars autoHide={true}>
-      <Tabs
-        activeKey={tabKey}
-        onTabClick={(key) => {
-          setEntityType(undefined);
-          setTabKey(key);
-        }}
-        className="relative"
-        onChange={() => {}}
-      >
-        {back && (
-          <IconClose
-            onClick={() => navigate(-1)}
-            className=" absolute top-2 right-2 cursor-pointer hover:bg-blue-100"
-          />
-        )}
-        {apps.map((m, index) => (
-          <TabPane
-            icon={renderIcon(m.icon)}
-            itemKey={m.code}
-            key={`app${m.id}`}
-            tab={m.name}
-            className="p-2 bg-white"
-          >
-            {entityType ? (
-              <div className="flex  items-center space-x-2">
-                <div className=" text-sm font-bold  w-40 text-center justify-center  border rounded-md  border-dashed bg-slate-50 p-1  ">
+    <VfTour
+      code="4444"
+      steps={[
+        {
+          selector: ".tscode",
+          content: "下载前端实体所有的数据模型和接口调用代码",
+        },
+        {
+          selector: ".relationModel",
+          content: "查看实体关联的req/vo/dto模型",
+        },
+        {
+          selector: ".formDesign",
+          content: "使用页面配置表单",
+        },
+        {
+          selector: ".tableDesign",
+          content: "使用页面配置列表",
+        },
+        {
+          selector: ".resourceBind",
+          content: "为当前模块关联的菜单绑定接口资源权限",
+        },
+        // {
+        //   selector: ".createMenu",
+        //   content: "查看或者创建菜单",
+        // },
+        {
+          selector: ".visitPage",
+          content: "访问当前实体对应的页面功能",
+        },
+      ]}
+    >
+      <Scrollbars autoHide={true}>
+        <Tabs
+          activeKey={tabKey}
+          onTabClick={(key) => {
+            setEntityType(undefined);
+            setTabKey(key);
+          }}
+          className="relative"
+          onChange={() => {}}
+        >
+          {entityType ? (
+            <div className="flex p-1  items-center space-x-2 bg-white  rounded-md ">
+              <div className="relative flex justify-center space-x-2 text-sm font-bold  w-40 text-center   border rounded-md  border-dashed bg-slate-50 p-1  ">
+                <span>
                   {
                     dbEntitys.filter((d) => d.entityType === entityType)?.[0]
                       ?.title
                   }
-                  {`->`}
-                </div>
-                <BtnToolBar
-                  className=" bg-white"
-                  entityName={"form"}
-                  key={"tableBtn"}
-                  onDataChange={(datas: any[]): void => {
-                    //根据id更新行数据，则可以不强制刷新
-                  }}
-                  btns={[
-                    {
-                      title: "前端代码",
-                      disabledHide: false,
-                      actionType: "custom",
-                      icon: <IconTerminal />,
-                      onClick: () => {
-                        navigate(
-                          `/sysConf/model/codeView/${entityType}?fullTitle=TS代码查看和下载`
-                        );
-                      },
-                    },
-                    {
-                      title: "相关模型",
-                      disabledHide: false,
-                      actionType: "custom",
-                      icon: <IconPuzzle />,
-                      onClick: () => {
-                        navigate(`/sysConf/model/detail/${entityType}`);
-                      },
-                    },
-                    {
-                      title: "表单设计",
-                      disabledHide: false,
-                      actionType: "custom",
-                      icon: <IconRankingCardStroked />,
-                      onClick: () => {
-                        navigate(
-                          `/sysConf/formDesign/${entityType}?fullTitle=表单设计`
-                        );
-                      },
-                    },
-                    {
-                      title: "列表设计",
-                      disabledHide: false,
-                      actionType: "custom",
-                      icon: <IconList />,
-                      onClick: () => {
-                        navigate(`/sysConf/tableDesign/${entityType}`);
-                      },
-                    },
-                    {
-                      title: "资源绑定",
-                      disabledHide: false,
-                      actionType: "custom",
-                      usableMatch:
-                        menu !== undefined ? true : "请先创建模型关联的菜单",
-                      icon: <IconCrop />,
-                      onClick: () => {
-                        navigate(`/sysConf/resources`);
-                      },
-                    },
-                    {
-                      title: "创建菜单",
-                      disabledHide: true,
-                      actionType: "create",
-                      model: "sysMenu",
-                      icon: <IconMenu></IconMenu>,
-                      usableMatch: !menu,
-                      saveApi: menuSave,
-                      reaction: [
-                        VF.then(
-                          "app",
-                          "placeholderUrl",
-                          "sysRoleId",
-                          "code",
-                          "confPage",
-                          "pageLayoutId",
-                          "entityPrefix",
-                          "sort",
-                          "entityType"
-                        ).hide(),
-                        VF.then("entityType").value(entityType).hide(),
-                      ],
-                    },
-                    {
-                      title: "查看菜单",
-                      disabledHide: true,
-                      icon: <IconMenu></IconMenu>,
-                      actionType: "edit",
-                      model: "sysMenu",
-                      loadApi: (d: FormVo) => {
-                        return listAll().then((menus) => {
-                          return {
-                            ...menus,
-                            data: menus.data?.filter(
-                              (m) => m.entityType === d.entityType
-                            )[0],
-                          };
-                        });
-                        // return und;
-                      },
-                      usableMatch: menu ? true : "请创建关联菜单",
-                      saveApi: menuSave,
-                      reaction: [
-                        VF.then(
-                          "app",
-                          "placeholderUrl",
-                          "sysRoleId",
-                          "code",
-                          "confPage",
-                          "pageLayoutId",
-                          "entityPrefix",
-                          "sort",
-                          "entityType"
-                        ).hide(),
-                      ],
-                    },
-                    {
-                      title: "访问功能",
-                      disabledHide: false,
-                      icon: <IconMenu></IconMenu>,
-                      actionType: "custom",
-                      usableMatch: menu
-                        ? true
-                        : "还没有功能与该模型关联,请先创建菜单",
-                      onClick: () => {
-                        navigate(`${menu?.url}?fullTitle=${menu?.name}`);
-                      },
-                    },
-                  ]}
-                  position="page"
-                  datas={
-                    entityType
-                      ? dbEntitys.filter((d) => d.entityType === entityType)
-                      : []
-                  }
-                />
+                </span>
+                <i className=" absolute right-2 icon-sideslip_right text-xl  " />
               </div>
-            ) : (
-              <>请选择一个模型进行操作</>
-            )}
 
-            <div
-              role="list"
-              className="   border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
-            >
-              {liEntity(m).map((e) => {
-                return card(e);
-              })}
+              <BtnToolBar
+                key={"tableBtn"}
+                onDataChange={(datas: any[]): void => {
+                  //根据id更新行数据，则可以不强制刷新
+                }}
+                btns={[
+                  {
+                    className: "tscode",
+                    title: "前端代码",
+                    disabledHide: false,
+                    actionType: "click",
+                    icon: <IconTerminal />,
+                    onClick: () => {
+                      navigate(
+                        `/sysConf/model/codeView/${entityType}?fullTitle=TS代码查看和下载`
+                      );
+                    },
+                  },
+                  {
+                    className: "relationModel",
+                    title: "相关模型",
+                    disabledHide: false,
+                    actionType: "click",
+                    icon: <IconPuzzle />,
+                    onClick: () => {
+                      navigate(`/sysConf/model/detail/${entityType}`);
+                    },
+                  },
+                  {
+                    className: "formDesign",
+                    title: "表单设计",
+                    disabledHide: false,
+                    actionType: "click",
+                    icon: <IconRankingCardStroked />,
+                    onClick: () => {
+                      navigate(
+                        `/sysConf/formDesign/${entityType}?fullTitle=表单设计`
+                      );
+                    },
+                  },
+                  {
+                    className: "tableDesign",
+                    title: "列表设计",
+                    disabledHide: false,
+                    actionType: "click",
+                    icon: <IconList />,
+                    onClick: () => {
+                      navigate(`/sysConf/tableDesign/${entityType}`);
+                    },
+                  },
+                  {
+                    className: "resourceBind",
+                    title: "资源绑定",
+                    disabledHide: false,
+                    actionType: "click",
+                    usableMatch:
+                      menu !== undefined ? true : "请先创建模型关联的菜单",
+                    icon: <IconCrop />,
+                    onClick: () => {
+                      navigate(`/sysConf/resources`);
+                    },
+                  },
+                  {
+                    className: "createMenu",
+                    title: "创建菜单",
+                    disabledHide: true,
+                    actionType: "create",
+                    model: "sysMenu",
+                    icon: <IconMenu></IconMenu>,
+                    usableMatch: !menu,
+                    saveApi: menuSave,
+                    reaction: [
+                      VF.then(
+                        "app",
+                        "placeholderUrl",
+                        "sysRoleId",
+                        "code",
+                        "confPage",
+                        "pageLayoutId",
+                        "entityPrefix",
+                        "sort",
+                        "entityType"
+                      ).hide(),
+                      VF.then("entityType").value(entityType).hide(),
+                    ],
+                  },
+                  {
+                    className: "createMenu",
+                    title: "查看菜单",
+                    disabledHide: true,
+                    icon: <IconMenu></IconMenu>,
+                    actionType: "edit",
+                    model: "sysMenu",
+                    loadApi: (d: FormVo) => {
+                      return listAll().then((menus) => {
+                        return {
+                          ...menus,
+                          data: menus.data?.filter(
+                            (m) => m.entityType === d.entityType
+                          )[0],
+                        };
+                      });
+                      // return und;
+                    },
+                    usableMatch: menu ? true : "请创建关联菜单",
+                    saveApi: menuSave,
+                    reaction: [
+                      VF.then(
+                        "app",
+                        "placeholderUrl",
+                        "sysRoleId",
+                        "code",
+                        "confPage",
+                        "pageLayoutId",
+                        "entityPrefix",
+                        "sort",
+                        "entityType"
+                      ).hide(),
+                    ],
+                  },
+                  {
+                    className: "visitPage",
+                    title: "访问功能",
+                    disabledHide: false,
+                    icon: <IconMenu></IconMenu>,
+                    actionType: "click",
+                    usableMatch: menu
+                      ? true
+                      : "还没有功能与该模型关联,请先创建菜单",
+                    onClick: () => {
+                      navigate(`${menu?.url}?fullTitle=${menu?.name}`);
+                    },
+                  },
+                ]}
+                position="page"
+                datas={
+                  entityType
+                    ? dbEntitys.filter((d) => d.entityType === entityType)
+                    : []
+                }
+              />
             </div>
-            {/* liEntity */}
-          </TabPane>
-        ))}
-        <TabPane itemKey={"bean"} key={`app_bean`} tab={"一般模型(IModel)"}>
-          <div>
+          ) : (
+            <>请选择一个模型进行操作</>
+          )}
+          {back && (
+            <IconClose
+              onClick={() => navigate(-1)}
+              className="  absolute top-2 right-2 cursor-pointer hover:bg-blue-100"
+            />
+          )}
+          {apps
+            .filter((m) => liEntity(m).length > 0)
+            .map((m, index) => (
+              <TabPane
+                icon={renderIcon(m.icon)}
+                itemKey={m.code}
+                key={`app${m.id}`}
+                tab={m.name}
+                className=" bg-white"
+              >
+                <div
+                  role="list wuhan"
+                  className="  p-2  border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
+                >
+                  {liEntity(m).map((e) => {
+                    return card(e);
+                  })}
+                </div>
+                {/* liEntity */}
+              </TabPane>
+            ))}
+          <TabPane itemKey={"bean"} key={`app_bean`} tab={"一般模型(IModel)"}>
             <ul role="list" className="grid  p-2 gap-4 grid-cols-10">
               {imodel.map((model, index) => (
                 <li
@@ -367,23 +410,23 @@ const Model = () => {
                 </li>
               ))}
             </ul>
-          </div>
-        </TabPane>
-      </Tabs>
-      <div className="p-4 font-sm text-blue-600 font-chinese space-y-2 top-2 w-full  bg-white">
-        <p>配置中心</p>
-        <span className="block">
-          1.
-          负责对entity及其关联的req\vo\dto模型使用表单和列表设计器进行功能设计
-        </span>
-        <span className="block">2. 可以获取前端模型和接口调用的代码</span>
-        <span className="block">3. 可以将接口与菜单进行绑定</span>
-        <p>注意</p>
-        <span className="block">
-          1. 后端需要运行maven install，前端才能获取同步的模型和接口数据。
-        </span>
-      </div>
-    </Scrollbars>
+          </TabPane>
+        </Tabs>
+        <div className=" p-4 font-sm text-blue-600 font-chinese space-y-2 top-2 w-full  bg-white">
+          <p>配置中心</p>
+          <span className="block">
+            1.
+            负责对entity及其关联的req\vo\dto模型使用表单和列表设计器进行功能设计
+          </span>
+          <span className="block">2. 可以获取前端模型和接口调用的代码</span>
+          <span className="block">3. 可以将接口与菜单进行绑定</span>
+          <p>注意</p>
+          <span className="block">
+            1. 后端需要运行maven install，前端才能获取同步的模型和接口数据。
+          </span>
+        </div>
+      </Scrollbars>
+    </VfTour>
   );
 };
 

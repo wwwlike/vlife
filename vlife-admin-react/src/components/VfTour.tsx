@@ -4,12 +4,12 @@
  * 2. 一个包裹组件，定义
  */
 import React, { useEffect, useState } from "react";
-import Tour from "reactour";
+import Tour, { ReactourStep } from "reactour";
 interface VfTourProps {
   code: string; //当前提醒的版本；修订他则重新提醒
   children: any;
   every?: boolean; //是否
-  steps: { selector: string; content: any }[];
+  steps: ReactourStep[]; //{ selector: string; content: any }[];
 }
 const VfTour = ({
   steps,

@@ -118,10 +118,10 @@ export const FormModal = createNiceModal(
       if (formBtns && formBtns.length > 0) {
         return (
           <BtnToolBar
-            entityName={modelInfo?.entityType || ""}
+            // entityName={modelInfo?.entityType || ""}
             key={"modalBtn"}
             btns={formBtns}
-            model={props.type}
+            formModel={props.type}
             position="formFooter"
             datas={[form?.values || formData]}
             readPretty={props.readPretty}

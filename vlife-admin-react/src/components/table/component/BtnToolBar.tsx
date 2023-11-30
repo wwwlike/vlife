@@ -1,32 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 import { Button, Tooltip, Typography } from "@douyinfe/semi-ui";
 import { IdBean, Result } from "@src/api/base";
-import { VfAction } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
 import { objectIncludes } from "@src/util/func";
 import { VFBtn } from "../types";
-import { IconButtonStroked } from "@douyinfe/semi-icons";
-
+/**
+ * 显示场景
+ * tableToolbar:列表工具栏|
+ * tableLine:列表行
+ * formFooter:表单底部
+ * page:  其他场景页面
+ */
+type BtnToolBarPosition = "tableToolbar" | "tableLine" | "formFooter" | "page";
 /**
  * 区块按钮组定义
  */
 export interface BtnToolBarProps<T extends IdBean> {
-  entityName: string; //当前模块
-  btns: VFBtn[]; //按钮对象
-  model?: string; //主模型 只取该模型相关的按钮
-  datas?: T[]; //操作的数据
-  position: "tableToolbar" | "tableLine" | "formFooter" | "page"; //显示场景 列表工具栏|列表行|表单底部|page其他场景页面
   className?: string;
-  //form表单需要;
+  btns: VFBtn[]; //按钮对象
+  formModel?: string; //传入，则会对btns根据model进行过滤
+  datas?: T[]; //操作的数据
+  position: BtnToolBarPosition; //显示场景(过滤出满足条件的按钮)
   line?: number; //行号 tableLine模式下使用 临时数据可用行号当索引进行操作
-  reaction?: VfAction[]; //form联动关系
-  validate?: {
-    [key: string]: (val: any, formData: object) => string | Promise<any> | void;
-  };
-  dataComputer?: { funs: (data: any) => any; watchFields?: string[] };
-  readPretty?: boolean; //当前页面模式
+  readPretty?: boolean; //当前页面模式(过滤按钮使用)
   onDataChange: (datas: any[]) => void; //数据修订好传输出去
   onBtnNum?: (num: number) => void; //当前按钮数量
 }
@@ -42,10 +40,9 @@ export default <T extends IdBean>({
   btns,
   position,
   className,
-  model,
+  formModel,
   readPretty,
   onDataChange,
-  entityName,
   onBtnNum,
   ...props
 }: BtnToolBarProps<T>) => {
@@ -165,16 +162,13 @@ export default <T extends IdBean>({
           type: btn.model,
           formData: btn.actionType === "create" ? {} : data,
           btns,
-          terse: btn.actionType === "view" ? true : false,
-          readPretty:
-            btn.actionType === "api" || btn.actionType === "view"
-              ? true
-              : false,
-          fontBold: btn.actionType === "view" ? true : false,
+          terse: !btn.saveApi ? true : false, //紧凑
+          fontBold: !btn.saveApi ? true : false, //加粗
+          readPretty: btn.actionType === "api" || !btn.saveApi ? true : false,
           onDataChange(d: any) {
             setBtnDatas([d]);
           },
-          reaction: btn.reaction || props.reaction,
+          reaction: btn.reaction,
           // ...props,
         });
       };
@@ -230,13 +224,12 @@ export default <T extends IdBean>({
         );
       } else if (
         btn.actionType !== "create" &&
-        btn.actionType !== "createEdit" &&
         (btnDatas === undefined || btnDatas?.length === 0)
       ) {
         //1 没有选中数据，非创建类按钮不可用
         return false;
       } else if (
-        (btn.actionType === "create" || btn.actionType === "createEdit") &&
+        btn.actionType === "create" &&
         (btnDatas === undefined ||
           btnDatas?.length === 0 ||
           btnDatas[0].id === undefined)
@@ -270,17 +263,18 @@ export default <T extends IdBean>({
       } else if (position === "formFooter") {
         //明细页按钮
         if (btnDatas === undefined || btnDatas?.[0]?.id === undefined) {
-          //新增
+          //模型数据为空
           toolBarBtns = btns.filter(
             (b) =>
-              (b.actionType === "create" || b.actionType === "createEdit") &&
-              (model ? b.model === model : true)
+              b.actionType === "create" &&
+              (formModel ? b.model === formModel : true)
           );
         } else {
+          //模型数据为空
           toolBarBtns = btns.filter(
             (b) =>
               b.actionType !== "create" &&
-              b.actionType !== "view" &&
+              b.saveApi !== undefined &&
               (b.multiple === false || b.multiple === undefined)
           );
         }
@@ -289,7 +283,7 @@ export default <T extends IdBean>({
       }
 
       const filteredBtns = toolBarBtns
-        .filter((btn) => (model ? btn.model === model : true)) //模型过滤
+        .filter((btn) => (formModel ? btn.model === formModel : true)) //模型过滤
         .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //只读过滤
         .filter((btn) => permissionCheck(btn)); //权限过滤
       const btnPromises = filteredBtns.map(async (btn, index) => {
@@ -312,7 +306,7 @@ export default <T extends IdBean>({
     };
 
     fetchData();
-  }, [position, btns, btnDatas, model, readPretty]);
+  }, [position, btns, btnDatas, formModel, readPretty]);
 
   // //根据useableMatch属性判断产生按钮的disabled属性
   // useEffect(() => {
@@ -363,7 +357,7 @@ export default <T extends IdBean>({
   }, [currBtns]);
 
   return (
-    <div className={`${className} space-x-1`}>
+    <div className={`  ${className} space-x-1`}>
       {/* {currBtns.length} */}
       {/* {position} */}
       {currBtns.map((btn, index) => {
@@ -383,7 +377,7 @@ export default <T extends IdBean>({
             className={`${classNames({
               "cursor-pointer hover:text-blue-600 hover:font-bold":
                 position === "tableLine",
-            })} `}
+            })} ${btn.className}`}
             key={key}
             icon={position === "tableLine" ? undefined : btn.icon}
             disabled={btn.disabled}

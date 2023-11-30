@@ -23,7 +23,7 @@ export interface ListProps<T extends IdBean> {
   className?: string;
   columnTitle?: "search" | "sort" | true | false; //列头展示形式
   width?: number; //列表宽度（通过外围屏幕宽度减去 搜索宽度）
-  model: FormVo; //模型信息
+  model: FormVo; //列表list的模型信息
   selected?: T[];
   column?: string[]; // 手工传入要显示的列,配置设置的无效
   fkMap?: any; //外键数据的键值队
@@ -314,7 +314,6 @@ const TableIndex = <T extends IdBean>({
                 onBtnNum={(v) => {
                   setListBtnMax((m) => (v > m ? v : m));
                 }}
-                entityName={model.entityType}
                 key={"lineBtn"}
                 onDataChange={() => {}}
                 position="tableLine"

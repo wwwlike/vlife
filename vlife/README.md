@@ -30,12 +30,12 @@
 3. 能根据`dto`模型对象，根据表关系依次把对象数据存入
 
 ## 开发流程
-1. 按规`范设`计模型
+1. 按`规范`设计模型
 2. 运行`maven install` 生成mvc代码,更新模型信息(title.json)
 3. 修改api接口相关逻辑；
 
 ## 开发建议
 1. 跟着开发示例写个demo;
 2. 掌握模型设计规范及相关规约；如何封装符合规范的`req,vo,dto`模型
-3. 掌握`VlifeService`数据存取服务，会使用`QueryWrapper`进行lamdba链式查询
+3. 掌握`VlifeService`数据存取服务，会使用`QueryWrapper`进行`lambda`链式查询
 
