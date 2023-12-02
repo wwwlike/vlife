@@ -1,7 +1,7 @@
 package cn.wwwlike.auth.dto;
 
 import cn.wwwlike.auth.entity.SysUser;
-import cn.wwwlike.base.model.IModel;
+import cn.wwwlike.vlife.base.IModel;
 import lombok.Data;
 
 /**

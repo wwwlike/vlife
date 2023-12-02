@@ -1,6 +1,6 @@
 package cn.wwwlike.web.security.core;
 
-import cn.wwwlike.vlife.base.bean.Result;
+import cn.wwwlike.vlife.bean.Result;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

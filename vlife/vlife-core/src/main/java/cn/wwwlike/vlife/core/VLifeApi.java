@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.core;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.query.QueryWrapper;

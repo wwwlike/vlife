@@ -18,8 +18,6 @@
 
 package cn.wwwlike.vlife.base;
 
-import cn.wwwlike.base.model.IdBean;
-
 /**
  * 可进行逻辑删除的Item对象进行实现
  */

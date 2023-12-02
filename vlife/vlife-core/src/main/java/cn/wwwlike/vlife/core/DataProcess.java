@@ -17,7 +17,7 @@
  */
 
 package cn.wwwlike.vlife.core;
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import lombok.Getter;
 import java.util.*;
 import java.util.function.Supplier;

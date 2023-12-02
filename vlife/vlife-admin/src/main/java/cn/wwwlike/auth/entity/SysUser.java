@@ -18,7 +18,7 @@
 
 package cn.wwwlike.auth.entity;
 
-import cn.wwwlike.base.model.IUser;
+import cn.wwwlike.vlife.base.IUser;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.IFkItem;
 import cn.wwwlike.vlife.bean.DbEntity;
@@ -33,7 +33,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_user")
-public class SysUser extends DbEntity implements IUser,IFkItem {
+public class SysUser extends DbEntity implements IFkItem,IUser {
     /**
      * 头像
      */

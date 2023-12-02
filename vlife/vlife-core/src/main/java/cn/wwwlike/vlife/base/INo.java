@@ -1,7 +1,5 @@
 package cn.wwwlike.vlife.base;
 
-import cn.wwwlike.base.model.IdBean;
-
 /**
  * 流水号单号
  */

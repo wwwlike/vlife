@@ -16,15 +16,14 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.base.util;
+package cn.wwwlike.vlife.base;
 
 /**
- * 类说明
- *
- * @author xiaoyu
- * @date 2022/7/3
+ * 用户类实现
  */
-public class ModelUtils {
-
-
+public interface IUser  {
+    public String getUsername();//用户名
+    public void setUsername(String username);
+    public String getPassword();//密码
+    public void setPassword(String orgcode);
 }

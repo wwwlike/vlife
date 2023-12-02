@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.objship.read;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.BaseRequest;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.dict.VCT;
@@ -26,7 +26,6 @@ import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.ReqDto;
 import cn.wwwlike.vlife.utils.GenericsUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 

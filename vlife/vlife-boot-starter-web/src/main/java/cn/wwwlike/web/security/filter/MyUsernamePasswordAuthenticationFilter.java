@@ -1,6 +1,6 @@
 package cn.wwwlike.web.security.filter;
 
-import cn.wwwlike.vlife.base.bean.Result;
+import cn.wwwlike.vlife.bean.Result;
 import cn.wwwlike.web.security.core.SecurityUser;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

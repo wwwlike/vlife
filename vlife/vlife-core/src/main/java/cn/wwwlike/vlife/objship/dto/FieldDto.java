@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.objship.dto;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.dict.Opt;

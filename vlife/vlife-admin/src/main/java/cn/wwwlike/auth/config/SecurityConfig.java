@@ -37,6 +37,7 @@ import org.springframework.security.crypto.password.MessageDigestPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import java.util.Map;
 
@@ -145,7 +146,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .access("hasPermission('','" + map.get(url) + "')");
 
         }
-        authorizeRequests.antMatchers("/open/api/getToken","/tsCode/code/*",
+        authorizeRequests.antMatchers( "/dist/**","/open/api/getToken","/tsCode/code/*",
                     "/sysUser/checkEmail","/sysUser/sendEmail","/sysUser/register","/git/*","/git/token/*", "/ts/test/file", "/ts/upload", "/sysFile/upload", "/sysFile/image/*", "/sysFile/uploadImg", "/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
                 .and().formLogin()
                 .failureHandler(eauthenticationFailureHandler())
@@ -153,6 +154,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll();
     }
+
 
     /**
      * 得到当前用户

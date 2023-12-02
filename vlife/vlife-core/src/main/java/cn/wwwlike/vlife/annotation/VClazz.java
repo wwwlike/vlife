@@ -19,9 +19,8 @@
 package cn.wwwlike.vlife.annotation;
 
 import cn.wwwlike.base.common.RequestTypeEnum;
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
-import cn.wwwlike.vlife.base.SaveBean;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

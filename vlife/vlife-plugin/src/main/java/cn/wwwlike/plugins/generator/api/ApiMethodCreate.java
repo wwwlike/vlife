@@ -18,25 +18,19 @@
 
 package cn.wwwlike.plugins.generator.api;
 
-import cn.wwwlike.base.common.RequestTypeEnum;
-import cn.wwwlike.base.model.IModel;
-import cn.wwwlike.base.model.IdBean;
-import cn.wwwlike.vlife.annotation.VClazz;
+import cn.wwwlike.vlife.base.IModel;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;
-import cn.wwwlike.vlife.objship.base.FieldInfo;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+
 import static  cn.wwwlike.plugins.generator.api.Method.MethodContent;
 import javax.lang.model.element.Modifier;
-import java.lang.annotation.Annotation;
 import java.util.Optional;
 
 /**

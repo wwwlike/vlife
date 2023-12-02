@@ -18,8 +18,6 @@
 
 package cn.wwwlike.vlife.base;
 
-import cn.wwwlike.base.model.IdBean;
-
 /**
  * 树型关系实体
  * 实现该接口，保存时能自动对code进行计算生成

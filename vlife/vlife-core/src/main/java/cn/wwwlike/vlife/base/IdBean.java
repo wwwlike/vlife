@@ -16,14 +16,15 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.base.model;
+package cn.wwwlike.vlife.base;
+
+import java.io.Serializable;
 
 /**
- * 用户类实现
+ * 与数据库直接进行读写相关POJO实现该接口
  */
-public interface IUser extends IdBean {
-    public String getUsername();//用户名
-    public void setUsername(String username);
-    public String getPassword();//密码
-    public void setPassword(String orgcode);
+public interface IdBean extends Serializable,IModel {
+    public String getId();
+
+    public void setId(String id);
 }

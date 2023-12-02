@@ -18,11 +18,10 @@
 
 package cn.wwwlike.vlife.objship.read;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
-import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.*;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
@@ -48,8 +47,6 @@ import org.springframework.util.ResourceUtils;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;

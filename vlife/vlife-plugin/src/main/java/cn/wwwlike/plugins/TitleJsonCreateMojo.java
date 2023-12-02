@@ -59,17 +59,16 @@ public class TitleJsonCreateMojo extends AbstractMojo {
     private MavenProject project;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        try {
         List<File> files = new ArrayList<>();
         ClassLoader loader= ClassLoaderUtil.getRuntimeClassLoader(project);
         ModelReadCheck modelReadCheck= new ModelReadCheck();
         int errorNum=modelReadCheck.load(loader);
         if(errorNum==0) {
-            try {
+
                 String srcPath = "";
                 files.addAll(FileUtils.getFiles(new File(project.getBasedir() + "/src/main/java" + srcPath), null, null));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
             /* 写死，因为目前实体类父类都在class里。*/
             List<ClzTag> tags = new ArrayList<>();
             Map<String, FieldTag> dbEntityFieldTag = new HashMap<>();
@@ -160,6 +159,8 @@ public class TitleJsonCreateMojo extends AbstractMojo {
             FileUtil.nioWriteFile(data, filePath);
         }else{
             modelReadCheck.getLogger().error("模型信息读取存在错误,title不能生成");
+        } } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

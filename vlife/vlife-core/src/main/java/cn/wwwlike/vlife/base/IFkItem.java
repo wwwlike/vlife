@@ -18,8 +18,6 @@
 
 package cn.wwwlike.vlife.base;
 
-import cn.wwwlike.base.model.IdBean;
-
 /**
  * 作为其他表的外键需要实现的接口
  */

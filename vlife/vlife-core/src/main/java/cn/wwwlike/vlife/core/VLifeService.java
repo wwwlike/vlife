@@ -18,14 +18,13 @@
 
 package cn.wwwlike.vlife.core;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.OrderRequest;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.bi.Conditions;
-import cn.wwwlike.vlife.bi.ReportWrapper;
 import cn.wwwlike.vlife.objship.dto.*;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.AbstractWrapper;

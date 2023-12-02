@@ -18,6 +18,16 @@
         </dependency>
         <dependency>
             <groupId>io.github.wwwlike</groupId>
+            <artifactId>vlife-spring-boot-starter</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.wwwlike</groupId>
+            <artifactId>vlife-base</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.wwwlike</groupId>
             <artifactId>vlife-boot-starter-web</artifactId>
             <version>1.0.7</version>
         </dependency>
@@ -213,18 +223,18 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Item>cn.wwwlike.sys.entity.SysDict</Item>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <version>3.2.0</version>-->
+<!--                <configuration>-->
+<!--                    <archive>-->
+<!--                        <manifestEntries>-->
+<!--                            <Item>cn.wwwlike.sys.entity.SysDict</Item>-->
+<!--                        </manifestEntries>-->
+<!--                    </archive>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
 <!--                <artifactId>maven-jar-plugin</artifactId>-->
@@ -237,7 +247,7 @@
 <!--                        </manifest>-->
 <!--                    </archive>-->
 <!--                    <services>-->
-<!--                        <service>cn.wwwlike.base.model.IdBean</service>-->
+<!--                        <service>cn.wwwlike.vlife.base.IdBean</service>-->
 <!--                    </services>-->
 <!--                </configuration>-->
 <!--            </plugin>-->

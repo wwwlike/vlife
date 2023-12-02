@@ -1,5 +1,5 @@
 package cn.wwwlike.web.security.core;
-import cn.wwwlike.base.model.IUser;
+import cn.wwwlike.vlife.base.IUser;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

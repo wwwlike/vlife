@@ -16,13 +16,23 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.base.model;
+package cn.wwwlike.form.dto;
+
+import cn.wwwlike.form.entity.FormTab;
+import cn.wwwlike.vlife.base.SaveBean;
+import lombok.Data;
+
+import java.util.List;
 
 /**
- *  模型接口
- * @author xiaoyu
- * @date 2022/7/3
+ * 页签dto
  */
-public interface IModel<T> {
-
+@Data
+public class FormTabDto implements SaveBean<FormTab> {
+    public String id;
+    public String formId;
+    public String name;
+    public String code;
+    public Integer sort;
+    List<String> fieldIds ;
 }

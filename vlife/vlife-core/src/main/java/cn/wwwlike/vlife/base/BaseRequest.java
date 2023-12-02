@@ -18,7 +18,6 @@
 
 package cn.wwwlike.vlife.base;
 
-import cn.wwwlike.base.model.IModel;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 
 /**

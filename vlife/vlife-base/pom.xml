@@ -27,6 +27,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>vlife-base</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>io.github.wwwlike</groupId>
+            <artifactId>vlife-core</artifactId>
+            <version>1.0.7</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>

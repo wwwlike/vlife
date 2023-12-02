@@ -16,7 +16,7 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.vlife.base.bean;
+package cn.wwwlike.vlife.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -18,20 +18,17 @@
 
 package cn.wwwlike.plugins.generator.api;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
-import com.squareup.javapoet.MethodSpec;
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import static cn.wwwlike.plugins.generator.api.Method.MethodContent;
 
-import java.nio.file.Path;
 import java.util.List;
 /*
    delete("物理删除"),

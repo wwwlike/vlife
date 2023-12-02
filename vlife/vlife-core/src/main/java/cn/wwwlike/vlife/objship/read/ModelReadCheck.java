@@ -18,7 +18,6 @@
 
 package cn.wwwlike.vlife.objship.read;
 
-import cn.wwwlike.base.model.IdBean;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.base.FieldInfo;
 import cn.wwwlike.vlife.objship.base.ItemInfo;
@@ -29,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 模型关系读取&校验

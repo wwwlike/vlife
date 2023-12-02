@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.BaseRequest;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;

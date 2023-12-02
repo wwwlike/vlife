@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.dict.VCT;
@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static cn.wwwlike.vlife.core.dsl.QueryHelper.getItemEntityPath;
 

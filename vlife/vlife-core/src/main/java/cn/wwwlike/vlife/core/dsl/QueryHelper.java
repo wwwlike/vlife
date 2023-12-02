@@ -18,10 +18,9 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;
-import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.VoDto;
@@ -36,7 +35,6 @@ import cn.wwwlike.vlife.utils.ReflectionUtils;
 import com.querydsl.core.JoinExpression;
 import com.querydsl.core.QueryMetadata;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.SimpleExpression;

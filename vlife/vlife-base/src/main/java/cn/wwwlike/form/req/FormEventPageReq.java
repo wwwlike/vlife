@@ -16,17 +16,16 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.base.model;
+package cn.wwwlike.form.req;
 
-import cn.wwwlike.base.model.IModel;
-
-import java.io.Serializable;
+import cn.wwwlike.form.entity.FormEvent;
+import cn.wwwlike.vlife.query.req.PageQuery;
+import lombok.Data;
 
 /**
- * 与数据库直接进行读写相关POJO实现该接口
+ * 事件查询条件
  */
-public interface IdBean extends Serializable,IModel {
-    public String getId();
-
-    public void setId(String id);
+@Data
+public class FormEventPageReq extends PageQuery<FormEvent> {
+    public String formId;
 }

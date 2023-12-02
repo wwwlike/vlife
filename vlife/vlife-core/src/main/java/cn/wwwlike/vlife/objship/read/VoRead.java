@@ -18,20 +18,18 @@
 
 package cn.wwwlike.vlife.objship.read;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.dict.Constants;
-import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.base.FieldInfo;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.VoDto;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

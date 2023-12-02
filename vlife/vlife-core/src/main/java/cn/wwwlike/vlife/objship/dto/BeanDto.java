@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.objship.dto;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.objship.base.ItemInfo;
 import lombok.Data;
 import org.apache.commons.lang3.ClassUtils;

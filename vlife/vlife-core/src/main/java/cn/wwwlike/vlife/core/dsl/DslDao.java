@@ -18,12 +18,9 @@
 
 package cn.wwwlike.vlife.core.dsl;
 
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.*;
 import cn.wwwlike.vlife.bean.PageVo;
-import cn.wwwlike.vlife.bi.Conditions;
-import cn.wwwlike.vlife.bi.Groups;
-import cn.wwwlike.vlife.bi.ReportWrapper;
 import cn.wwwlike.vlife.core.DataProcess;
 import cn.wwwlike.vlife.core.VLifeDao;
 import cn.wwwlike.vlife.dict.CT;
@@ -41,8 +38,6 @@ import cn.wwwlike.vlife.query.req.QueryUtils;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
 import cn.wwwlike.vlife.utils.VlifeUtils;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Path;
@@ -51,31 +46,18 @@ import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.jpa.HibernateEntityManager;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static cn.wwwlike.vlife.objship.read.ItemReadTemplate.GSON;
 
 /**
  * 以queryDsl方式的dao实现

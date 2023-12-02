@@ -21,7 +21,7 @@ import cn.wwwlike.auth.common.IArea;
 import cn.wwwlike.auth.common.IDept;
 import cn.wwwlike.auth.common.IOrg;
 import cn.wwwlike.auth.config.SecurityConfig;
-import cn.wwwlike.base.model.IdBean;
+import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.core.DataProcess;
 import cn.wwwlike.vlife.dict.CT;

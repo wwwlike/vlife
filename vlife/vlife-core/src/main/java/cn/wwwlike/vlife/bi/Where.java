@@ -18,8 +18,6 @@
 
 package cn.wwwlike.vlife.bi;
 
-import cn.wwwlike.base.model.IdBean;
-import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;

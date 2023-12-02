@@ -18,7 +18,7 @@
 
 package cn.wwwlike.vlife.objship.read;
 
-import cn.wwwlike.base.model.IModel;
+import cn.wwwlike.vlife.base.IModel;
 import cn.wwwlike.vlife.base.BaseRequest;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.SaveBean;
