@@ -189,11 +189,11 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
                    queryWrapper.eq("id",user.get(fieldName));
                 }else{
                     //查询实体，没有该过滤模型，则设置的行级过滤对此模块不起作用
-                    System.out.println("1");
+//                    System.out.println("1");
                 }
             }else{
                 //查看全部，不进行过滤
-                System.out.println("1");
+//                System.out.println("1");
             }
         }
         return queryWrapper;

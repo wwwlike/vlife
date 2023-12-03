@@ -55,6 +55,8 @@ public class GeneratorMaster extends GeneratorUtils {
         List<JavaFile> waitCreateFiles = new ArrayList();
         try {
             //fitler的目的是只过滤出当前项目里的实体
+            List<EntityDto> projectEntitys = entitys.stream().filter(f->doesClassExist(loader,f.getClz().getName())).collect(Collectors.toList());
+
             List<Class<? extends Item>> entityList = entitys.stream().map(entityDto -> {
                 return entityDto.getClz();
             }).filter(f->doesClassExist(loader,f.getName())).collect(Collectors.toList());
@@ -68,8 +70,7 @@ public class GeneratorMaster extends GeneratorUtils {
             List<Class<? extends SaveBean>> saveList = saves.stream().map(saveBean -> {
                 return saveBean.getClz();
             }).collect(Collectors.toList());
-
-            waitCreateFiles.addAll(apiGenerator(basePath, entitys, vos, res, saves));
+            waitCreateFiles.addAll(apiGenerator(basePath, projectEntitys, vos, res, saves));
             waitCreateFiles.addAll(daoGenerator(basePath, entityList));
             waitCreateFiles.addAll(serviceGenerator(basePath, entityList));
             return waitCreateFiles;

@@ -103,10 +103,6 @@ public class CommentParser {
             BeanDto beanDto= modelReadCheck.find(StringUtils.uncapitalize(clzTag.getEntityName()));
             //不是模型，不是接口层的则排除
             if(beanDto!=null||"VLifeApi".equals(clzTag.getSuperName())||"VLifeApi".equals(clzTag.getEntityName())) {
-
-                if("VLifeApi".equals(clzTag.getEntityName())){
-                    System.out.println("1");
-                }
                 if (typeDeclaration.getComment().isPresent()) {//有注释
                     String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().get().getContent());
                     commentText = commentText.split("\n")[0].split("\r")[0];//取注释的第一行
@@ -134,7 +130,7 @@ public class CommentParser {
                                     }
                                 }
                             }else{
-                                System.out.println(beanDto.getType());
+//                                System.out.println(beanDto.getType());
                             }
                         }
                         fieldTag.setFieldType(((FieldDeclaration) o).getElementType().asString());
