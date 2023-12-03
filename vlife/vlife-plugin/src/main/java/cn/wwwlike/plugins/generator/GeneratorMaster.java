@@ -42,12 +42,23 @@ import java.util.stream.Collectors;
 public class GeneratorMaster extends GeneratorUtils {
     List<String> error = new ArrayList<>();
 
+    public  boolean doesClassExist(ClassLoader classLoader, String className) {
+        try {
+            Class<?> clazz = classLoader.loadClass(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     public List<JavaFile> generator(String basePath, ClassLoader loader, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> res, List<SaveDto> saves) {
         List<JavaFile> waitCreateFiles = new ArrayList();
         try {
+            //fitler的目的是只过滤出当前项目里的实体
             List<Class<? extends Item>> entityList = entitys.stream().map(entityDto -> {
                 return entityDto.getClz();
-            }).collect(Collectors.toList());
+            }).filter(f->doesClassExist(loader,f.getName())).collect(Collectors.toList());
+
             List<Class<? extends VoBean>> voList = vos.stream().map(voDto -> {
                 return voDto.getClz();
             }).collect(Collectors.toList());
@@ -68,6 +79,15 @@ public class GeneratorMaster extends GeneratorUtils {
         return waitCreateFiles;
     }
 
+
+
+    public static String convertToTargetClass(Class<?> entityClass, String targetType) {
+        String entityPackage = entityClass.getPackage().getName();
+        String entityClassName = entityClass.getSimpleName();
+        String targetPackage = entityPackage.replace("entity", targetType);
+        String targetClassName = entityClassName + targetType.substring(0, 1).toUpperCase() + targetType.substring(1);
+        return targetPackage + "." + targetClassName;
+    }
     /**
      * api自动创建;
      * 随着需求变化增量的方法也要能够进入到api里,待实现

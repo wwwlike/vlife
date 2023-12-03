@@ -23,12 +23,35 @@ import org.apache.maven.project.MavenProject;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Julien Boz
  */
 public class ClassLoaderUtil {
+
+
+    public static ClassLoader getVlifeClassLoader(MavenProject project){
+        ClassLoader loader =null;
+        try {
+            File projectBasedir=project.getBasedir();
+            List<URL> classpathUrls = new ArrayList<>();
+            // 添加每个Spring Boot应用程序的target目录的路径到classpathUrls列表中
+            //            classpathUrls.add(new File(projectBasedir.getPath()+"\\target\\classes").toURI().toURL());
+            for(File file:projectBasedir.getParentFile().listFiles()){
+                if(new File(file.getPath()+"\\target\\classes").exists()){
+                    classpathUrls.add(new File(file.getPath()+"\\target\\classes").toURI().toURL());
+                }
+            }
+            URL[] urls = classpathUrls.toArray(new URL[0]);
+            loader=  new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return loader;
+    }
 
     /**
      * Get classloader
@@ -76,5 +99,19 @@ public class ClassLoaderUtil {
         } catch (Exception e) {
             throw new MojoExecutionException("Unable to load project runtime !", e);
         }
+    }
+
+
+    public static List<URL>  getClassUrls(MavenProject project) {
+        List<URL> classUrls = new ArrayList<>();
+        try {
+            List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
+            for (String element : runtimeClasspathElements) {
+                classUrls.add(new File(element).toURI().toURL());
+            }
+        } catch (Exception e) {
+            // 处理异常
+        }
+        return classUrls;
     }
 }

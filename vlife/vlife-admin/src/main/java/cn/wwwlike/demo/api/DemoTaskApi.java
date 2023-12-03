@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 实体demoTask接口;
+ * 任务表接口;
  */
 @RestController
 @RequestMapping("/demoTask")
 public class DemoTaskApi extends VLifeApi<DemoTask, DemoTaskService> {
   /**
-   * 分页查询实体demoTask;
+   * 分页查询任务表;
    * @param req ;
-   * @return 实体demoTask;
+   * @return 任务表;
    */
   @GetMapping("/page")
   public PageVo<DemoTask> page(PageQuery req) {
@@ -32,9 +32,9 @@ public class DemoTaskApi extends VLifeApi<DemoTask, DemoTaskService> {
   }
 
   /**
-   * 保存实体demoTask;
-   * @param demoTask 实体demoTask;
-   * @return 实体demoTask;
+   * 保存任务表;
+   * @param demoTask 任务表;
+   * @return 任务表;
    */
   @PostMapping("/save")
   public DemoTask save(@RequestBody DemoTask demoTask) {
@@ -42,9 +42,9 @@ public class DemoTaskApi extends VLifeApi<DemoTask, DemoTaskService> {
   }
 
   /**
-   * 明细查询实体demoTask;
+   * 明细查询任务表;
    * @param id 主键id;
-   * @return 实体demoTask;
+   * @return 任务表;
    */
   @GetMapping("/detail/{id}")
   public DemoTask detail(@PathVariable String id) {

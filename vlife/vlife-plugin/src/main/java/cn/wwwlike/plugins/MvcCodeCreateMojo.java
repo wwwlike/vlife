@@ -65,7 +65,7 @@ public class MvcCodeCreateMojo extends AbstractMojo {
      */
     public void execute() throws MojoExecutionException {
         List<String> sourceRoots=project.getCompileSourceRoots();
-        ClassLoader loader=ClassLoaderUtil.getRuntimeClassLoader(project);
+        ClassLoader loader = ClassLoaderUtil.getVlifeClassLoader(project);
         ModelReadCheck modelReadCheck= new ModelReadCheck();
         int errorNum=modelReadCheck.load(loader);
         GeneratorMaster generatorMaster = new GeneratorMaster();
@@ -76,7 +76,7 @@ public class MvcCodeCreateMojo extends AbstractMojo {
                     if(sourceRoot.indexOf("target")==-1) {
 //                    URL url=new URL(sourceRoot);
 //                    URLClassLoader classLoader=new URLClassLoader(ArrayUtils.,loader);
-                        List<JavaFile> mvcFiles = generatorMaster.generator(sourceRoot, loader, modelReadCheck.getItemDtos(),
+                        List<JavaFile> mvcFiles = generatorMaster.generator(sourceRoot, ClassLoaderUtil.getRuntimeClassLoader(project), modelReadCheck.getItemDtos(),
                                 modelReadCheck.getVoDtos(), modelReadCheck.getReqDtos(), modelReadCheck.getSaveDtos());
                         generatorMaster.createJavaFiles(sourceRoot, false, mvcFiles);
                     }

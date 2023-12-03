@@ -58,17 +58,20 @@ public class GeneratorUtils {
         return false;
     }
 
-    /**
-     * 源文件是否存在
-     * @return
-     */
-    public boolean sourceClzExist(Class itemClz,String basePath, CLZ_TYPE type) {
+    public String classPathName(Class itemClz,String basePath, CLZ_TYPE type){
         String packageName = itemClz.getPackage().getName();
         int index = packageName.lastIndexOf(".");
         String key=type.name().toLowerCase();
         String filePath=basePath+"\\"+
                 (packageName.substring(0, index) +"\\"+ key+"\\"+itemClz.getSimpleName()+StringUtils.capitalize(key)).replaceAll("\\.","\\\\");
-        if(new File(filePath+".java").exists()){
+        return filePath;
+    }
+    /**
+     * 源文件是否存在
+     * @return
+     */
+    public boolean sourceClzExist(Class itemClz,String basePath, CLZ_TYPE type) {
+        if(new File(classPathName(itemClz,basePath,type)+".java").exists()){
             return true;
         }
         return false;

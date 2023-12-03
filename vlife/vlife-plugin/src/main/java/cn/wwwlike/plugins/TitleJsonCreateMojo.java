@@ -37,6 +37,8 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,15 +62,18 @@ public class TitleJsonCreateMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-        List<File> files = new ArrayList<>();
-        ClassLoader loader= ClassLoaderUtil.getRuntimeClassLoader(project);
-        ModelReadCheck modelReadCheck= new ModelReadCheck();
-        int errorNum=modelReadCheck.load(loader);
-        if(errorNum==0) {
-
-                String srcPath = "";
-                files.addAll(FileUtils.getFiles(new File(project.getBasedir() + "/src/main/java" + srcPath), null, null));
-
+            File projectBasedir=project.getBasedir();
+            List<File> files = new ArrayList<>();
+            ClassLoader loader = ClassLoaderUtil.getVlifeClassLoader(project);
+            ModelReadCheck modelReadCheck= new ModelReadCheck();
+            int errorNum=modelReadCheck.load(loader);
+            if(errorNum==0) {
+            String srcPath = "";
+            for(File file:projectBasedir.getParentFile().listFiles()){
+                if(new File(file.getPath()+"\\src\\main\\java").exists()){
+                    files.addAll(FileUtils.getFiles(new File(file.getPath() + "/src/main/java" + srcPath), null, null));
+                }
+            }
             /* 写死，因为目前实体类父类都在class里。*/
             List<ClzTag> tags = new ArrayList<>();
             Map<String, FieldTag> dbEntityFieldTag = new HashMap<>();
@@ -146,13 +151,6 @@ public class TitleJsonCreateMojo extends AbstractMojo {
                     }
                 }
             }
-//        //api解析
-//        for (File path : files) {
-//            for()
-////            ClzTag tag=CommentParser.parser(path);
-////            tags.add(tag);//字段
-//        }
-
             String filePath = project.getBasedir() + "/src/main/resources/";
             filePath = filePath + "/title.json";
             String data = JsonUtil.toPrettyJson(tags);

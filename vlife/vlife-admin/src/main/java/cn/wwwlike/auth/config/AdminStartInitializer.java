@@ -21,8 +21,11 @@ package cn.wwwlike.auth.config;
 import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
+import cn.wwwlike.sys.entity.SysDict;
 import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.sys.service.SysDictService;
+import cn.wwwlike.vlife.dict.DictVo;
+import cn.wwwlike.vlife.dict.ReadCt;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +64,15 @@ public class AdminStartInitializer implements ApplicationRunner {
         System.out.println("╚════════════════════════════════════════════════════════════════╝");
     }
 
+
+    public List<SysDict> dictSync(){
+        List<SysDict> dbs=dictService.findAll();
+        List<DictVo> sysDict = ReadCt.getSysDict();
+        dictService.saveByDictVo(sysDict,dbs);//是系统级的不可以维护
+        List<DictVo> autiDict = ReadCt.read(AuthDict.class);
+        dictService.saveByDictVo(autiDict,dbs);//导入的，可以维护
+        return dictService.findAll();
+    }
     @Override
     public void run(ApplicationArguments args) throws Exception {
         //检查是否有title.json文件（是否运行过title.json）
@@ -73,7 +85,7 @@ public class AdminStartInitializer implements ApplicationRunner {
         //资源同步
         resourcesService.sync();
         //字典同步
-        dictService.sync();
+        dictSync();
         //模型同步(移除的需要物理删除)
         GlobalData.allModels().stream().forEach(m->{
            if(service.syncOne(m.getType())){

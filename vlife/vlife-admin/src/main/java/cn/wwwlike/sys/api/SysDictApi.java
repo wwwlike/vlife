@@ -90,10 +90,10 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
     }
 
 
-    @GetMapping("/sync")
-    public List<SysDict> sync() {
-        return service.sync();
-    }
+//    @GetMapping("/sync")
+//    public List<SysDict> sync() {
+//        return service.sync();
+//    }
 
     /**
      * 根据code查询字典
