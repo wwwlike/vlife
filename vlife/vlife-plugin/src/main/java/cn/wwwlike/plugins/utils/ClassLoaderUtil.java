@@ -17,8 +17,10 @@
  */
 package cn.wwwlike.plugins.utils;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+
 
 import java.io.File;
 import java.net.URL;
@@ -31,17 +33,24 @@ import java.util.List;
  */
 public class ClassLoaderUtil {
 
-
     public static ClassLoader getVlifeClassLoader(MavenProject project){
         ClassLoader loader =null;
         try {
             File projectBasedir=project.getBasedir();
             List<URL> classpathUrls = new ArrayList<>();
-            // 添加每个Spring Boot应用程序的target目录的路径到classpathUrls列表中
-            //            classpathUrls.add(new File(projectBasedir.getPath()+"\\target\\classes").toURI().toURL());
+            // 1 添加每个Spring Boot应用程序的target目录的路径到classpathUrls列表中
             for(File file:projectBasedir.getParentFile().listFiles()){
                 if(new File(file.getPath()+"\\target\\classes").exists()){
                     classpathUrls.add(new File(file.getPath()+"\\target\\classes").toURI().toURL());
+                }
+            }
+            //2 添加resources里的jar包
+            for(Resource resource: project.getBuild().getResources()){
+                File[] files =new File(resource.getDirectory()).listFiles();
+                for (File file : files) {
+                    if (file.getName().endsWith(".jar")) {
+                        classpathUrls.add(file.toURI().toURL());
+                    }
                 }
             }
             URL[] urls = classpathUrls.toArray(new URL[0]);
@@ -80,38 +89,4 @@ public class ClassLoaderUtil {
         }
     }
 
-
-    public static ClassLoader getRuntimeClassLoader1(MavenProject project) throws MojoExecutionException {
-        try {
-            List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
-            List<String> compileClasspathElements = project.getCompileClasspathElements();
-            URL[] runtimeUrls = new URL[runtimeClasspathElements.size() + compileClasspathElements.size()];
-            for (int i = 0; i < runtimeClasspathElements.size(); i++) {
-                String element = runtimeClasspathElements.get(i);
-                runtimeUrls[i] = new File(element).toURI().toURL();
-            }
-            int j = runtimeClasspathElements.size();
-            for (int i = 0; i < compileClasspathElements.size(); i++) {
-                String element = compileClasspathElements.get(i);
-                runtimeUrls[i + j] = new File(element).toURI().toURL();
-            }
-            return new URLClassLoader(runtimeUrls, Thread.currentThread().getContextClassLoader());
-        } catch (Exception e) {
-            throw new MojoExecutionException("Unable to load project runtime !", e);
-        }
-    }
-
-
-    public static List<URL>  getClassUrls(MavenProject project) {
-        List<URL> classUrls = new ArrayList<>();
-        try {
-            List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
-            for (String element : runtimeClasspathElements) {
-                classUrls.add(new File(element).toURI().toURL());
-            }
-        } catch (Exception e) {
-            // 处理异常
-        }
-        return classUrls;
-    }
 }

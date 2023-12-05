@@ -20,14 +20,17 @@ package cn.wwwlike.vlife.utils;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import sun.net.www.protocol.jar.JarURLConnection;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 public class PackageUtil {
 
@@ -48,20 +51,55 @@ public class PackageUtil {
      * @return 类的完整名称Arrays.stream(((URLClassLoader) loader).getURLs()).filter(t->t.path.indexOf("classes")!=-1).collect(Collectors.toList())
      */
     public static Set<String> getClassName(ClassLoader loader, String packageName, boolean childPackage) {
+        String loaderName=loader.getClass().getSimpleName();
         Set<String> fileNames = new HashSet<>();
         try {
-            Enumeration<URL> resources = loader.getResources(packageName.replace('.', '/'));
-            while (resources.hasMoreElements()) {
-                URL resource = resources.nextElement();
-                String protocol = resource.getProtocol();
-                if ("file".equals(protocol)) {//开发环境可以读取到目录
+            //运行时环境
+            if(loaderName.equals("AppClassLoader")||loaderName.equals("LaunchedURLClassLoader")){
+//               Enumeration<URL> resources = loader.getResources(packageName.replace('.', '/'));
+                Enumeration<URL> resources = loader.getResources(packageName.replace('.', '/'));
+                while (resources.hasMoreElements()) {
+                    URL resource = resources.nextElement();
+                    String protocol = resource.getProtocol();
                     String path = resource.getPath();
-                    fileNames.addAll(getClassNameByFile(path, null, childPackage));
-                } else if ("jar".equals(protocol)) {
-//                    System.out.println("jarjarjarjarjar");
+                    if ("file".equals(protocol)) {//开发环境 读取class目录
+                        List<String> jarClass= getClassNameByFile(path, null, childPackage);
+                        fileNames.addAll(jarClass);
+                        System.out.println(path+":"+jarClass.size());
+                    } else if ("jar".equals(protocol)) { //开发环境 运行时读取jar包
+                        int bootInf=resource.getPath().indexOf("/BOOT-INF/lib");
+                        List<String>  jarClass=null;
+                        if(bootInf!=-1){
+                            System.out.println("a"+resource.getFile().substring(6,bootInf-1));
+                            System.out.println("v"+resource.getFile().substring(bootInf+14,resource.getFile().lastIndexOf("!")));
+                            jarClass=jarReadJar(resource.getFile().substring(6,bootInf-1),resource.getFile().substring(bootInf+14,resource.getFile().lastIndexOf("!")),"cn.wwwlike");
+                        }else{
+                            jarClass=getClassNameByJars1(packageName, childPackage,resource);
+                        }
+//                        jarFilePath:file:/D:/0-VLIFE-CODE/v-life/vlife/vlife-admin/target/vlife-admin-1.0-SNAPSHOT.jar/BOOT-INF/lib/vlife-spring-boot-starter-1.0.7.jar
+                        fileNames.addAll(jarClass);
+                        System.out.println(path+":"+jarClass.size());
+                    }
+                }
+                //第三方jar包读取
+            }
+            //install(插件运行时环境)
+            else if(loader instanceof  URLClassLoader){
+                URL[] urls = ((URLClassLoader) loader).getURLs();
+                System.out.println("urls.length"+urls.length);
+                for (URL resource : urls) {
+                    String protocol = resource.getProtocol();
+                    System.out.println(protocol+":"+resource.getPath());
+                    if (resource.getPath().endsWith("jar")) {
+                        List<String> jarClass=getClassNameByJars1(packageName, childPackage,resource);
+                        fileNames.addAll(jarClass);
+                    }else if ("file".equals(protocol)) {
+                        String path = resource.getPath();
+                        fileNames.addAll(getClassNameByFile(path, null, childPackage));
+                    }
                 }
             }
-        }catch (IOException exception){
+        }catch (Exception exception){
             exception.printStackTrace();
         }
     /** java8方式取类信息
@@ -76,22 +114,24 @@ public class PackageUtil {
             }
         }*/
 
-        try {
-            Enumeration<URL> resources = loader.getResources("");
-            while (resources.hasMoreElements()) {
-                URL resource = resources.nextElement();
-                String protocol = resource.getProtocol();
-               if ("jar".equals(protocol)) {
-                   List<String> jarClass=getClassNameByJars1(packageName, childPackage,resource);
-                   fileNames.addAll(jarClass);
-               }
-            }
-        }catch (IOException exception){
-            exception.printStackTrace();
-        }
+//        try {
+//            Enumeration<URL> resources = loader.getResources("");
+//            while (resources.hasMoreElements()) {
+//                URL resource = resources.nextElement();
+//                String protocol = resource.getProtocol();
+//               if ("jar".equals(protocol)) {
+//                   System.out.println("3:"+resource.getPath());
+//                   List<String> jarClass=getClassNameByJars1(packageName, childPackage,resource);
+//                   fileNames.addAll(jarClass);
+//               }
+//            }
+//        }catch (IOException exception){
+//            exception.printStackTrace();
+//        }
            //生产环境：从jar包里指定包路径[packageName]的class
 //        List<String> jarClass=getClassNameByJars(((URLClassLoader) loader).getURLs(), packageName, childPackage);
 //        fileNames.addAll(jarClass);
+        System.out.println("fileNames:size:"+fileNames.size());
         return fileNames;
     }
 
@@ -169,6 +209,38 @@ public class PackageUtil {
         return myClassName;
     }
 
+
+
+
+    public static List<String>  jarReadJar(String executableJarPath,String dependencyJarName,String packageToScan){
+        List<String> names=new ArrayList<>();
+        try {
+            JarFile jarFile = new JarFile(executableJarPath);
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                if (entry.getName().startsWith("BOOT-INF/lib/" + dependencyJarName)) {
+                    InputStream inputStream = jarFile.getInputStream(entry);
+                    JarInputStream jarInputStream = new JarInputStream(inputStream);
+                    JarEntry dependencyEntry;
+                    while ((dependencyEntry = jarInputStream.getNextJarEntry()) != null) {
+                        if (dependencyEntry.getName().endsWith(".class") && dependencyEntry.getName().startsWith(packageToScan.replace(".", "/"))) {
+                            String className = dependencyEntry.getName().replace("/", ".").replace(".class", "");
+                            System.out.println(className);
+                            names.add(className);
+                        }
+                    }
+                    jarInputStream.close();
+                    inputStream.close();
+                }
+            }
+
+            jarFile.close();
+    }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return names;
+    }
     /**
      * 从jar获取某包下所有类
      *

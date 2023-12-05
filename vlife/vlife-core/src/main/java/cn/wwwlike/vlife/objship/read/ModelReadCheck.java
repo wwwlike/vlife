@@ -91,7 +91,7 @@ public class ModelReadCheck {
      */
     public Integer load(ClassLoader loader,String path) {
         List<String> list = ItemReadTemplate.readPackage(loader,path);
-        logger.info("读取Java类数量："+list.size());
+        logger.info("模型共计："+list.size());
         Integer errorNum=0;
         try {
             GlobalData.clear();
