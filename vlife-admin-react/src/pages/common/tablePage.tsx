@@ -96,7 +96,7 @@ const TablePage = <T extends IdBean>({
   onGetData,
   onHttpError,
   onTableModel,
-
+  reaction,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const appMode = import.meta.env.VITE_APP_MODE;
@@ -348,6 +348,7 @@ const TablePage = <T extends IdBean>({
       }
       return {
         ...b,
+        reaction: b.reaction || (b.model ? reaction : undefined),
         submitConfirm:
           b.submitConfirm !== undefined
             ? b.submitConfirm
@@ -377,6 +378,7 @@ const TablePage = <T extends IdBean>({
           model: editModelType,
           permissionCode: savePermissionCode,
           icon: <IconUserAdd />,
+          reaction: reaction,
           saveApi: save(tableModel?.entityType || "", editModelType),
         },
         {
@@ -386,6 +388,7 @@ const TablePage = <T extends IdBean>({
           permissionCode: savePermissionCode,
           model: editModelType,
           icon: <IconEdit />,
+          reaction: reaction,
           // submitClose: true,
           saveApi: save(tableModel?.entityType || "", editModelType),
           loadApi:

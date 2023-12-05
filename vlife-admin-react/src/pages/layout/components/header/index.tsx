@@ -7,7 +7,6 @@ import {
   Avatar,
   Dropdown,
   Empty,
-  SplitButtonGroup,
   Tooltip,
 } from "@douyinfe/semi-ui";
 import {
@@ -28,7 +27,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MenuVo } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
-
+const mode = import.meta.env.VITE_APP_MODE;
 const { Header } = Layout;
 /**
  *
@@ -129,107 +128,111 @@ const Index = ({
           defaultSelectedKeys={[(app && app.id) || ""]}
           items={menuItems}
           footer={
-            <>
-              <Button
-                theme="borderless"
-                icon={<i className="iconfont icon-qq text-xl text-blue-500 " />}
-                style={{
-                  color: "var(--semi-color-text-2)",
-                  marginRight: "12px",
-                }}
-                onClick={() => {
-                  var qqGroupLink =
-                    "https://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zznRalE15vpDdHf5BWsBzVo_5A73mC_C&authKey=W5yiKOuVWgPY5UVAIhbiX1nvO62%2Fewf4vnrpi2shCZI7VgOqEsqsfKb7y6xI8qUi&noverify=0&group_code=786134846"; // 替换成你指定的QQ群链接
-                  window.open(qqGroupLink);
-                }}
-              >
-                加入QQ群
-              </Button>
-
-              <Button
-                theme="borderless"
-                icon={
-                  <i className="iconfont icon-weixin text-xl text-blue-500 " />
-                }
-                style={{
-                  color: "var(--semi-color-text-2)",
-                  marginRight: "12px",
-                }}
-                className=" "
-              >
-                <Tooltip content="商务服务">微信vlifeboot</Tooltip>
-              </Button>
-              {user?.superUser && (
+            (mode === "dev" || user?.superUser) && (
+              <>
                 <Button
                   theme="borderless"
-                  onClick={() => {
-                    navigate("/sysConf/model");
-                  }}
+                  icon={
+                    <i className="iconfont icon-qq text-xl text-blue-500 " />
+                  }
                   style={{
                     color: "var(--semi-color-text-2)",
+                    marginRight: "12px",
                   }}
-                  icon={<IconSetting />}
+                  onClick={() => {
+                    var qqGroupLink =
+                      "https://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zznRalE15vpDdHf5BWsBzVo_5A73mC_C&authKey=W5yiKOuVWgPY5UVAIhbiX1nvO62%2Fewf4vnrpi2shCZI7VgOqEsqsfKb7y6xI8qUi&noverify=0&group_code=786134846"; // 替换成你指定的QQ群链接
+                    window.open(qqGroupLink);
+                  }}
                 >
-                  配置中心
+                  加入QQ群
                 </Button>
-              )}
 
-              <Button
-                theme="borderless"
-                icon={<IconDesktop size="large" />}
-                style={{
-                  color: "var(--semi-color-text-2)",
-                  marginRight: "12px",
-                }}
-                onClick={() => {
-                  window.open("http://vlife.cc");
-                }}
-              >
-                使用指南
-              </Button>
-
-              <Button
-                theme="borderless"
-                icon={<IconGithubLogo size="large" />}
-                style={{
-                  color: "var(--semi-color-text-2)",
-                  marginRight: "12px",
-                }}
-                onClick={() => {
-                  window.open("https://gitee.com/wwwlike/vlife");
-                }}
-              >
-                GITEE
-              </Button>
-
-              <Dropdown
-                render={
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={loginOut}>退出登录</Dropdown.Item>
-                    {checkBtnPermission(
-                      "sysUser:save:userPasswordModifyDto"
-                    ) && (
-                      <Dropdown.Item onClick={editPassword}>
-                        密码修改
-                      </Dropdown.Item>
-                    )}
-                  </Dropdown.Menu>
-                }
-              >
-                {user?.avatar ? (
-                  <Avatar
-                    alt="beautiful cat"
-                    size="small"
-                    src={`${apiUrl}/sysFile/image/${user?.avatar}`}
-                    style={{ margin: 4 }}
-                  />
-                ) : (
-                  <Avatar color="orange" size="small">
-                    {user?.name[0]}
-                  </Avatar>
+                <Button
+                  theme="borderless"
+                  icon={
+                    <i className="iconfont icon-weixin text-xl text-blue-500 " />
+                  }
+                  style={{
+                    color: "var(--semi-color-text-2)",
+                    marginRight: "12px",
+                  }}
+                  className=" "
+                >
+                  <Tooltip content="商务服务">微信vlifeboot</Tooltip>
+                </Button>
+                {user?.superUser && (
+                  <Button
+                    theme="borderless"
+                    onClick={() => {
+                      navigate("/sysConf/model");
+                    }}
+                    style={{
+                      color: "var(--semi-color-text-2)",
+                    }}
+                    icon={<IconSetting />}
+                  >
+                    配置中心
+                  </Button>
                 )}
-              </Dropdown>
-            </>
+
+                <Button
+                  theme="borderless"
+                  icon={<IconDesktop size="large" />}
+                  style={{
+                    color: "var(--semi-color-text-2)",
+                    marginRight: "12px",
+                  }}
+                  onClick={() => {
+                    window.open("http://vlife.cc");
+                  }}
+                >
+                  使用指南
+                </Button>
+
+                <Button
+                  theme="borderless"
+                  icon={<IconGithubLogo size="large" />}
+                  style={{
+                    color: "var(--semi-color-text-2)",
+                    marginRight: "12px",
+                  }}
+                  onClick={() => {
+                    window.open("https://gitee.com/wwwlike/vlife");
+                  }}
+                >
+                  GITEE
+                </Button>
+
+                <Dropdown
+                  render={
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={loginOut}>退出登录</Dropdown.Item>
+                      {checkBtnPermission(
+                        "sysUser:save:userPasswordModifyDto"
+                      ) && (
+                        <Dropdown.Item onClick={editPassword}>
+                          密码修改
+                        </Dropdown.Item>
+                      )}
+                    </Dropdown.Menu>
+                  }
+                >
+                  {user?.avatar ? (
+                    <Avatar
+                      alt="beautiful cat"
+                      size="small"
+                      src={`${apiUrl}/sysFile/image/${user?.avatar}`}
+                      style={{ margin: 4 }}
+                    />
+                  ) : (
+                    <Avatar color="orange" size="small">
+                      {user?.name[0]}
+                    </Avatar>
+                  )}
+                </Dropdown>
+              </>
+            )
           }
         ></Nav>
       </Header>

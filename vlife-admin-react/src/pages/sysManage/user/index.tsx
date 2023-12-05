@@ -38,7 +38,6 @@ export default () => {
           title: "新增",
           actionType: "create",
           saveApi: save,
-          reaction: [VF.then("username").hide()],
         },
         {
           title: "修改",
