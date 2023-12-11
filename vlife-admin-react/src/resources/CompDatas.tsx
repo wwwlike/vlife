@@ -2,7 +2,7 @@ import { DataModel, DataType } from "@src/dsl/base";
 import VfCheckbox from "../components/VfCheckbox";
 import VfNumbersInput from "../components/VfNumbersInput";
 import { CompDatas, selectObj } from "../components/compConf/compConf";
-import RelationTagInput from "@src/components/RelationTagInput";
+import VfRelationTagInput from "@src/components/RelationTagInput";
 import VfEditor from "@src/components/VfEditor";
 import SelectIcon from "@src/components/SelectIcon";
 import VfImage from "@src/components/VfImage";
@@ -22,23 +22,35 @@ import {
   Input as SemiInput,
   TextArea as SemiTextArea,
   Select as SemiSelect,
-  // TreeSelect as SemiTreeSelect,
 } from "@douyinfe/semi-ui";
 import { VfText } from "@src/components/VfText";
 import DictInput from "@src/pages/sysConf/dict/component/DictInput";
 import QuickCreate from "@src/components/form/component/QuickCreate";
 import VfTreeInput from "@src/components/VfTreeInput";
+import RelationView from "@src/components/RelationView";
+import VfNestedSelector from "@src/components/VfNestedSelector";
 
 //解决预览不正确问题
 const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
 const Select = connect(SemiSelect, mapReadPretty(VfText));
 const TextArea = connect(SemiTextArea, mapReadPretty(PreviewText.Input));
-const DatePicker = connect(SemiDatePicker, mapReadPretty(VfText));
+const DatePicker = connect(
+  SemiDatePicker,
+  mapReadPretty(({ ...props }) => (
+    <VfText {...props} fieldInfo={{ x_component: "DatePicker" }} />
+  ))
+);
+
+const RelationTagInput = connect(
+  VfRelationTagInput,
+  mapReadPretty(({ ...props }) => <VfRelationTagInput {...props} read={true} />)
+);
 
 const FormTable = connect(
   VfFormTable,
   mapReadPretty(({ ...props }) => <VfFormTable {...props} read={true} />)
 );
+
 // const TreeSelect = connect(SemiTreeSelect, mapReadPretty(VfText));
 /**
  * 表单组件资产配置定义
@@ -119,6 +131,7 @@ export const FormComponents: CompDatas = {
     dataModel: DataModel.string,
     props: {
       showClear: true,
+      filter: true,
       emptyContent: "请选择",
       zIndex: 1000,
       optionList: {
@@ -143,6 +156,20 @@ export const FormComponents: CompDatas = {
     icon: "IconDescend2",
     label: "列表弹框",
     dataModel: DataModel.string,
+  },
+  RelationView: {
+    component: RelationView,
+    icon: "IconDescend2",
+    label: "关联预览",
+    dataModel: DataModel.string,
+    props: {
+      viewModel: {
+        label: "预览模型",
+        dataType: DataType.basic,
+        dataModel: DataModel.string,
+        // options: { func: list, labelKey: "type", valueKey: "type" },
+      },
+    },
   },
   // VfTreeInput: {
   //   component: VfTreeInput,
@@ -276,6 +303,7 @@ export const FormComponents: CompDatas = {
         label: "应用ID",
         dataType: DataType.basic,
         dataModel: DataModel.string,
+        // fromField: true,
         fromField: { entity: "sysMenu", field: "id" },
         must: true,
         // options: (formVo: FormVo) => {
@@ -317,7 +345,7 @@ export const FormComponents: CompDatas = {
     dataModel: "IdBean", //仅支持实体模型(不支持IModel,Imodel不适合列表)
     props: {
       ignores: {
-        label: "列表忽略字段",
+        label: "列表不展示字段",
         dataType: DataType.array,
         dataModel: DataModel.string, //((form?:FormVo)=>Promise<Partial<selectObj>[]>)/
         options: (
@@ -329,9 +357,9 @@ export const FormComponents: CompDatas = {
               return d.data.fields
                 .filter(
                   (f) =>
-                    f.listShow === null ||
-                    f.listShow === undefined ||
-                    f.listShow === true
+                    f.listHide === null ||
+                    f.listHide === undefined ||
+                    f.listHide === false
                 )
                 .map((f) => {
                   return { value: f.fieldName, label: f.title };
@@ -341,6 +369,21 @@ export const FormComponents: CompDatas = {
             }
           });
         },
+      },
+      unRemove: {
+        label: "禁止删除",
+        dataType: DataType.basic,
+        dataModel: DataModel.boolean,
+      },
+      unModify: {
+        label: "禁止修改",
+        dataType: DataType.basic,
+        dataModel: DataModel.boolean,
+      },
+      unCreate: {
+        label: "禁止新增",
+        dataType: DataType.basic,
+        dataModel: DataModel.boolean,
       },
     },
   },
@@ -352,6 +395,20 @@ export const FormComponents: CompDatas = {
     dataModel: "IModel",
     props: {
       showInput: false,
+    },
+  },
+  VfNestedSelector: {
+    component: VfNestedSelector,
+    label: "级联选择器",
+    icon: "IconOrderedList",
+    dataType: DataType.array,
+    dataModel: DataModel.string,
+    props: {
+      datas: {
+        label: "多级选择数据",
+        dataType: DataType.array,
+        dataModel: "ISelect",
+      },
     },
   },
 };

@@ -1,9 +1,11 @@
 package cn.wwwlike.auth.api;
 
+import cn.wwwlike.auth.dto.MenuResourcesDto;
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.req.SysMenuPageReq;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.auth.vo.MenuVo;
+import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,6 +77,17 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
       return new ArrayList<>();
     }
     return service.getMenuVos(sysRoleId,appId);
+  }
+
+  @Autowired
+  public FormService formService;
+
+  /**
+   * 菜单资源关联保存
+   */
+  @PostMapping("/save/menuResourcesDto")
+  public MenuResourcesDto saveMenuResourcesDto(@RequestBody MenuResourcesDto dto){
+    return service.save(dto);
   }
 
 }

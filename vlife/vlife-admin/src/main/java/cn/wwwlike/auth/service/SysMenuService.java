@@ -2,9 +2,10 @@ package cn.wwwlike.auth.service;
 
 import cn.wwwlike.auth.dao.SysMenuDao;
 import cn.wwwlike.auth.entity.SysMenu;
-import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.vo.MenuVo;
 import cn.wwwlike.common.BaseService;
+import cn.wwwlike.sys.entity.SysResources;
+import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,21 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
      */
     public void clearRoleId(String ...id){
         save("sysRoleId",null,id);
+    }
+
+
+    /**
+     * 获得菜单所在应用实体
+     * @param menuId
+     * @return
+     */
+    public SysMenu appId(String menuId){
+        SysMenu menu=findOne(menuId);
+        if(menu.app==true){
+            return menu;
+        }else{
+            return appId(find("code", menu.getPcode()).get(0).getId());
+        }
     }
 
 

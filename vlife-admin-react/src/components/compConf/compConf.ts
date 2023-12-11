@@ -22,11 +22,7 @@ export interface ViewComponentProps{
   className?: string
 }
 
-/**
- * 函数过滤
- * filter只指定一个表示 必须采用
- */
-export type Filter=(data:any,param?:any)=>any;
+
 //组件数据资产
 export interface CompDatas{
   [key:string]:CompInfo
@@ -59,14 +55,15 @@ export interface ParamsInfo{
   label:string, //参数名称
   must?:boolean;//必填参数
   dataModel:DataModel|string //参数类型
-  // sourceType:"field"|"fixed"//接口入参数据来源 取字段
   remark?:string;//参数说明
   // 参数(接口参数/组件属性)来源选择
   options?:Options, //来源于指定selectObj/接口组装的范围；对于出参是ISelect的也可以
-  //true:提供select进行选择；
-  //{entity:string,field:string} 查找指定的字段，如当前没有则使用父组件上的该字段；已经实现，在propload时进行
-  fromField?:true|{entity:string,field:string}
-
+  /**
+   * 1:true-> 构造select,从字段里选择(ParamsSetting) 
+   * 2:{entity:string,field:string} -> 表示去找指定的字段,**如当前没有则使用父组件上的该字段** (propload.ts)
+   * 待：如为2，也找不到；且must；则页面目前没有提示
+   */
+  fromField?:true|{entity:string,field:string} 
 }
 
 
@@ -84,16 +81,16 @@ export interface ApiInfo{
   dataModel:DataModel|string //出参数据类型-明细
   remark?:string;//解释说明,
   api:(params?:any)=>Promise<Result<any>>;//异步接口primise
-  // func?:(params?:any)=>any; //同步方法和上面二选一
-  match?: { //转换函数
+  params?:{[key:string]:(ParamsInfo|string|boolean|number)} //参数配置/固定值
+  //接口取得的数据过滤执行顺序 api->filter->match; 可选过滤的选择单独定义在src\resources\filters.ts文件；
+  filter?:(data:any,params?:any)=>any; 
+  match?: { //数据转换 让dataModel&dataType的出参数据类型能够转换成其他的模型实现一个接口多用
    [key:string]:{
     label:string, //转换器名称
     dataType:DataType; //转换后的大类
     dataModel:DataModel|string; //转换后的模型
     remark?:string;//解释说明,
-    func:((d:any)=>any);//转换函数 接入api的出参数据
+    func:(data:any,params?:any)=>any;//数据转换方法
    } 
   },
-  filter?:Filter;//内部过滤函数同样接收param参数信息，在api取得数据之后，match转换之前执行； | 另外还要支持：外部过滤函数单独的filter文件；
-  params?:{[key:string]:(ParamsInfo|string|boolean|number)} //参数配置/固定值
 }

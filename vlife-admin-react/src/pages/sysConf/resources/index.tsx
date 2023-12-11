@@ -86,7 +86,7 @@ export default ({ menuId }: ResourcesConfProps) => {
   }, [resources, dbResources]);
   const [filter, setFilter] = useState<{
     state: "1" | "0" | "-1";
-    entityType?: string;
+    formId?: string;
   }>(); //所有菜单
   const vlifeModal = useNiceModal("vlifeModal");
   const menu = useMemo((): MenuVo | undefined => {
@@ -106,15 +106,12 @@ export default ({ menuId }: ResourcesConfProps) => {
         ? resources?.filter(
             (r) =>
               (r.sysMenuId === null || r.sysMenuId === undefined) &&
-              r?.entityType?.toLowerCase() ===
-                filter?.entityType?.toLowerCase() &&
+              r?.formId?.toLowerCase() === filter?.formId?.toLowerCase() &&
               r.state === "-1"
           )
         : filter?.state === "0"
         ? resources?.filter(
-            (r) =>
-              r?.entityType?.toLowerCase() ===
-                filter?.entityType?.toLowerCase() && r.state === "0"
+            (r) => r.formId === filter?.formId?.toLowerCase() && r.state === "0"
           )
         : [];
     return dataSource;
@@ -129,7 +126,7 @@ export default ({ menuId }: ResourcesConfProps) => {
 
   const treeData = useMemo(() => {
     const selectMenu =
-      menus?.filter((m) => m.url === null || m.entityType !== null) || [];
+      menus?.filter((m) => m.url === null || m.formId !== null) || [];
 
     return arrayToTreeData(selectMenu, "id");
   }, [menus]);
@@ -142,8 +139,8 @@ export default ({ menuId }: ResourcesConfProps) => {
         setMenus(user.menus);
         setFilter({
           state: "-1",
-          entityType:
-            user.menus?.filter((mm) => mm.id === sysMenuId)[0].entityType || "",
+          formId:
+            user.menus?.filter((mm) => mm.id === sysMenuId)[0].formId || "",
         });
       }
       //角色信息
@@ -211,7 +208,7 @@ export default ({ menuId }: ResourcesConfProps) => {
                                 //有关联实体的可以进行权限设置
                                 menus?.filter(
                                   (m: MenuVo) => m.id === selectedKeys
-                                )[0].entityType
+                                )[0].formId
                               ) {
                                 setSysMenuId(selectedKeys);
                                 vlifeModal.hide();
@@ -290,14 +287,13 @@ export default ({ menuId }: ResourcesConfProps) => {
                         className=" hover:bg-slate-400"
                         size="large"
                         type={
-                          filter?.state === "-1" &&
-                          filter.entityType === entity?.type
+                          filter?.state === "-1" && filter.formId === entity?.id
                             ? "solid"
                             : "ghost"
                         }
                         key={`entity${entity.type}`}
                         onClick={() => {
-                          setFilter({ state: "-1", entityType: entity.type });
+                          setFilter({ state: "-1", formId: entity.id });
                         }}
                       >
                         {entity.title}
@@ -323,14 +319,13 @@ export default ({ menuId }: ResourcesConfProps) => {
                         className=" hover:bg-slate-400"
                         size="large"
                         type={
-                          filter?.state === "0" &&
-                          filter.entityType === entity?.type
+                          filter?.state === "0" && filter.formId === entity?.id
                             ? "solid"
                             : "ghost"
                         }
                         key={`entity${entity.type}`}
                         onClick={() => {
-                          setFilter({ state: "0", entityType: entity.type });
+                          setFilter({ state: "0", formId: entity.id });
                         }}
                       >
                         {entity.title}

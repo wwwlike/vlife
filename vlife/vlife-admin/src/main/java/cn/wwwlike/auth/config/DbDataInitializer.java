@@ -17,14 +17,6 @@
  */
 
 package cn.wwwlike.auth.config;
-
-import cn.wwwlike.auth.service.SysResourcesService;
-import cn.wwwlike.form.entity.Form;
-import cn.wwwlike.form.service.FormService;
-import cn.wwwlike.sys.service.SysDeptService;
-import cn.wwwlike.sys.service.SysDictService;
-import cn.wwwlike.vlife.objship.dto.FieldDto;
-import cn.wwwlike.vlife.objship.read.GlobalData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -42,6 +34,7 @@ import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -147,12 +140,14 @@ public class DbDataInitializer implements ApplicationRunner {
     public void dataRestore()  throws IOException {
         Set<String> table=new HashSet<String>();
         ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
+
+
         String  dbType=getDatabaseType();
         Resource[] resources = resolver.getResources("classpath:initData/*.sql");
         if (resources.length > 0) {
             for(Resource resource:resources){
-                EncodedResource encodedResource=new EncodedResource(resource, "UTF-8");
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(encodedResource.getInputStream()))) {
+                EncodedResource encodedResource = new EncodedResource(resource, StandardCharsets.UTF_8);
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(encodedResource.getInputStream(), StandardCharsets.UTF_8))) {
                     String line;
                     StringBuilder sqlBuilder = new StringBuilder();
                     while ((line = reader.readLine()) != null) {

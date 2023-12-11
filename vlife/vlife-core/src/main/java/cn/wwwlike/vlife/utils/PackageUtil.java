@@ -60,6 +60,7 @@ public class PackageUtil {
                 Enumeration<URL> resources = loader.getResources(packageName.replace('.', '/'));
                 while (resources.hasMoreElements()) {
                     URL resource = resources.nextElement();
+                    System.out.println(resource.getPath());
                     String protocol = resource.getProtocol();
                     String path = resource.getPath();
                     if ("file".equals(protocol)) {//开发环境 读取class目录
@@ -69,11 +70,9 @@ public class PackageUtil {
                     } else if ("jar".equals(protocol)) { //开发环境 运行时读取jar包
                         int bootInf=resource.getPath().indexOf("/BOOT-INF/lib");
                         List<String>  jarClass=null;
-                        if(bootInf!=-1){
-                            System.out.println("a"+resource.getFile().substring(6,bootInf-1));
-                            System.out.println("v"+resource.getFile().substring(bootInf+14,resource.getFile().lastIndexOf("!")));
+                        if(bootInf!=-1){//jar包里读取
                             jarClass=jarReadJar(resource.getFile().substring(6,bootInf-1),resource.getFile().substring(bootInf+14,resource.getFile().lastIndexOf("!")),"cn.wwwlike");
-                        }else{
+                        }else{//resources读取
                             jarClass=getClassNameByJars1(packageName, childPackage,resource);
                         }
 //                        jarFilePath:file:/D:/0-VLIFE-CODE/v-life/vlife/vlife-admin/target/vlife-admin-1.0-SNAPSHOT.jar/BOOT-INF/lib/vlife-spring-boot-starter-1.0.7.jar

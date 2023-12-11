@@ -5,10 +5,9 @@ import { ISelect, ITreeData } from '@src/dsl/component';
 import { listAll as deptList, SysDept } from "@src/api/SysDept";
 import { allRouter, listAll as menuList,  SysMenu } from "@src/api/SysMenu";
 import { ApiDatas, selectObj } from '../components/compConf/compConf';
-import { detailFormVo, entityModels, subForms } from '@src/api/Form';
-import { listAll as formFieldListAll } from "@src/api/FormField";
+import { detailFormVo, entityModels, FormVo, subForms } from '@src/api/Form';
+import {listAll as formFieldListAll ,listGroupOption,listRelationField} from "@src/api/FormField";
 import { list } from '@src/api/demo/DemoCustomer';
-
 
 /**
  * 将db里的树形数据转换成组件可用的树形数据
@@ -49,7 +48,6 @@ export const apiDatas:ApiDatas={
       }else{
         return data.filter(d=>d.dictType===true)
       }
-      return data;
     },
     params:{
       code:{
@@ -68,7 +66,6 @@ export const apiDatas:ApiDatas={
       },
     },
   },
- 
 
   cardNum: {
     label: "单个指标分析",
@@ -169,8 +166,19 @@ export const apiDatas:ApiDatas={
         dataModel:"ISelect",
         func:(datas:{type:string,title:string}[]):ISelect[]=>{
           return datas.map((data:{type:string,title:string})=>{return {value:data.type,label:data.title}});
-       }}
+       }},
+       resources:{
+        label:"多级选择",
+        dataType:DataType.array,
+        dataModel:"ISelect",
+        func:(datas:FormVo[],params:any):ISelect[]=>{
+          return datas.map((data:FormVo)=>{
+            return {value:data.id,label:data.title,
+              //过滤出未关联的资源和已和appId关联的资源
+              children:data.resources?.filter(r=>r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId).map(r=>{return {value:r.id,label:r.name}})}
+       })}
       }
+    }
   },
   subForms: {
     label: "当前表的子数据集",
@@ -211,7 +219,7 @@ export const apiDatas:ApiDatas={
         label:"模型id",
         must:true,
         dataModel:DataModel.string,
-        fromField:{entity:"form",field:"id"}
+        fromField:{entity:"form",field:"id"}//入参来源是这个字段的值
         // options:(formVo:FormVo):selectObj[]=>{
         //   // alert(JSON.stringify(formVo.parentForm).length)]
         //   const form=formVo

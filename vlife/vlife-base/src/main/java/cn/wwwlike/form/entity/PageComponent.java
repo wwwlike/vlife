@@ -2,10 +2,15 @@ package cn.wwwlike.form.entity;
 
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import static java.awt.SystemColor.text;
 
 /**
  * 单元组件信息

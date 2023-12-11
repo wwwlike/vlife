@@ -3,6 +3,7 @@ import { DbEntity, ItemType,  Result, SaveBean, VoBean } from "@src/api/base";
 
 import {  FormFieldDto, FormFieldVo } from "@src/api/FormField";
 import { FormTabDto } from '@src/api/FormTab';
+import { SysResources } from './SysResources';
 
 /**
  * DB的模型信息
@@ -22,6 +23,7 @@ export interface Form extends DbEntity {
   listApiPath:string; //列表请求ts方法地址
   saveApiPath:string; //数据保存ts方法地址
   prefixNo:string;//编号前缀
+  sysMenuId:string;//所属应用
 }
 
 /**
@@ -30,6 +32,7 @@ export interface Form extends DbEntity {
 export interface FormDto extends SaveBean,Form{
   fields: FormFieldDto[]; //字段信息
   formTabDtos?:FormTabDto[];//页签信息
+  resources?:SysResources[];//关联接口
 }
 
 /**
@@ -131,7 +134,7 @@ export const entityModels = (params: {
 /**
  * 表单保存
  */
- export const save = (form: Form): Promise<Result<FormDto>> => {
+ export const save = (form: Form): Promise<Result<Form>> => {
   return apiClient.post(`/form/save`, form);
 };
 

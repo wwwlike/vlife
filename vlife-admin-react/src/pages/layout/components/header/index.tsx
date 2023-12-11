@@ -8,13 +8,10 @@ import {
   Dropdown,
   Empty,
   Tooltip,
+  Popover,
+  Image,
 } from "@douyinfe/semi-ui";
-import {
-  IconDesktop,
-  IconGithubLogo,
-  IconSetting,
-  IconTreeTriangleDown,
-} from "@douyinfe/semi-icons";
+import { IconDesktop, IconGithubLogo, IconSetting } from "@douyinfe/semi-icons";
 import logo from "@src/logo.png";
 import "../../index.scss";
 import { useAuth } from "@src/context/auth-context";
@@ -23,10 +20,13 @@ import {
   saveUserPasswordModifyDto,
   UserPasswordModifyDto,
 } from "@src/api/SysUser";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { MenuVo } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
+import wxImage from "@src/assets/wx.jpg";
+import LinkMe from "./LinkMe";
+
 const mode = import.meta.env.VITE_APP_MODE;
 const { Header } = Layout;
 /**
@@ -130,37 +130,7 @@ const Index = ({
           footer={
             (mode === "dev" || user?.superUser) && (
               <>
-                <Button
-                  theme="borderless"
-                  icon={
-                    <i className="iconfont icon-qq text-xl text-blue-500 " />
-                  }
-                  style={{
-                    color: "var(--semi-color-text-2)",
-                    marginRight: "12px",
-                  }}
-                  onClick={() => {
-                    var qqGroupLink =
-                      "https://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zznRalE15vpDdHf5BWsBzVo_5A73mC_C&authKey=W5yiKOuVWgPY5UVAIhbiX1nvO62%2Fewf4vnrpi2shCZI7VgOqEsqsfKb7y6xI8qUi&noverify=0&group_code=786134846"; // 替换成你指定的QQ群链接
-                    window.open(qqGroupLink);
-                  }}
-                >
-                  加入QQ群
-                </Button>
-
-                <Button
-                  theme="borderless"
-                  icon={
-                    <i className="iconfont icon-weixin text-xl text-blue-500 " />
-                  }
-                  style={{
-                    color: "var(--semi-color-text-2)",
-                    marginRight: "12px",
-                  }}
-                  className=" "
-                >
-                  <Tooltip content="商务服务">微信vlifeboot</Tooltip>
-                </Button>
+                <LinkMe></LinkMe>
                 {user?.superUser && (
                   <Button
                     theme="borderless"

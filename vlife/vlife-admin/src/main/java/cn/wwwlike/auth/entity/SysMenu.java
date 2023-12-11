@@ -65,8 +65,17 @@ public class SysMenu extends DbEntity implements ITree {
      * 如果菜单下没有任何资源/接口 则 需要将菜单和角色绑定
      */
     public String sysRoleId;
-
+    /**
+     * 链接到配置页
+     */
     public Boolean confPage;
-
+    /**
+     * 配置页面信息
+     */
     public String pageLayoutId;
+
+    /**
+     * 实体模型
+     */
+    public String formId;
 }

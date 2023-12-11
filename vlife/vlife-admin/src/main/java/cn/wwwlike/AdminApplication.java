@@ -1,22 +1,21 @@
 package cn.wwwlike;
 
+import cn.wwwlike.auth.config.UniqueNameGenerator;
 import cn.wwwlike.web.annotation.EnableRespWrap;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author xiaoyu
  * @date 2022/6/17
  */
-//打开出参数据包装
 @EnableRespWrap
 @SpringBootApplication(scanBasePackages ={
         "cn.wwwlike.auth",
         "cn.wwwlike.sys",
         "cn.wwwlike.form",
         "cn.wwwlike.demo",
-        })
+},nameGenerator =UniqueNameGenerator.class )
 public class AdminApplication {
     public static void main(String[] args) {
         //请注意，使用本项目需要安装Java环境并使用JDK8。

@@ -1,10 +1,11 @@
 package cn.wwwlike.auth.service;
 
 import cn.wwwlike.auth.entity.SysGroup;
-import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.dao.SysGroupDao;
 import cn.wwwlike.auth.vo.GroupVo;
 import cn.wwwlike.common.BaseService;
+import cn.wwwlike.sys.entity.SysResources;
+import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package cn.wwwlike.auth.service;
 
 import cn.wwwlike.auth.entity.SysMenu;
-import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.dao.SysUserDao;
 import cn.wwwlike.auth.dto.RegisterDto;
@@ -9,6 +8,8 @@ import cn.wwwlike.auth.vo.GroupVo;
 import cn.wwwlike.auth.vo.MenuVo;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.common.BaseService;
+import cn.wwwlike.sys.entity.SysResources;
+import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.web.security.core.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;

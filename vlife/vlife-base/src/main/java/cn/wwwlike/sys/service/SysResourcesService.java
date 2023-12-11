@@ -1,11 +1,10 @@
-package cn.wwwlike.auth.service;
+package cn.wwwlike.sys.service;
 
-import cn.wwwlike.auth.config.AuthDict;
-import cn.wwwlike.auth.config.SecurityConfig;
-import cn.wwwlike.auth.dao.SysResourcesDao;
-import cn.wwwlike.auth.entity.SysResources;
-import cn.wwwlike.common.BaseService;
-import cn.wwwlike.vlife.dict.VCT;
+import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.form.service.FormService;
+import cn.wwwlike.sys.dao.SysResourcesDao;
+import cn.wwwlike.sys.entity.SysResources;
+import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.tag.ApiTag;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
@@ -16,19 +15,24 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class SysResourcesService extends BaseService<SysResources, SysResourcesDao> {
+public class SysResourcesService extends VLifeService<SysResources, SysResourcesDao> {
+
+    @Autowired
+    public FormService formService;
 
     /**
      * 获得指定资源(角色的资源)关联pcode的所有资源信息
@@ -60,7 +64,6 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
 
     /**
      * 所有启用的接口
-     * @return
      */
     public List<SysResources> findApiResources(){
         VlifeQuery<SysResources> req=new VlifeQuery<SysResources>(SysResources.class);
@@ -89,9 +92,7 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
      */
     public List<SysResources> findRoleEmptyResources(){
        VlifeQuery<SysResources> req= new VlifeQuery(SysResources.class);
-       req.qw(SysResources.class)
-               .eq("resourcesType", AuthDict.SYSRESOURCES_TYPE.API)
-               .isNull("sysRoleId");
+       req.qw(SysResources.class).isNull("sysRoleId");
        return find(req);
     }
 
@@ -118,72 +119,72 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
         return resources.stream().map(SysResources::getPcode).collect(Collectors.toSet());
     }
 
-    public List<SysResources> imports(String menuResourcesCode) throws IOException {
-        Resource resource = new ClassPathResource("title.json");
-        InputStream is = resource.getInputStream();
-        String json = FileUtil.getFileContent(is);
-        Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-        List<ClzTag> allTag = gson.fromJson(json, new TypeToken<List<ClzTag>>() {
-        }.getType());
-        List<SysResources> list=new ArrayList();
-        for(ClzTag clzTag:allTag){
-            if(clzTag.getPath()!=null&&clzTag.getApiTagList()!=null&&
-                    clzTag.getApiTagList().size()>0&&
-                    (SecurityConfig.getCurrUser().getUsername().equals("manage")||( //过滤掉不该搜索的
-                            !clzTag.getTypeName().startsWith("Sys")&&!clzTag.getTypeName().startsWith("Form")
-                            ))
-            )
-                    {
-               List<SysResources> menus= find("code",clzTag.getPath().substring(1));
-                //菜单待导入
-                SysResources menu=null;
-                if(menus==null||menus.size()==0){
-                    menu=new SysResources();
-                    menu.setName(GlobalData.entityDto(clzTag.getTypeName()).getTitle());
-                    menu.setCode(clzTag.getPath().substring(1));
-                    menu.setId(menu.getCode());
-                    if(menuResourcesCode==null||clzTag.getPath().toLowerCase().substring(1).equals(menuResourcesCode.toLowerCase())){
-                        list.add(menu);
-                    }
-                }else{
-                    menu=menus.get(0);
-                }
-                //接口待导入
-                for(ApiTag apiTag:clzTag.getApiTagList()){
-                    String url=(clzTag.getPath()+apiTag.getPath());
-                    int indexBegin=url.indexOf("/{");
-                    if(indexBegin!=-1){
-                        url=url.substring(0,indexBegin);
-                    }
-                    if(find("url",url).size()==0){
-                        SysResources bean=new SysResources();
-                        String menthodName=apiTag.getMethodName();
-                        menthodName=menthodName.replaceAll("save","保存");
-                        menthodName=menthodName.replaceAll("add","新增");
-                        menthodName=menthodName.replaceAll("remove","删除");
-                        menthodName=menthodName.replaceAll("modify","修改");
-                        menthodName=menthodName.replaceAll("delete","删除");
-                        menthodName=menthodName.replaceAll("detail","明细");
-                        menthodName=menthodName.replaceAll("page","查询");
-                        menthodName=menthodName.replaceAll("page","列表");
-                        bean.setName(menthodName);
-                        int index=url.indexOf("/{");
-                        if(index>-1){
-                            url=url.substring(0,index);
-                        }
-                        bean.setUrl(url);
-                        bean.setPcode(clzTag.getPath().substring(1));
-                        bean.setCode(url.substring(1).replaceAll("/",":"));
-                        bean.setId(bean.getCode());
-                        if(menuResourcesCode==null||bean.getCode().toLowerCase().indexOf(menuResourcesCode.toLowerCase()+":")!=-1){
-                            list.add(bean);
-                        }
-                    }
-                }
-            }
-        }
-        return list;
-    }
+//    public List<SysResources> imports(String menuResourcesCode) throws IOException {
+//        Resource resource = new ClassPathResource("title.json");
+//        InputStream is = resource.getInputStream();
+//        String json = FileUtil.getFileContent(is);
+//        Gson gson = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+//        List<ClzTag> allTag = gson.fromJson(json, new TypeToken<List<ClzTag>>() {
+//        }.getType());
+//        List<SysResources> list=new ArrayList();
+//        for(ClzTag clzTag:allTag){
+//            if(clzTag.getPath()!=null&&clzTag.getApiTagList()!=null&&
+//                    clzTag.getApiTagList().size()>0&&
+//                    (SecurityConfig.getCurrUser().getUsername().equals("manage")||( //过滤掉不该搜索的
+//                            !clzTag.getTypeName().startsWith("Sys")&&!clzTag.getTypeName().startsWith("Form")
+//                            ))
+//            )
+//                    {
+//               List<SysResources> menus= find("code",clzTag.getPath().substring(1));
+//                //菜单待导入
+//                SysResources menu=null;
+//                if(menus==null||menus.size()==0){
+//                    menu=new SysResources();
+//                    menu.setName(GlobalData.entityDto(clzTag.getTypeName()).getTitle());
+//                    menu.setCode(clzTag.getPath().substring(1));
+//                    menu.setId(menu.getCode());
+//                    if(menuResourcesCode==null||clzTag.getPath().toLowerCase().substring(1).equals(menuResourcesCode.toLowerCase())){
+//                        list.add(menu);
+//                    }
+//                }else{
+//                    menu=menus.get(0);
+//                }
+//                //接口待导入
+//                for(ApiTag apiTag:clzTag.getApiTagList()){
+//                    String url=(clzTag.getPath()+apiTag.getPath());
+//                    int indexBegin=url.indexOf("/{");
+//                    if(indexBegin!=-1){
+//                        url=url.substring(0,indexBegin);
+//                    }
+//                    if(find("url",url).size()==0){
+//                        SysResources bean=new SysResources();
+//                        String menthodName=apiTag.getMethodName();
+//                        menthodName=menthodName.replaceAll("save","保存");
+//                        menthodName=menthodName.replaceAll("add","新增");
+//                        menthodName=menthodName.replaceAll("remove","删除");
+//                        menthodName=menthodName.replaceAll("modify","修改");
+//                        menthodName=menthodName.replaceAll("delete","删除");
+//                        menthodName=menthodName.replaceAll("detail","明细");
+//                        menthodName=menthodName.replaceAll("page","查询");
+//                        menthodName=menthodName.replaceAll("page","列表");
+//                        bean.setName(menthodName);
+//                        int index=url.indexOf("/{");
+//                        if(index>-1){
+//                            url=url.substring(0,index);
+//                        }
+//                        bean.setUrl(url);
+//                        bean.setPcode(clzTag.getPath().substring(1));
+//                        bean.setCode(url.substring(1).replaceAll("/",":"));
+//                        bean.setId(bean.getCode());
+//                        if(menuResourcesCode==null||bean.getCode().toLowerCase().indexOf(menuResourcesCode.toLowerCase()+":")!=-1){
+//                            list.add(bean);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return list;
+//    }
 
     /**
      * 同步最新接口信息到DB里
@@ -203,10 +204,23 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
         for(ClzTag action:apitTags){
             syncOne(action);
         }
+        //更新资源的formId
+        List<Form> forms=formService.find("itemType","entity");
+        List<SysResources> resources=find(QueryWrapper.of(SysResources.class).isNull("formId").isNotNull("entityType"));
+        resources.forEach(r->{
+            List<Form> fList=forms.stream().filter(f->f.getEntityType().toLowerCase().equals(r.getEntityType().toLowerCase())).collect(Collectors.toList());
+            if(fList!=null&&fList.size()>0){
+                r.setFormId(fList.get(0).getId());
+                save(r);
+            }
+        });
+
     }
 
-
-
+    /**
+     * 单个接口资源同步
+     * @param action
+     */
     public void syncOne(ClzTag action)   {
         List<ApiTag> apis=action.getApiTagList();
         for(ApiTag api:apis){
@@ -216,7 +230,6 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
                 url=url.substring(0,index);
             }
             url=  url.replaceAll("\"","");
-//            QueryWrapper<SysResources> wrapper = QueryWrapper.of(entityClz).eq("url",url);
             List<SysResources> list=find("url",url);
             if(list==null||list.size()==0){
                 SysResources bean=new SysResources();
@@ -246,12 +259,11 @@ public class SysResourcesService extends BaseService<SysResources, SysResourcesD
                 if(bean.getIcon()==null){
                     bean.setIcon("IconBox");
                 }
-//                bean.setPcode(api.getPath().substring(1));
                 bean.setCode(url.substring(1).replaceAll("/",":"));
-
-//                bean.setResourcesType(VCT.SYSRESOURCES_TYPE.API);
                 bean.setState("-1");
+                //接口类
                 bean.setActionType(action.getEntityName());
+                //实体类
                 bean.setEntityType(action.getTypeName());
                 save(bean);
             }else{

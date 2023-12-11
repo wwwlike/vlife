@@ -85,13 +85,13 @@ public class AuthDict {
         public final static String WHITE = "white";
     }
 
-    @Named("资源类型")
-    public static final class SYSRESOURCES_TYPE {
-        @Named("菜单")
-        public final static String MENU = "1";
-        @Named("接口")
-        public final static String API = "2";
-    }
+//    @Named("资源类型")
+//    public static final class SYSRESOURCES_TYPE {
+//        @Named("菜单")
+//        public final static String MENU = "1";
+//        @Named("接口")
+//        public final static String API = "2";
+//    }
 
 
 }

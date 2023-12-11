@@ -18,8 +18,8 @@
 
 package cn.wwwlike.auth.dto;
 
-import cn.wwwlike.auth.entity.SysResources;
 import cn.wwwlike.auth.entity.SysRoleGroup;
+import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 

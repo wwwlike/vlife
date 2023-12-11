@@ -1,6 +1,6 @@
-package cn.wwwlike.auth.dao;
+package cn.wwwlike.sys.dao;
 
-import cn.wwwlike.auth.entity.SysResources;
+import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.core.dsl.DslDao;
 import org.springframework.stereotype.Repository;
 

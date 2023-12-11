@@ -39,18 +39,14 @@ public @interface VClazz {
      * 删除当前类，那么级联清除本表的外键的实体
      */
     Class<? extends Item>[] clear() default {};
-
     /**
      * 删除当前类，那么级联清除的实体类class
      */
     Class<? extends Item>[] remove() default {};
-
     /**
      * 不级联操作
      */
     Class<? extends Item>[] nothing() default {};
-
-
     /**
      * 禁止删除
      */
@@ -72,10 +68,10 @@ public @interface VClazz {
      */
     Class returnType() default Object.class;
 
-    /**
-     * 类所属模块
-     * @return
-     */
+//    /**
+//     * 类所属模块
+//     * @return
+//     */
     String  module() default  "";
 
     /**

@@ -3,14 +3,9 @@ package cn.wwwlike.form.entity;
 /**
  * 表单/列表/视图
  */
-
-import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
+import javax.persistence.*;
 /**
  * 模型表
  *  form->就是model
@@ -20,7 +15,6 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="form")
-@VClazz(module = "conf")
 public class Form extends DbEntity {
 
     //--------后端解析--------------
@@ -112,4 +106,6 @@ public class Form extends DbEntity {
      */
     public String itemName;
 
+    //页面模块appId
+    public String sysMenuId;
 }

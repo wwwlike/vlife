@@ -25,6 +25,10 @@ public class FormPageReq  extends PageQuery<Form> {
     public String type;
 
     /**
+     * 所属应用
+     */
+    public String sysMenuId;
+    /**
      * 当前查询模式
      * design=true是设计模式
      */

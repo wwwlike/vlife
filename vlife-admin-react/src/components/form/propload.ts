@@ -164,6 +164,7 @@ export const fetchFieldObj = (
       .filter((f) => f.entityType === fromField.entity)
       .filter((f) => f.dataType !== "array")
       .filter((ff) => ff.entityFieldName === fromField?.field);
+      // alert(fieldInfo[0].id)
     // 本表通过field匹配进行查找，如果找不到，父组件也有值则在父组件里寻找，把entity和field组合起来
     if (fieldInfo && fieldInfo.length > 0) {
       return field.query(fieldInfo[0].fieldName).get("value");
@@ -290,7 +291,7 @@ export const fetchPropObj = (
                   ? (componentInfo.props[prop.propName] as CompPropInfo)
                   : undefined;
               //执行接口，组装组件prop属性对象(直接赋值/转换赋值)  //接口异步请求到的数据，存储到缓存里
-              if (mustFlag && propinfo && apiInfo.api) {
+              if (mustFlag && apiInfo &&  apiInfo.api) {
                 propsObj = await apiInfo.api({ ...paramObj }).then((d) => {
                   //异步请求到的数据
                   let datas = d.data;
@@ -322,15 +323,16 @@ export const fetchPropObj = (
                   }
                   //执行数据转换
                   if (prop.relateVal && apiInfo.match) {
+                    // alert(JSON.stringify(paramObj))
                     //数据一致的转换函数
-                    datas = apiInfo.match[prop.relateVal].func(datas);
+                    datas = apiInfo.match[prop.relateVal].func(datas,paramObj);
                   }
                   if (prop.propName && prop.propName in propsObj === false) {
                     propsObj = valueAdd(prop, propsObj, datas);
                   }
                   return propsObj;
                 });
-              } else if (mustFlag && propinfo) {
+              } else if (mustFlag && apiInfo&& apiInfo.api) {
                 if (prop.propName && prop.propName in propsObj === false) {
                   propsObj = valueAdd(
                     prop,

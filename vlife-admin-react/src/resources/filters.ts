@@ -59,7 +59,7 @@ export const filterFuns:filterObj={
     dataModel:"sysMenu",
     func:(menus:SysMenu[])=>{
       const appMenu:string[]=menus.filter(mm=>mm.app).map(d=>d.code);
-      return menus.filter(mm=>((appMenu.includes(mm.code)||appMenu.includes(mm.pcode))&&(mm.entityType===undefined ||mm.entityType===null)))
+      return menus.filter(mm=>((appMenu.includes(mm.code)||appMenu.includes(mm.pcode))&&(mm.formId===undefined ||mm.formId===null)))
     },
    },
    numberField:{

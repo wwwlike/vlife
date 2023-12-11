@@ -18,37 +18,6 @@
 
 package cn.wwwlike.common;
 
-//import cn.wwwlike.auth.common.*;
-//import cn.wwwlike.auth.config.AuthDict;
-//import cn.wwwlike.auth.config.SecurityConfig;
-//import cn.wwwlike.auth.entity.*;
-//import cn.wwwlike.vlife.base.IdBean;
-//import cn.wwwlike.form.vo.FormFieldVo;
-//import cn.wwwlike.form.vo.FormVo;
-//import cn.wwwlike.sys.entity.SysOrg;
-//import cn.wwwlike.vlife.base.*;
-//import cn.wwwlike.vlife.core.DataProcess;
-//import cn.wwwlike.vlife.core.VLifeDao;
-//import cn.wwwlike.vlife.core.VLifeService;
-//import cn.wwwlike.vlife.dict.VCT;
-//import cn.wwwlike.vlife.objship.dto.*;
-//import cn.wwwlike.vlife.objship.read.GlobalData;
-//import cn.wwwlike.vlife.query.AbstractWrapper;
-//import cn.wwwlike.vlife.query.QueryWrapper;
-//import cn.wwwlike.vlife.query.tran.LengthTran;
-//import cn.wwwlike.vlife.utils.ReflectionUtils;
-//import cn.wwwlike.web.exception.enums.CommonResponseEnum;
-//import cn.wwwlike.web.security.filter.PehrSecurityUser;
-//import org.apache.commons.lang3.StringUtils;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.Sort;
-//
-//import java.util.*;
-//import java.util.concurrent.atomic.AtomicReference;
-//import java.util.function.Consumer;
-//import java.util.function.UnaryOperator;
-//import java.util.stream.Collectors;
-
 import cn.wwwlike.auth.common.IBus;
 import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysGroup;

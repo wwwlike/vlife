@@ -550,7 +550,9 @@ export default <T extends IdBean>({
         (f) => !ignoredFields.includes(f.pathName)
       );
     }
+    //过滤条设计器里不展示字段
     fields
+      // .filter((f) => f.x_hidden === undefined || f.x_hidden === false)
       .sort((a, b) => {
         return a.sort - b.sort;
       })
@@ -928,7 +930,7 @@ export default <T extends IdBean>({
       return schemaObj;
     } else {
       return {
-        type: "object",
+        type: "object11111111",
         properties: {
           content: { ...grid, properties: pp },
         },

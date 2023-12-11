@@ -21,6 +21,7 @@ export interface SysResources extends DbEntity ,ITree,IFkItem {
   actionType:string,//所在action  
   state:string//鉴权状态 1鉴权 0不鉴权 -1 待处理
   remark:string//说明
+  formId:string//所属板块
 }
 // 类说明
 export interface ResourcesDto extends SaveBean {

@@ -3,7 +3,7 @@ import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.auth.service.SysMenuService;
-import cn.wwwlike.auth.vo.MenuVo;
+import cn.wwwlike.form.vo.FormVo;
 import cn.wwwlike.form.dto.FormDto;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.entity.FormField;
@@ -11,7 +11,6 @@ import cn.wwwlike.form.req.FormPageReq;
 import cn.wwwlike.form.service.FormEventService;
 import cn.wwwlike.form.service.FormFieldService;
 import cn.wwwlike.form.service.FormService;
-import cn.wwwlike.form.vo.*;
 import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
@@ -24,7 +23,6 @@ import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.utils.FileUtil;
 import cn.wwwlike.web.security.core.SecurityUser;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -38,8 +36,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -56,10 +53,12 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @Autowired
     public FormEventService eventService;
     @Autowired
-    public SysMenuService menuService;
-    @Autowired
     private RestTemplateBuilder builder;
-    // 使用RestTemplateBuilder来实例化RestTemplate对象，spring默认已经注入了RestTemplateBuilder实例
+
+    @Autowired
+    public SysGroupService groupService;
+
+    //spring默认已经注入了RestTemplateBuilder实例
     @Bean
     public RestTemplate restTemplate() {
         return builder.build();
@@ -68,12 +67,14 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @Value("${vlife.packroot}")
     public String packroot;
 
+    @Autowired
+    public SysMenuService menuService;
     /**
      * 1对多的多方数据集信息
      * 作为外键字段存在的实体表信息
      */
     @GetMapping("/subForms/{id}")
-    public List<FormVo> subForms( @PathVariable String id){
+    public List<FormVo> subForms(@PathVariable String id){
         return service.querySubForms(service.findOne(id));
     }
     /**
@@ -140,8 +141,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return service.sync(GlobalData.allModels());
     }
 
-    @Autowired
-    public SysGroupService groupService;
 
     /**
      * 查询指定模型信息
@@ -211,10 +210,8 @@ public class FormApi extends VLifeApi<Form, FormService> {
         if(appId==null||"".equals(appId)||"null".equals(appId)||"undefined".equals(appId) ){
             return service.queryAll(FormVo.class).stream().filter(v -> v.getItemType().equals("entity")).collect(Collectors.toList());
         }else{
-            List<MenuVo> allMenus=menuService.findAppAllMenu(appId);
-            List<String> entitys=allMenus.stream().filter(m->m.getEntityType()!=null).map(MenuVo::getEntityType).collect(Collectors.toList());
-            String[] arr=entitys.toArray(new String[entitys.size()]);
-            return service.query(FormVo.class,QueryWrapper.of(Form.class).in("entityType",arr).eq("itemType","entity"));
+            String realAppId=menuService.appId(appId).getId();
+            return service.query(FormVo.class,QueryWrapper.of(Form.class).eq("sysMenuId",realAppId).eq("itemType","entity"));
         }
     }
 
@@ -222,6 +219,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
     public List<Form> listAll(){
         return  service.find("itemType","entity");
     }
+
 
     /**
      * 模型&字段保存
@@ -243,12 +241,8 @@ public class FormApi extends VLifeApi<Form, FormService> {
      * 并初始化字段
      */
     @PostMapping("/save")
-    public FormDto save(@RequestBody Form dto) {
-        FormDto formDto=new FormDto();
-        BeanUtils.copyProperties(dto,formDto);
-        BeanDto beanDto=GlobalData.findBeanDtoByName(dto.getItemType(),dto.type);
-        formDto.setFields(fieldService.getFieldList(beanDto.getFields()));
-        return service.save(formDto);
+    public Form save(@RequestBody Form form) {
+        return service.save(form);
     }
 
     /**

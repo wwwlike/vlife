@@ -21,6 +21,7 @@ package cn.wwwlike.form.vo;
 
 import cn.wwwlike.form.dto.FormTabDto;
 import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
@@ -68,13 +69,20 @@ public class FormVo implements VoBean<Form> {
    * 字典：系统模块，业务模块等
    */
   public String module;
-
+  /**
+   * 字段
+   */
   public List<FormFieldVo> fields;
-
   /**
    * 页签
    */
   public List<FormTabDto> formTabDtos;
+
+  /**
+   * 接口
+   */
+  public List<SysResources> resources;
+
 
   public Integer modelSize;
 
@@ -121,6 +129,9 @@ public class FormVo implements VoBean<Form> {
 
 
   public String  itemName;
+
+
+  public String sysMenuId;
 //  /**
 //   * 紧凑布局
 //   * terse

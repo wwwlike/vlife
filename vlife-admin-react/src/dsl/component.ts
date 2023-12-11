@@ -3,15 +3,20 @@ import { FormVo } from '@src/api/Form';
 import { FormFieldVo } from '@src/api/FormField';
 import { VF, VfAction } from '@src/dsl/VF';
 import { DataType, Mode, sourceType, TsType } from './base';
+
+
+
+
 /**
  * 下拉选择数据结构
  */
 export interface ISelect{
   value:any;
   label:string;
+  children?:ISelect[] // 
 }
 /**
- * 属性选择数据结构
+ * 树形选择数据结构
  */
 export interface ITreeData extends ISelect{
   key:string,
@@ -49,11 +54,6 @@ export interface  ComponentInfo  {
 export interface ComponentDef {
   //组件编码code
   [key: string]:ComponentInfo
-}
-
-
-interface DataObject {
-  [key: string]: any;
 }
 
 type Expression = {
@@ -141,7 +141,8 @@ export interface PropDef {
 
 /**
  * vlife自定义表单组件数据
- * 
+ * T 出参数据类型
+ * D 组件类型
  */
  export interface VfBaseProps<T, D> {
     //字段初始值

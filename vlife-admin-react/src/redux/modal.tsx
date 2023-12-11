@@ -1,7 +1,9 @@
 import React, { ReactNode } from "react";
-import { Modal, SideSheet } from "@douyinfe/semi-ui";
+import { Modal } from "@douyinfe/semi-ui";
 import { ModalReactProps } from "@douyinfe/semi-ui/lib/es/modal";
-import { SideSheetReactProps } from "@douyinfe/semi-ui/lib/es/sideSheet";
+import SideSheet, {
+  SideSheetReactProps,
+} from "@douyinfe/semi-ui/lib/es/sideSheet";
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -71,15 +73,7 @@ export const useNiceModal = (modalId: string) => {
   const dispatch = useDispatch();
   //从store里读取活动的modal层ID
   const activeModalId = useSelector((state: any) => state.activeModalId);
-  //上一层modal的信息
-  // const [pModal,setPmodal]=useState<{id:string,callback?:()=>void}>();
 
-  let pModal: { id: string; args: any; callback?: () => void };
-  // const o= useNiceModal(activeModalId);
-  // const cloadPrv=useCallback(()=>{//在当前页面之上在弹出一个modal
-  //     o.hide();
-  //     // return o
-  // },[activeModalId]);
   const show = useCallback(
     (args?: any) => {
       //args 传入的表单初始化数据
@@ -90,26 +84,6 @@ export const useNiceModal = (modalId: string) => {
       });
     },
     [dispatch, modalId]
-  );
-  /**
-   * 作为子模态窗口显示，
-   * 关闭之前的，并记录，子模关闭的时候再次调出父模态窗口
-   */
-  const showAsSub = useCallback(
-    (force?: any) => {
-      if (activeModalId) {
-        dispatch(hideModal(activeModalId, force)); //关闭父窗口
-        //父窗口数据信息保存
-        pModal = {
-          id: activeModalId,
-          args: null,
-          callback: modalCallbacks[activeModalId],
-        };
-        delete modalCallbacks[activeModalId];
-      }
-      return show(force); //调用show方法
-    },
-    [dispatch, activeModalId]
   );
 
   //点ok执行的方法
@@ -122,38 +96,6 @@ export const useNiceModal = (modalId: string) => {
       }
     },
     [modalId]
-  );
-
-  /**
-   * 新创建一个modal时候，关闭当前活动的modal
-   */
-  const hideActive = useCallback(
-    (force?: any) => {
-      dispatch(hideModal(activeModalId, force));
-      delete modalCallbacks[activeModalId];
-    },
-    [dispatch, activeModalId]
-  );
-
-  /**
-   * 关闭当前的，打开父类的
-   */
-  const hideAndOpenParent = useCallback(
-    (force?: any) => {
-      hide();
-      setTimeout(() => {
-        return new Promise((resolve) => {
-          modalCallbacks[pModal?.id] = pModal.callback; //找回当时show()方法then调用时候传入的函数
-          dispatch(showModal(pModal.id, { ...force }));
-        });
-      }, 500);
-      //  hide();
-      // 显示对话框时，返回 promise 并且将resolve方法临时存起来
-      // if(pModal&& pModal.id){
-
-      // }
-    },
-    [dispatch, modalId]
   );
 
   const hide = useCallback(
@@ -178,19 +120,8 @@ export const useNiceModal = (modalId: string) => {
       hide,
       resolve,
       activeModalId,
-      showAsSub,
-      hideAndOpenParent,
     }),
-    [
-      args,
-      hide,
-      show,
-      resolve,
-      hiding,
-      activeModalId,
-      showAsSub,
-      hideAndOpenParent,
-    ]
+    [args, hide, show, resolve, hiding, activeModalId]
   );
 };
 

@@ -18,6 +18,7 @@
 
 package cn.wwwlike.auth.entity;
 
+import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;

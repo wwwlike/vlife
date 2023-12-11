@@ -1,10 +1,10 @@
 import {  Result } from '@src/api/base';
 
 //when条件是复杂逻辑的函数接口
-export interface whenResult {
-  // 同步校验|
-  (formData:any):boolean|Promise<boolean>|Promise<Result<boolean>>
-}
+export type whenResult= 
+  ((formData:any)=>boolean)| //函数同步判断
+  ((formData:any)=>Promise<Result<boolean>|boolean>)| //异步判断后加工
+  boolean;//同步判断
 
 //数据对比模式
 export enum FS_OPT{
@@ -391,7 +391,7 @@ export class VF{
   /**
    * 一个全局是否满足判断的条件的函数
    */
-   public result:whenResult|boolean|undefined;
+   public result:whenResult|undefined;
   /**
    * 条件集合
    */
@@ -420,7 +420,7 @@ export class VF{
     return this.actions=[];
    }
 
-   public getResult():whenResult|boolean|undefined{
+   public getResult():whenResult|undefined{
     return this.result;
    }
 
@@ -456,7 +456,7 @@ export class VF{
    * @param watchField 监听的字段（这些字段发生变化触发联动）
    * @returns 
    */
-  static result(result:boolean|whenResult,...watchField:string[]):VF{
+  static result(result:whenResult,...watchField:string[]):VF{
     const  obj= new VF("");
     obj.result=result;
     obj.conn="and";
@@ -481,7 +481,7 @@ export class VF{
    * @param result 
    * @returns 
    */
-   static subResult(subName:string,result:boolean|whenResult):VF{
+   static subResult(subName:string,result:whenResult):VF{
     const  obj= new VF(subName);
     obj.result=result;
     obj.conn="and";

@@ -7,6 +7,7 @@ import { giteeUrl, openCheckCode, ThirdAccountDto } from "@src/api/SysUser";
 import backgroundImage from "@src/assets/login_bg.jpg";
 import loginLeftImage from "@src/assets/login_left.png";
 import { Button, Tooltip } from "@douyinfe/semi-ui";
+import LinkMe from "../layout/components/header/LinkMe";
 const Index: React.FC = () => {
   const localUsername = window.localStorage.getItem(localHistoryLoginUserName);
   const { user, login, error, giteeLogin } = useAuth();
@@ -116,38 +117,7 @@ const Index: React.FC = () => {
             >
               登 录
             </button>
-            <div className="absolute bottom-3 flex">
-              <Button
-                theme="borderless"
-                icon={<i className="iconfont icon-qq text-xl text-blue-500 " />}
-                style={{
-                  color: "var(--semi-color-text-2)",
-                  marginRight: "12px",
-                }}
-                className=" "
-                onClick={() => {
-                  var qqGroupLink =
-                    "https://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=zznRalE15vpDdHf5BWsBzVo_5A73mC_C&authKey=W5yiKOuVWgPY5UVAIhbiX1nvO62%2Fewf4vnrpi2shCZI7VgOqEsqsfKb7y6xI8qUi&noverify=0&group_code=786134846"; // 替换成你指定的QQ群链接
-                  window.open(qqGroupLink);
-                }}
-              >
-                <Tooltip content="需要技术支持请加群">QQ群</Tooltip>
-              </Button>
-
-              <Button
-                theme="borderless"
-                icon={
-                  <i className="iconfont icon-weixin text-xl text-blue-500 " />
-                }
-                style={{
-                  color: "var(--semi-color-text-2)",
-                  marginRight: "12px",
-                }}
-                className=" "
-              >
-                <Tooltip content="商务服务">微信vlifeboot</Tooltip>
-              </Button>
-            </div>
+            <LinkMe className="absolute bottom-3" />
           </div>
         </div>
       </div>

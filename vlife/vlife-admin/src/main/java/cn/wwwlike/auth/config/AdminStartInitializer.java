@@ -17,13 +17,12 @@
  */
 
 package cn.wwwlike.auth.config;
-
-import cn.wwwlike.auth.service.SysResourcesService;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.sys.entity.SysDict;
 import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.sys.service.SysDictService;
+import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.dict.DictVo;
 import cn.wwwlike.vlife.dict.ReadCt;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
@@ -80,7 +79,6 @@ public class AdminStartInitializer implements ApplicationRunner {
         if (url == null) {
             printErrorMessage();
             System.exit(0); // Exit without starting the application
-//            SpringApplication.exit(SpringApplication.run(Application.class, args.getSourceArgs()));
         }
         //资源同步
         resourcesService.sync();

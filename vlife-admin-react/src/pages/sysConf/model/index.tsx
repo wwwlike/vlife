@@ -1,168 +1,239 @@
-import react, { useCallback, useEffect, useState } from "react";
-import { TabPane, Tabs } from "@douyinfe/semi-ui";
-import { FormVo, list } from "@src/api/Form";
-import { useAuth } from "@src/context/auth-context";
+import react, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Button,
+  Dropdown,
+  SideSheet,
+  SplitButtonGroup,
+  TabPane,
+  Tabs,
+} from "@douyinfe/semi-ui";
+import { FormVo, list, save } from "@src/api/Form";
 import { renderIcon } from "@src/pages/layout/components/sider";
 import Scrollbars from "react-custom-scrollbars";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   IconClose,
-  IconCrop,
-  IconList,
   IconMenu,
-  IconPuzzle,
-  IconRankingCardStroked,
+  IconSetting,
   IconTerminal,
+  IconTreeTriangleDown,
 } from "@douyinfe/semi-icons";
-import { listAll, SysMenu, save as menuSave, MenuVo } from "@src/api/SysMenu";
+import { listAll, save as menuSave, MenuVo } from "@src/api/SysMenu";
 import classNames from "classnames";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
 import { VF } from "@src/dsl/VF";
 import VfTour from "@src/components/VfTour";
+import SelectIcon from "@src/components/SelectIcon";
+import LinkMe from "@src/pages/layout/components/header/LinkMe";
+import RelationModel from "./component/RelationModel";
+import { useNiceModal } from "@src/store";
+import { useDetail } from "@src/api/base/baseService";
+
+export type modelForm = FormVo & {
+  vo?: FormVo[];
+  req?: FormVo[];
+  dto?: FormVo[];
+};
+type appEntityType = { [menuCode: string]: modelForm[] };
 
 const Model = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  //当前选中的实体模型名称
-  const [entityType, setEntityType] = useState<string | undefined>();
-  //当前模型关联的菜单
-  const [menu, setMenu] = useState<MenuVo>();
-
-  useEffect(() => {
-    if (entityType) {
-      listAll().then((menus) => {
-        const menu = menus.data?.filter(
-          (m) => m.entityType === entityType
-        )?.[0];
-        setMenu(menu);
-        menu && window.localStorage.setItem("currMenuId", menu.id);
-      });
-    } else {
-      setMenu(undefined);
-    }
-  }, [entityType]);
-
-  const [back, setBack] = useState(false);
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const newValue = searchParams.get("type") || undefined;
-    setBack(searchParams.get("goBack") ? true : false);
-    setEntityType(newValue);
-  }, [location.search]);
-  //全部实体模型
-  const [dbEntitys, setDbEntitys] = useState<FormVo[]>([]);
-  //全部IModel模型
+  const formModal = useNiceModal("formModal");
+  //所有菜单
+  const [menus, setMenus] = useState<MenuVo[]>([]);
+  //所有实体模型
+  const [forms, setForms] = useState<modelForm[]>([]);
+  //所有IModel模型
   const [imodel, setIModel] = useState<FormVo[]>([]);
+  //当前选中模型标识
+  const [entityType, setEntityType] = useState<string | undefined>();
+  //回退到上一页标识
+  const [back, setBack] = useState(false);
+  //当前活动的tab页签
+  const [tabKey, setTabKey] = useState<string>();
+  //侧边栏可见标识
+  const [visible, setVisible] = useState<boolean>(false);
+  //明细数据加载
+  const { runAsync: getDetail } = useDetail({});
+  //系统应用
+  const apps = useMemo((): MenuVo[] => {
+    if (menus) {
+      return menus.filter((f) => f.app);
+    }
+    return [];
+  }, [menus]);
+  //应用与模型关联对象
+  const appEntity = useMemo((): appEntityType => {
+    const entitys: appEntityType = {};
+    if (apps && forms) {
+      apps?.forEach((app) => {
+        entitys[app.code] = forms.filter((f) => f.sysMenuId === app.id);
+      });
+    }
+    entitys["app_empty"] = forms.filter(
+      (f) => f.sysMenuId === null || f.sysMenuId === undefined
+    );
+    return entitys;
+  }, [apps, forms]);
+  //当前实体
+  const currEntity = useMemo((): modelForm => {
+    return forms.filter((f) => f.entityType === entityType)?.[0];
+  }, [forms, entityType]);
 
-  const color: any = {
-    sys: "bg-yellow-50",
-    conf: "bg-gray-50",
-    page: "bg-blue-50",
-    report: "bg-green-50",
-    erp: "bg-red-50",
-  };
+  //当前实体关联菜单
+  const entityMenus = useMemo((): MenuVo[] => {
+    if (menus && entityType && forms) {
+      const entityId = forms.filter((f) => f.entityType === entityType)?.[0]
+        ?.id;
+      return menus.filter((f) => f.formId === entityId);
+    }
+    return [];
+  }, [menus, forms, entityType]);
 
-  const apps = user?.menus.filter((f) => f.app && f.entityPrefix) || [];
-
-  //当前模块各个分类的颜色块
-  useEffect(() => {
-    list({ itemType: "entity" }).then((d) => {
-      if (d.data) {
-        setDbEntitys(d.data);
-      } else {
-        setDbEntitys([]);
-      }
+  //实体加载
+  const entityLoad = useCallback(() => {
+    list().then((result) => {
+      const modelForms: modelForm[] =
+        result.data
+          ?.filter((f) => f.itemType === "entity")
+          .map((entity) => {
+            return {
+              ...entity,
+              vo:
+                result.data?.filter(
+                  (f) =>
+                    f.itemType === "vo" && f.entityType === entity.entityType
+                ) || [],
+              dto:
+                result.data?.filter(
+                  (f) =>
+                    f.itemType === "save" && f.entityType === entity.entityType
+                ) || [],
+              req:
+                result.data?.filter(
+                  (f) =>
+                    f.itemType === "req" && f.entityType === entity.entityType
+                ) || [],
+            };
+          }) || [];
+      setForms(modelForms);
     });
-
-    list({ itemType: "bean" }).then((d) => {
-      if (d.data) {
-        setIModel(d.data);
-      } else {
-        setIModel([]);
-      }
+  }, []);
+  //菜单加载
+  const menuLoad = useCallback(() => {
+    listAll().then((res) => {
+      setMenus(res.data || []);
     });
   }, []);
 
+  useEffect(() => {
+    entityLoad();
+    menuLoad();
+    list({ itemType: "bean" }).then((d) => {
+      setIModel(d.data || []);
+    });
+  }, []);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const paramEntityType = searchParams.get("type") || undefined;
+    setBack(searchParams.get("goBack") ? true : false);
+    setEntityType(paramEntityType);
+    if (
+      tabKey === undefined &&
+      paramEntityType === undefined &&
+      apps &&
+      apps?.length > 0
+    ) {
+      setTabKey(apps[0].code);
+    }
+  }, [location.search, apps]);
+
   const card = useCallback(
-    (e: FormVo) => {
+    (e: modelForm) => {
       return (
         <Link
           className="!cursor-pointer"
-          key={e.entityType}
+          key={"card" + e.entityType}
           to={`/sysConf/model?type=${e.type}`}
         >
           <div
             key={e.entityType}
-            onDoubleClick={() => {
-              navigate(`/sysConf/formDesign/${entityType}`);
+            onClick={() => {
+              setVisible(true);
             }}
             className={`flex !cursor-pointer group relative  w-full h-24 border items-center justify-center
-        ${color[e.module] !== undefined ? color[e.module] : "bg-white"} 
-
+        bg-yellow-50 transition duration-500
         ${classNames({
           "border-gray-300 hover:border-gray-400": entityType !== e.entityType,
-          "border-blue-500 !bg-blue-100 ": entityType === e.entityType,
+          "border-gray-400 !bg-blue-100 font-bold   ":
+            entityType === e.entityType,
         })}
-         border-dashed rounded-lg p-2 text-center   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+       group hover:bg-blue-50  border-dashed rounded-lg p-2 text-center  `}
           >
-            <div>
-              <span className="block text-sm font-medium text-gray-900">
-                {e.title}
-              </span>
+            <div className="group-hover:font-bold ">
+              <p>{e.title}</p>
               <p>{e.type}</p>
             </div>
+            <Dropdown
+              stopPropagation
+              showTick={true}
+              render={
+                <Dropdown.Menu>
+                  {apps?.map((a) => (
+                    <Dropdown.Item
+                      active={a.code === tabKey}
+                      onClick={() => {
+                        if (a.code !== tabKey) {
+                          setEntityType(undefined);
+                          save({ ...e, sysMenuId: a.id }).then((d) => {
+                            entityLoad();
+                          });
+                        }
+                      }}
+                      key={e.id + "change" + a.id}
+                    >
+                      {a.name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              }
+            >
+              <i
+                className={`${classNames({
+                  hidden: tabKey !== "app_empty",
+                })} absolute  right-1 bottom-1 group-hover:block icon-out`}
+              />
+            </Dropdown>
           </div>
         </Link>
       );
     },
-    [entityType]
+    [entityType, apps, tabKey]
   );
-
-  /**
-   * 模块下的实体
-   */
-  const liEntity = useCallback(
-    (app: SysMenu): FormVo[] => {
-      const entityPrefixs: string[] = app.entityPrefix.split(",");
-      return dbEntitys
-        .filter((d) => {
-          const module = d.module;
-          return (
-            entityPrefixs.filter(
-              (e) => d.module.toLocaleLowerCase() === e.toLocaleLowerCase()
-            ).length > 0
-          );
-        })
-        .sort((a, b) => {
-          return a.entityType.localeCompare(b.entityType);
-        });
-    },
-    [user?.menus, dbEntitys]
-  );
-
-  const [tabKey, setTabKey] = useState<string>("009");
 
   useEffect(() => {
-    if (apps && dbEntitys && entityType) {
-      setTabKey(
-        apps.filter((a) =>
-          a.entityPrefix.includes(
-            dbEntitys.filter((d) => d.entityType === entityType)?.[0]?.module
-          )
-        )[0]?.code
-      );
+    if (entityType && appEntity) {
+      const tab = Object.keys(appEntity).filter((code) => {
+        return (
+          appEntity[code]?.filter((v) => v.entityType === entityType)?.length >
+          0
+        );
+      })?.[0];
+      setTabKey(tab);
     }
-  }, [apps, entityType, dbEntitys]);
-  // const activeKey = useMemo((): string => {
-  //   if (activeKey) {
+  }, [appEntity, entityType]);
 
-  //     dbEntitys.filter()
-  //   } else {
-  //     return apps[0].id;
-  //   }
-  //   return "";
-  // }, [apps,dbEntitys, entityType]);
+  const show = useCallback((menuId: string) => {
+    getDetail({ id: menuId }, "menuResourcesDto", "sysMenu").then((d) => {
+      formModal.show({
+        type: "menuResourcesDto",
+        formData: d.data,
+      });
+    });
+  }, []);
+
   return (
     <VfTour
       code="4444"
@@ -187,10 +258,6 @@ const Model = () => {
           selector: ".resourceBind",
           content: "为当前模块关联的菜单绑定接口资源权限",
         },
-        // {
-        //   selector: ".createMenu",
-        //   content: "查看或者创建菜单",
-        // },
         {
           selector: ".visitPage",
           content: "访问当前实体对应的页面功能",
@@ -204,193 +271,236 @@ const Model = () => {
             setEntityType(undefined);
             setTabKey(key);
           }}
-          className="relative"
-          onChange={() => {}}
+          className="relative bg-white"
         >
-          {entityType ? (
-            <div className="flex p-1  items-center space-x-2 bg-white  rounded-md ">
-              <div className="relative flex justify-center space-x-2 text-sm font-bold  w-40 text-center   border rounded-md  border-dashed bg-slate-50 p-1  ">
-                <span>
-                  {
-                    dbEntitys.filter((d) => d.entityType === entityType)?.[0]
-                      ?.title
+          {entityType && tabKey !== "app_empty" && (
+            <div className="flex p-1  items-center  space-x-2 bg-white  rounded-md ">
+              <div className="flex justify-start gap-x-2">
+                <div className="relative flex justify-center  text-sm font-bold  w-40  border rounded-md  border-dashed bg-slate-50 p-1  ">
+                  <div>
+                    {
+                      forms.filter((d) => d.entityType === entityType)?.[0]
+                        ?.title
+                    }
+                  </div>
+                  <i className=" absolute right-2 icon-sideslip_right text-xl  " />
+                </div>
+                <BtnToolBar
+                  key={"tableBtn"}
+                  onDataChange={(datas: any[]): void => {
+                    //根据id更新行数据，则可以不强制刷新
+                  }}
+                  btns={[
+                    {
+                      className: "tscode",
+                      title: "前端代码",
+                      disabledHide: false,
+                      actionType: "click",
+                      icon: <IconTerminal />,
+                      onClick: () => {
+                        navigate(
+                          `/sysConf/model/codeView/${entityType}?fullTitle=TS代码查看和下载`
+                        );
+                      },
+                    },
+                    {
+                      className: "createMenu",
+                      title:
+                        entityMenus === undefined || entityMenus.length === 0
+                          ? "创建菜单"
+                          : "添加功能",
+                      disabledHide: true,
+                      actionType: "create",
+                      model: "sysMenu",
+                      icon: <IconMenu></IconMenu>,
+                      saveApi: menuSave,
+                      onSubmitFinish: menuLoad,
+                      reaction: [
+                        VF.then(
+                          "app",
+                          "placeholderUrl",
+                          "sysRoleId",
+                          "code",
+                          "confPage",
+                          "pageLayoutId",
+                          "entityPrefix",
+                          "sort",
+                          "formId"
+                        ).hide(),
+                        VF.then("formId").value(currEntity?.id).hide(),
+                      ],
+                    },
+                  ]}
+                  position="page"
+                  datas={
+                    entityType
+                      ? forms.filter((d) => d.entityType === entityType)
+                      : []
                   }
-                </span>
-                <i className=" absolute right-2 icon-sideslip_right text-xl  " />
+                />
               </div>
+              {entityMenus && entityMenus.length > 0 && (
+                <div className="flex">
+                  <SplitButtonGroup style={{ marginRight: 10 }}>
+                    <Button
+                      icon={<i className="icon-limit-visitors" />}
+                      // theme="solid"
+                      type="primary"
+                      theme="light"
+                    >
+                      功能访问
+                    </Button>
+                    <Dropdown
+                      menu={
+                        entityMenus.map((m) => {
+                          return {
+                            key: "visit" + m.id,
+                            node: "item",
+                            name: m.name,
+                            icon: <SelectIcon read value={m.icon} />,
+                            onClick: () => {
+                              navigate(`${m?.url}?fullTitle=${m?.name}`);
+                            },
+                          };
+                        })
 
-              <BtnToolBar
-                key={"tableBtn"}
-                onDataChange={(datas: any[]): void => {
-                  //根据id更新行数据，则可以不强制刷新
-                }}
-                btns={[
-                  {
-                    className: "tscode",
-                    title: "前端代码",
-                    disabledHide: false,
-                    actionType: "click",
-                    icon: <IconTerminal />,
-                    onClick: () => {
-                      navigate(
-                        `/sysConf/model/codeView/${entityType}?fullTitle=TS代码查看和下载`
-                      );
-                    },
-                  },
-                  {
-                    className: "relationModel",
-                    title: "相关模型",
-                    disabledHide: false,
-                    actionType: "click",
-                    icon: <IconPuzzle />,
-                    onClick: () => {
-                      navigate(`/sysConf/model/detail/${entityType}`);
-                    },
-                  },
-                  {
-                    className: "formDesign",
-                    title: "表单设计",
-                    disabledHide: false,
-                    actionType: "click",
-                    icon: <IconRankingCardStroked />,
-                    onClick: () => {
-                      navigate(
-                        `/sysConf/formDesign/${entityType}?fullTitle=表单设计`
-                      );
-                    },
-                  },
-                  {
-                    className: "tableDesign",
-                    title: "列表设计",
-                    disabledHide: false,
-                    actionType: "click",
-                    icon: <IconList />,
-                    onClick: () => {
-                      navigate(`/sysConf/tableDesign/${entityType}`);
-                    },
-                  },
-                  {
-                    className: "resourceBind",
-                    title: "资源绑定",
-                    disabledHide: false,
-                    actionType: "click",
-                    usableMatch:
-                      menu !== undefined ? true : "请先创建模型关联的菜单",
-                    icon: <IconCrop />,
-                    onClick: () => {
-                      navigate(`/sysConf/resources`);
-                    },
-                  },
-                  {
-                    className: "createMenu",
-                    title: "创建菜单",
-                    disabledHide: true,
-                    actionType: "create",
-                    model: "sysMenu",
-                    icon: <IconMenu></IconMenu>,
-                    usableMatch: !menu,
-                    saveApi: menuSave,
-                    reaction: [
-                      VF.then(
-                        "app",
-                        "placeholderUrl",
-                        "sysRoleId",
-                        "code",
-                        "confPage",
-                        "pageLayoutId",
-                        "entityPrefix",
-                        "sort",
-                        "entityType"
-                      ).hide(),
-                      VF.then("entityType").value(entityType).hide(),
-                    ],
-                  },
-                  {
-                    className: "createMenu",
-                    title: "查看菜单",
-                    disabledHide: true,
-                    icon: <IconMenu></IconMenu>,
-                    actionType: "edit",
-                    model: "sysMenu",
-                    loadApi: (d: FormVo) => {
-                      return listAll().then((menus) => {
+                        // { node: "divider" },
+
+                        // {
+                        //   node: "item",
+                        //   name: "接口绑定",
+                        //   icon: <i className="icon-api" />,
+                        //   onClick: () => {
+                        //     navigate(`/sysConf/resources`);
+                        //   },
+                        // },
+                      }
+                      trigger="click"
+                      position="bottomRight"
+                    >
+                      <Button
+                        style={{
+                          padding: "8px 4px",
+                        }}
+                        theme="light"
+                        type="primary"
+                        icon={<IconTreeTriangleDown />}
+                      ></Button>
+                    </Dropdown>
+                    <i className="icon-help"></i>
+                  </SplitButtonGroup>
+
+                  <SplitButtonGroup style={{ marginRight: 10 }}>
+                    <Button
+                      icon={<i className="icon-api" />}
+                      // theme="solid"
+                      type="primary"
+                      theme="light"
+                    >
+                      权限绑定
+                    </Button>
+                    <Dropdown
+                      menu={entityMenus.map((m) => {
                         return {
-                          ...menus,
-                          data: menus.data?.filter(
-                            (m) => m.entityType === d.entityType
-                          )[0],
+                          key: "resourcesBand" + m.id,
+                          node: "item",
+                          name: m.name,
+                          icon: <SelectIcon read value={m.icon} />,
+                          onClick: () => {
+                            show(m.id);
+                          },
                         };
-                      });
-                      // return und;
-                    },
-                    usableMatch: menu ? true : "请创建关联菜单",
-                    saveApi: menuSave,
-                    reaction: [
-                      VF.then(
-                        "app",
-                        "placeholderUrl",
-                        "sysRoleId",
-                        "code",
-                        "confPage",
-                        "pageLayoutId",
-                        "entityPrefix",
-                        "sort",
-                        "entityType"
-                      ).hide(),
-                    ],
-                  },
-                  {
-                    className: "visitPage",
-                    title: "访问功能",
-                    disabledHide: false,
-                    icon: <IconMenu></IconMenu>,
-                    actionType: "click",
-                    usableMatch: menu
-                      ? true
-                      : "还没有功能与该模型关联,请先创建菜单",
-                    onClick: () => {
-                      navigate(`${menu?.url}?fullTitle=${menu?.name}`);
-                    },
-                  },
-                ]}
-                position="page"
-                datas={
-                  entityType
-                    ? dbEntitys.filter((d) => d.entityType === entityType)
-                    : []
-                }
-              />
+                      })}
+                      trigger="click"
+                      position="bottomRight"
+                    >
+                      <Button
+                        style={{
+                          padding: "8px 4px",
+                        }}
+                        theme="light"
+                        type="primary"
+                        icon={<IconTreeTriangleDown />}
+                      ></Button>
+                    </Dropdown>
+                    <i className="icon-help"></i>
+                  </SplitButtonGroup>
+                </div>
+              )}
             </div>
-          ) : (
-            <>请选择一个模型进行操作</>
           )}
+
+          {entityType === undefined && tabKey !== "app_empty" && (
+            <div className="inline-block text-center  text-sm  m-2 bg-yellow-50 border  py-2 px-4  border-dashed rounded-md">
+              请选择一个模型进行操作
+            </div>
+          )}
+
+          {tabKey === "app_empty" && (
+            <div className="inline-block text-center mx-2 text-sm bg-blue-50 border py-2 px-4 border-dashed rounded-md">
+              请将模型关联到应用后进行配置 <IconSetting />
+            </div>
+          )}
+
           {back && (
             <IconClose
               onClick={() => navigate(-1)}
               className="  absolute top-2 right-2 cursor-pointer hover:bg-blue-100"
             />
           )}
-          {apps
-            .filter((m) => liEntity(m).length > 0)
-            .map((m, index) => (
-              <TabPane
-                icon={renderIcon(m.icon)}
-                itemKey={m.code}
-                key={`app${m.id}`}
-                tab={m.name}
-                className=" bg-white"
+
+          {appEntity["app_empty"]?.length > 0 && (
+            <TabPane
+              itemKey={"app_empty"}
+              key={`app_empty`}
+              icon={<i className="icon-lift text-xl mr-2" />}
+              tab={`未分配(${appEntity["app_empty"]?.length})`}
+              className=" bg-white"
+            >
+              <div
+                role="list "
+                className="  p-2  border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
               >
                 <div
-                  role="list wuhan"
-                  className="  p-2  border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
+                  className={`text-xl h-24 border  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500 hover:text-gray-500`}
                 >
-                  {liEntity(m).map((e) => {
+                  未分配({appEntity["app_empty"]?.length})
+                </div>
+
+                {appEntity &&
+                  appEntity["app_empty"]
+                    ?.sort((a, b) => a.entityType.localeCompare(b.entityType))
+                    ?.map((e: any) => {
+                      return card(e);
+                    })}
+              </div>
+            </TabPane>
+          )}
+          {apps?.map((m, index) => (
+            <TabPane
+              icon={renderIcon(m.icon)}
+              itemKey={m.code}
+              key={`app${m.id}`}
+              tab={`${m.name}(${appEntity[m.code].length})`}
+              className=" bg-white"
+            >
+              <div
+                role="list "
+                className="p-2 border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 "
+              >
+                <div
+                  className={`text-xl h-24 border hover:text-gray-500  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500`}
+                >
+                  {m.name}({appEntity[m.code].length})
+                </div>
+                {appEntity &&
+                  appEntity[m.code]?.map((e) => {
                     return card(e);
                   })}
-                </div>
-                {/* liEntity */}
-              </TabPane>
-            ))}
+              </div>
+            </TabPane>
+          ))}
+
           <TabPane itemKey={"bean"} key={`app_bean`} tab={"一般模型(IModel)"}>
             <ul role="list" className="grid  p-2 gap-4 grid-cols-10">
               {imodel.map((model, index) => (
@@ -412,18 +522,35 @@ const Model = () => {
             </ul>
           </TabPane>
         </Tabs>
-        <div className=" p-4 font-sm text-blue-600 font-chinese space-y-2 top-2 w-full  bg-white">
-          <p>配置中心</p>
+        {currEntity && (
+          <SideSheet
+            width={520}
+            title={currEntity.title}
+            visible={entityType !== undefined && visible}
+            onCancel={() => {
+              setVisible(false);
+              // setEntityType(undefined);
+            }}
+          >
+            <RelationModel modelForm={currEntity} />
+          </SideSheet>
+        )}
+
+        <div className=" p-4 font-sm  font-chinese space-y-2 top-2 w-full  bg-white">
+          <p>配置中心：</p>
           <span className="block">
             1.
-            负责对entity及其关联的req\vo\dto模型使用表单和列表设计器进行功能设计
+            实时同步服务端模型信息(`eneity/req/vo/dto`,服务端设计完成后运行`maven
+            package`)
           </span>
-          <span className="block">2. 可以获取前端模型和接口调用的代码</span>
-          <span className="block">3. 可以将接口与菜单进行绑定</span>
-          <p>注意</p>
-          <span className="block">
-            1. 后端需要运行maven install，前端才能获取同步的模型和接口数据。
-          </span>
+          <span className="block">2. 提供与模型接口匹配的`Typescript`代码</span>
+          <span className="block">3. 各模型页面配置功能的入口</span>
+          {/* <span className="block">4. 是各类和模型有关的页面配置功能的入口</span> */}
+          <div className="flex">
+            <p>欢迎反馈：</p>
+            {/* <span className="block">如有体验疑惑或优化意见可联系反馈。</span> */}
+            <LinkMe></LinkMe>
+          </div>
         </div>
       </Scrollbars>
     </VfTour>

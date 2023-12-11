@@ -19,7 +19,9 @@
 package cn.wwwlike.form.dto;
 
 import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.base.SaveBean;
+import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 
 import java.util.List;
@@ -112,7 +114,15 @@ public class FormDto implements SaveBean<Form> {
 
     public List<FormTabDto> formTabDtos;
 
+    /**
+     * 接口
+     */
+    public List<SysResources> resources;
+
     public String  itemName;
+
+
+    public String sysMenuId;
     /**
      * 紧凑布局
      * terse

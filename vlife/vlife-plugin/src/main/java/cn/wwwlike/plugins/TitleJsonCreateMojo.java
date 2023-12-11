@@ -69,6 +69,7 @@ public class TitleJsonCreateMojo extends AbstractMojo {
             int errorNum=modelReadCheck.load(loader);
             if(errorNum==0) {
             String srcPath = "";
+            //读取不到jar文件里的class
             for(File file:projectBasedir.getParentFile().listFiles()){
                 if(new File(file.getPath()+"\\src\\main\\java").exists()){
                     files.addAll(FileUtils.getFiles(new File(file.getPath() + "/src/main/java" + srcPath), null, null));

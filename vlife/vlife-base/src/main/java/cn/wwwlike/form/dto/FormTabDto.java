@@ -17,11 +17,9 @@
  */
 
 package cn.wwwlike.form.dto;
-
-import cn.wwwlike.form.entity.FormTab;
+import cn.wwwlike.form.entity.*;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
-
 import java.util.List;
 
 /**

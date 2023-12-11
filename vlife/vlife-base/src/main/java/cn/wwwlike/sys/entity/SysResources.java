@@ -16,11 +16,9 @@
  *    limitations under the License.
  */
 
-package cn.wwwlike.auth.entity;
+package cn.wwwlike.sys.entity;
 
 
-import cn.wwwlike.vlife.annotation.VField;
-import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -33,7 +31,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table
-public class SysResources  extends DbEntity{
+public class SysResources extends DbEntity{
     /**
      * 资源名称
      */
@@ -47,6 +45,11 @@ public class SysResources  extends DbEntity{
      * 所属模块类型
      */
     public String entityType;
+
+    /**
+     *  所属模块
+     */
+    public String formId;
 
     /**
      * 所在api的类标识

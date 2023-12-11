@@ -7,10 +7,13 @@ import { IconClose } from "@douyinfe/semi-icons";
 /**
  * 单模块的模型展示
  */
-export default () => {
+export default ({ entity }: { entity?: string }) => {
   const local = useLocation();
   const navigate = useNavigate();
   const entityType = useMemo<string>(() => {
+    if (entity) {
+      return entity;
+    }
     const length = local.pathname.split("/").length;
     return local.pathname.split("/")[length - 1];
   }, []);
@@ -44,16 +47,18 @@ export default () => {
   return (
     <div className="items-stretch overflow-hidden bg-white rounded-md ">
       {/*justify-end 要配合 flex  */}
-      <div className=" absolute right-2 top-2">
-        <Button
-          type="primary"
-          icon={<IconClose />}
-          onClick={() => {
-            navigate(-1);
-          }}
-          aria-label="关闭"
-        />
-      </div>
+      {entity === undefined && (
+        <div className=" absolute right-2 top-2">
+          <Button
+            type="primary"
+            icon={<IconClose />}
+            onClick={() => {
+              navigate(-1);
+            }}
+            aria-label="关闭"
+          />
+        </div>
+      )}
       {/* Entity 实体模型 */}
       {Object.keys(ItemTypeInfo).map((key) => {
         return (
