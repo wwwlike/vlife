@@ -13,7 +13,6 @@ import { DataType, Mode, sourceType, TsType } from './base';
 export interface ISelect{
   value:any;
   label:string;
-  children?:ISelect[] // 
 }
 /**
  * 树形选择数据结构

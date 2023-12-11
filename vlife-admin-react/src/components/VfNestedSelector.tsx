@@ -1,6 +1,6 @@
 //vf级联选择组件
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ISelect, VfBaseProps } from "@src/dsl/component";
+import { ITreeData, VfBaseProps } from "@src/dsl/component";
 import classNames from "classnames";
 
 // export interface VfNestedSelectorProps
@@ -11,7 +11,7 @@ export default ({
   value,
   className,
   onDataChange,
-}: VfBaseProps<string[], ISelect[]>) => {
+}: VfBaseProps<string[], ITreeData[]>) => {
   const [selected, setSelected] = useState<string[]>(value); //当前选中的数据
   useEffect(() => {
     onDataChange(selected);
@@ -19,8 +19,8 @@ export default ({
   //第一列选择项value
   const [level1, setLevel1] = useState<string>();
   //所有的第二列数据
-  const level2 = useMemo((): ISelect[] => {
-    const levelDatas: ISelect[] = [];
+  const level2 = useMemo((): ITreeData[] => {
+    const levelDatas: ITreeData[] = [];
     datas?.forEach((d) => {
       if (d && d.children) {
         levelDatas.push(...d.children);
@@ -34,7 +34,7 @@ export default ({
 
   //模块选中明细
   const modelSelected = useCallback(
-    (form: ISelect): ISelect[] => {
+    (form: ITreeData): ITreeData[] => {
       if (form.children && selected) {
         return form.children.filter((d) => selected.includes(d.value));
       }

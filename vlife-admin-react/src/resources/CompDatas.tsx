@@ -407,7 +407,7 @@ export const FormComponents: CompDatas = {
       datas: {
         label: "多级选择数据",
         dataType: DataType.array,
-        dataModel: "ISelect",
+        dataModel: "ITreeData",
       },
     },
   },

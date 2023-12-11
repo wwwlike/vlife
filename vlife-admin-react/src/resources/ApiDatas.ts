@@ -170,12 +170,12 @@ export const apiDatas:ApiDatas={
        resources:{
         label:"多级选择",
         dataType:DataType.array,
-        dataModel:"ISelect",
-        func:(datas:FormVo[],params:any):ISelect[]=>{
+        dataModel:"ITreeData",
+        func:(datas:FormVo[],params:any):ITreeData[]=>{
           return datas.map((data:FormVo)=>{
-            return {value:data.id,label:data.title,
+            return {key:data.id,value:data.id,label:data.title,
               //过滤出未关联的资源和已和appId关联的资源
-              children:data.resources?.filter(r=>r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId).map(r=>{return {value:r.id,label:r.name}})}
+              children:data.resources?.filter(r=>r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId).map(r=>{return {key:r.id,value:r.id,label:r.name}})}
        })}
       }
     }
