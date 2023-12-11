@@ -12,7 +12,7 @@ import {
   Image,
 } from "@douyinfe/semi-ui";
 import { IconDesktop, IconGithubLogo, IconSetting } from "@douyinfe/semi-icons";
-import logo from "@src/logo.png";
+import logo from "@src/assets/logo.png";
 import "../../index.scss";
 import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
@@ -111,16 +111,7 @@ const Index = ({
               <Empty
                 className=" relative top-3  mr-4"
                 image={
-                  <img src={logo} style={{ width: 30, height: 30, top: 10 }} />
-                }
-              ></Empty>
-              <Empty
-                className=" relative top-3 "
-                image={
-                  <img
-                    src={"https://wwwlike.gitee.io/vlife-img/weilai.jpg"}
-                    style={{ width: 80, height: 30, top: 10 }}
-                  />
+                  <img src={logo} style={{ width: 150, height: 45, top: 5 }} />
                 }
               ></Empty>
             </div>
@@ -128,81 +119,82 @@ const Index = ({
           defaultSelectedKeys={[(app && app.id) || ""]}
           items={menuItems}
           footer={
-            (mode === "dev" || user?.superUser) && (
-              <>
-                <LinkMe></LinkMe>
-                {user?.superUser && (
+            <>
+              {(mode === "dev" || user?.superUser) && (
+                <>
+                  <LinkMe></LinkMe>
+                  {user?.superUser && (
+                    <Button
+                      theme="borderless"
+                      onClick={() => {
+                        navigate("/sysConf/model");
+                      }}
+                      style={{
+                        color: "var(--semi-color-text-2)",
+                      }}
+                      icon={<IconSetting />}
+                    >
+                      配置中心
+                    </Button>
+                  )}
+
                   <Button
                     theme="borderless"
-                    onClick={() => {
-                      navigate("/sysConf/model");
-                    }}
+                    icon={<IconDesktop size="large" />}
                     style={{
                       color: "var(--semi-color-text-2)",
+                      marginRight: "12px",
                     }}
-                    icon={<IconSetting />}
+                    onClick={() => {
+                      window.open("http://vlife.cc");
+                    }}
                   >
-                    配置中心
+                    使用指南
                   </Button>
+
+                  <Button
+                    theme="borderless"
+                    icon={<IconGithubLogo size="large" />}
+                    style={{
+                      color: "var(--semi-color-text-2)",
+                      marginRight: "12px",
+                    }}
+                    onClick={() => {
+                      window.open("https://gitee.com/wwwlike/vlife");
+                    }}
+                  >
+                    GITEE
+                  </Button>
+                </>
+              )}
+              <Dropdown
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={loginOut}>退出登录</Dropdown.Item>
+                    {checkBtnPermission(
+                      "sysUser:save:userPasswordModifyDto"
+                    ) && (
+                      <Dropdown.Item onClick={editPassword}>
+                        密码修改
+                      </Dropdown.Item>
+                    )}
+                  </Dropdown.Menu>
+                }
+              >
+                {user?.avatar ? (
+                  <Avatar
+                    alt="beautiful cat"
+                    size="small"
+                    src={`${apiUrl}/sysFile/image/${user?.avatar}`}
+                    style={{ margin: 4 }}
+                  />
+                ) : (
+                  <Avatar color="orange" size="small">
+                    {user?.name[0]}
+                  </Avatar>
                 )}
-
-                <Button
-                  theme="borderless"
-                  icon={<IconDesktop size="large" />}
-                  style={{
-                    color: "var(--semi-color-text-2)",
-                    marginRight: "12px",
-                  }}
-                  onClick={() => {
-                    window.open("http://vlife.cc");
-                  }}
-                >
-                  使用指南
-                </Button>
-
-                <Button
-                  theme="borderless"
-                  icon={<IconGithubLogo size="large" />}
-                  style={{
-                    color: "var(--semi-color-text-2)",
-                    marginRight: "12px",
-                  }}
-                  onClick={() => {
-                    window.open("https://gitee.com/wwwlike/vlife");
-                  }}
-                >
-                  GITEE
-                </Button>
-
-                <Dropdown
-                  render={
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={loginOut}>退出登录</Dropdown.Item>
-                      {checkBtnPermission(
-                        "sysUser:save:userPasswordModifyDto"
-                      ) && (
-                        <Dropdown.Item onClick={editPassword}>
-                          密码修改
-                        </Dropdown.Item>
-                      )}
-                    </Dropdown.Menu>
-                  }
-                >
-                  {user?.avatar ? (
-                    <Avatar
-                      alt="beautiful cat"
-                      size="small"
-                      src={`${apiUrl}/sysFile/image/${user?.avatar}`}
-                      style={{ margin: 4 }}
-                    />
-                  ) : (
-                    <Avatar color="orange" size="small">
-                      {user?.name[0]}
-                    </Avatar>
-                  )}
-                </Dropdown>
-              </>
-            )
+              </Dropdown>
+            </>
           }
         ></Nav>
       </Header>

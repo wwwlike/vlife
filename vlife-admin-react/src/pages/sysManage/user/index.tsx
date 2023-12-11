@@ -17,7 +17,7 @@ export default () => {
   const { user } = useAuth();
   return (
     <>
-      <IconContainer></IconContainer>
+      {/* <IconContainer></IconContainer> */}
       <Content<SysUser>
         listType="sysUser"
         // filterType="sysUserPageReq"
