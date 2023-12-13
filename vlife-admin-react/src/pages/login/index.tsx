@@ -3,10 +3,11 @@ import { localHistoryLoginUserName, useAuth } from "@src/context/auth-context";
 import "./login.css";
 import { useForm, useUrlQueryParam } from "@src/hooks/useForm";
 import { useNavigate } from "react-router-dom";
-import { giteeUrl, openCheckCode, ThirdAccountDto } from "@src/api/SysUser";
+import { giteeUrl, ThirdAccountDto } from "@src/api/SysUser";
+import logo from "@src/logo.png";
 import backgroundImage from "@src/assets/login_bg.jpg";
 import loginLeftImage from "@src/assets/login_left.png";
-import { Button, Tooltip } from "@douyinfe/semi-ui";
+import { Empty } from "@douyinfe/semi-ui";
 import LinkMe from "../layout/components/header/LinkMe";
 const Index: React.FC = () => {
   const localUsername = window.localStorage.getItem(localHistoryLoginUserName);
@@ -84,10 +85,14 @@ const Index: React.FC = () => {
           </div> */}
           <div
             style={{ width: "258px" }}
-            className=" flex flex-col  justify-center items-center"
+            className="flex flex-col  justify-center items-center"
           >
-            <div className="text-center font-bold tracking-wider text-blue-400 opacity-100 text-2xl">
-              vlife低代码
+            <div className=" flex justify-left w-full ">
+              <img src={logo} style={{ width: 40, height: 30, top: 10 }} />
+              <img
+                src={"https://wwwlike.gitee.io/vlife-img/weilai.jpg"}
+                style={{ width: 80, height: 30, top: 10 }}
+              />
             </div>
             <p className="text-red-500 pt-2 text-center ">{error}</p>
             <div className="mb-1 pt-2 rounded">
@@ -97,7 +102,7 @@ const Index: React.FC = () => {
                 id="username"
                 value={values.username || ""}
                 onChange={(evt) => setFieldValue("username", evt.target.value)}
-                className=" h-10 text-xl  rounded w-full text-gray-700 focus:outline-none border-b border-gray-300 focus:border-blue-400 transition duration-500 px-3 pb-3"
+                className="  itali h-10 text-xl  rounded w-full text-gray-700 focus:outline-none border-b border-gray-300 focus:border-blue-400 transition duration-500 px-3 pb-3"
               />
             </div>
             <div className="mb-2 pt-3 rounded ">

@@ -60,4 +60,9 @@ public class MenuVo implements VoBean<SysMenu> {
      */
     public String sysRoleId;
 
+    /**
+     * 关联模型
+     */
+    public String formId;
+
 }

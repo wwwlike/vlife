@@ -1,11 +1,14 @@
 package cn.wwwlike.auth.api;
 
 import cn.wwwlike.auth.config.AuthDict;
+import cn.wwwlike.auth.dto.ResourcesStateDto;
 import cn.wwwlike.auth.req.SysResourcesPageReq;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.auth.service.SysRoleService;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
+import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.annotation.VMethod;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.QueryWrapper;
@@ -123,6 +126,7 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
     /**
      * 一次批量保存资源
      */
+    @VMethod(expire = true)
     @PostMapping("/save/resources")
     public Integer saveResources(@RequestBody List<SysResources> resources) {
         for(SysResources bean:resources){
@@ -132,5 +136,18 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
             menuService.clearRoleId( clearRoleMenuId.toArray(new String[clearRoleMenuId.size()]));
         }
         return  resources.size();
+    }
+
+
+    /**
+     * 批量启用
+     * 接口资源批量启用(启用后可以纳入到权限管理)
+     * @param resourcesStateDto
+     * @return
+     */
+    @PostMapping("/save/resourcesStateDto")
+    public ResourcesStateDto saveResourcesStateDto(@RequestBody ResourcesStateDto resourcesStateDto) {
+        service.batchStateUseState(resourcesStateDto.getResourcesIds());
+        return resourcesStateDto;
     }
 }

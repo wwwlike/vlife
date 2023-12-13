@@ -20,6 +20,7 @@ package cn.wwwlike.vlife.base;
 
 /**
  *  模型接口
+ *  直接实现该接口则不对字段做校验
  * @author xiaoyu
  * @date 2022/7/3
  */

@@ -5,6 +5,7 @@ import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.sys.dao.SysResourcesDao;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.core.VLifeService;
+import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.tag.ApiTag;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
@@ -310,5 +311,22 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
      */
     public List<String> findMenuRequireResources(String ...menuIds){
        return findByIds(menuIds).stream().filter(r->r.isMenuRequired()).collect(Collectors.toList()).stream().map(t->t.getCode()).collect(Collectors.toList());
+    }
+
+
+    /**
+     * 批量将指定接口纳入到权限管理state->1
+     */
+    public void batchStateUseState(List<String> ids){
+        List<SysResources> all=findAll();
+        all.forEach(sysResources -> {
+            if(ids.contains(sysResources.getId())&&sysResources.getState().equals(CT.STATE.DISABLE)){
+                sysResources.setState(CT.STATE.NORMAL);
+                save(sysResources);
+            }else if(!ids.contains(sysResources.getId())&&sysResources.getState().equals(CT.STATE.NORMAL)){
+                sysResources.setState(CT.STATE.DISABLE);
+                save(sysResources);
+            }
+        });
     }
 }

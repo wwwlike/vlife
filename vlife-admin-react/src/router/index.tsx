@@ -145,7 +145,7 @@ export const allRoute: any[] = [
         element: (
           <WrapperRouteComponent
             element={<DeptPage />}
-            titleId="权限组管理"
+            titleId="部门维护"
             auth
           />
         ),
@@ -195,7 +195,7 @@ export const allRoute: any[] = [
         element: (
           <WrapperRouteComponent
             element={<ModelIndelPage />}
-            titleId="模型管理"
+            titleId="配置中心"
             auth
           />
         ),

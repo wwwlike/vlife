@@ -144,9 +144,8 @@ export default <T extends IdBean>({
       if (
         btn.actionType !== "api" &&
         position === "formFooter" &&
-        (btn.title === "新增" ||
-          btn.title === "修改" ||
-          btn.saveApi?.name === "save")
+        btn.model !== undefined &&
+        btn.saveApi !== undefined
       ) {
         return "保存";
       }

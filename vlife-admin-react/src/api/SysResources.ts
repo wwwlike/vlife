@@ -30,6 +30,14 @@ export interface ResourcesDto extends SaveBean {
   sysRoleId: string; // 归属角色
   sysRole_sysRoleGroup: SysRoleGroup[]; // 角色聚合组
 }
+
+
+// 资源批量操作dto
+export interface ResourcesStateDto extends SaveBean {
+  resourcesIds: string[]; // 启用的权限id集合
+}
+
+
 // 资源页面
 export interface SysResourcesPageReq extends PageQuery {
   search: string; // 名称/编码/地址
@@ -48,7 +56,7 @@ export interface ResourcesVo extends VoBean {
  * @return 权限资源;
  */
 export const save = (dto: SysResources): Promise<Result<SysResources>> => {
-  return apiClient.post(`/sysResources/save`, { params: dto });
+  return apiClient.post(`/sysResources/save`, dto);
 };
 
 export const saveImport = (
@@ -151,3 +159,12 @@ export const page = (
 };
 
 
+
+/**
+ * 保存权限资源;
+ * @param dto 权限资源;
+ * @return 权限资源;
+ */
+ export const saveResourcesStateDto = (dto: ResourcesStateDto): Promise<Result<ResourcesStateDto>> => {
+  return apiClient.post(`/sysResources/save/resourcesStateDto`, dto);
+};

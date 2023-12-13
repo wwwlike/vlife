@@ -97,7 +97,6 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
 
     /**
      * 根据code查询字典
-     *
      * @param code
      * @return
      */

@@ -25,7 +25,7 @@ import javax.inject.Named;
  */
 public class VCT {
 
-    @Named("业务状态")
+    @Named("处理状态")
     public static final class ITEM_STATE {
         @Named("正常")
         public final static String NORMAL = "1";

@@ -173,12 +173,12 @@ export const types: { title: string; value: string,icon?:any }[] = [
     tag: "layout",
   },
   divider:{ 
-    name: "分组",
+    name: "分组名称",
     type: "switch",
     tag: "layout",
   },
   dividerLabel:{ 
-    name: "分组名称",
+    name: "",//分组名称
     type: "input",
     tag: "layout",
      deps: { field: "divider", value:[true] },

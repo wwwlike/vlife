@@ -2,31 +2,32 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ITreeData, VfBaseProps } from "@src/dsl/component";
 import classNames from "classnames";
+import { useUpdateEffect } from "ahooks";
 
-// export interface VfNestedSelectorProps
-//   extends VfBaseProps<string[], ISelect[]> {}
+export interface VfNestedSelectorProps
+  extends VfBaseProps<string[], ITreeData[]> {}
 
 export default ({
   datas,
   value,
   className,
   onDataChange,
-}: VfBaseProps<string[], ITreeData[]>) => {
-  const [selected, setSelected] = useState<string[]>(value); //当前选中的数据
+}: VfNestedSelectorProps) => {
+  const [selected, setSelected] = useState<string[]>(value);
   useEffect(() => {
-    onDataChange(selected);
+    setSelected(value);
+  }, [value]);
+
+  useUpdateEffect(() => {
+    if (JSON.stringify(selected) !== JSON.stringify(value)) {
+      onDataChange(selected);
+    }
   }, [selected]);
   //第一列选择项value
   const [level1, setLevel1] = useState<string>();
-  //所有的第二列数据
-  const level2 = useMemo((): ITreeData[] => {
-    const levelDatas: ITreeData[] = [];
-    datas?.forEach((d) => {
-      if (d && d.children) {
-        levelDatas.push(...d.children);
-      }
-    });
-    return levelDatas;
+
+  const level1Datas = useMemo(() => {
+    return datas?.filter((form) => form.children && form.children.length > 0);
   }, [datas]);
 
   const lineClassName =
@@ -44,7 +45,7 @@ export default ({
   );
 
   return (
-    <div className="flex  h-96  ">
+    <div className={`flex h-96 ${className}`}>
       <div className=" w-1/3 border h-full overflow-y-auto gap-y-1">
         <div
           className={`${lineClassName} hover:bg-slate-50 ${classNames({
@@ -57,7 +58,7 @@ export default ({
           全部({selected?.length || 0})
         </div>
 
-        {datas?.map((d) => (
+        {level1Datas?.map((d) => (
           <div
             className={`${lineClassName} hover:bg-slate-100 ${classNames({
               "font-bold": modelSelected(d).length > 0,
@@ -74,7 +75,7 @@ export default ({
         ))}
       </div>
       <div className=" w-1/3 border h-full overflow-y-auto gap-y-1">
-        {datas?.map(
+        {level1Datas?.map(
           (form) =>
             (level1 === undefined || form.value === level1) && (
               <div key={`form${form.value}}`}>
@@ -120,7 +121,7 @@ export default ({
         )}
       </div>
       <div className=" w-1/3 bg-yellow-50  overflow-y-auto border ">
-        {datas
+        {level1Datas
           ?.filter((form) => modelSelected(form).length > 0)
           .map((form) => (
             <div key={`form${form.value}}`}>

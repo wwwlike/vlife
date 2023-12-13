@@ -7,12 +7,9 @@ import {
   Avatar,
   Dropdown,
   Empty,
-  Tooltip,
-  Popover,
-  Image,
 } from "@douyinfe/semi-ui";
 import { IconDesktop, IconGithubLogo, IconSetting } from "@douyinfe/semi-icons";
-import logo from "@src/assets/logo.png";
+import logo from "@src/logo.png";
 import "../../index.scss";
 import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
@@ -24,7 +21,6 @@ import { useNavigate } from "react-router-dom";
 import { MenuVo } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
-import wxImage from "@src/assets/wx.jpg";
 import LinkMe from "./LinkMe";
 
 const mode = import.meta.env.VITE_APP_MODE;
@@ -111,9 +107,18 @@ const Index = ({
               <Empty
                 className=" relative top-3  mr-4"
                 image={
-                  <img src={logo} style={{ width: 150, height: 45, top: 5 }} />
+                  <img src={logo} style={{ width: 40, height: 30, top: 10 }} />
                 }
               ></Empty>
+              <Empty
+                className=" relative top-3 "
+                image={
+                  <img
+                    src={"https://wwwlike.gitee.io/vlife-img/weilai.jpg"}
+                    style={{ width: 80, height: 30, top: 10 }}
+                  />
+                }
+              />
             </div>
           }
           defaultSelectedKeys={[(app && app.id) || ""]}

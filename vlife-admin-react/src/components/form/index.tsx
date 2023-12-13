@@ -189,19 +189,68 @@ export default <T extends IdBean>({
     return feeds.filter((f) => f.code !== errorType);
   };
 
+  //无条件初始化时采用
+  const formInitReaction = useCallback(
+    (m: Form): void => {
+      //result方式的比对条件
+      vf?.filter(
+        (f) =>
+          f.result === undefined &&
+          (f.conditions === undefined || f.conditions.length === 0) &&
+          f.subField === undefined
+      ).forEach((f) => {
+        if (isFunction(f.result)) {
+          const funcResult = f.result({ ...m.values, parent: parentFormData });
+          if (typeof funcResult === "object") {
+            //promise的typeof是object
+            //1 异步promise函数
+            funcResult.then((d) => {
+              if (typeof d === "boolean") {
+                execVfAction(
+                  f.actions.filter((a) => (d ? a.fill : !a.fill)),
+                  m,
+                  parentFormData
+                );
+              } else {
+                execVfAction(
+                  f.actions.filter((a) => (d.data ? a.fill : !a.fill)),
+                  m,
+                  parentFormData
+                );
+              }
+            });
+          } else {
+            //2 同步函数
+            execVfAction(
+              f.actions.filter((a) => (funcResult ? a.fill : !a.fill)),
+              m,
+              parentFormData
+            );
+          }
+        } else if (f) {
+          //3 boolean返回
+          execVfAction(
+            f.actions.filter((a) =>
+              f.result === undefined ? true : f.result ? a.fill : !a.fill
+            ),
+            m,
+            parentFormData
+          );
+        }
+      });
+    },
+    [vf, modelInfo, parentFormData]
+  );
+
   /**
    * 联动处理方式1：
-   * 动态result条件/无条件的联动处理
+   * 动态condition采用result条件||无条件的联动处理；
    */
   const formDynamicReaction = useCallback(
     (m: Form): void => {
       //result方式的比对条件
       vf?.filter(
-        (f) =>
-          (f.result !== undefined ||
-            f.conditions === undefined ||
-            f.conditions.length === 0) &&
-          f.subField === undefined
+        (f) => f.result !== undefined && f.subField === undefined
       ).forEach((f) => {
         if (isFunction(f.result)) {
           const funcResult = f.result({ ...m.values, parent: parentFormData });
@@ -299,8 +348,9 @@ export default <T extends IdBean>({
             if (onForm) {
               onForm(m);
             }
-            formDynamicReaction(m); //动态/空条件响应
-            formStaticReaction(m); //静态条件动态响应
+            formInitReaction(m); //1空条件
+            formDynamicReaction(m); //2result条件
+            formStaticReaction(m); //3 condition静态条件&&动态响应(用函数设置值)
           }),
           onFormValuesChange((m: Form) => {
             //防抖
@@ -552,7 +602,12 @@ export default <T extends IdBean>({
     }
     //过滤条设计器里不展示字段
     fields
-      // .filter((f) => f.x_hidden === undefined || f.x_hidden === false)
+      .filter(
+        (f) =>
+          f.fieldName === "id" ||
+          f.x_hidden === undefined ||
+          f.x_hidden === false
+      )
       .sort((a, b) => {
         return a.sort - b.sort;
       })
@@ -882,6 +937,13 @@ export default <T extends IdBean>({
         prop.type = "string"; //?
       });
 
+    const useableFieldLength = modelInfo.fields.filter(
+      (f) => f.x_hidden === undefined || f.x_hidden === false
+    ).length;
+    const _modelSize =
+      modelInfo.modelSize > useableFieldLength
+        ? useableFieldLength
+        : modelInfo.modelSize;
     const schemaObj: any = { type: "object", properties: {} };
     const grid = {
       type: "void",
@@ -889,16 +951,8 @@ export default <T extends IdBean>({
       "x-component-props": {
         minWidth: 50, //最小宽度
         // minColumns: [4, 4, 4],
-        maxColumns: [
-          modelInfo.modelSize,
-          modelInfo.modelSize,
-          modelInfo.modelSize,
-        ], //大中小尺寸
-        minColumns: [
-          modelInfo.modelSize,
-          modelInfo.modelSize,
-          modelInfo.modelSize,
-        ],
+        maxColumns: [_modelSize, _modelSize, _modelSize], //大中小尺寸
+        minColumns: [_modelSize, _modelSize, _modelSize],
       },
     };
     //有分组则加入分组容器，把内容组件放入容器里
@@ -930,7 +984,7 @@ export default <T extends IdBean>({
       return schemaObj;
     } else {
       return {
-        type: "object11111111",
+        type: "object",
         properties: {
           content: { ...grid, properties: pp },
         },

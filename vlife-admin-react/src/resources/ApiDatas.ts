@@ -168,16 +168,36 @@ export const apiDatas:ApiDatas={
           return datas.map((data:{type:string,title:string})=>{return {value:data.type,label:data.title}});
        }},
        resources:{
-        label:"多级选择",
+        label:"实体和资源关联的多级选择数据集",
         dataType:DataType.array,
         dataModel:"ITreeData",
         func:(datas:FormVo[],params:any):ITreeData[]=>{
           return datas.map((data:FormVo)=>{
+            if(params.appId){
             return {key:data.id,value:data.id,label:data.title,
-              //过滤出未关联的资源和已和appId关联的资源
-              children:data.resources?.filter(r=>r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId).map(r=>{return {key:r.id,value:r.id,label:r.name}})}
+              //菜单已关联和可关联的接口信息
+              children:data.resources?.filter(r=>(r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId)&&r.state==="1").map(r=>{return {key:r.id,value:r.id,label:r.name}})}
+            }else{
+              return {key:data.id,value:data.id,label:data.title,
+                //菜单已关联和可关联的接口信息
+                children:data.resources?.map(r=>{return {key:r.id,value:r.id,label:r.name}})}
+            }
        })}
-      }
+      },
+      //已开启的资源
+      stateOpenResources:{
+        label:"已开启的资源",
+        dataType:DataType.array,
+        dataModel:"ITreeData",
+        func:(datas:FormVo[],params:any):ITreeData[]=>{
+          return datas.map((data:FormVo)=>{
+       
+            return {key:data.id,value:data.id,label:data.title,
+              //菜单已关联和可关联的接口信息
+              children:data.resources?.filter(r=>r.state==="1").map(r=>{return {key:r.id,value:r.id,label:r.name}})}
+           
+       })}
+      },
     }
   },
   subForms: {

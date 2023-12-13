@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_menu")
-@VClazz(orders = "sort_asc")
+@VClazz(orders = "code_asc")
 public class SysMenu extends DbEntity implements ITree {
     /**
      * 应用

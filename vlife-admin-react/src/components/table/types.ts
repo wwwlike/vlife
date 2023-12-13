@@ -9,9 +9,8 @@ import {  ReactNode } from 'react';
 /**
  * 按钮动作类型
  * create:需要对模型进行操作
- * edit: 模型编辑，保存修改
- * view: 模型预览，只读查看
- * api ：
+ * edit: 模型编辑，保存修改 有数据无saveApi就是预览
+ * api ：无需模型，直接触发
  * click:自定义点击事件的按钮
  */
 export type actionType= "create"|"edit"|"api"|"click";

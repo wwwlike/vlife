@@ -13,26 +13,33 @@ import Scrollbars from "react-custom-scrollbars";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   IconClose,
+  IconLive,
   IconMenu,
+  IconRegExp,
   IconSetting,
   IconTerminal,
-  IconTreeTriangleDown,
 } from "@douyinfe/semi-icons";
-import { listAll, save as menuSave, MenuVo } from "@src/api/SysMenu";
+import {
+  listAll,
+  save as menuSave,
+  MenuVo,
+  saveMenuResourcesDto,
+} from "@src/api/SysMenu";
 import classNames from "classnames";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
 import { VF } from "@src/dsl/VF";
 import VfTour from "@src/components/VfTour";
-import SelectIcon from "@src/components/SelectIcon";
 import LinkMe from "@src/pages/layout/components/header/LinkMe";
 import RelationModel from "./component/RelationModel";
 import { useNiceModal } from "@src/store";
 import { useDetail } from "@src/api/base/baseService";
+import { VFBtn } from "@src/components/table/types";
 
 export type modelForm = FormVo & {
   vo?: FormVo[];
   req?: FormVo[];
   dto?: FormVo[];
+  bean?: FormVo[];
 };
 type appEntityType = { [menuCode: string]: modelForm[] };
 
@@ -44,8 +51,6 @@ const Model = () => {
   const [menus, setMenus] = useState<MenuVo[]>([]);
   //所有实体模型
   const [forms, setForms] = useState<modelForm[]>([]);
-  //所有IModel模型
-  const [imodel, setIModel] = useState<FormVo[]>([]);
   //当前选中模型标识
   const [entityType, setEntityType] = useState<string | undefined>();
   //回退到上一页标识
@@ -115,6 +120,11 @@ const Model = () => {
                   (f) =>
                     f.itemType === "req" && f.entityType === entity.entityType
                 ) || [],
+              bean:
+                result.data?.filter(
+                  (f) =>
+                    f.itemType === "bean" && f.entityType === entity.entityType
+                ) || [],
             };
           }) || [];
       setForms(modelForms);
@@ -130,9 +140,6 @@ const Model = () => {
   useEffect(() => {
     entityLoad();
     menuLoad();
-    list({ itemType: "bean" }).then((d) => {
-      setIModel(d.data || []);
-    });
   }, []);
 
   useEffect(() => {
@@ -151,7 +158,9 @@ const Model = () => {
   }, [location.search, apps]);
 
   const card = useCallback(
-    (e: modelForm) => {
+    (e: modelForm, className?: string) => {
+      const menuLength: number = menus.filter((m) => m.formId === e.id).length;
+
       return (
         <Link
           className="!cursor-pointer"
@@ -164,11 +173,14 @@ const Model = () => {
               setVisible(true);
             }}
             className={`flex !cursor-pointer group relative  w-full h-24 border items-center justify-center
-        bg-yellow-50 transition duration-500
+         transition duration-500
+
+       
         ${classNames({
-          "border-gray-300 hover:border-gray-400": entityType !== e.entityType,
-          "border-gray-400 !bg-blue-100 font-bold   ":
-            entityType === e.entityType,
+          "bg-yellow-50": menuLength > 0,
+          "bg-gray-50": menuLength === 0,
+          "hover:border-gray-400": entityType !== e.entityType,
+          "border-gray-400 !bg-blue-100 font-bold": entityType === e.entityType,
         })}
        group hover:bg-blue-50  border-dashed rounded-lg p-2 text-center  `}
           >
@@ -234,6 +246,86 @@ const Model = () => {
     });
   }, []);
 
+  const btns = useMemo((): VFBtn[] => {
+    const _btns: VFBtn[] = [
+      {
+        className: "tscode",
+        title: "前端代码",
+        disabledHide: false,
+        actionType: "click",
+        icon: <IconTerminal />,
+        onClick: () => {
+          navigate(
+            `/sysConf/model/codeView/${entityType}?fullTitle=TS代码查看和下载`
+          );
+        },
+      },
+      {
+        className: "createMenu",
+        title:
+          entityMenus === undefined || entityMenus.length === 0
+            ? "创建菜单"
+            : "添加功能",
+        disabledHide: true,
+        actionType: "create",
+        model: "sysMenu",
+        icon: <IconMenu></IconMenu>,
+        saveApi: menuSave,
+        onSubmitFinish: menuLoad,
+        reaction: [
+          VF.then(
+            "app",
+            "placeholderUrl",
+            "sysRoleId",
+            "code",
+            "confPage",
+            "pageLayoutId",
+            "entityPrefix",
+            "sort",
+            "formId"
+          ).hide(),
+          VF.then("formId").value(currEntity?.id).hide(),
+
+          VF.field("url")
+            .endsWidth("*")
+            .then("placeholderUrl")
+            .show()
+            .then("placeholderUrl")
+            .required(),
+        ],
+      },
+    ];
+    if (entityMenus && entityMenus.length > 0) {
+      entityMenus.forEach((m) => {
+        _btns.push({
+          title: m.name + "(预览)",
+          actionType: "click",
+          icon: <IconLive />,
+          onClick: () => {
+            const url =
+              m.url && m.url.endsWith("*")
+                ? m.url.replace("*", m.placeholderUrl)
+                : m.url;
+            navigate(`${url}?fullTitle=${m?.name}`);
+          },
+        });
+      });
+      entityMenus.forEach((m) => {
+        _btns.push({
+          title: m.name + "(权限)",
+          actionType: "edit",
+          icon: <IconRegExp />,
+          model: "menuResourcesDto",
+          loadApi: (d) => {
+            return getDetail({ id: m.id }, "menuResourcesDto", "sysMenu");
+          },
+          saveApi: saveMenuResourcesDto,
+        });
+      });
+    }
+    return _btns;
+  }, [entityType, currEntity, entityMenus]);
+
   return (
     <VfTour
       code="4444"
@@ -290,56 +382,12 @@ const Model = () => {
                   onDataChange={(datas: any[]): void => {
                     //根据id更新行数据，则可以不强制刷新
                   }}
-                  btns={[
-                    {
-                      className: "tscode",
-                      title: "前端代码",
-                      disabledHide: false,
-                      actionType: "click",
-                      icon: <IconTerminal />,
-                      onClick: () => {
-                        navigate(
-                          `/sysConf/model/codeView/${entityType}?fullTitle=TS代码查看和下载`
-                        );
-                      },
-                    },
-                    {
-                      className: "createMenu",
-                      title:
-                        entityMenus === undefined || entityMenus.length === 0
-                          ? "创建菜单"
-                          : "添加功能",
-                      disabledHide: true,
-                      actionType: "create",
-                      model: "sysMenu",
-                      icon: <IconMenu></IconMenu>,
-                      saveApi: menuSave,
-                      onSubmitFinish: menuLoad,
-                      reaction: [
-                        VF.then(
-                          "app",
-                          "placeholderUrl",
-                          "sysRoleId",
-                          "code",
-                          "confPage",
-                          "pageLayoutId",
-                          "entityPrefix",
-                          "sort",
-                          "formId"
-                        ).hide(),
-                        VF.then("formId").value(currEntity?.id).hide(),
-                      ],
-                    },
-                  ]}
+                  btns={btns}
                   position="page"
-                  datas={
-                    entityType
-                      ? forms.filter((d) => d.entityType === entityType)
-                      : []
-                  }
+                  datas={currEntity ? [currEntity] : []}
                 />
               </div>
-              {entityMenus && entityMenus.length > 0 && (
+              {/* {entityMenus && entityMenus.length > 0 && (
                 <div className="flex">
                   <SplitButtonGroup style={{ marginRight: 10 }}>
                     <Button
@@ -426,7 +474,7 @@ const Model = () => {
                     <i className="icon-help"></i>
                   </SplitButtonGroup>
                 </div>
-              )}
+              )} */}
             </div>
           )}
 
@@ -476,12 +524,12 @@ const Model = () => {
               </div>
             </TabPane>
           )}
-          {apps?.map((m, index) => (
+          {apps?.map((app, index) => (
             <TabPane
-              icon={renderIcon(m.icon)}
-              itemKey={m.code}
-              key={`app${m.id}`}
-              tab={`${m.name}(${appEntity[m.code].length})`}
+              icon={renderIcon(app.icon)}
+              itemKey={app.code}
+              key={`app${app.id}`}
+              tab={`${app.name}(${appEntity[app.code].length})`}
               className=" bg-white"
             >
               <div
@@ -491,36 +539,23 @@ const Model = () => {
                 <div
                   className={`text-xl h-24 border hover:text-gray-500  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500`}
                 >
-                  {m.name}({appEntity[m.code].length})
+                  {app.name}({appEntity[app.code].length})
                 </div>
                 {appEntity &&
-                  appEntity[m.code]?.map((e) => {
-                    return card(e);
-                  })}
+                  appEntity[app.code]
+                    .sort(
+                      (a, b) =>
+                        menus.filter((m) => m.formId === b.id).length -
+                          menus.filter((m) => m.formId === a.id).length ||
+                        b.type.localeCompare(a.type)
+                    )
+                    ?.map((e) => {
+                      // @ts-ignore
+                      return card(e);
+                    })}
               </div>
             </TabPane>
           ))}
-
-          <TabPane itemKey={"bean"} key={`app_bean`} tab={"一般模型(IModel)"}>
-            <ul role="list" className="grid  p-2 gap-4 grid-cols-10">
-              {imodel.map((model, index) => (
-                <li
-                  className="relative"
-                  key={"li_" + model.type}
-                  onClick={() => {
-                    navigate(`/sysConf/formDesign/${model.type}`);
-                  }}
-                >
-                  <div className="relative block w-full h-24 border-2 border-gray-300 border-dashed rounded-lg p-2 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <span className="mt-2 block text-sm font-medium text-gray-900">
-                      {model.title}
-                    </span>
-                    <p>{model.type}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </TabPane>
         </Tabs>
         {currEntity && (
           <SideSheet

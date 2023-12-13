@@ -126,6 +126,7 @@ export enum ItemType{
   save="save",
   req="req",
   vo="vo",
+  bean="bean",
   basic="basic",
   list="list",
 }

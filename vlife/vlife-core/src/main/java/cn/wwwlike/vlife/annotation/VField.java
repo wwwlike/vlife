@@ -33,58 +33,57 @@ import static cn.wwwlike.vlife.dict.Constants.DEFAULT_ORDER_TYPE;
 @Documented
 public @interface VField {
     /**
-     * 字段路径名称&真实数据库对应字段
-     *
-     * @return
+     * 实体字段路径
+     * 表示对应的实体字段路径。如果vo/req/dto下的字段与实体下的字段不匹配，需要在注解属性上指定对应的路径。
+     * 关联和外键的字段，需要加上下划线；如：userVo注入sysDept部门的name 则在userVo下,按规则应该有 sysDept_name字段，但是一般来说会命名为 deptName;
+     * 则注解就需要跟上协商 pathName="sysDept_name";
      */
     String pathName() default "";
 
     /**
-     * 查询方式-> req对象使用
-     *
-     * @return
+     * 查询方式
+     * 查询模型使用
      */
     Opt opt() default  Opt.VOID;
 
     /**
      * 注入字段设置它的排序规则->可覆盖实体类和VO上设置的排序规则，
-     *
-     * @return
      */
     String orders() default DEFAULT_ORDER_TYPE;
 
     /**
      * 数据查询&转换的方法 适用于统计分组的函数
-     *
-     * @return
      */
     Class<? extends DataExpressTran> tran() default DataExpressTran.class;
 
 
     /**
-     * 进行and联合查询的其他字段，目前支持到主表的字段
-     *
-     * @return
+     * 进行and联合查询的其他字段，
+     * 查询模型使用
      */
     String[] andReqFields() default {};
 
     /**
-     * 进行or联合查询的其他字段，目前支持到主表的字段
-     *
-     * @return
+     * 进行or联合查询的其他字段
+     * 查询模型使用
      */
     String[] orReqFields() default {};
 
     /**
-     * 如字段取自字典则进行设置，不设置可后期通过plus版本进行数据库设置;
-     * @return
+     * 字典编码
+     * 数据来源是字典则设置，也可通过配置功能设置或者覆盖
      */
     String dictCode() default "";
 
     /**
-     * 字段跳过不扫描，（8/8）
+     * 字段跳过不扫描
      * 一般作为实现特定逻辑的判断条件使用
-     * @return
      */
     boolean skip() default false;
+
+    /**
+     *  字段失效
+     *  后续版本不在使用的字段
+     */
+    boolean expire() default  false;
 }

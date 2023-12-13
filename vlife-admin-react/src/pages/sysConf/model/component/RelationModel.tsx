@@ -11,7 +11,7 @@ export interface RelationModelPorps {
 }
 
 export default ({ modelForm }: RelationModelPorps) => {
-  const { vo, dto, req } = modelForm;
+  const { vo, dto, req, bean } = modelForm;
   const navigate = useNavigate();
   const className =
     " group relative h-20 flex flex-col justify-center items-center  border border-dashed rounded-md mb-2 hover:bg-blue-50 cursor-pointer ";
@@ -110,6 +110,31 @@ export default ({ modelForm }: RelationModelPorps) => {
                 onClick={() => {
                   navigate(
                     `/sysConf/formDesign/${d.type}?fullTitle=查询条件设计`
+                  );
+                }}
+              >
+                配置
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <GroupLabel
+        desc="仅实现IModel接口的模型"
+        text={`其他模型(${req?.length})`}
+        icon={<i className="icon-filter_list" />}
+      />
+      <div className=" grid   gap-2  grid-cols-3">
+        {bean?.map((d) => {
+          return (
+            <div key={`bean${d.type}`} className={`${className}`}>
+              <p>{d.title}</p>
+              <p>{d.type}</p>
+              <div
+                className={`${designClassName}`}
+                onClick={() => {
+                  navigate(
+                    `/sysConf/formDesign/${d.type}?fullTitle=表单设计器`
                   );
                 }}
               >
