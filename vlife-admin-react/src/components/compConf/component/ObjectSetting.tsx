@@ -159,13 +159,15 @@ export default ({
     (propVal: string): { label: string; value: any }[] => {
       if (propVal) {
         const api = VfApis[propVal];
-        const match = api.match;
-        if (match) {
-          return Object.keys(match)
-            .filter((k) => checkEq(match[k], propInfo))
-            .map((k) => {
-              return { label: match[k].label, value: k };
-            });
+
+        if (api) {
+          const match = api.match;
+          if (match)
+            return Object.keys(match)
+              .filter((k) => checkEq(match[k], propInfo))
+              .map((k) => {
+                return { label: match[k].label, value: k };
+              });
         }
       }
       return [];
@@ -319,9 +321,9 @@ export default ({
             Object.keys(filterFuns).filter((k) => {
               return (
                 filterFuns[k].dataModel ===
-                apiDatas[data.propVal || ""].dataModel
+                apiDatas[data.propVal || ""]?.dataModel
               );
-            }).length > 0 && (
+            })?.length > 0 && (
               <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
                 <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
                   <i

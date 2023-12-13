@@ -66,11 +66,11 @@ public class SysMenu extends DbEntity implements ITree {
      */
     public String sysRoleId;
     /**
-     * 链接到配置页
+     * 自定义页面
      */
     public Boolean confPage;
     /**
-     * 配置页面信息
+     * 页面地址
      */
     public String pageLayoutId;
 
