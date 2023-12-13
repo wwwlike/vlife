@@ -55,7 +55,13 @@ export default ({
             setLevel1(undefined);
           }}
         >
-          全部({selected?.length || 0})
+          全部({selected?.length || 0}/(
+          {datas?.reduce(
+            (acc, curr) =>
+              acc + (curr && curr.children ? curr.children?.length : 0),
+            0
+          )}
+          ))
         </div>
 
         {level1Datas?.map((d) => (

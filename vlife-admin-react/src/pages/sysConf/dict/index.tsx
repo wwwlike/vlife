@@ -9,6 +9,10 @@ export default () => {
       title="字典"
       listType="sysDict"
       filterType="sysDictPageReq"
+      tabList={[
+        { tab: "业务字典", itemKey: "state-1", req: { sys: false } },
+        { tab: "系统字典", itemKey: "state1", req: { sys: true } },
+      ]}
       onReq={(d: any) => {
         setReq({ ...d });
       }}
@@ -17,7 +21,7 @@ export default () => {
           title: "新增",
           initData: { code: req?.code },
           actionType: "create",
-          usableMatch: req?.code !== undefined,
+          // usableMatch: req?.code !== undefined,
           saveApi: save,
         },
         {

@@ -16,6 +16,8 @@ import static cn.wwwlike.vlife.dict.Constants.DEFAULT_ORDER_TYPE;
 @Documented
 public @interface VMethod {
 
+    //(待)配置接口的上级接口，那么该接口可不参与系统配置；如save保存，启用停用都始于保存
+
     /**
      *  失效接口
      *  后续版本不在使用,陆续会下架

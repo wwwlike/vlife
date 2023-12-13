@@ -36,6 +36,8 @@ public class SysDictPageReq extends PageQuery<SysDict> {
      */
     public String code;
 
+    public Boolean sys;
+
 //    public Boolean dictType;
 
 }

@@ -43,10 +43,10 @@ export const apiDatas:ApiDatas={
       }
     },
     filter:(data:SysDict[],{code}:{code:string}):SysDict[]=>{ //固定要进行数据过滤的方法
-      if(code){
-        return data.filter(d=>d.code===code&&d.dictType!==true)
-      }else{
+      if(code===undefined||code==="vlife"){
         return data.filter(d=>d.dictType===true)
+      }else {
+        return data.filter(d=>d.code===code&&d.dictType!==true)
       }
     },
     params:{

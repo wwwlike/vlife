@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { ReactNode, useMemo, useRef, useState } from "react";
 import { IdBean } from "@src/api/base";
 import FormPage from "@src/pages/common/formPage";
 import { useNavigate } from "react-router-dom";
@@ -7,11 +7,19 @@ import TablePage, { TablePageProps } from "@src/pages/common/tablePage";
 import { useNiceModal } from "@src/store";
 import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
-import { Button, Space } from "@douyinfe/semi-ui";
+import { Button, Space, Tabs } from "@douyinfe/semi-ui";
 import { useSize } from "ahooks";
 import { VfAction } from "@src/dsl/VF";
 const mode = import.meta.env.VITE_APP_MODE;
 
+//tab页签
+type TableTab = {
+  itemKey: string; //视图编码
+  tab: string; //名称
+  icon?: ReactNode; //图标
+  active?: boolean; //当前页
+  req?: any; //视图过滤条件
+};
 /**
  * 查询列表的布局page组件
  * 适用于弹出层
@@ -20,6 +28,7 @@ export interface ContentProps<T extends IdBean> extends TablePageProps<T> {
   title: string; //页面标题
   filterType: string; //左侧布局查询条件模型
   filterReaction: VfAction[];
+  tabList: TableTab[];
   onReq?: (req: any) => void; //过滤条件回传
 }
 
@@ -33,6 +42,7 @@ const Content = <T extends IdBean>({
   listType,
   editType,
   filterType,
+  tabList,
   req,
   btns,
   onReq,
@@ -42,11 +52,28 @@ const Content = <T extends IdBean>({
   const { user } = useAuth();
   const [tableModel, setTableModel] = useState<FormVo>();
   const confirmModal = useNiceModal("vlifeModal");
+  const [activeKey, setActiveKey] = useState<string>(
+    tabList?.filter((tab) => tab.active === true)?.[0]?.itemKey ||
+      tabList?.[0]?.itemKey ||
+      ""
+  );
   const [formData, setFormData] = useState<any>({});
   // const [model, setModel] = useState<FormVo | undefined>(formVo);
   const tableReq = useMemo(() => {
-    return { ...req, ...formData };
-  }, [req, formData]);
+    if (
+      activeKey &&
+      tabList &&
+      tabList.filter((item) => item.itemKey === activeKey)[0].req
+    ) {
+      return {
+        ...req,
+        ...formData,
+        ...tabList.filter((item) => item.itemKey === activeKey)[0].req,
+      };
+    } else {
+      return { ...req, ...formData };
+    }
+  }, [req, formData, activeKey]);
 
   // const windowWidth = useSize(document.querySelector("body"))?.width;
 
@@ -107,11 +134,10 @@ const Content = <T extends IdBean>({
         } `}
       >
         {/*仿tab标题行(做成配置需要便展示) */}
-        <div className="flex w-full h-12 items-center border-b bg-white ">
+        {/* <div className="flex w-full h-12 items-center border-b bg-white ">
           <div className="text-sm w-28 border flex items-center bg-gray-100 justify-center font-bold rounded-t-md ml-6 mt-2 h-10 border-b-0  ">
             <div className="">{title || tableModel?.name}</div>
           </div>
-          {/* 按钮组 */}
           <div className=" text-base flex flex-1 justify-end space-x-1 pr-4">
             <Space>
               {(user?.superUser || mode === "dev") && tableModel && (
@@ -129,10 +155,23 @@ const Content = <T extends IdBean>({
               )}
             </Space>
           </div>
-        </div>
+        </div> */}
+        {tabList && (
+          <div className=" bg-white  pt-1">
+            <Tabs
+              style={{ height: "36px", paddingLeft: "10px" }}
+              type="card"
+              activeKey={activeKey}
+              tabList={tabList}
+              onChange={(key) => {
+                setActiveKey(key);
+              }}
+            />
+          </div>
+        )}
         {/* 列表行 */}
         <TablePage<T>
-          className="flex-grow "
+          className="flex-grow  "
           width={tableWidth}
           key={listType}
           listType={listType}

@@ -11,7 +11,11 @@ export default () => {
   return (
     <Content
       listType="sysResources"
-      // filterType="sysResourcesPageReq"
+      tabList={[
+        { tab: "待启用", itemKey: "state-1", req: { state: "-1" } },
+        { tab: "已启用", itemKey: "state1", req: { state: "1" } },
+      ]}
+      filterType="sysResourcesPageReq"
       btns={[
         {
           title: "批量启用",

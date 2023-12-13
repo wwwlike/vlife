@@ -539,7 +539,7 @@ const TablePage = <T extends IdBean>({
           (mode === "view" &&
             tableModel.fields.filter((f) => f.listSearch).length === 0),
       })}
-      flex bg-white items-center p-2 border border-b-0  border-gray-100  justify-start  `}
+      flex bg-white items-center p-2 border-gray-100  justify-start  `}
       >
         {/* 1. tableToolBar列表工具栏 */}
         <BtnToolBar<T>

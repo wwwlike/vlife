@@ -329,4 +329,15 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
             }
         });
     }
+
+    /**
+     * 当资源与菜单取消关联那么也清空它和角色的关联
+     */
+    public void clearRoleWithMenuEmpty(){
+        List<SysResources> resources=find(QueryWrapper.of(SysResources.class).isNull("sysMenuId").isNotNull("sysRoleId"));
+        resources.forEach(r->{
+            r.setSysRoleId(null);
+            save(r);
+        });
+    }
 }

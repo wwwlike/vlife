@@ -5,14 +5,13 @@ import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.req.SysMenuPageReq;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.auth.vo.MenuVo;
-import cn.wwwlike.form.service.FormService;
+import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/sysMenu")
 public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
+
+
+  @Autowired
+  public SysResourcesService resourcesService;
+
+
   /**
    * 保存菜单;
    */
@@ -79,15 +84,20 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
     return service.getMenuVos(sysRoleId,appId);
   }
 
-  @Autowired
-  public FormService formService;
 
   /**
    * 菜单资源关联保存
    */
   @PostMapping("/save/menuResourcesDto")
   public MenuResourcesDto saveMenuResourcesDto(@RequestBody MenuResourcesDto dto){
-    return service.save(dto);
+    SysMenu menu=service.findOne(dto.getId());
+    MenuResourcesDto _dto=service.save(dto,true);
+    if(dto.getSysResources_id()!=null&&menu.getSysRoleId()!=null){
+      menu.setSysRoleId(null);
+      service.save(menu);
+    }
+    resourcesService.clearRoleWithMenuEmpty();
+    return _dto;
   }
 
 }

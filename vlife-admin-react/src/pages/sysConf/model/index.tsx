@@ -379,109 +379,25 @@ const Model = () => {
                 </div>
                 <BtnToolBar
                   key={"tableBtn"}
-                  onDataChange={(datas: any[]): void => {
-                    //根据id更新行数据，则可以不强制刷新
-                  }}
+                  onDataChange={(datas: any[]): void => {}}
                   btns={btns}
                   position="page"
                   datas={currEntity ? [currEntity] : []}
                 />
               </div>
-              {/* {entityMenus && entityMenus.length > 0 && (
-                <div className="flex">
-                  <SplitButtonGroup style={{ marginRight: 10 }}>
-                    <Button
-                      icon={<i className="icon-limit-visitors" />}
-                      // theme="solid"
-                      type="primary"
-                      theme="light"
-                    >
-                      功能访问
-                    </Button>
-                    <Dropdown
-                      menu={
-                        entityMenus.map((m) => {
-                          return {
-                            key: "visit" + m.id,
-                            node: "item",
-                            name: m.name,
-                            icon: <SelectIcon read value={m.icon} />,
-                            onClick: () => {
-                              navigate(`${m?.url}?fullTitle=${m?.name}`);
-                            },
-                          };
-                        })
-
-                        // { node: "divider" },
-
-                        // {
-                        //   node: "item",
-                        //   name: "接口绑定",
-                        //   icon: <i className="icon-api" />,
-                        //   onClick: () => {
-                        //     navigate(`/sysConf/resources`);
-                        //   },
-                        // },
-                      }
-                      trigger="click"
-                      position="bottomRight"
-                    >
-                      <Button
-                        style={{
-                          padding: "8px 4px",
-                        }}
-                        theme="light"
-                        type="primary"
-                        icon={<IconTreeTriangleDown />}
-                      ></Button>
-                    </Dropdown>
-                    <i className="icon-help"></i>
-                  </SplitButtonGroup>
-
-                  <SplitButtonGroup style={{ marginRight: 10 }}>
-                    <Button
-                      icon={<i className="icon-api" />}
-                      // theme="solid"
-                      type="primary"
-                      theme="light"
-                    >
-                      权限绑定
-                    </Button>
-                    <Dropdown
-                      menu={entityMenus.map((m) => {
-                        return {
-                          key: "resourcesBand" + m.id,
-                          node: "item",
-                          name: m.name,
-                          icon: <SelectIcon read value={m.icon} />,
-                          onClick: () => {
-                            show(m.id);
-                          },
-                        };
-                      })}
-                      trigger="click"
-                      position="bottomRight"
-                    >
-                      <Button
-                        style={{
-                          padding: "8px 4px",
-                        }}
-                        theme="light"
-                        type="primary"
-                        icon={<IconTreeTriangleDown />}
-                      ></Button>
-                    </Dropdown>
-                    <i className="icon-help"></i>
-                  </SplitButtonGroup>
-                </div>
-              )} */}
             </div>
           )}
 
           {entityType === undefined && tabKey !== "app_empty" && (
-            <div className="inline-block text-center  text-sm  m-2 bg-yellow-50 border  py-2 px-4  border-dashed rounded-md">
-              请选择一个模型进行操作
-            </div>
+            <>
+              <div className="inline-block font-bold   text-center  text-sm  m-2 bg-yellow-50 border  py-2 px-2  border-dashed rounded-md">
+                <i className="icon-chat_open" />
+                已启用用模块
+              </div>
+              <div className="inline-block font-bold text-center  text-sm  m-2 bg-gray-50 border  py-2 px-2  border-dashed rounded-md">
+                待启用模块(没有菜单关联)
+              </div>
+            </>
           )}
 
           {tabKey === "app_empty" && (
