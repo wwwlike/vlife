@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Content from "../../template/content";
 import { remove, save, SysDict, SysDictPageReq } from "@src/api/SysDict";
+import { VF } from "@src/dsl/VF";
 
 export default () => {
   const [req, setReq] = useState<SysDictPageReq>();
@@ -19,20 +20,23 @@ export default () => {
       btns={[
         {
           title: "新增",
-          initData: { code: req?.code },
+          // initData: { code: req?.code },
+          reaction: [VF.then("code").value(req?.code)],
           actionType: "create",
-          // usableMatch: req?.code !== undefined,
+          usableMatch: (...datas: any[]) =>
+            req?.code === undefined ? "请选择一个字典类目" : true,
           saveApi: save,
         },
         {
           title: "修改",
           actionType: "edit",
+          usableMatch: { sys: false },
           saveApi: save,
         },
         {
           title: "删除",
           actionType: "api",
-          multiple: true,
+          usableMatch: { sys: false },
           saveApi: remove,
           onSaveBefore: (data: SysDict[]) => data.map((d) => d.id),
         },

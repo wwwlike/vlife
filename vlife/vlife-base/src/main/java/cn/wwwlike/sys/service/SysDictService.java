@@ -31,14 +31,15 @@ import java.util.List;
 @Service
 public class SysDictService extends VLifeService<SysDict, SysDictDao> {
 
-
-
+    /**
+     * 创建业务型在字段上单独注解的业务型字典
+     */
     public void createByField(String code,String name){
         if(find("code",code).size()==0){
             SysDict dict=new SysDict();
             dict.setCode(code);
             dict.setTitle(name);
-            dict.setTitle(name);
+            dict.setSys(false);
             dict.setDictType(true);
             save(dict);
         }

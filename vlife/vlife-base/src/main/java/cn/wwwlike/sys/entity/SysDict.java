@@ -28,8 +28,7 @@ import javax.persistence.Table;
 
 /**
  * 字典表
- * 所有字典大类来源于CT及子类里的定义；
- * 字典
+ * 待：树形字典/对字典分类粒度
  * @author xiaoyu
  * @date 2022/6/17
  */
@@ -39,7 +38,7 @@ import javax.persistence.Table;
 @VClazz(orders = "code_asc,sort_asc")
 public class SysDict extends DbEntity {
     /**
-     * 字典分类
+     * 是否分类
      */
     public boolean dictType;
     /**

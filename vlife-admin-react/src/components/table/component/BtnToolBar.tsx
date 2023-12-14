@@ -6,6 +6,7 @@ import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
 import { objectIncludes } from "@src/util/func";
 import { VFBtn } from "../types";
+import { IconAlertCircle } from "@douyinfe/semi-icons";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|
@@ -378,10 +379,15 @@ export default <T extends IdBean>({
                 position === "tableLine",
             })} ${btn.className}`}
             key={key}
-            icon={position === "tableLine" ? undefined : btn.icon}
+            icon={
+              position === "tableLine" ? undefined : btn.tooltip ? (
+                <IconAlertCircle />
+              ) : (
+                btn.icon
+              )
+            }
             disabled={btn.disabled}
           >
-            {/* {JSON.stringify(btn.disabled)} */}
             {btnTitle(btn)}
           </Btn>
         );
