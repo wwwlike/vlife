@@ -1,11 +1,13 @@
 import react, { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Avatar,
   Button,
   Dropdown,
   SideSheet,
   SplitButtonGroup,
   TabPane,
   Tabs,
+  Tooltip,
 } from "@douyinfe/semi-ui";
 import { FormVo, list, save } from "@src/api/Form";
 import { renderIcon } from "@src/pages/layout/components/sider";
@@ -162,17 +164,9 @@ const Model = () => {
       const menuLength: number = menus.filter((m) => m.formId === e.id).length;
 
       return (
-        <Link
-          className="!cursor-pointer"
-          key={"card" + e.entityType}
-          to={`/sysConf/model?type=${e.type}`}
-        >
-          <div
-            key={e.entityType}
-            onClick={() => {
-              setVisible(true);
-            }}
-            className={`flex !cursor-pointer group relative  w-full h-24 border items-center justify-center
+        <div
+          key={e.entityType}
+          className={`flex group relative  w-full h-24 border items-center justify-center
          transition duration-500
 
        
@@ -183,43 +177,74 @@ const Model = () => {
           "border-gray-400 !bg-blue-100 font-bold": entityType === e.entityType,
         })}
        group hover:bg-blue-50  border-dashed rounded-lg p-2 text-center  `}
+        >
+          <div
+            className="group-hover:font-bold cursor-pointer"
+            onClick={() => navigate(`/sysConf/model?type=${e.type}`)}
           >
-            <div className="group-hover:font-bold ">
-              <p>{e.title}</p>
-              <p>{e.type}</p>
-            </div>
-            <Dropdown
-              stopPropagation
-              showTick={true}
-              render={
-                <Dropdown.Menu>
-                  {apps?.map((a) => (
-                    <Dropdown.Item
-                      active={a.code === tabKey}
-                      onClick={() => {
-                        if (a.code !== tabKey) {
-                          setEntityType(undefined);
-                          save({ ...e, sysMenuId: a.id }).then((d) => {
-                            entityLoad();
-                          });
-                        }
-                      }}
-                      key={e.id + "change" + a.id}
-                    >
-                      {a.name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              }
-            >
-              <i
-                className={`${classNames({
-                  hidden: tabKey !== "app_empty",
-                })} absolute  right-1 bottom-1 group-hover:block icon-out`}
-              />
-            </Dropdown>
+            <p>{e.title}</p>
+            <p>{e.type}</p>
           </div>
-        </Link>
+          <div className=" group-hover:animate-bounce  absolute right-1 bottom-1 group-hover:block ">
+            <Tooltip
+              content={`${
+                1 +
+                (e?.req?.length || 0) +
+                (e?.vo?.length || 0) +
+                (e?.bean?.length || 0) +
+                (e?.dto?.length || 0)
+              }个相关模型可配`}
+            >
+              <Avatar
+                className="hover:bg-blue-500"
+                size="extra-extra-small"
+                alt="User"
+                onClick={() => {
+                  setVisible(true);
+                  navigate(`/sysConf/model?type=${e.type}`);
+                }}
+              >
+                {1 +
+                  (e?.req?.length || 0) +
+                  (e?.vo?.length || 0) +
+                  (e?.bean?.length || 0) +
+                  (e?.dto?.length || 0)}
+              </Avatar>
+            </Tooltip>
+          </div>
+
+          <Dropdown
+            stopPropagation
+            showTick={true}
+            render={
+              <Dropdown.Menu>
+                <Dropdown.Title>所属应用</Dropdown.Title>
+                {apps?.map((a) => (
+                  <Dropdown.Item
+                    active={a.code === tabKey}
+                    onClick={() => {
+                      if (a.code !== tabKey) {
+                        setEntityType(undefined);
+                        save({ ...e, sysMenuId: a.id }).then((d) => {
+                          entityLoad();
+                        });
+                      }
+                    }}
+                    key={e.id + "change" + a.id}
+                  >
+                    {a.name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            }
+          >
+            <i
+              className={`${classNames({
+                hidden: tabKey !== "app_empty",
+              })} absolute  left-1 bottom-1 group-hover:block icon-out`}
+            />
+          </Dropdown>
+        </div>
       );
     },
     [entityType, apps, tabKey]
@@ -248,6 +273,22 @@ const Model = () => {
 
   const btns = useMemo((): VFBtn[] => {
     const _btns: VFBtn[] = [
+      {
+        className: "modeManage !bg-red-100  ",
+        title: `模型管理(${
+          1 +
+          (currEntity?.req?.length || 0) +
+          (currEntity?.vo?.length || 0) +
+          (currEntity?.bean?.length || 0) +
+          (currEntity?.dto?.length || 0)
+        })`,
+        disabledHide: false,
+        actionType: "click",
+        icon: <i className="icon-task-model-three" />,
+        onClick: () => {
+          setVisible(true);
+        },
+      },
       {
         className: "tscode",
         title: "前端代码",

@@ -171,9 +171,9 @@ const FieldSelect = ({
                   // style={{ width: "80px" }}
                   id={field.fieldName}
                   key={field.fieldName}
-                  className={` relative  group flex space-x-2 items-center w-10 p-2
-                       hover:border hover:rounded-md hover:border-blue-500 border-dashed
-                       `}
+                  className={`  relative  z-10  group flex space-x-2 items-center w-10 p-2
+                        hover:border hover:rounded-md hover:border-blue-500 border-dashed
+                        `}
                   data-grid={{
                     ...field,
                     x: column2Flag ? index % 2 : 1,
@@ -186,10 +186,12 @@ const FieldSelect = ({
                     count={[mode === Mode.list ? field.listSort : field.sort]}
                   />
                   <Tag
-                    className=" cursor-pointer "
+                    className=" cursor-pointer z-20   "
                     style={{ width: column2Flag ? "100px" : "100px" }}
                     size="large"
-                    onClick={() => {
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      // 处理按钮的点击事件
                       onSelect(field.fieldName);
                     }}
                     color="blue"

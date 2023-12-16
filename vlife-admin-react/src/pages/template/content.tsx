@@ -28,7 +28,8 @@ export interface ContentProps<T extends IdBean> extends TablePageProps<T> {
   title: string; //页面标题
   filterType: string; //左侧布局查询条件模型
   filterReaction: VfAction[];
-  tabList: TableTab[];
+  customView: boolean; //自定义视图
+  tabList: TableTab[]; //true表示能和用户添加视图 plus版本有该入口
   onReq?: (req: any) => void; //过滤条件回传
 }
 
@@ -43,6 +44,7 @@ const Content = <T extends IdBean>({
   editType,
   filterType,
   tabList,
+  customView,
   req,
   btns,
   onReq,
@@ -156,7 +158,7 @@ const Content = <T extends IdBean>({
             </Space>
           </div>
         </div> */}
-        {tabList && (
+        {(tabList || customView === true) && (
           <div className=" bg-white  pt-1">
             <Tabs
               style={{ height: "36px", paddingLeft: "10px" }}

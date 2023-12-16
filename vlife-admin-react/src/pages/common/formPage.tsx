@@ -80,7 +80,6 @@ const FormPage = <T extends IdBean>({
   //模型信息提取，模型信息返回
   useEffect(() => {
     if (modelInfo) {
-      console.log(modelInfo);
       setModel({ ...modelInfo });
     }
   }, [JSON.stringify(modelInfo)]);

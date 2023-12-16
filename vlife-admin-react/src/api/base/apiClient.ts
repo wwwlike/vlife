@@ -186,7 +186,7 @@ instance.interceptors.response.use(
     if (err.code === "ERR_NETWORK") {
       //服务端连接异常
       Notification.error({
-        content: `服务端异常`,
+        content: `服务端未启动`,
       });
     } else if (err.code === "ERR_CANCELED") {
       //请求取消
