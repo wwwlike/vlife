@@ -13,8 +13,6 @@ import { useUpdateEffect } from "ahooks";
 import { ParamsInfo, selectObj } from "../compConf";
 import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
-import { Field } from "@formily/core";
-import { frFR } from "handsontable/i18n";
 
 /**
  * 接口入参设置

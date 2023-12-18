@@ -20,6 +20,7 @@ export default () => {
       {/* <IconContainer></IconContainer> */}
       <Content<SysUser>
         listType="sysUser"
+        // customView={true}
         // filterType="sysUserPageReq"
         reaction={[
           // VF.field("name")
