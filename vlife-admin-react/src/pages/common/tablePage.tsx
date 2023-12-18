@@ -19,8 +19,8 @@ import {
 } from "@douyinfe/semi-icons";
 import apiClient from "@src/api/base/apiClient";
 import { VfAction } from "@src/dsl/VF";
-import { Empty, Pagination } from "@douyinfe/semi-ui";
 import TagFilter from "@src/components/table/component/TagFilter";
+import { Empty, Pagination } from "@douyinfe/semi-ui";
 import { orderObj } from "./orderPage";
 import { useSize } from "ahooks";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
@@ -28,9 +28,8 @@ import { IllustrationConstruction } from "@douyinfe/semi-illustrations";
 import classNames from "classnames";
 import VfSearch from "@src/components/VfSearch";
 import { useNavigate } from "react-router-dom";
-import { validate } from "@src/components/form";
 import { VFBtn } from "@src/components/table/types";
-import { ConditionGroup, FormItemCondition, where } from "@src/dsl/base";
+import { FormItemCondition, where } from "@src/dsl/base";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 // 后端排序字符串格式创建
@@ -67,6 +66,7 @@ export interface TablePageProps<T extends IdBean> extends ListProps<T> {
   req: any; //查询条件obj
   selected: T[]; //前选中的行数据(relation组件使用)
   design: true | undefined; //true则是设计器模式
+  conditionJson?: string; //视图过滤的条件
   //预删除
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
@@ -86,6 +86,7 @@ const TablePage = <T extends IdBean>({
   editType,
   req,
   model,
+  conditionJson,
   dataSource,
   mode = "normal",
   width,
@@ -115,8 +116,8 @@ const TablePage = <T extends IdBean>({
     fkObj: any; //外键数据
     parentObj: any; //code关联数据
   }>();
-  const [queryBuilderCondition, setQueryBuilderCondition] =
-    useState<ConditionGroup[]>(); //builder查询条件
+  // const [queryBuilderCondition, setQueryBuilderCondition] =
+  //   useState<ConditionGroup[]>(); //builder查询条件
   const [columnWheres, setColumnWheres] = useState<Partial<where>[]>([]); //字段的查询条件
   //支持嵌套的查询条件组装inputSearch和columnFilter
   const [condition, setCondition] = useState<
@@ -125,6 +126,11 @@ const TablePage = <T extends IdBean>({
     orAnd: "or",
     where: [],
   });
+  const [visible, setVisible] = useState(false); //高级查询
+  const change = () => {
+    setVisible(!visible);
+  };
+
   useEffect(() => {
     if (model) setTableModel(model);
   }, [model]);
@@ -227,11 +233,16 @@ const TablePage = <T extends IdBean>({
   const query = useCallback(() => {
     const reqParams = {
       ...req,
-      conditionGroups: queryBuilderCondition,
+      conditionGroups: req.conditionGroups
+        ? req.conditionGroups
+        : conditionJson
+        ? JSON.parse(conditionJson)
+        : undefined,
       conditions: searchAndColumnCondition,
       order: { orders: orderStr(order) },
       pager: pager,
     };
+    // alert(reqParams.conditionGroups);
     if (pageLoad) {
       pageLoad(reqParams)
         .then((data: Result<PageVo<T>>) => {
@@ -257,59 +268,20 @@ const TablePage = <T extends IdBean>({
   }, [
     JSON.stringify(req),
     order,
-    queryBuilderCondition,
+    conditionJson,
     searchAndColumnCondition,
     JSON.stringify(tableModel),
     JSON.stringify(pageLoad),
     JSON.stringify(pager),
   ]);
 
-  // //给访问接口的按钮添加缺失的默认属性
-  // const addMissingButtonAttributes = useCallback(
-  //   (b: VFBtn): VFBtn => {
-  //     if (b.actionType !== "custom") {
-  //       if (
-  //         b.model === undefined &&
-  //         b.saveApi &&
-  //         (b.actionType === "create" || b.actionType === "edit")
-  //       ) {
-  //         //1从接口入参名称当做模型名称
-  //         // const paramNamesFunction = getParamNames(b.saveApi);
-  //         // const paramNames = paramNamesFunction();
-  //         // b.model = paramNames[0];
-  //         b.model = tableModel?.entityType;
-  //         alert(b.model);
-  //       }
-  //       return {
-  //         ...b,
-  //         submitConfirm:
-  //           b.submitConfirm !== undefined
-  //             ? b.submitConfirm
-  //             : b.actionType === "api",
-  //         onSubmitFinish:
-  //           b.onSubmitFinish ||
-  //           (() => {
-  //             query();
-  //             setSelected([]);
-  //           }), //提交完成刷新列表
-  //         // submitClose: b.submitClose || true, //默认触发关闭
-  //       };
-  //     } else {
-  //       return b;
-  //     }
-  //   },
-  //   [query, curr]
-  // );
-  // useEffect(() => {
-  //   alert(JSON.stringify(curr));
-  // }, [curr]);
   useEffect(() => {
     if (dataSource === undefined) query();
   }, [
     dataSource,
     JSON.stringify(req),
     order,
-    queryBuilderCondition,
+    conditionJson,
     searchAndColumnCondition,
     JSON.stringify(tableModel),
     JSON.stringify(pager),
@@ -520,16 +492,10 @@ const TablePage = <T extends IdBean>({
     }
   }, [pageData, tableModel, dataSource]);
 
-  // return (
-  //   <>
-  //     {tableModel?.entityType}|{JSON.stringify(totalBtns?.[0].model)}
-  //   </>
-  // );
-
   return tableModel && apiError === undefined ? (
     <div
       ref={ref}
-      className={`${className} h-full relative flex flex-col text-sm  `}
+      className={`${className} relative h-full flex flex-col text-sm  `}
     >
       <div
         className={`
@@ -591,7 +557,6 @@ const TablePage = <T extends IdBean>({
             setColumnWheres(columnWheres.filter((c) => c.fieldId !== fieldId));
           }}
         />
-        {/* )} */}
       </div>
       <Table<T>
         className={"flex justify-center flex-grow"}
@@ -658,8 +623,6 @@ const TablePage = <T extends IdBean>({
           </div>
         </div>
       )}
-
-      {/* {JSON.stringify(searchAndColumnCondition)} */}
       {model === undefined && appMode === "dev" && (
         <div className=" absolute  z-50 top-4  right-2 font-bold text-blue-500 cursor-pointer">
           <IconSetting

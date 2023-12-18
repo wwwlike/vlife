@@ -64,7 +64,7 @@ export interface where {
   /** 动态值的code */
   fixCode: string;
 }
-//简单条件分组 where内部是and, where之间是or
+//简单条件分组 where内部是and(且条件), where之间是or(或条件)
 export interface ConditionGroup {
   where: Partial<where>[];
 }

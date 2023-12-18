@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 import { Button, Tooltip, Typography } from "@douyinfe/semi-ui";
 import { IdBean, Result } from "@src/api/base";
@@ -19,6 +19,7 @@ type BtnToolBarPosition = "tableToolbar" | "tableLine" | "formFooter" | "page";
  * 区块按钮组定义
  */
 export interface BtnToolBarProps<T extends IdBean> {
+  btnType?: "button" | "link"; //按钮类型
   className?: string;
   btns: VFBtn[]; //按钮对象
   formModel?: string; //传入，则会对btns根据model进行过滤
@@ -39,6 +40,7 @@ export interface BtnToolBarProps<T extends IdBean> {
 export default <T extends IdBean>({
   datas,
   btns,
+  btnType = "button",
   position,
   className,
   formModel,
@@ -140,7 +142,7 @@ export default <T extends IdBean>({
 
   // 按钮名称
   const btnTitle = useCallback(
-    (btn: VFBtn): string => {
+    (btn: VFBtn): string | ReactNode => {
       //对于编辑类型按钮(actionType=edit)在表单页且按钮模型和表单模型一致，则名称改为保存
       if (
         btn.actionType !== "api" &&
@@ -363,7 +365,7 @@ export default <T extends IdBean>({
       {currBtns.map((btn, index) => {
         // const tooltip = btnUsableMatch(btn);
         // const disabled = typeof tooltip === "boolean" ? !tooltip : true;
-        const Btn: any = position === "tableLine" ? Text : Button;
+        const Btn: any = btnType === "button" ? Button : Text;
         const key = `${position}btn${index}`;
         const BtnComp = (
           <Btn
@@ -379,13 +381,7 @@ export default <T extends IdBean>({
                 position === "tableLine",
             })} ${btn.className}`}
             key={key}
-            icon={
-              position === "tableLine" ? undefined : btn.tooltip ? (
-                <IconAlertCircle />
-              ) : (
-                btn.icon
-              )
-            }
+            icon={btnType === "link" ? undefined : btn.icon}
             disabled={btn.disabled}
           >
             {btnTitle(btn)}

@@ -16,7 +16,7 @@ import {  ReactNode } from 'react';
 export type actionType= "create"|"edit"|"api"|"click";
 
 export interface VFBtn{
-  title:string;//按钮名称 ●
+  title:string|ReactNode;//按钮名称 ●
   tooltip?:string;// 不可用时候的提醒
   disabled?:boolean;// 当前是否不可用
   icon?:ReactNode;

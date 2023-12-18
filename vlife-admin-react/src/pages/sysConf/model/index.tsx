@@ -274,7 +274,7 @@ const Model = () => {
   const btns = useMemo((): VFBtn[] => {
     const _btns: VFBtn[] = [
       {
-        className: "modeManage !bg-red-100  ",
+        className: "modeManage",
         title: `模型管理(${
           1 +
           (currEntity?.req?.length || 0) +
@@ -291,7 +291,7 @@ const Model = () => {
       },
       {
         className: "tscode",
-        title: "前端代码",
+        title: "代码生成",
         disabledHide: false,
         actionType: "click",
         icon: <IconTerminal />,
@@ -303,10 +303,7 @@ const Model = () => {
       },
       {
         className: "createMenu",
-        title:
-          entityMenus === undefined || entityMenus.length === 0
-            ? "创建菜单"
-            : "添加功能",
+        title: "创建菜单",
         disabledHide: true,
         actionType: "create",
         model: "sysMenu",

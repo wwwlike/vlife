@@ -318,6 +318,7 @@ const TableIndex = <T extends IdBean>({
                 onDataChange={() => {}}
                 position="tableLine"
                 line={index}
+                btnType="link"
                 btns={btns}
                 datas={[{ ...record, tableSort: index }]}
                 {...props}

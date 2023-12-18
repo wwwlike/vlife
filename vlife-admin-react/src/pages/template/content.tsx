@@ -2,23 +2,21 @@ import React, { ReactNode, useMemo, useRef, useState } from "react";
 import { IdBean } from "@src/api/base";
 import FormPage from "@src/pages/common/formPage";
 import { useNavigate } from "react-router-dom";
-import { IconSetting } from "@douyinfe/semi-icons";
 import TablePage, { TablePageProps } from "@src/pages/common/tablePage";
 import { useNiceModal } from "@src/store";
 import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
-import { Button, Space, Tabs } from "@douyinfe/semi-ui";
 import { useSize } from "ahooks";
 import { VfAction } from "@src/dsl/VF";
-const mode = import.meta.env.VITE_APP_MODE;
+import { Tabs } from "@douyinfe/semi-ui";
 
 //tab页签
 type TableTab = {
-  itemKey: string; //视图编码
-  tab: string; //名称
+  itemKey: string; //视图编码(唯一)
+  tab: string | ReactNode; //名称
   icon?: ReactNode; //图标
   active?: boolean; //当前页
-  req?: any; //视图过滤条件
+  req?: any | { field: string; opt: string; value: Object }[]; //视图过滤条件(简单方式)
 };
 /**
  * 查询列表的布局page组件
@@ -28,7 +26,6 @@ export interface ContentProps<T extends IdBean> extends TablePageProps<T> {
   title: string; //页面标题
   filterType: string; //左侧布局查询条件模型
   filterReaction: VfAction[];
-  customView: boolean; //自定义视图
   tabList: TableTab[]; //true表示能和用户添加视图 plus版本有该入口
   onReq?: (req: any) => void; //过滤条件回传
 }
@@ -44,7 +41,6 @@ const Content = <T extends IdBean>({
   editType,
   filterType,
   tabList,
-  customView,
   req,
   btns,
   onReq,
@@ -57,21 +53,31 @@ const Content = <T extends IdBean>({
   const [activeKey, setActiveKey] = useState<string>(
     tabList?.filter((tab) => tab.active === true)?.[0]?.itemKey ||
       tabList?.[0]?.itemKey ||
-      ""
+      "all"
   );
   const [formData, setFormData] = useState<any>({});
-  // const [model, setModel] = useState<FormVo | undefined>(formVo);
+
   const tableReq = useMemo(() => {
-    if (
-      activeKey &&
-      tabList &&
-      tabList.filter((item) => item.itemKey === activeKey)[0].req
-    ) {
-      return {
-        ...req,
-        ...formData,
-        ...tabList.filter((item) => item.itemKey === activeKey)[0].req,
-      };
+    //自定义视图的查询方式
+    const customViewReq = tabList?.filter(
+      (item) => item.itemKey === activeKey
+    )?.[0]?.req;
+    if (activeKey && tabList && customViewReq) {
+      if (Array.isArray(customViewReq)) {
+        return {
+          ...req,
+          ...formData,
+          ...customViewReq,
+          conditionGroups: [{ where: customViewReq }],
+        };
+      } else {
+        //数组
+        return {
+          ...req,
+          ...formData,
+          ...customViewReq,
+        };
+      }
     } else {
       return { ...req, ...formData };
     }
@@ -135,30 +141,7 @@ const Content = <T extends IdBean>({
           filterOpen ? "pl-1" : ""
         } `}
       >
-        {/*仿tab标题行(做成配置需要便展示) */}
-        {/* <div className="flex w-full h-12 items-center border-b bg-white ">
-          <div className="text-sm w-28 border flex items-center bg-gray-100 justify-center font-bold rounded-t-md ml-6 mt-2 h-10 border-b-0  ">
-            <div className="">{title || tableModel?.name}</div>
-          </div>
-          <div className=" text-base flex flex-1 justify-end space-x-1 pr-4">
-            <Space>
-              {(user?.superUser || mode === "dev") && tableModel && (
-                <Button
-                  onClick={() => {
-                    navigate(
-                      `/sysConf/model?type=${tableModel?.entityType}&goBack=true`
-                    );
-                  }}
-                  theme="light"
-                  icon={<IconSetting />}
-                >
-                  配置
-                </Button>
-              )}
-            </Space>
-          </div>
-        </div> */}
-        {(tabList || customView === true) && (
+        {tabList && tabList.length > 0 && (
           <div className=" bg-white  pt-1">
             <Tabs
               style={{ height: "36px", paddingLeft: "10px" }}
@@ -166,7 +149,9 @@ const Content = <T extends IdBean>({
               activeKey={activeKey}
               tabList={tabList}
               onChange={(key) => {
-                setActiveKey(key);
+                if (key !== "add") {
+                  setActiveKey(key);
+                }
               }}
             />
           </div>
@@ -209,7 +194,4 @@ const Content = <T extends IdBean>({
   );
 };
 
-// Content.header = function ToolbarHeader(props: any) {
-//   return <div className={`toolbar-header ${props.type}`}>{props.title}</div>;
-// };
 export default Content;
