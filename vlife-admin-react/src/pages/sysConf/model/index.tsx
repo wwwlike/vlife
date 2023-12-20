@@ -167,9 +167,7 @@ const Model = () => {
         <div
           key={e.entityType}
           className={`flex group relative  w-full h-24 border items-center justify-center
-         transition duration-500
-
-       
+         transition duration-500 hover:-translate-y-1
         ${classNames({
           "bg-yellow-50": menuLength > 0,
           "bg-gray-50": menuLength === 0,

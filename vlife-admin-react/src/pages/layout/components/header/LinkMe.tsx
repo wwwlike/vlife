@@ -6,7 +6,7 @@ export default ({ className }: { className?: string }) => {
     <div className={`${className} flex`}>
       <Button
         theme="borderless"
-        icon={<i className="iconfont icon-qq text-xl text-blue-500 " />}
+        icon={<i className=" icon-qq text-xl text-blue-500 " />}
         style={{
           color: "var(--semi-color-text-2)",
           marginRight: "12px",

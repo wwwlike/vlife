@@ -13,6 +13,7 @@ import { useUpdateEffect } from "ahooks";
 import { ParamsInfo, selectObj } from "../compConf";
 import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
+import { _PageLabel } from "./ObjectSetting";
 
 /**
  * 接口入参设置
@@ -82,7 +83,7 @@ export default ({
     <>
       {paramInfo.fromField === undefined && (
         <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-          <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-1 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
+          {/* <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-1 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
             <label>
               <i
                 style={{ fontSize: "14px" }}
@@ -99,7 +100,18 @@ export default ({
                 <span className=" font-bold text-red-600">*</span>
               )}
             </label>
-          </div>
+          </div> */}
+          <_PageLabel
+            // label={paramInfo.label}
+
+            // must={paramInfo.must}
+            {...paramInfo}
+            remark={
+              paramInfo.remark ||
+              `组件属性:${paramName};数据类型:${paramInfo.dataModel}`
+            }
+            icon={<i className={` text-red-400  icon-laptop_mac  `} />}
+          />
           {/* 1. 基础数据采用选项方式录入 */}
           {paramInfo.options ? (
             <>
@@ -197,8 +209,8 @@ export default ({
       )}
       {paramInfo.fromField === true && (
         <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-          <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-1 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
-            <label>
+          {/* <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-1 inline-block align-middle leading-5 tracking-normal flex-shrink-0"> */}
+          {/* <label>
               <i
                 style={{ fontSize: "14px" }}
                 className={` text-red-400 pr-2   entryIcon icon icon-laptop_mac z-40 `}
@@ -211,7 +223,13 @@ export default ({
                 paramInfo.label
               )}
             </label>
-          </div>
+          </div> */}
+          <_PageLabel
+            label={paramInfo.label}
+            remark={paramInfo.label}
+            must={paramInfo.must}
+            icon={<i className={` text-red-400  icon-laptop_mac  `} />}
+          />
           {formVo && (
             <Select
               showClear

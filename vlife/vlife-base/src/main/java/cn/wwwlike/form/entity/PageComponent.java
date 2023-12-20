@@ -14,7 +14,7 @@ import static java.awt.SystemColor.text;
 
 /**
  * 单元组件信息
- * 页面关联的组件设置信息
+ * 单个组件的配置信息
  */
 @Entity
 @Table(name="page_component")

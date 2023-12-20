@@ -35,7 +35,7 @@ export interface ApiDatas{
 //组件组成信息
 export interface CompInfo{
   label:string; //组件名称
-  icon?:string,//图标
+  icon?:ReactNode|string,//图标
   component:any,//组件
   dataType?:DataType // onDataChange返回类型
   dataModel?:DataModel|string, // 返回数据明细

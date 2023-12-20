@@ -1,5 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Select } from "@douyinfe/semi-ui";
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Select, Tooltip } from "@douyinfe/semi-ui";
 import { PageApiParam } from "@src/api/PageApiParam";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
 import { DataModel, DataType, sourceType } from "@src/dsl/base";
@@ -38,7 +44,33 @@ const checkEq = (
     a.dataType === b.dataType
   );
 };
-
+export const _PageLabel = ({
+  label,
+  icon,
+  remark,
+  must,
+}: {
+  label: string;
+  remark?: string;
+  icon?: ReactNode;
+  must?: boolean;
+}) => {
+  return (
+    <div className="text-sm  items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
+      {icon}
+      {remark ? (
+        <Tooltip content={remark}>
+          <label>{label}</label>
+        </Tooltip>
+      ) : (
+        <label>
+          {label}
+          {must && <span className=" font-bold text-red-600">*</span>}
+        </label>
+      )}
+    </div>
+  );
+};
 //接口资产定义
 const VfApis = apiDatas;
 export default ({
@@ -231,13 +263,15 @@ export default ({
             apiOptionList &&
             apiOptionList.length !== 1 && (
               <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-                <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
-                  <i
-                    style={{ fontSize: "14px" }}
-                    className={` text-red-400 pr-2   entryIcon icon icon-api z-40 `}
-                  />
-                  <label>{propInfo.label}</label>
-                </div>
+                <_PageLabel
+                  {...propInfo}
+                  remark={
+                    propInfo.remark ||
+                    `组件属性:${propName};数据类型:${propInfo.dataType}=>${propInfo.dataModel}`
+                  }
+                  icon={<i className={`icon-api`} />}
+                />
+
                 {apiOptionList.length > 0 ? (
                   <Select
                     optionList={apiOptionList}
@@ -265,13 +299,23 @@ export default ({
             matchOptionList(data.propVal) &&
             matchOptionList(data.propVal).length > 1 && (
               <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-                <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
+                {/* <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
                   <i
                     style={{ fontSize: "14px" }}
                     className={` text-red-400 pr-2   entryIcon icon icon-knowledge-recycle z-40 `}
                   />
-                  <label>适配转换</label>
-                </div>
+                  <label></label>
+                </div> */}
+                <_PageLabel
+                  label={"适配转换"}
+                  remark={
+                    "选择的接口出参与属性结构不一致,请转换方法需选择转换方法(`ApiDatas.ts->match`)"
+                  }
+                  must={true}
+                  icon={
+                    <i className={` text-red-400   icon-knowledge-recycle  `} />
+                  }
+                />
                 <Select
                   optionList={matchOptionList(data.propVal)}
                   value={data.relateVal}
@@ -325,13 +369,18 @@ export default ({
               );
             })?.length > 0 && (
               <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-                <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
+                {/* <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
                   <i
                     style={{ fontSize: "14px" }}
                     className={` text-red-400 pr-2   entryIcon icon icon-filter_list z-40 `}
                   />
                   <label>范围筛选</label>
-                </div>
+                </div> */}
+                <_PageLabel
+                  label={"数据筛选"}
+                  remark={"按照filter.ts里配置筛选"}
+                  icon={<i className={`text-red-400 icon-filter_list  `} />}
+                />
                 <Select
                   showClear
                   style={{ width: "90%" }}

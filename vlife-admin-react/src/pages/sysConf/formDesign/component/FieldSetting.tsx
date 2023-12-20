@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Dropdown } from "@douyinfe/semi-ui";
+import { Dropdown } from "@douyinfe/semi-ui";
 import Label from "@douyinfe/semi-ui/lib/es/form/label";
 import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
@@ -92,18 +92,23 @@ export default ({
       {/* 1. 选择组件 */}
       <div className="flex items-center space-x-4 w-full mt-2">
         <div>
-          <SelectIcon
-            size="large"
-            read
-            value={compDatas[field.x_component]?.icon}
-          />
+          {compDatas[field.x_component].icon &&
+            (typeof compDatas[field.x_component].icon === "string" ? (
+              <SelectIcon
+                size="large"
+                read
+                value={compDatas[field.x_component]?.icon as string}
+              />
+            ) : (
+              <>{compDatas[field.x_component]?.icon}</>
+            ))}
         </div>
         <div>
           <Label>{compDatas[field.x_component]?.label}</Label>
         </div>
         <div className=" absolute right-0">
           <Dropdown
-            trigger={"click"}
+            trigger={"hover"}
             clickToHide
             render={
               <Dropdown.Menu>
@@ -117,11 +122,15 @@ export default ({
                           onDataChange({ x_component: component.key || "" });
                         }}
                         icon={
-                          <SelectIcon
-                            size="large"
-                            read
-                            value={component.icon}
-                          />
+                          typeof component.icon === "string" ? (
+                            <SelectIcon
+                              size="large"
+                              read
+                              value={component.icon}
+                            />
+                          ) : (
+                            <>{component.icon}</>
+                          )
                         }
                       >
                         {component.label}
@@ -131,11 +140,7 @@ export default ({
               </Dropdown.Menu>
             }
           >
-            <Button
-              icon={
-                <SelectIcon size="large" read value={"IconLoopTextStroked"} />
-              }
-            ></Button>
+            <i className="cursor-pointer font-thin  icon-change-member text-2xl hover:text-blue-500 hover:bg-slate-50" />
           </Dropdown>
         </div>
       </div>

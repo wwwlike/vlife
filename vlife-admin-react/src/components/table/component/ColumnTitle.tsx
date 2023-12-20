@@ -56,8 +56,8 @@ const ColumnTitle = ({
           <SelectIcon
             size="small"
             read
-            value={FormComponents[field.x_component]?.icon}
-          ></SelectIcon>
+            value={FormComponents[field.x_component]?.icon as string}
+          />
         )}
         {mouseOver === true && FormComponents[field.x_component]?.icon && (
           <IconSort />

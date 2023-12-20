@@ -14,6 +14,7 @@ import { CompPropInfo, selectObj } from "../compConf";
 import { FormVo } from "@src/api/Form";
 import VfImage from "@src/components/VfImage";
 import { FormFieldVo } from "@src/api/FormField";
+import { _PageLabel } from "./ObjectSetting";
 
 /**
  * 基础数据设置
@@ -182,7 +183,13 @@ export default ({
 
       {propInfo.fromField === true && (
         <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-          <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-1 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
+          <_PageLabel
+            label={propInfo.label}
+            must={propInfo.must}
+            remark={propInfo.remark || JSON.stringify(propInfo)}
+            icon={<i className="icon-laptop_mac" />}
+          />
+          {/* <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-1 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
             <label>
               <i
                 style={{ fontSize: "14px" }}
@@ -196,7 +203,7 @@ export default ({
                 propInfo.label
               )}
             </label>
-          </div>
+          </div> */}
           {formVo && (
             <Select
               showClear

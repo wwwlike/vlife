@@ -12,7 +12,7 @@ interface GroupLabelProps {
 export default ({ text, className, icon, desc }: GroupLabelProps) => {
   return (
     <div className={` relative  p  ${className} flex h-7 m-0 items-end  `}>
-      <div className=" border-2 border-blue-400 mr-2 rounded-md" />
+      <div className=" border-2 h-full border-blue-400 mr-2 rounded-md" />
       <div className=" font-bold font-sans text-base">
         {icon} {text}
       </div>
