@@ -15,6 +15,8 @@ import BtnToolBar from "./component/BtnToolBar";
 import { where } from "@src/dsl/base";
 import { VFBtn } from "./types";
 import console from "console";
+import classNames from "classnames";
+import dict from "@src/pages/sysConf/dict";
 
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
@@ -222,39 +224,64 @@ const TableIndex = <T extends IdBean>({
           m["render"] = (text, record, index) => {
             if (text === "" || text === null || text === undefined) {
               return "-";
-            }
-            return dicts[dictCode || "vlife"] &&
-              dicts[dictCode || "vlife"].data ? (
-              dicts[dictCode || "vlife"].data?.filter(
+            } else {
+              const dict: {
+                value: string | undefined;
+                label: string;
+                sys?: boolean;
+                color: string;
+              } = dicts[dictCode || "vlife"].data?.filter(
                 (d) => d.value + "" === text + ""
-              ).length > 0 ? (
-                dicts[dictCode || "vlife"].data?.filter(
-                  (d) => d.value + "" === text + ""
-                )[0].color ? (
-                  <Tag
-                    color={
-                      dicts[dictCode || "vlife"].data?.filter(
-                        (d) => d.value + "" === text + ""
-                      )[0].color
-                    }
+              )?.[0];
+              if (dict && dict.color) {
+                return (
+                  <span
+                    style={{
+                      color: dict.color,
+                    }}
                   >
-                    {
-                      dicts[dictCode || "vlife"].data?.filter(
-                        (d) => d.value + "" === text + ""
-                      )[0].label
-                    }
-                  </Tag>
-                ) : (
-                  dicts[dictCode || "vlife"].data?.filter(
-                    (d) => d.value + "" === text + ""
-                  )[0].label
-                )
-              ) : (
-                "-"
-              )
-            ) : (
-              "-"
-            );
+                    {dict.label}
+                  </span>
+                );
+              } else if (dict) {
+                return dict.label;
+              } else {
+                return text;
+              }
+            }
+            // return dicts[dictCode || "vlife"] &&
+            //   dicts[dictCode || "vlife"].data ? (
+            //   dicts[dictCode || "vlife"].data?.filter(
+            //     (d) => d.value + "" === text + ""
+            //   ).length > 0 ? (
+            //     dicts[dictCode || "vlife"].data?.filter(
+            //       (d) => d.value + "" === text + ""
+            //     )[0].color ? (
+            //       <div
+            //       className={` vf`}
+            //         color={
+            //           dicts[dictCode || "vlife"].data?.filter(
+            //             (d) => d.value + "" === text + ""
+            //           )[0].color
+            //         }
+            //       >
+            //         {
+            //           dicts[dictCode || "vlife"].data?.filter(
+            //             (d) => d.value + "" === text + ""
+            //           )[0].label
+            //         }
+            //       </div>
+            //     ) : (
+            //       dicts[dictCode || "vlife"].data?.filter(
+            //         (d) => d.value + "" === text + ""
+            //       )[0].label
+            //     )
+            //   ) : (
+            //     "-"
+            //   )
+            // ) : (
+            //   "-"
+            // );
           };
         } else if (m.fieldType === "boolean") {
           m["render"] = (text, record, index) => {

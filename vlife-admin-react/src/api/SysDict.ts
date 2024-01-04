@@ -29,7 +29,7 @@ export const all=(): Promise<Result<SysDict[]>>=>{
   return apiClient.get(`/sysDict/all`);
 };
 /** 字典编辑*/
-export const save=(dto:SysDict): Promise<Result<SysDict>>=>{
+export const save=(dto:Partial<SysDict>): Promise<Result<SysDict>>=>{
   return apiClient.post(`/sysDict/save`,dto);
 };
 /** 字典详情*/
