@@ -48,21 +48,16 @@ import java.util.stream.Collectors;
 @Data
 public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> implements BaseRequest<T> {
     /**
-     * input(字符串类型的)联合搜索条件,不和某一具体字段对应
-     */
-//    public String search;
-    /**
      * 自定义参数传入
      *
      * @ignore
      */
     @JsonIgnore
     protected Class<T> entityClz;
-    /**
-     * @ignore
-     */
-    @JsonIgnore
+
+//    @JsonIgnore post提交不需要该注解
     protected OrderRequest order = new OrderRequest();
+
     @JsonIgnore
     private Q queryWrapper;
 
