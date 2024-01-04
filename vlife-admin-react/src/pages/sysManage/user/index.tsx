@@ -10,17 +10,18 @@ export default () => {
   return (
     <Content<SysUser>
       listType="sysUser"
+      tabDictField="usetype"
       tabList={[
         {
-          itemKey: "all",
+          itemKey: "state1",
           icon: <i className="  icon-user_Review" />,
-          tab: "启用状态",
+          tab: "已启用",
           req: { state: "1" },
         },
         {
-          itemKey: "self",
+          itemKey: "state-1",
           icon: <i className="  icon-user_activation" />,
-          tab: "停用状态",
+          tab: "已停用",
           req: { state: "-1" },
         },
         {
@@ -30,7 +31,7 @@ export default () => {
           req: { sysDeptId: user?.sysDeptId },
         },
       ]}
-      // filterType="sysUserPageReq"
+      filterType="sysUserPageReq"
       reaction={[
         // VF.field("name").eq("12345").then("usetype").componentProps({
         //   test: "12345",
@@ -43,27 +44,27 @@ export default () => {
           .then("username")
           .feedback("不能包含特殊字符串"),
       ]}
-      btns={[
-        {
-          title: "新增",
-          actionType: "create",
-          saveApi: save,
-        },
-        {
-          title: "修改",
-          actionType: "edit",
-          saveApi: save,
-        },
-        {
-          title: "删除",
-          actionType: "api",
-          usableMatch: { status: "1" },
-          multiple: true,
-          onSaveBefore(data: SysUser[]) {
-            return data.map((d) => d.id);
-          },
-          saveApi: remove,
-        },
+      otherBtns={[
+        // {
+        //   title: "新增",
+        //   actionType: "create",
+        //   saveApi: save,
+        // },
+        // {
+        //   title: "修改",
+        //   actionType: "edit",
+        //   saveApi: save,
+        // },
+        // {
+        //   title: "删除",
+        //   actionType: "api",
+        //   usableMatch: { status: "1" },
+        //   multiple: true,
+        //   onSaveBefore(data: SysUser[]) {
+        //     return data.map((d) => d.id);
+        //   },
+        //   saveApi: remove,
+        // },
         {
           title: "密码重置",
           actionType: "api",
