@@ -22,6 +22,7 @@ import {
   Input as SemiInput,
   TextArea as SemiTextArea,
   Select as SemiSelect,
+  CheckboxGroup,
 } from "@douyinfe/semi-ui";
 import { VfText } from "@src/components/VfText";
 import DictInput from "@src/pages/sysConf/dict/component/DictInput";
@@ -69,9 +70,33 @@ export const FormComponents: CompDatas = {
   VfCheckbox: {
     component: VfCheckbox,
     icon: "IconFont",
-    label: "复选框",
+    label: "Boolean选择",
     dataType: DataType.basic,
     dataModel: DataModel.boolean,
+  },
+  CheckboxGroup: {
+    component: CheckboxGroup,
+    icon: "IconFont",
+    label: " Checkbox复选框组",
+    dataType: DataType.array,
+    dataModel: DataModel.string,
+    props: {
+      options: {
+        label: "复选框数据",
+        must: true,
+        dataType: DataType.array,
+        dataModel: "ISelect",
+      },
+      direction: {
+        label: "排列方向",
+        dataType: DataType.basic,
+        dataModel: DataModel.string,
+        options: [
+          { label: "横向", value: "horizontal" },
+          { label: "纵向", value: "vertical" },
+        ],
+      },
+    },
   },
   TextArea: {
     icon: "IconWholeWord",
@@ -115,11 +140,6 @@ export const FormComponents: CompDatas = {
       },
       showClear: true,
       filter: true, //也支持已传入函数
-      //  (sugInput: string, option: any) => {
-      //   let label = option.label.toUpperCase();
-      //   let sug = sugInput.toUpperCase();
-      //   return label.includes(sug);
-      // },
       outerBottomSlot: <DictInput />,
     },
   },
@@ -135,17 +155,18 @@ export const FormComponents: CompDatas = {
       emptyContent: "请选择",
       zIndex: 1000,
       optionList: {
-        label: "数据来源",
+        label: "选项数据",
         dataType: DataType.array,
         dataModel: "ISelect",
       },
       saveData: {
-        label: "快捷创建",
+        label: "是否支持添加选项",
+        remark: "选项是在CompData.tsx里配置的添加选项的数据保存接口",
         dataType: DataType.basic,
         dataModel: DataModel.string,
         options: [
-          { label: "视图创建", value: "/reportCondition/save" },
-          { label: "dem0客户创建", value: "/demoCustomer/save" },
+          { label: "创建视图", value: "/reportCondition/save" },
+          // { label: "dem0客户创建", value: "/demoCustomer/save" },
         ],
       },
       outerBottomSlot: <QuickCreate />,
@@ -263,7 +284,7 @@ export const FormComponents: CompDatas = {
     dataModel: DataModel.string,
     props: {
       datas: {
-        label: "数据来源",
+        label: "选项数据",
         dataType: DataType.array,
         dataModel: "ITree",
         must: true,
@@ -293,41 +314,26 @@ export const FormComponents: CompDatas = {
     },
   },
   MenuResourcesSelect: {
+    //该组件不能看做是通用组件，和tsx内部访问了接口，一般组件里属性来源于字段(fromField)的一般都不是通用组件，这里需要调整
     component: MenuResourcesSelect,
-    label: "角色资源绑定组件",
+    label: "角色资源绑定模块",
     dataType: DataType.array,
     dataModel: DataModel.string,
     icon: "IconComponent",
     props: {
       appId: {
+        must: true,
         label: "应用ID",
         dataType: DataType.basic,
         dataModel: DataModel.string,
-        // fromField: true,
         fromField: { entity: "sysMenu", field: "id" },
-        must: true,
-        // options: (formVo: FormVo) => {
-        //   return formVo.fields
-        //     .filter(
-        //       (f) =>
-        //         f.fieldType === "string" &&
-        //         f.dataType === "basic" &&
-        //         f.entityType === "sysMenu"
-        //     )
-        //     .map((f) => {
-        //       return { label: f.title, value: f.fieldName };
-        //     });
-        // },
       },
       roleId: {
-        label: "角色ID",
+        label: "角色id",
         must: true,
         dataType: DataType.basic,
         dataModel: DataModel.string,
         fromField: { entity: "sysRole", field: "id" },
-        // options:(formVo:FormVo)=>{
-        //   return formVo.fields.filter(f=>f.fieldType==='string'&&f.dataType==='basic'&&f.entityType==="sysRole").map((f)=>{return {label:f.title,value:f.fieldName}})
-        // },
       },
     },
   },
@@ -342,12 +348,12 @@ export const FormComponents: CompDatas = {
     label: "1对多列表录入",
     icon: "IconOrderedList",
     dataType: DataType.array,
-    dataModel: "IdBean", //仅支持实体模型(不支持IModel,Imodel不适合列表)
+    dataModel: "IdBean", //仅支持实体模型(不支持IModel)
     props: {
       ignores: {
         label: "列表不展示字段",
         dataType: DataType.array,
-        dataModel: DataModel.string, //((form?:FormVo)=>Promise<Partial<selectObj>[]>)/
+        dataModel: DataModel.string,
         options: (
           form?: FormVo,
           field?: FormFieldVo
@@ -409,11 +415,11 @@ export const FormComponents: CompDatas = {
         dataType: DataType.array,
         dataModel: "ITreeData",
       },
+      emptyDesc: {
+        label: "空数据提醒",
+        dataType: DataType.basic,
+        dataModel: DataModel.string,
+      },
     },
   },
 };
-
-/**
- * 视图类组件
- */
-export const ViewComponents: CompDatas = {};

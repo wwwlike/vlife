@@ -6,7 +6,7 @@ import {
 } from "./config";
 import { AppProviders } from "@src/context";
 import Empty from "@src/pages/common/Empty";
-
+import Visit403 from "@src/pages/common/Visit403";
 const DashboardPage = lazy(() => import("@src/pages/dashboard"));
 const TemplatePage = lazy(() => import("@src/pages/template"));
 
@@ -30,7 +30,6 @@ const IconPage = lazy(() => import("@src/pages/common/IconContainer"));
 //业务系统
 const LoginPage = lazy(() => import("@src/pages/login"));
 const LayoutPage = lazy(() => import("@src/pages/layout"));
-
 //示例
 const Form1Page = lazy(() => import("@src/pages/example/form/Form1"));
 const Form2Page = lazy(() => import("@src/pages/example/form/Form2"));
@@ -42,7 +41,6 @@ const List3Page = lazy(() => import("@src/pages/example/list/List3"));
 const List4Page = lazy(() => import("@src/pages/example/list/List4"));
 const Page1Page = lazy(() => import("@src/pages/example/page/Page1"));
 const Page2Page = lazy(() => import("@src/pages/example/page/Page2"));
-
 //demo项目管理
 const ProjectPage = lazy(() => import("@src/pages/demo/project"));
 
@@ -67,6 +65,10 @@ export const allRoute: any[] = [
             auth
           />
         ),
+      },
+      {
+        path: "403",
+        element: <WrapperRouteComponent element={<Visit403 />} titleId="403" />,
       },
       {
         path: "*",
@@ -97,7 +99,7 @@ export const allRoute: any[] = [
         element: (
           <WrapperRouteComponent
             element={<TemplatePage />}
-            titleId="模版"
+            titleId="所有实体通用模版(单实体CRUD可用)"
             auth
           />
         ),

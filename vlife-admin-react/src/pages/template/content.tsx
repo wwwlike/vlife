@@ -9,6 +9,7 @@ import { useAuth } from "@src/context/auth-context";
 import { useSize } from "ahooks";
 import { VfAction } from "@src/dsl/VF";
 import { Tabs } from "@douyinfe/semi-ui";
+import GroupLabel from "@src/components/form/component/GroupLabel";
 
 //tab页签
 type TableTab = {
@@ -16,7 +17,7 @@ type TableTab = {
   tab: string | ReactNode; //名称
   icon?: ReactNode; //图标
   active?: boolean; //当前页
-  req?: any | { field: string; opt: string; value: Object }[]; //视图过滤条件(简单方式)
+  req?: object | { field: string; opt: string; value?: Object }[]; //视图过滤条件(简单方式)
 };
 /**
  * 查询列表的布局page组件
@@ -26,6 +27,7 @@ export interface ContentProps<T extends IdBean> extends TablePageProps<T> {
   title: string; //页面标题
   filterType: string; //左侧布局查询条件模型
   filterReaction: VfAction[];
+  customView: boolean; //是否支持自定义视图
   tabList: TableTab[]; //true表示能和用户添加视图 plus版本有该入口
   onReq?: (req: any) => void; //过滤条件回传
 }
@@ -41,6 +43,7 @@ const Content = <T extends IdBean>({
   editType,
   filterType,
   tabList,
+  customView = true,
   req,
   btns,
   onReq,
@@ -102,39 +105,38 @@ const Content = <T extends IdBean>({
   }, [size, filterOpen]);
 
   return (
-    <div ref={ref} className="flex relative   ">
-      <div
-        style={{ width: `${filterType && filterOpen ? 280 : 0}px` }}
-        className={`${
-          filterType && filterOpen ? "p-3" : ""
-        }  flex border-r relative border-gray-100   flex-col  overflow-hidden bg-white transition-width duration-200`}
-      >
-        {filterType && (
-          <FormPage
-            title={`${tableModel?.name}查询`}
-            key={`filter${filterType}`}
-            reaction={props.filterReaction}
-            formData={req}
-            // fontBold={true}
-            onDataChange={(data) => {
-              setFormData({ ...data });
-              onReq?.(data);
-            }}
-            type={filterType}
-          />
-        )}
-      </div>
-
+    <div ref={ref} className="flex relative">
       {filterType && (
-        <i
-          style={{ fontSize: "25px" }}
-          onClick={() => {
-            setFilterOpen(!filterOpen);
-          }}
-          className={` text-gray-400  entryIcon icon ${
-            filterOpen ? "icon-sideslip_left left-64 " : "icon-sideslip_right"
-          } z-40 top-1/2 cursor-pointer absolute  `}
-        />
+        <>
+          <div
+            style={{ width: 280 }}
+            className={`${
+              filterOpen ? "p-3" : ""
+            }   border-r flex border-gray-100 relative  flex-col  overflow-hidden bg-white transition-width duration-200`}
+          >
+            <GroupLabel text={`${tableModel?.name}查询`} className="mb-6" />
+            <FormPage
+              key={`filter${filterType}`}
+              reaction={props.filterReaction}
+              formData={req}
+              // fontBold={true}
+              onDataChange={(data) => {
+                setFormData({ ...data });
+                onReq?.(data);
+              }}
+              type={filterType}
+            />
+          </div>
+          <i
+            style={{ fontSize: "25px" }}
+            onClick={() => {
+              setFilterOpen(!filterOpen);
+            }}
+            className={` text-gray-400  entryIcon icon ${
+              filterOpen ? "icon-sideslip_left left-64 " : "icon-sideslip_right"
+            } z-40 top-1/2 cursor-pointer absolute  `}
+          />
+        </>
       )}
       <div
         className={` flex flex-1 flex-col relative rounded-md ${
@@ -193,5 +195,4 @@ const Content = <T extends IdBean>({
     </div>
   );
 };
-
 export default Content;

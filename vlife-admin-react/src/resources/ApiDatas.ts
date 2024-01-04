@@ -9,6 +9,7 @@ import { detailFormVo, entityModels, FormVo, subForms } from '@src/api/Form';
 import {listAll as formFieldListAll ,listGroupOption,listRelationField} from "@src/api/FormField";
 import { list } from '@src/api/demo/DemoCustomer';
 
+import {list as listResources, listMenuUseableResources, SysResources } from '@src/api/SysResources';
 /**
  * 将db里的树形数据转换成组件可用的树形数据
  */
@@ -54,6 +55,7 @@ export const apiDatas:ApiDatas={
         label:"字典分类",
         must:false,
         dataModel:DataModel.string,
+        dataType:DataType.basic,
          options:():Promise<Partial<selectObj>[]>=>{
           return  listType().then((d)=>{
             if(d.data){
@@ -79,6 +81,64 @@ export const apiDatas:ApiDatas={
     dataModel:'number',
     api: deptList,
   },
+
+  resources: {
+    label: "菜单可用资源",
+    dataType: DataType.array,
+    dataModel:'sysResources',
+    api:listMenuUseableResources,
+    params:{
+      sysMenuId:{
+        label:"绑定菜单",
+        must:true,
+        dataType:DataType.basic,
+        dataModel:DataModel.string,
+        fromField:true,
+      },
+    },
+    match:{
+      ISelect:{
+        label:"当前可用接口",
+        dataType: DataType.array,
+        dataModel:"ISelect",
+        func:(datas:SysResources[]):ISelect[]=>{
+          return datas.map((d)=>{return {
+            value:d.id,
+            label:d.name,
+            extra:d.remark,
+          }})
+        }
+      }
+    }
+  },
+  resourceIds: {
+    label: "指定集合资源",
+    dataType: DataType.array,
+    dataModel:'sysResources',
+    api:listResources,
+    params:{
+      ids:{
+        label:"指定集合",
+        must:true,
+        dataType:DataType.array,
+        dataModel:DataModel.string,
+        fromField:true,
+      },
+    },
+    match:{
+      ISelect:{
+        dataType: DataType.array,
+        dataModel:"ISelect",
+        func:(datas:SysResources[]):ISelect[]=>{
+          return datas.map((d)=>{return {
+            value:d.id,
+            label:d.name,
+            // extra:d.remark,
+          }})
+        }
+      }
+    }
+  },
   deptTree: {
     label: "部门树",
     dataType: DataType.array,
@@ -103,7 +163,6 @@ export const apiDatas:ApiDatas={
       }
     },
   },
-
   menuTree: {
       label: "菜单树",
       api: menuList,
@@ -144,13 +203,18 @@ export const apiDatas:ApiDatas={
       appId: { 
         must: false, 
         label: "应用id", 
+        dataType: DataType.basic,
         dataModel:DataModel.string,
         remark:"应用id就是类型为应用的菜单id",
-        fromField:{entity:"sysMenu",field:"id"} //自动去匹配该字段
-        // options:(formVo:FormVo)=>{
-        //   return  formVo.fields.map((f)=>{return {label:f.title,value:f.fieldName}})
-        // } 
+        fromField:{entity:"sysMenu",field:"id"} //从当前表单里找
       },
+    },
+    filter(data:FormVo[], {appId}:{appId?:string}) {
+      if(appId){
+        return data.filter(d => d.itemType == "entity");
+      }else{
+        return data;
+      }
     },
     match:{
       id:{
@@ -168,15 +232,21 @@ export const apiDatas:ApiDatas={
           return datas.map((data:{type:string,title:string})=>{return {value:data.type,label:data.title}});
        }},
        resources:{
-        label:"实体和资源关联的多级选择数据集",
+        label:"实体与资源关联的数据结构",
         dataType:DataType.array,
         dataModel:"ITreeData",
         func:(datas:FormVo[],params:any):ITreeData[]=>{
+          //根据参数进行转换
           return datas.map((data:FormVo)=>{
+            // if(params.appId){
+            //   return {key:data.id,value:data.id,label:data.title,
+            //     //菜单已关联和可关联的接口信息
+            //     children:data.resources?.filter(r=>(r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId)&&r.state==="1").map(r=>{return {key:r.id,value:r.id,label:r.name}})}
+            // }
             if(params.appId){
-            return {key:data.id,value:data.id,label:data.title,
-              //菜单已关联和可关联的接口信息
-              children:data.resources?.filter(r=>(r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId)&&r.state==="1").map(r=>{return {key:r.id,value:r.id,label:r.name}})}
+              return {key:data.id,value:data.id,label:data.title,
+                //菜单已关联和可关联的接口信息
+                children:data.resources?.filter(r=>(r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId)&&r.state==="1").map(r=>{return {key:r.id,value:r.id,label:r.name}})}
             }else{
               return {key:data.id,value:data.id,label:data.title,
                 //菜单已关联和可关联的接口信息
