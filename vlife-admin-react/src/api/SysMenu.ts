@@ -14,7 +14,6 @@ export interface SysMenu extends DbEntity {
   placeholderUrl: string; //替换通配符
   app: boolean; //是否作为APP
   sort: number; //排序号
-  entityPrefix: string; //实体名前缀
   sysRoleId: string; //绑定的角色
   // plus
   confPage: boolean; //是否连接到配置页面
@@ -34,7 +33,6 @@ export interface MenuVo extends DbEntity {
   url: string; // 路由地址
   // entityType: string; //对应模型
   sort: number; //排序号
-  entityPrefix: string; //实体名前缀
   sysResourcesList: SysResources[]; //接口数据
   sysRoleId: string; //绑定的角色
   placeholderUrl:string;
@@ -141,4 +139,13 @@ export const allRouter = (): { label: string; value: string }[] => {
     child(null, r, all);
   });
   return all;
+};
+
+/** 
+* 菜单关联资源详情
+* 有保存接口，则一定有查看明细接口
+* @return
+*/
+export const detailMenuResourcesDto=(req:{id: string}): Promise<Result<MenuResourcesDto>>=>{
+  return apiClient.get(`/sysMenu/detail/menuResourcesDto/${req.id}`  );
 };

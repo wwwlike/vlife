@@ -199,7 +199,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
      * @return 包路径下的所有类路径放入到集合里
      */
     public static List<String> readPackage(ClassLoader classLoader, String... packageNames) {
-        List<String> classStr = new ArrayList<>();
+        Set<String> classStr = new HashSet<>();
         for (String packageName : packageNames) {
             Set<String> classNames = PackageUtil.getClassName(classLoader, packageName, true);
             if (classNames != null) {
@@ -246,7 +246,6 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                 if(url.startsWith("BOOT-INF.classes.")){
                     url=url.substring(17);
                 }
-//                logger.info("url:"+url);
                 clazz = loader.loadClass(url);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -352,6 +351,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                     fieldDtos.stream().forEach(field -> {
                         if (tag.getTags().get(field.getFieldName()) != null) {
                             field.setTitle(tag.getTags().get(field.getFieldName()).getTitle());
+                            field.setPlaceholder(tag.getTags().get(field.getFieldName()).getPlaceholder());
                         }
                     });
                 }

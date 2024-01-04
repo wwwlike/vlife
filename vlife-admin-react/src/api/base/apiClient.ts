@@ -6,6 +6,8 @@ const apiUrl = import.meta.env.VITE_APP_API_URL;
 const mode=import.meta.env.VITE_APP_MODE;
 const canRemove: string = import.meta.env.VITE_APP_SAVE_REMOVE;
 const localStorageKey = "__auth_provider_token__";
+
+
 //待启用(让前端错误代码和ServletResponseEnum匹配紧密型)
 export const errorMessage:{[key:string]:string} = {
   '4404': "请求地址出错", //匹配到的
@@ -59,6 +61,15 @@ function filterUndefinedParams(url: string): string {
   return url;
 }
 
+export function stringify(params: any) {
+  return qs.stringify(params, {
+    allowDots: true,
+    arrayFormat: "comma",
+    serializeDate: (date) => {
+      return formatDate(date, "yyyy/MM/dd");
+    }
+  });
+}
 
 instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -77,14 +88,9 @@ instance.interceptors.request.use(
       }
   }
     //所有get 请求入参处理（get请求参数都需要封装到params里）
-    config.paramsSerializer=(params)=>qs.stringify(params,{
-        allowDots: true, //多级对象转str中间加点
-      //  arrayFormat: "brackets", //数组采用逗号分隔 ,这里转换不通用，get查询都需要这样转换
-        serializeDate: (date) => {
-          //日期格式化，否则后台报错
-          return formatDate(date, "yyyy/MM/dd");
-        }
-      })
+    config.paramsSerializer=(params)=>{
+      return stringify(params);
+    }
     config.cancelToken = source.token; // 写入取消请求的标识
     if (config.url&&!whiteList.includes(config.url)&&canRemove === "false"&&(config.method === 'delete' || config.method === 'post')) {
       source.cancel("演示环境不能进行该操作"); //取消请求
@@ -126,8 +132,6 @@ instance.interceptors.response.use(
        url= url.substring(0, url.indexOf('?'))
     }
     const { data } = res;
-    // alert(JSON.stringify(data));
-
     if (res.status !== 200) {
       Notification.error({
         content: `服务端运行异常，异常代码${res.status}`,
@@ -144,31 +148,20 @@ instance.interceptors.response.use(
       }
       return Promise.reject({...res.data,url,method:res.config.method}); //错误返回出去
     } else if ((res.config.method === "post"||res.config.method === "delete")&&
-      window.location.href.indexOf("login") === -1
+      url?.indexOf("login") === -1&&url?.indexOf("chart/") === -1
+      &&url?.indexOf("list") === -1&&!url?.endsWith("page")&&url?.indexOf("/page/")===-1
+      &&url?.indexOf("query") === -1 &&url?.indexOf("find") === -1
     ){
       Notification.success({
         content: `操作成功`,
         position:'bottomRight'
       });
     }
-
     if (res.data.code === 9999) {
       //超时删除token 系统异常也是9999（排查）
-      // window.localStorage.removeItem(localStorageKey);
     }
-    //接口写入当前访问路由localStorage里（开发时写入）
-    // const  currRouter=window.localStorage.getItem("currRouter");
-    // if(currRouter&&url){
-    //   const currRouterApi=window.localStorage.getItem(currRouter);
-    //   let apis:string[]=currRouterApi?JSON.parse(currRouterApi):[];
-    //   if(!apis.includes(url)){
-    //     apis.push(url)
-    //     window.localStorage.setItem(currRouter,JSON.stringify(apis));
-    //   }
-    
-    // }
-
-      if(url){
+    //采集每个菜单用到的接口，目前未使用
+   if(url){
         const menuCode=url.substring(1,url.substring(1).indexOf("/")+1)
         const currRouterApi=window.localStorage.getItem(menuCode);
         let apis:string[]=currRouterApi?JSON.parse(currRouterApi):[];
@@ -177,8 +170,6 @@ instance.interceptors.response.use(
           window.localStorage.setItem(menuCode,JSON.stringify(apis));
         }
     }
-   
-    //
     return res.data;
     // return Promise.reject(res.data);
   },
@@ -199,10 +190,9 @@ instance.interceptors.response.use(
       Notification.error({
         content: `没有权限`,
       });
-      // alert("无权限访问");
       // window.localStorage.removeItem(localStorageKey);
       // 统一处理未授权请求，跳转到登录界面
-      // document.location = "/login";
+       document.location = "/403";
     }
     return Promise.reject(err);
   }

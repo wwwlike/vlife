@@ -51,9 +51,6 @@ import java.util.Map;
 @Mojo(name = "titleJson", defaultPhase = LifecyclePhase.INSTALL)
 public class TitleJsonCreateMojo extends AbstractMojo {
 
-    @Parameter
-    private List<String> entityPackages;
-
     @Parameter(defaultValue = "${project.compileClasspathElements}", readonly = true, required = true)
     private List<String> compilePath;
 
@@ -157,7 +154,9 @@ public class TitleJsonCreateMojo extends AbstractMojo {
             String data = JsonUtil.toPrettyJson(tags);
             FileUtil.nioWriteFile(data, filePath);
         }else{
-            modelReadCheck.getLogger().error("模型信息读取存在错误,title不能生成");
+            String errorMsg="titleJsonCreate插件执行失败。请查看日志详情";
+            modelReadCheck.getLogger().error(errorMsg);
+            throw new MojoExecutionException(errorMsg);
         } } catch (IOException e) {
             e.printStackTrace();
         }

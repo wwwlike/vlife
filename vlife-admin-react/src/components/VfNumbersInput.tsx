@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { InputNumber } from "@douyinfe/semi-ui";
 import { VfBaseProps } from "@src/dsl/component";
-interface VfNumbersInputProps extends VfBaseProps<any[], undefined> {}
-export default ({ value, onDataChange }: VfNumbersInputProps) => {
+export default ({ value, onDataChange }: VfBaseProps<any[]>) => {
   const [begin, setBegin] = useState<number | undefined>(
     value && value.length > 0 ? value[0] : undefined
   );
@@ -16,7 +15,6 @@ export default ({ value, onDataChange }: VfNumbersInputProps) => {
 
   return (
     <div className="flex">
-      {/* {JSON.stringify(value)} */}
       <InputNumber
         showClear={true}
         onClear={() => {

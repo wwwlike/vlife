@@ -14,6 +14,7 @@ export interface PageComponentProp extends DbEntity{
   listNo:number; //排序号
   subName:string;//子属性
   filterFunc:string;//数据过滤函数key
+  filterConnectionType:String;//数据过滤的连接方式 and /or
 }
 
 
@@ -28,6 +29,7 @@ export interface PageComponentPropDto extends SaveBean{
   params?:Partial<PageApiParam>[]; //属性外键表参数设置
   relateVal?:string;// 数据转换key
   filterFunc?:string;//数据过滤函数key
+  filterConnectionType?:String;//数据过滤的连接方式 and /or
 }
 
 

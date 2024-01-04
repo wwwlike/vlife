@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 项目表接口;
+ * 项目表接口
  */
 @RestController
 @RequestMapping("/demoProject")
 public class DemoProjectApi extends VLifeApi<DemoProject, DemoProjectService> {
   /**
-   * 分页查询项目表;
-   * @param req 项目查询;
-   * @return 项目表;
+   * 分页查询项目表
+   * @param req 项目查询
+   * @return 项目表
    */
   @GetMapping("/page")
   public PageVo<DemoProject> page(DemoProjectPageReq req) {

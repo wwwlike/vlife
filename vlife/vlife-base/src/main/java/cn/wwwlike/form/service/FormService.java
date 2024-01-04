@@ -127,7 +127,6 @@ public class FormService extends VLifeService<Form, FormDao> {
             formDto=queryOne(FormDto.class,published.get(0).getId());
         }
         BeanDto javaDto= GlobalData.findModel(modelName);
-
         //有关联title读取到，则进行同步
         if(javaDto!=null&&javaDto.commentRead) {
             if (formDto != null) {//更新
@@ -139,9 +138,13 @@ public class FormService extends VLifeService<Form, FormDao> {
                     formChange=true;
                     formDto.setTitle(javaDto.getTitle());
                 }
-                if (formDto.itemType.equals("entity")&&!ReflectionUtils.getFieldValue(javaDto,"module").equals(formDto.getModule())) {
-                    formDto.setModule(ReflectionUtils.getFieldValue(javaDto,"module").toString());
-                    formChange=true;
+                //主字段表达式设置
+                if (formDto.itemType.equals("entity")) {
+                    String itemName= (String) ReflectionUtils.getFieldValue(javaDto,"itemName");
+                    if(itemName==null||"".equals(itemName)||!itemName.equals(formDto.getItemName())){
+                        formDto.setItemName(itemName);
+                        formChange=true;
+                    }
                 }
                 if(formChange){
                     save(formDto);
@@ -163,6 +166,11 @@ public class FormService extends VLifeService<Form, FormDao> {
                                 dbField.setDataType(getDataType(javaField.getFieldType()));
                                 dbField.setFieldType(getFileType(javaField.getType()));
                                 initComponent(dbField, formDto.getItemType(),javaDto);
+                            }else if(javaField.getDictCode()!=null&&"Input".equals(dbField.getX_component())
+                                    &&dbField.getDictCode()==null){
+                                change = true;
+                                dbField.setDictCode(javaField.getDictCode());
+                                initComponent(dbField, formDto.getItemType(),javaDto);
                             }
                             String javaTitle = javaField.getTitle();
                             if (javaTitle != null && !javaTitle.equals("/") && !javaTitle.equals(dbField.getJavaTitle())) {
@@ -172,6 +180,11 @@ public class FormService extends VLifeService<Form, FormDao> {
                                 }
                                 dbField.setJavaTitle(javaTitle);
                             }
+                            if(javaField.getPlaceholder()!=null&&dbField.getX_component_props$placeholder()==null){
+                                change = true;
+                                dbField.setX_component_props$placeholder(javaField.getPlaceholder());
+                            }
+
                             if (change) {
                                 fieldService.save(dbField);
                             }
@@ -184,6 +197,7 @@ public class FormService extends VLifeService<Form, FormDao> {
                         BeanUtils.copyProperties(fieldTran(javaField), formField);
                         formField.setSort(formDto.getFields().size() + count);
                         formField.setFormId(formDto.getId());
+                        formField.setX_component_props$placeholder(javaField.getPlaceholder());
                         initComponent(formField, formDto.getItemType(),javaDto);
                         //没有注释，则使用fieldName
                         if (formField.getTitle() == null || formField.getTitle().equals("/")) {
@@ -203,17 +217,6 @@ public class FormService extends VLifeService<Form, FormDao> {
                     }
                 }
             } else if (javaDto != null && javaDto.getFields() != null && javaDto.getFields().size() > 0) {//模型新增
-                //menuService 增加一个临时菜单
-//                if((javaDto.getItemType().equals("entity")||javaDto.getItemType().equals("save"))&& menuService.find("entityType",javaDto.getEntityType()).size()==0){
-//                    SysMenu menu=new SysMenu();
-//                    menu.setName(javaDto.getTitle());
-//                    menu.setEntityType(javaDto.getEntityType());
-//                    menu.setPcode("009_005");
-//                    menu.setIcon("IconComponent");
-//                    menu.setUrl("/vlife/*");
-//                    menu.setPlaceholderUrl(StringUtils.uncapitalize(javaDto.getEntityType()));
-//                    menuService.save(menu);
-//                }
                 FormVo vo = tran(javaDto);
                 FormDto dto = new FormDto();
                 dto.setVersion(0);
@@ -242,7 +245,7 @@ public class FormService extends VLifeService<Form, FormDao> {
                 dto.setName(dto.getTitle());
                 save(dto);
             } else {
-                System.out.println(modelName);
+//                System.out.println(modelName);
             }
             return true;
         }else{
@@ -336,11 +339,8 @@ public class FormService extends VLifeService<Form, FormDao> {
                 formFieldVo.setEntityFieldName("id");
                 formFieldVo.setEntityType(entityType);
             }else{
-                System.out.println(entityType);
             }
-
         }
-
         return formFieldVo;
     }
 

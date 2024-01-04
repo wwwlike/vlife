@@ -465,7 +465,7 @@ import React, {
 } from "react";
 import { VfBaseProps } from "@src/dsl/component";
 
-interface SelectIconProps extends VfBaseProps<string, ReactNode[]> {
+interface SelectIconProps extends VfBaseProps<string> {
   size:
     | "inherit"
     | "extra-small"
@@ -927,7 +927,6 @@ const icons: { [key: string]: ElementType } = {
  */
 const SelectIcon = ({
   value,
-  datas,
   tooltip,
   size = "default",
   onDataChange,

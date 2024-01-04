@@ -58,7 +58,7 @@ public class SysDict extends DbEntity {
      */
     public Integer sort;
     /**
-     * 颜色代码
+     * 列表色块
      */
     @VField(dictCode = "DICT_COLOR")
     public String color;

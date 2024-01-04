@@ -14,7 +14,6 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="page_component_prop")
-@VClazz(module = "conf")
 public class PageComponentProp extends DbEntity {
     /***
      * 所属组件
@@ -60,14 +59,14 @@ public class PageComponentProp extends DbEntity {
     public String relateVal;
 
     /***
-     * 数据转换key
-     * filterFuns->key
+     * 数据过滤
+     * 支持多个条件过滤，
+     * 多个条件之间用逗号隔开，
      */
     public String filterFunc;
 
-    /**
-     //     * 接口取值到属性值的转换方法名称
-     //     */
-//    public String apiMethod;
+    // 多个过滤条件的连接方式
+    // and/or 交集/并集
+    public String filterConnectionType;
 
 }

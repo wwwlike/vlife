@@ -8,8 +8,7 @@ import TablePage from "@src/pages/common/tablePage";
 import { useUpdateEffect } from "ahooks";
 import FormPage from "@src/pages/common/formPage";
 
-interface RelationInputProps
-  extends Partial<VfBaseProps<string | string[], IFkItem[]>> {
+interface RelationViewProps extends Partial<VfBaseProps<string | string[]>> {
   req: any; //列表过滤条件
   viewModel: string;
 }
@@ -26,7 +25,6 @@ function queryData(
  * 外键关联选择预览
  */
 const RelationTagInput = ({
-  datas, //选中的数据，已经将value里封装在里面了
   fieldInfo,
   read,
   value,
@@ -34,9 +32,9 @@ const RelationTagInput = ({
   className,
   viewModel,
   onDataChange,
-}: RelationInputProps) => {
+}: RelationViewProps) => {
   // 当前选中数据
-  const [tagData, setTagData] = useState<any[]>(datas ? [...datas] : []);
+  const [tagData, setTagData] = useState<any[]>([]);
 
   useEffect(() => {
     if (value && (tagData === undefined || tagData.length === 0)) {

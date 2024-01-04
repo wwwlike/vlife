@@ -1,11 +1,11 @@
-import { Checkbox, Divider, TabPane, Tabs } from "@douyinfe/semi-ui";
 import React, { useCallback, useEffect, useState } from "react";
+import { Checkbox, Divider, TabPane, Tabs } from "@douyinfe/semi-ui";
 import { MenuVo, listAll } from "@src/api/SysMenu";
 import { SysResources } from "@src/api/SysResources";
 import SelectIcon from "@src/components/SelectIcon";
 import { VfBaseProps } from "@src/dsl/component";
 
-interface MenuResourcesSelectProp extends VfBaseProps<string[], undefined> {
+interface MenuResourcesSelectProp extends VfBaseProps<string[]> {
   appId: string; //应用id
   roleId: string; //角色id
 }
@@ -321,7 +321,7 @@ export default ({
             </TabPane>
           )
         ) : (
-          <>请先选择所在应用</>
+          <>请先选择应用</>
         )}
       </Tabs>
     </div>

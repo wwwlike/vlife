@@ -10,7 +10,7 @@ export interface PageSelectData {
 /**
  * 页面多选组件
  */
-interface PageSelectProps extends VfBaseProps<string[], PageSelectData[]> {
+interface PageSelectProps extends VfBaseProps<string[]> {
   datas: PageSelectData[];
   dataEmpty: string; //空数据文案
 }

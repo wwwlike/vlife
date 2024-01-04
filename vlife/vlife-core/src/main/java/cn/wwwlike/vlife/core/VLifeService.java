@@ -342,8 +342,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      */
     public T save(T beanDto) {
         return saveBean(beanDto,true);
-//        DataProcess masterProcess = createProcess(beanDto);
-//        return save(beanDto, masterProcess);
     }
 
 

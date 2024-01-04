@@ -41,6 +41,7 @@ public class ModelReadCheck {
     private  List<ReqDto> reqDtos = null;
     private  List<SaveDto> saveDtos=null;
     private  List<BeanDto> beanDtos=null;
+
     public BeanDto find(String beanName){
         if(itemDtos!=null){
            Optional obj=itemDtos.stream().filter(t->t.getType().equals(beanName)).findFirst();
@@ -89,11 +90,11 @@ public class ModelReadCheck {
      * @param path 常错误数量
      * @return
      */
-    public Integer load(ClassLoader loader,String path) {
+    public Integer load(ClassLoader loader,String ... path) {
         List<String> list = ItemReadTemplate.readPackage(loader,path);
         logger.info("模型共计："+list.size());
         Integer errorNum=0;
-        try {
+        try {  
             GlobalData.clear();
             /** step1 模型信息读取 */
             EntityRead read = EntityRead.getInstance();
@@ -169,7 +170,8 @@ public class ModelReadCheck {
         final Boolean checkFailed=false;
         final String tableName = table.getClass().getSimpleName() ;
         if (fieldDto.getFieldType() == null || fieldDto.getEntityClz() == null) {
-            logger.error("["+tableName+"]"+fieldDto.getItemDto().getClz().getSimpleName() + "模型的[" + fieldDto.getFieldName() + "<"+fieldDto.getClz().getSimpleName()+">]无法匹配");
+            String message = String.format("[%s]%s模型的[%s<%s>]字段未能匹配到关联实体的任何字段", tableName, fieldDto.getItemDto().getClz().getSimpleName(), fieldDto.getFieldName(), fieldDto.getClz().getSimpleName());
+            logger.error(message);
             return checkFailed;
         }
         if (fieldDto.getFieldType().equals(VCT.ITEM_TYPE.BASIC)) {
@@ -266,8 +268,6 @@ public class ModelReadCheck {
         }
         return errorNum;
     }
-
-
 
     /**
      *  数据持久化(目前未采用)

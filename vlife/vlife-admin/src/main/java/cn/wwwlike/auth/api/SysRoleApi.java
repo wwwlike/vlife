@@ -11,31 +11,22 @@ import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 用户角色接口;
+ * 角色接口;
  */
 @RestController
 @RequestMapping("/sysRole")
 public class SysRoleApi extends VLifeApi<SysRole, SysRoleService> {
   @Autowired
   public SysResourcesService resourcesService;
-
   @Autowired
   public SysMenuService menuService;
   /**
-   * 保存用户角色;
-   * @param dto 用户角色;
-   * @return 用户角色;
+   * 角色保存
    */
-  @PostMapping("/save")
-  public SysRole save(@RequestBody SysRole dto) {
-    return service.save(dto);
-  }
-
   @PostMapping("/save/roleDto")
   public RoleDto saveRoleDto(@RequestBody RoleDto dto) {
     if(dto.getResourcesAndMenuIds()!=null){
@@ -48,27 +39,30 @@ public class SysRoleApi extends VLifeApi<SysRole, SysRoleService> {
     }
     return service.save(dto,true);
   }
-
   /**
-   * 明细查询用户角色;
+   * 角色详情
    */
   @GetMapping("/detail/{id}")
   public SysRole detail(@PathVariable String id) {
     return service.findOne(id);
   }
-
-  @GetMapping("/page")
-  public PageVo<SysRole> page(SysRolePageReq req) {
+  /**
+   * 角色查询
+   */
+  @PostMapping("/page")
+  public PageVo<SysRole> page(@RequestBody SysRolePageReq req) {
     return service.findPage(req);
   }
-
+  /**
+   * 角色列表
+   * @return
+   */
   @GetMapping("/list/all")
   public List<SysRole> listAll() {
     return service.findAll();
   }
-
   /**
-   * 角色逻辑删除
+   * 角色删除
    */
   @DeleteMapping("/remove")
   public Long remove(@RequestBody String[] ids) {

@@ -27,7 +27,12 @@ const Index: React.FC = () => {
   const [currMenu, setCurrMenu] = useState<MenuVo>(); //当前菜单
 
   useEffect(() => {
-    const menu = userMenus.filter((m) => m.url === pathname)?.[0];
+    const menu = userMenus.filter(
+      (m) =>
+        pathname.indexOf(
+          m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
+        ) !== -1
+    )?.[0];
     if (currMenu === undefined && menu) {
       setCurrMenu(menu);
       setCurrApp(findTreeRoot(userMenus, menu));

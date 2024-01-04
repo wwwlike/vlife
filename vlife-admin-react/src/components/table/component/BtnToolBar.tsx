@@ -27,7 +27,7 @@ export interface BtnToolBarProps<T extends IdBean> {
   position: BtnToolBarPosition; //显示场景(过滤出满足条件的按钮)
   line?: number; //行号 tableLine模式下使用 临时数据可用行号当索引进行操作
   readPretty?: boolean; //当前页面模式(过滤按钮使用)
-  onDataChange: (datas: any[]) => void; //数据修订好传输出去
+  onDataChange?: (datas: any[]) => void; //数据修订好传输出去
   onBtnNum?: (num: number) => void; //当前按钮数量
 }
 
@@ -58,6 +58,7 @@ export default <T extends IdBean>({
   useEffect(() => {
     setBtnDatas(datas);
   }, [datas]);
+
   //数据提交
   const submit = useCallback(
     (vfBtn: VFBtn, saveApiObj: T[], index: number) => {
@@ -73,7 +74,7 @@ export default <T extends IdBean>({
         setLoadbtn(`${position}btn${index}`);
         return saveApiFunc(savaData).then(
           (d: Result<any>) => {
-            onDataChange([d.data]);
+            onDataChange && onDataChange([d.data]);
             setTimeout(() => {
               if (btn.submitClose) {
                 formModal.hide();
@@ -140,7 +141,7 @@ export default <T extends IdBean>({
     [btnDatas, btns, position]
   );
 
-  // 按钮名称
+  // 按钮名称计算
   const btnTitle = useCallback(
     (btn: VFBtn): string | ReactNode => {
       //对于编辑类型按钮(actionType=edit)在表单页且按钮模型和表单模型一致，则名称改为保存
@@ -157,6 +158,7 @@ export default <T extends IdBean>({
     [position]
   );
 
+  //弹出(划出待实现)
   const show = useCallback(
     (btn: VFBtn) => {
       const modal = (data: any) => {
@@ -186,15 +188,12 @@ export default <T extends IdBean>({
   );
 
   //1权限检查
-  const permissionCheck = useCallback(
-    (btn: VFBtn) => {
-      return (
-        (btn.permissionCode && checkBtnPermission(btn.permissionCode)) ||
-        btn.permissionCode === undefined
-      );
-    },
-    [btnDatas]
-  );
+  const permissionCheck = useCallback((btn: VFBtn) => {
+    return (
+      (btn.permissionCode && checkBtnPermission(btn.permissionCode)) ||
+      btn.permissionCode === undefined
+    );
+  }, []);
 
   //可用性比对检查 false&&string不可用， true可用
   const btnUsableMatch = useCallback(
@@ -209,6 +208,9 @@ export default <T extends IdBean>({
         return result;
         //异步函数转同步返回
       } else if (typeof btn.usableMatch === "object") {
+        if (datas === undefined || datas.length === 0) {
+          return false;
+        }
         //属性值匹配
         return (
           //所有数据都满足
@@ -244,14 +246,13 @@ export default <T extends IdBean>({
     },
     [btnDatas, position]
   );
-
-  //筛选出应该在当前场景下可以使用的按钮
-
+  //当前页面应该显示的按钮
   const [currBtns, setCurrBtns] = useState<VFBtn[]>([]);
-
+  //筛选出应该在当前场景下可以使用的按钮
   useEffect(() => {
     const fetchData = async () => {
       let toolBarBtns: VFBtn[] = [];
+      //筛选当前场景应该显示的按钮
       if (position === "tableToolbar") {
         //列表工具栏 新增和操作多个数据的按钮
         toolBarBtns = btns.filter(
@@ -288,6 +289,7 @@ export default <T extends IdBean>({
         .filter((btn) => (formModel ? btn.model === formModel : true)) //模型过滤
         .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //只读过滤
         .filter((btn) => permissionCheck(btn)); //权限过滤
+
       const btnPromises = filteredBtns.map(async (btn, index) => {
         let tooltip = btnUsableMatch(btn);
         if (tooltip instanceof Promise) {
@@ -360,8 +362,6 @@ export default <T extends IdBean>({
 
   return (
     <div className={`  ${className} space-x-1`}>
-      {/* {currBtns.length} */}
-      {/* {position} */}
       {currBtns.map((btn, index) => {
         // const tooltip = btnUsableMatch(btn);
         // const disabled = typeof tooltip === "boolean" ? !tooltip : true;
@@ -376,7 +376,7 @@ export default <T extends IdBean>({
             }}
             loading={loadbtn && loadbtn === key}
             theme={`${btnTitle(btn) === "保存" ? "solid" : "light"}`}
-            className={`${classNames({
+            className={` hover:cursor-pointer  ${classNames({
               "cursor-pointer hover:text-blue-600 hover:font-bold":
                 position === "tableLine",
             })} ${btn.className}`}

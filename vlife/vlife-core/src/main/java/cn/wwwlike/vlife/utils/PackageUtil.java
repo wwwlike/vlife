@@ -63,7 +63,7 @@ public class PackageUtil {
                     String protocol = resource.getProtocol();
                     String path = resource.getPath();
                     if ("file".equals(protocol)) {//开发环境 读取class目录
-                        List<String> jarClass= getClassNameByFile(path, null, childPackage);
+                        List<String> jarClass= getClassNameByFile(path, childPackage);
                         fileNames.addAll(jarClass);
 //                        System.out.println(path+":"+jarClass.size());
                     } else if ("jar".equals(protocol)) { //开发环境 运行时读取jar包
@@ -91,8 +91,9 @@ public class PackageUtil {
                         List<String> jarClass=getClassNameByJars1(packageName, childPackage,resource);
                         fileNames.addAll(jarClass);
                     }else if ("file".equals(protocol)) {
+                        //开发环境直接读取classes文件
                         String path = resource.getPath();
-                        fileNames.addAll(getClassNameByFile(path, null, childPackage));
+                        fileNames.addAll(getClassNameByFile(path, childPackage));
                     }
                 }
             }
@@ -177,18 +178,17 @@ public class PackageUtil {
     /**
      * 从项目文件获取某包下所有类
      * @param filePath     文件路径
-     * @param className    类名集合
      * @param childPackage 是否遍历子包
      * @return 类的完整名称
      */
-    private static List<String> getClassNameByFile(String filePath, List<String> className, boolean childPackage) {
+    private static List<String> getClassNameByFile(String filePath,  boolean childPackage) {
         List<String> myClassName = new ArrayList<String>();
         File file = new File(filePath);
         File[] childFiles = file.listFiles();
         for (File childFile : childFiles) {
             if (childFile.isDirectory()) {
                 if (childPackage) {
-                    myClassName.addAll(getClassNameByFile(childFile.getPath(), myClassName, childPackage));
+                    myClassName.addAll(getClassNameByFile(childFile.getPath(),  childPackage));
                 }
             } else {
                 String childFilePath = childFile.getPath();

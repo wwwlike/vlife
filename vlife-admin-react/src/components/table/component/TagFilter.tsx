@@ -94,7 +94,7 @@ const TagFilter = ({
         );
       })}
       {formVo.fields
-        .filter((f) => where.map((w) => w.fieldId).includes(f.id))
+        ?.filter((f) => where.map((w) => w.fieldId).includes(f.id))
         .map((field, index) => {
           return (
             <div

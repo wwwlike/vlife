@@ -42,7 +42,11 @@ public class FieldTag {
      */
     public String warperType;
     /**
-     * 说明
+     * 中文
      */
     public String title;
+    /**
+     * 占位说明
+     */
+    public String placeholder;
 }

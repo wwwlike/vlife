@@ -1,39 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Space, Upload } from "@douyinfe/semi-ui";
 import { IconPlus } from "@douyinfe/semi-icons";
-import { SysFile } from "@src/api/SysFile";
 import { FileItem } from "@douyinfe/semi-ui/lib/es/upload";
 import { Image } from "@douyinfe/semi-ui";
 import { VfBaseProps } from "@src/dsl/component";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 /**
- * @returns 图片上传组件
+ * 图片上传组件
  */
-interface VfImageProps
-  extends Partial<VfBaseProps<string | string[], SysFile[]>> {
+interface VfImageProps extends Partial<VfBaseProps<string | string[]>> {
   size?: "large" | "small" | "default";
 }
 const VfImage = ({
   fieldInfo,
   value,
-  datas,
   size = "small",
   onDataChange,
   read,
   className,
-  ...props
 }: VfImageProps) => {
   const action = `${apiUrl}/sysFile/uploadImg`;
   const [imageIds, setImageIds] = useState<string[]>();
   //是否手动修改过
   const [hand, setHand] = useState<boolean>(false);
-  useEffect(() => {
-    //没有手工调整过之前都使用服务端传来的已上传数据信息
-    if (datas && hand === false) {
-      setImageIds(datas.map((d: any) => d.id));
-    }
-  }, [datas, hand]);
-
   const viewSize = useMemo((): { width: number; height: number } => {
     if (size === "small") {
       return { width: 35, height: 35 };
@@ -67,21 +56,7 @@ const VfImage = ({
   };
 
   const fileList = useMemo((): FileItem[] => {
-    if (datas) {
-      return (
-        datas
-          // ?.filter((d) => imageIds?.includes(d.id))
-          .map((d: any) => {
-            return {
-              uid: d.id,
-              status: "success",
-              name: d.fileName,
-              size: d.size,
-              url: apiUrl + "/sysFile/image/" + d.id,
-            };
-          }) || []
-      );
-    } else if (value && typeof value === "string") {
+    if (value && typeof value === "string") {
       return [
         {
           uid: value,
@@ -93,7 +68,7 @@ const VfImage = ({
       ];
     }
     return [];
-  }, [datas, value]);
+  }, [value]);
 
   return read ? (
     <>
@@ -212,5 +187,4 @@ const VfImage = ({
     </Upload>
   );
 };
-
 export default VfImage;

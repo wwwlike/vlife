@@ -272,6 +272,4 @@ public class FormFieldVo  implements VoBean<FormField>{
      * 字符串加密
      */
     public boolean safeStr;
-
-
 }

@@ -31,35 +31,38 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 字典表接口;
+ * 字典表接口
  */
 @RestController
 @RequestMapping("/sysDict")
 public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
-
-    @GetMapping("/page")
+    /**
+     * 字典查询
+     */
+    @PostMapping("/page")
     public PageVo<SysDict> page(SysDictPageReq req) {
         req.qw().ne("dictType",true);
         return service.findPage(req);
     }
-
+    /**
+     * 字典大类
+     * @return
+     */
     @GetMapping("/list/type")
     public List<SysDict> listType() {
         return service.find("dictType",true);
     }
-
+    /**
+     * 全部字典
+     */
     @GetMapping("/all")
     public List<SysDict> all() {
         return service.findAll(new OrderRequest().addOrder("code", Sort.Direction.ASC)
                 .addOrder("val", Sort.Direction.ASC)
         );
     }
-
     /**
-     * 保存字典表;
-     *
-     * @param dto 字典表;
-     * @return 字典表;
+     * 字典编辑
      */
     @PostMapping("/save")
     public SysDict save(@RequestBody SysDict dto) {
@@ -69,36 +72,22 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
         }
         return service.save(dto);
     }
-
     /**
-     * 明细查询字典表;
-     *
-     * @param id 主键id;
-     * @return 字典表;
+     * 字典详情
      */
     @GetMapping("/detail/{id}")
     public SysDict detail(@PathVariable String id) {
         return service.findOne(id);
     }
-
     /**
-     * 逻辑删除;
+     * 字典删除
      */
     @DeleteMapping("/remove")
     public Long remove(@RequestBody String[] ids) {
         return service.remove(ids);
     }
-
-
-//    @GetMapping("/sync")
-//    public List<SysDict> sync() {
-//        return service.sync();
-//    }
-
     /**
-     * 根据code查询字典
-     * @param code
-     * @return
+     * 根据code查询
      */
     @GetMapping("/listByCode")
     public List<SysDict> listByCode(String code) {

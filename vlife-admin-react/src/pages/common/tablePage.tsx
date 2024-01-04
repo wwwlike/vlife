@@ -182,7 +182,9 @@ const TablePage = <T extends IdBean>({
     return {};
   }, [pageData]);
 
-  const searchAndColumnCondition = useMemo((): Partial<FormItemCondition> => {
+  const searchAndColumnCondition = useMemo(():
+    | Partial<FormItemCondition>
+    | undefined => {
     if (
       condition?.where &&
       condition.where.length > 0 &&
@@ -212,9 +214,9 @@ const TablePage = <T extends IdBean>({
     } else if (tableModel) {
       const { type, entityType } = tableModel;
       return (params: PageQuery): Promise<Result<PageVo<T>>> => {
-        return apiClient.get(
+        return apiClient.post(
           `/${entityType}/page${entityType !== type ? "/" + type : ""}`,
-          { params }
+          params
         );
       };
     }
@@ -233,11 +235,12 @@ const TablePage = <T extends IdBean>({
   const query = useCallback(() => {
     const reqParams = {
       ...req,
-      conditionGroups: req.conditionGroups
-        ? req.conditionGroups
-        : conditionJson
-        ? JSON.parse(conditionJson)
-        : undefined,
+      conditionGroups:
+        req && req.conditionGroups
+          ? req.conditionGroups
+          : conditionJson
+          ? JSON.parse(conditionJson)
+          : undefined,
       conditions: searchAndColumnCondition,
       order: { orders: orderStr(order) },
       pager: pager,
@@ -435,8 +438,27 @@ const TablePage = <T extends IdBean>({
         if (ids.length > 0) {
           const d = async () =>
             await find(f.entityType, "id", ids).then((data) => {
-              data.data?.forEach((e: any) => {
-                fkObj[e.id] = e.name || e.title || e.no;
+              getFormInfo({ type: f.entityType }).then((e) => {
+                const itemName = e?.itemName;
+                const itemFields: string[] =
+                  itemName?.match(/[a-zA-Z]+/g) || [];
+
+                if (itemName && itemFields.length > 0) {
+                  data.data?.forEach((e: any) => {
+                    let fkvalue = itemName;
+                    itemFields.forEach((itemField) => {
+                      fkvalue = fkvalue.replaceAll(
+                        itemField,
+                        e[itemField] || itemField
+                      );
+                    });
+                    fkObj[e.id] = fkvalue;
+                  });
+                } else {
+                  data.data?.forEach((e: any) => {
+                    fkObj[e.id] = e.name || e.title || e.no;
+                  });
+                }
               });
               return fkObj;
             });
@@ -520,7 +542,7 @@ const TablePage = <T extends IdBean>({
           {...props}
         />
         {/* 搜索 */}
-        {tableModel.fields.filter((f) => f.listSearch).length > 0 && (
+        {tableModel?.fields?.filter((f) => f.listSearch).length > 0 && (
           <VfSearch
             className=" flex ml-2"
             tooltip={`根据${tableModel.fields
@@ -552,7 +574,7 @@ const TablePage = <T extends IdBean>({
             setOrder(newOrder);
           }}
           order={order || []}
-          where={searchAndColumnCondition.where || []}
+          where={searchAndColumnCondition?.where || []}
           onConditionRemove={(fieldId: string) => {
             setColumnWheres(columnWheres.filter((c) => c.fieldId !== fieldId));
           }}

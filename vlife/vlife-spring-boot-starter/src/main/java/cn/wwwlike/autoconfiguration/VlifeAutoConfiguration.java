@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @EnableConfigurationProperties(VlifeProperties.class)
-@ConditionalOnProperty(prefix = "vlife", name = "packroot", matchIfMissing = false)
+//@ConditionalOnProperty(prefix = "vlife", name = "packroot", matchIfMissing = false)
 @Configuration
 public class VlifeAutoConfiguration {
     @Autowired

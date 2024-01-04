@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name = "form_field")
-@VClazz(orders = "sort_asc",module = "conf",remove = {FormReaction.class})
+@VClazz(orders = "sort_asc",remove = {FormReaction.class})
 public class FormField extends DbEntity {
     /**
      * 标题
@@ -27,11 +27,6 @@ public class FormField extends DbEntity {
      * java标题
      */
     public String javaTitle;
-
-    /**
-     * 是否
-     */
-    public Boolean labelField;
 
     /**
      * 字段名

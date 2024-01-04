@@ -18,7 +18,6 @@ import static java.awt.SystemColor.text;
  */
 @Entity
 @Table(name="page_component")
-@VClazz(module = "conf")
 public class PageComponent extends DbEntity {
     /***
      * 组件单元所在页面

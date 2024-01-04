@@ -4,7 +4,6 @@ import {  isBoolean, isNull, isNumber } from 'lodash';
 import { SchemaReaction } from '@formily/react';
 
 //手动级联响应与formily配合使用
-
 /**
  * 字段批量响应
  * @param actions 响应内容
@@ -16,34 +15,38 @@ export const execVfAction = (actions: VfAction[], form: Form,parentData:any) => 
     fields.forEach((fieldName) => {
       const reactions:reaction[]=a.reations;
       reactions.forEach((r:reaction)=>{
-        // form.formily里的form对象需要获得指定useranme的 field对象，应该如何调用form对象的方法
+      
+        const field = form.getFieldState(fieldName);  
         const prop: string = FS_STATE[r.state];
-        if(typeof r.value==="function"){//1函数方式设置value
-          // const fieldState = form.getFieldState(fieldName);
-          // fieldState.componentProps;
-          // alert(JSON.stringify(fieldState.componentProps))
-
-          const funcResult=r.value({...form.values,parent:parentData});
-          if (funcResult instanceof Promise) {
-            funcResult.then((d:any) => {
-              form.setFieldState(fieldName, (state: any) => {
-                if(d.code&&d.data){
-                  state[prop] = d.data;
-                }else{
-                  state[prop] = d;
-                }
+        if(field!==undefined){
+          if(typeof r.value==="function"){//1函数回调方式设置组件相关属性；取出当前表单值formData,和当前字段的componentProp组件属性
+            const componentProps:any = field.component;  
+            const funcResult=r.value({...form.values,parent:parentData},
+              componentProps?.[1]
+            );
+            //1.1 异步函数
+            if (funcResult instanceof Promise) {
+              funcResult.then((d:any) => {
+                form.setFieldState(fieldName, (state: any) => {
+                  if(d.code&&d.data){
+                    state[prop] = d.data;
+                  }else{
+                    state[prop] = d;
+                  }
+                });
               });
-            });
-          }else{//1.2同步函数设置value
-            // alert(fieldName+prop+JSON.stringify(funcResult))
+            }else{//1.2同步函数设置value
+              form.setFieldState(fieldName, (state: any) => {
+                state[prop] =funcResult;
+              });
+            }
+          }else{//2直接设置固定值
             form.setFieldState(fieldName, (state: any) => {
-              state[prop] =funcResult;
+              state[prop] = r.value;
             });
           }
-        }else{//2直接设置固定值
-          form.setFieldState(fieldName, (state: any) => {
-            state[prop] = r.value;
-          });
+        }else{
+          console.error(`VF.field("${fieldName}")字段${fieldName}不存在,请检查`)
         }
       })
     });
@@ -197,10 +200,6 @@ export const vfEventReaction = (
           when: whenElStr1(f, deps, form),
           fulfill: {
             state: {
-            //  "componentProps":{"abc":"12345"},
-            //  props:{"abc":"12345"},
-            //   "abc":"12345"
-              //这里如何设置组件的属性的联动？？？？？
              ...stateFulfill(f.actions.filter((ff) => ff.fill),form),
             },
           },

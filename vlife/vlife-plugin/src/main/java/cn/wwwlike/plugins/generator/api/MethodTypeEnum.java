@@ -50,8 +50,8 @@ public enum MethodTypeEnum implements Method {
     //remove
     remove("逻辑删除","remove", DeleteMapping.class,String[].class,"ids",Long.class, RequestBody.class,NAME_PREFIX,MethodContent.remove),
     // query
-    page("分页查询","page",GetMapping.class, PageQuery.class,"req",PageVo.class,null,NAME_ALL,MethodContent.page),
-    list("列表查询","list",GetMapping.class, VlifeQuery.class,"req",List.class,null,NAME_ALL,MethodContent.list),
+    page("分页查询","page",PostMapping.class, PageQuery.class,"req",PageVo.class,RequestBody.class,NAME_ALL,MethodContent.page),
+    list("列表查询","list",PostMapping.class, VlifeQuery.class,"req",List.class,RequestBody.class,NAME_ALL,MethodContent.list),
     get_one("单条查询","find",GetMapping.class, CustomQuery.class,"bean",IdBean.class,null,NAME_ALL,MethodContent.one),
     post_one("","",PostMapping.class, CustomQuery.class,"bean",IdBean.class,RequestBody.class,NAME_KEY,MethodContent.one),
     detail("明细查询","detail",GetMapping.class,String.class,"id",IdBean.class, PathVariable.class,NAME_ALL,MethodContent.detail);

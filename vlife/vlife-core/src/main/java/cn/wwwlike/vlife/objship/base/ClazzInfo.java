@@ -29,6 +29,8 @@ import lombok.Data;
 public abstract class ClazzInfo {
     /** 元素中文信息 */
     public String title;
+    /** 元素说明信息 */
+    public String placeholder;
     /** 元素类型 */
     public String type;
     /** 类状态(删)*/

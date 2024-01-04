@@ -7,22 +7,18 @@ import { FormVo } from "@src/api/Form";
 import { VfBaseProps } from "@src/dsl/component";
 import FormPage from "@src/pages/common/formPage";
 
-interface VfListFormProps extends VfBaseProps<any[], null> {
+interface VfListFormProps extends VfBaseProps<any[]> {
   modelName: string; //模型名称
-  formName: string; //
-  showInput: boolean; //是否保留显示一个
+  showInput: boolean; //是否至少显示一组表单
 }
 
 const VfListForm = ({
   value,
   modelName,
-  fieldInfo,
-  formName,
   onDataChange,
   formData,
-  onForm,
+  fieldInfo,
   showInput = true,
-  model, //主表单模型信息
   ...props
 }: VfListFormProps) => {
   const [data, setData] = useState<any[]>(
@@ -98,7 +94,6 @@ const VfListForm = ({
               }}
               parentFormData={formData} //父组件form数据
               type={modelName || fieldInfo.fieldType || ""}
-              rootFormName={formName}
               fontBold={props.fontBold} //加粗
               vf={props.vf}
               terse={true} //紧凑

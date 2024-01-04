@@ -56,11 +56,6 @@ public class SysMenu extends DbEntity implements ITree {
      */
     public String entityType;
     /**
-     * 应用标识前缀
-     *  app应用true时，关联本应用的实体表，不用下级的entityType查找了，多个实体名之间用逗号分隔，方便模型管理时过滤
-     */
-    public String entityPrefix;
-    /**
      * 归属角色
      * 如果菜单下没有任何资源/接口 则 需要将菜单和角色绑定
      */

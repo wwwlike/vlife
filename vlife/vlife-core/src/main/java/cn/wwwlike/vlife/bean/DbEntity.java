@@ -15,21 +15,16 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package cn.wwwlike.vlife.bean;
-
-import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.Item;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.StringUtils;
-
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
-
 /**
  * do数据模型继承的对象
  */
@@ -40,11 +35,11 @@ public abstract class DbEntity implements Item {
      */
     public String id;
     /**
-     * 实体状态 【1有效 0逻辑删除】
+     * 实体状态
+     * 1有效 0逻辑删除
      */
     @VField(dictCode = "STATUS")
     private String status;
-
     /**
      * 创建人
      */
@@ -53,9 +48,7 @@ public abstract class DbEntity implements Item {
     /**
      * 修改人
      */
-//    @VField(pathName = "sysUserId")
     private String modifyId;
-
     /**
      * 记录创建日期
      */
@@ -64,23 +57,6 @@ public abstract class DbEntity implements Item {
      * 最近修改日期
      */
     private Date modifyDate;
-
-
-    public String getCreateId() {
-        return createId;
-    }
-
-    public void setCreateId(String createId) {
-        this.createId = createId;
-    }
-
-    public String getModifyId() {
-        return modifyId;
-    }
-
-    public void setModifyId(String modifyId) {
-        this.modifyId = modifyId;
-    }
 
     @Id
     @Column(length = 50, nullable = true)
@@ -96,12 +72,22 @@ public abstract class DbEntity implements Item {
         }
         this.id = id;
     }
-
+    public String getCreateId() {
+        return createId;
+    }
+    public void setCreateId(String createId) {
+        this.createId = createId;
+    }
+    public String getModifyId() {
+        return modifyId;
+    }
+    public void setModifyId(String modifyId) {
+        this.modifyId = modifyId;
+    }
     @Override
     public int hashCode() {
         return id == null ? System.identityHashCode(this) : id.hashCode();
     }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -123,31 +109,23 @@ public abstract class DbEntity implements Item {
         }
         return true;
     }
-
     public Date getCreateDate() {
         return createDate;
     }
-
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
-
     public Date getModifyDate() {
         return modifyDate;
     }
-
     public void setModifyDate(Date modifyDate) {
         this.modifyDate = modifyDate;
     }
-
     @Column(length = 2)
     public String getStatus() {
         return status;
     }
-
     public void setStatus(String status) {
         this.status = status;
     }
-
-
 }

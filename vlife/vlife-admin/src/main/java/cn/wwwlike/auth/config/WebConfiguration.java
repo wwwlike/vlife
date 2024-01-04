@@ -32,12 +32,10 @@ import java.util.List;
  */
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
-
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(0, new MappingJackson2HttpMessageConverter());
     }
-
 
     /**
      * 增加图片转换器
@@ -53,6 +51,4 @@ public class WebConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/dist/**")
                 .addResourceLocations("classpath:/dist/");
     }
-
-
 }

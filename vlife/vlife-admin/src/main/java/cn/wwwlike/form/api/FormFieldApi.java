@@ -61,7 +61,7 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
     }
 
     /**
-     * 查询表的字段信息
+     * 查询当前表和子表能分组的字段
      * @param formId
      * @return
      */

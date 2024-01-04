@@ -91,8 +91,8 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return new ArrayList<>();
     }
 
-    @GetMapping("/page")
-    public PageVo<Form> page(FormPageReq req){
+    @PostMapping("/page")
+    public PageVo<Form> page(@RequestBody FormPageReq req){
         return service.findPage(req);
     }
 
@@ -140,8 +140,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
     public Integer sync(){
         return service.sync(GlobalData.allModels());
     }
-
-
     /**
      * 查询指定模型信息
      * @return
@@ -191,6 +189,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return form;
     }
 
+
     /**
      * 查找Java内存里的模型信息
      * @param modelName 模型名称
@@ -200,7 +199,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
     public BeanDto javaModel(@PathVariable String modelName) {
         return service.modelInfo(modelName);
     }
-
     /**
      * 所有实体模型
      * @return
@@ -214,13 +212,10 @@ public class FormApi extends VLifeApi<Form, FormService> {
             return service.query(FormVo.class,QueryWrapper.of(Form.class).eq("sysMenuId",realAppId).eq("itemType","entity"));
         }
     }
-
     @RequestMapping("/list/all")
     public List<Form> listAll(){
         return  service.find("itemType","entity");
     }
-
-
     /**
      * 模型&字段保存
      * @param dto 列表字段;
@@ -252,7 +247,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
     public FormVo detailFormVo(@PathVariable String id) {
         return service.queryOne(FormVo.class, id);
     }
-
     /**
      * 逻辑删除;
      * @return 已删除数量;

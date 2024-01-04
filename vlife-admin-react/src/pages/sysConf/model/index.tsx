@@ -26,6 +26,7 @@ import {
   save as menuSave,
   MenuVo,
   saveMenuResourcesDto,
+  detailMenuResourcesDto,
 } from "@src/api/SysMenu";
 import classNames from "classnames";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
@@ -48,7 +49,6 @@ type appEntityType = { [menuCode: string]: modelForm[] };
 const Model = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const formModal = useNiceModal("formModal");
   //所有菜单
   const [menus, setMenus] = useState<MenuVo[]>([]);
   //所有实体模型
@@ -171,7 +171,7 @@ const Model = () => {
         ${classNames({
           "bg-yellow-50": menuLength > 0,
           "bg-gray-50": menuLength === 0,
-          "hover:border-gray-400": entityType !== e.entityType,
+          "hover:border-gray-400 border-d": entityType !== e.entityType,
           "border-gray-400 !bg-blue-100 font-bold": entityType === e.entityType,
         })}
        group hover:bg-blue-50  border-dashed rounded-lg p-2 text-center  `}
@@ -183,7 +183,7 @@ const Model = () => {
             <p>{e.title}</p>
             <p>{e.type}</p>
           </div>
-          <div className=" group-hover:animate-bounce  absolute right-1 bottom-1 group-hover:block ">
+          <div className="   absolute right-1 bottom-1 group-hover:block ">
             <Tooltip
               content={`${
                 1 +
@@ -239,7 +239,8 @@ const Model = () => {
             <i
               className={`${classNames({
                 hidden: tabKey !== "app_empty",
-              })} absolute  left-1 bottom-1 group-hover:block icon-out`}
+                "group-hover:animate-bounce": tabKey === "app_empty",
+              })} absolute  left-1 bottom-1 group-hover:block icon-out `}
             />
           </Dropdown>
         </div>
@@ -259,15 +260,6 @@ const Model = () => {
       setTabKey(tab);
     }
   }, [appEntity, entityType]);
-
-  const show = useCallback((menuId: string) => {
-    getDetail({ id: menuId }, "menuResourcesDto", "sysMenu").then((d) => {
-      formModal.show({
-        type: "menuResourcesDto",
-        formData: d.data,
-      });
-    });
-  }, []);
 
   const btns = useMemo((): VFBtn[] => {
     const _btns: VFBtn[] = [
@@ -309,6 +301,11 @@ const Model = () => {
         saveApi: menuSave,
         onSubmitFinish: menuLoad,
         reaction: [
+          VF.then("name").value(currEntity?.title),
+          // VF.resul
+          //   .eq("123")
+          //   .then("pcode")
+          //   .componentProps({ treeData: [] }),
           VF.then(
             "app",
             "placeholderUrl",
@@ -316,12 +313,10 @@ const Model = () => {
             "code",
             "confPage",
             "pageLayoutId",
-            "entityPrefix",
             "sort",
             "formId"
           ).hide(),
           VF.then("formId").value(currEntity?.id).hide(),
-
           VF.field("url")
             .endsWidth("*")
             .then("placeholderUrl")
@@ -334,7 +329,7 @@ const Model = () => {
     if (entityMenus && entityMenus.length > 0) {
       entityMenus.forEach((m) => {
         _btns.push({
-          title: m.name + "(预览)",
+          title: m.name + "(功能预览)",
           actionType: "click",
           icon: <IconLive />,
           onClick: () => {
@@ -348,13 +343,11 @@ const Model = () => {
       });
       entityMenus.forEach((m) => {
         _btns.push({
-          title: m.name + "(权限)",
+          title: m.name + "(权限关联)",
           actionType: "edit",
           icon: <IconRegExp />,
           model: "menuResourcesDto",
-          loadApi: (d) => {
-            return getDetail({ id: m.id }, "menuResourcesDto", "sysMenu");
-          },
+          loadApi: (d) => detailMenuResourcesDto({ id: m.id }),
           saveApi: saveMenuResourcesDto,
         });
       });
@@ -438,7 +431,7 @@ const Model = () => {
 
           {tabKey === "app_empty" && (
             <div className="inline-block text-center mx-2 text-sm bg-blue-50 border py-2 px-4 border-dashed rounded-md">
-              请将模型关联到应用后进行配置 <IconSetting />
+              请将模型关联到应用后进行配置 <i className="icon-out" />
             </div>
           )}
 

@@ -19,7 +19,6 @@ public class WebMvcConfig {
         return new DateJacksonConverter();
     }
 
-
     @Bean//post body能接收 日期类型；
     public Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean(
             @Autowired DateJacksonConverter dateJacksonConverter) {
@@ -36,4 +35,21 @@ public class WebMvcConfig {
         mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);  // 设置objectMapper
         return mappingJackson2HttpMessageConverter;
     }
+
+
+
+
+    //字符串返回方式的转换
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(0, new MappingJackson2HttpMessageConverter());
+    }
+
+//    @Bean
+//    MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(@Autowired ObjectMapper objectMapper) {
+//        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+//        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd")); // HH:mm:ss
+//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);//允许提交json没有的字段
+//        mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);  // 设置objectMapper
+//        return mappingJackson2HttpMessageConverter;
+//    }
 }

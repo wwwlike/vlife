@@ -6,19 +6,14 @@ import { useMount, useSize } from "ahooks";
 import React, { ReactNode, useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { all, SysDict } from "@src/api/SysDict";
-import {
-  currUser,
-  gitToken,
-  ThirdAccountDto,
-  UserDetailVo,
-  login as userLogin,
-} from "@src/api/SysUser";
+import { currUser, ThirdAccountDto, UserDetailVo } from "@src/api/SysUser";
+import { login as userLogin } from "@src/api/login";
 import { FormVo, model, formPageReq } from "@src/api/Form";
 import { SysResources } from "@src/api/SysResources";
 import { useEffect } from "react";
 import { listAll, SysGroup } from "@src/api/SysGroup";
 import { SysMenu } from "@src/api/SysMenu";
-import { isBuffer } from "lodash";
+import { gitToken } from "@src/api/pro/gitee";
 export const localStorageKey = "__auth_provider_token__";
 
 export interface dictObj {
@@ -27,24 +22,7 @@ export interface dictObj {
       value: string | undefined;
       label: string;
       sys?: boolean;
-      color:
-        | "amber"
-        | "blue"
-        | "cyan"
-        | "green"
-        | "grey"
-        | "indigo"
-        | "light-blue"
-        | "light-green"
-        | "lime"
-        | "orange"
-        | "pink"
-        | "purple"
-        | "red"
-        | "teal"
-        | "violet"
-        | "yellow"
-        | "white";
+      color: string;
     }[];
     label: string;
   };
@@ -107,23 +85,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [app, setApp] = useState<SysMenu | undefined>();
   /** 当前用户信息 */
   const [user, setUser] = useState<UserDetailVo>();
-
   /** 当前菜单状态 */
   const [menuState, setMenuState] = useState<MenuState>("show");
-
   /**
    * 权限权限资源信息
    */
   const [allResources, setAllResources] = useState<SysResources[]>();
-
   //存模型信息的对象，key是modelName, modelInfoProps
   // 与数据库一致的，有UI场景的模型信息
   const [models, setModels] = useState<any>({});
-
-  const [javaModels, setJavaModels] = useState<any>({});
   /** 数据库结构的字典信息 */
   const [dbDicts, setDbDicts] = useState<SysDict[]>([]);
-
   /** 权限组集合 */
   const [groups, setGroups] = useState<{ [key: string]: SysGroup }>({});
 
@@ -159,7 +131,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           obj[d.code].data.push({
             label: d.title,
             value: d.val,
-
             color: d.color,
           });
         }
@@ -324,7 +295,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const giteeLogin = useCallback(
     (code: string): Promise<ThirdAccountDto | undefined> => {
       return gitToken(code, "gitee").then((result) => {
-        // alert(JSON.stringify(result));
         if (result.code == "200" && result.data) {
           window.localStorage.setItem(localStorageKey, result.data.token);
           currUser().then((res) => {

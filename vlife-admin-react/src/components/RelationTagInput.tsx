@@ -6,12 +6,10 @@ import { DataType } from "@src/dsl/base";
 import { VfBaseProps } from "@src/dsl/component";
 import TablePage from "@src/pages/common/tablePage";
 import { useUpdateEffect } from "ahooks";
-
-interface RelationInputProps
-  extends Partial<VfBaseProps<string | string[], IFkItem[]>> {
+interface RelationTagInputProps
+  extends Partial<VfBaseProps<string | string[]>> {
   req: any; //列表过滤条件
 }
-
 function queryData(
   value: string[],
   entityType: string
@@ -24,16 +22,16 @@ function queryData(
  * 外键关系的tagInput组件
  */
 const RelationTagInput = ({
-  datas, //选中的数据，已经将value里封装在里面了
   fieldInfo,
   read,
   value,
   req,
+  placeholder,
   className,
   onDataChange,
-}: RelationInputProps) => {
+}: RelationTagInputProps) => {
   // 当前选中数据
-  const [tagData, setTagData] = useState<any[]>(datas ? [...datas] : []);
+  const [tagData, setTagData] = useState<any[]>([]);
 
   useEffect(() => {
     if (value && (tagData === undefined || tagData.length === 0)) {
@@ -97,26 +95,23 @@ const RelationTagInput = ({
           }
         />
       </Modal>
-      <>
-        {/* {JSON.stringify(tagData)} */}
-        <TagInput
-          className={className}
-          // showClear
-          placeholder={fieldInfo && fieldInfo.title}
-          value={tagData?.map((m) => m.name || m.no)}
-          defaultValue={tagData?.map((m) => m?.id)}
-          onFocus={() => setModalState(true)}
-          onRemove={(v, i) => {
-            const obj = [
-              ...tagData.filter((d, index) => {
-                return i !== index;
-              }),
-            ];
-            // alert(obj.length);
-            setTagData([...obj]);
-          }}
-        />
-      </>
+      <TagInput
+        className={className}
+        // showClear
+        placeholder={placeholder}
+        value={tagData?.map((m) => m.name || m.no)}
+        defaultValue={tagData?.map((m) => m?.id)}
+        onFocus={() => setModalState(true)}
+        onRemove={(v, i) => {
+          const obj = [
+            ...tagData.filter((d, index) => {
+              return i !== index;
+            }),
+          ];
+          // alert(obj.length);
+          setTagData([...obj]);
+        }}
+      />
     </>
   );
 };

@@ -49,7 +49,11 @@ import java.util.List;
 @Mojo(name = "codeCreate", defaultPhase = LifecyclePhase.INSTALL)
 public class MvcCodeCreateMojo extends AbstractMojo {
     @Parameter
-    private List<String> entityPackages;
+    private String baseServiceClz;
+    @Parameter
+    private String baseApiClz;
+    @Parameter
+    private String baseDaoClz;
 
     @Parameter(defaultValue = "${project.compileClasspathElements}", readonly = true, required = true)
     private List<String> compilePath;
@@ -61,14 +65,14 @@ public class MvcCodeCreateMojo extends AbstractMojo {
     /**
      * 1. 类信息读取
      * 2. 代码生成（已经有则不覆盖）
-     * 3. 字典生成 (每次覆盖，生成到generated-sources/java)
+     * 3. 根据实体表生成Query查询使用静态常量类(每次覆盖，生成到generated-sources/java)
      */
     public void execute() throws MojoExecutionException {
         List<String> sourceRoots=project.getCompileSourceRoots();
         ClassLoader loader = ClassLoaderUtil.getVlifeClassLoader(project);
         ModelReadCheck modelReadCheck= new ModelReadCheck();
         int errorNum=modelReadCheck.load(loader);
-        GeneratorMaster generatorMaster = new GeneratorMaster();
+        GeneratorMaster generatorMaster = new GeneratorMaster(baseApiClz,baseServiceClz,baseDaoClz);
         if(errorNum==0){
             try {
                 //mvc文件生成
@@ -90,7 +94,9 @@ public class MvcCodeCreateMojo extends AbstractMojo {
                 e.printStackTrace();
             }
         }else{
-            modelReadCheck.getLogger().error("模型信息读取存在错误,代码生成失败");
+            String errorMsg="MvcCodeCreate插件执行失败。请查看日志详情";
+            modelReadCheck.getLogger().error(errorMsg);
+            throw new MojoExecutionException(errorMsg);
         }
     }
 

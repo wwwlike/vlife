@@ -4,11 +4,15 @@ import Label from "@douyinfe/semi-ui/lib/es/form/label";
 import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
-import CompConf from "@src/components/compConf";
-import { CompDatas, CompInfo } from "@src/components/compConf/compConf";
+import {
+  CompDatas,
+  CompInfo,
+  CompPropInfo,
+} from "@src/components/compConf/compConf";
 import SelectIcon from "@src/components/SelectIcon";
 import { useAuth } from "@src/context/auth-context";
 import { DataType } from "@src/dsl/base";
+import CompConf from "@src/components/compConf";
 
 /**
  * 1. 组件选择
@@ -30,6 +34,29 @@ interface FieldSettingProps {
   }) => void;
 }
 
+//查找传入组件配置(compData)信息里需要关联指定字段信息的对象集合
+export function extractFromFields(
+  compInfo: CompInfo
+): { entity: string; field: string }[] {
+  const compPropKeys: string[] = Object.keys(compInfo.props || {});
+  return compPropKeys
+    ?.filter(
+      (k) =>
+        compInfo.props &&
+        compInfo.props[k] &&
+        typeof compInfo.props[k] === "object" &&
+        (compInfo.props[k] as CompPropInfo).fromField &&
+        (compInfo.props[k] as CompPropInfo).fromField !== true &&
+        (compInfo.props[k] as CompPropInfo).must == true
+    )
+    .map(
+      (key) =>
+        (compInfo?.props?.[key] as CompPropInfo).fromField as {
+          entity: string;
+          field: string;
+        }
+    );
+}
 /**
  * 1.组件选择
  * 2.组件属性设置
@@ -82,8 +109,32 @@ export default ({
         }
       })
     ).then((d: any) => {
-      const components = d.filter((dd: CompInfo) => dd !== undefined);
-      setComps(components);
+      //1. 找出表单字段类型一致组件回调数据类型
+      const components: CompInfo[] = d.filter(
+        (dd: CompInfo) => dd !== undefined
+      );
+
+      //2. 找到该组件属性里必填的且是来自指定字段数据对象的集合
+      const selectAbleComp = components.filter((compInfo) => {
+        const fromFields: { field: string; entity: string }[] =
+          extractFromFields(compInfo);
+
+        return (
+          fromFields === undefined ||
+          fromFields === null ||
+          fromFields.length === 0 ||
+          fromFields.filter(
+            (fromField) =>
+              formVo.fields.filter(
+                (f) =>
+                  f.entityType === fromField.entity &&
+                  f.entityFieldName === fromField.field &&
+                  f.dataType !== "array"
+              ).length === 1
+          ).length === fromFields.length
+        );
+      });
+      setComps(selectAbleComp);
     });
   }, [field.type]);
 
@@ -104,7 +155,12 @@ export default ({
             ))}
         </div>
         <div>
-          <Label>{compDatas[field.x_component]?.label}</Label>
+          <Label>
+            {compDatas[field.x_component]?.label}
+            <span className=" text-sm text-gray-500">
+              ({field.x_component})
+            </span>
+          </Label>
         </div>
         <div className=" absolute right-0">
           <Dropdown

@@ -5,9 +5,10 @@ import { SysMenu } from '@src/api/SysMenu';
 import { DataType, TsType } from '../dsl/base';
 
 /**
- * api数据过滤函数集合
- * 对于组件入参是数组型的入参属性，可对其进行过滤
- * 目前这块过滤条件是不能传参数的，不能根据组件或者field的相关进行进行过滤逻辑的处理
+ * api数据过滤函数集合,对于组件入参是数组型的入参属性，可对其进行过滤(只做数据筛选，不做任何转换)
+ * 待：
+ * 1. 函数不能传参数的，不能根据组件或者field的相关进行进行过滤逻辑的处理
+ * 2. 函数不支持异步
  */
 export interface filter{
   title:string;//过滤器标题
@@ -30,12 +31,19 @@ export const filterFuns:filterObj={
     },
  },
    erpEntity: {
-      title:"进销存模型",
+      title:"业务模型",
       dataModel:"FormVo",
       func:(formVo:FormVo[])=>{
-        return formVo.filter((d,index)=>d.itemType==='entity'&&d.module==='erp');
+        return formVo.filter((d,index)=>d.itemType==='entity'&&d.sysMenuId!=="4028b881882cb61301882cc8004a0000");
       },
    },
+   sysEntity: {
+    title:"系统模型",
+    dataModel:"FormVo",
+    func:(formVo:FormVo[])=>{
+      return formVo.filter((d,index)=>d.itemType==='entity'&&d.sysMenuId==="4028b881882cb61301882cc8004a0000");
+    },
+ },
    groupField:{
     title:"可分组字段",
     dataModel:"FormField",

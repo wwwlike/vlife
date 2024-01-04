@@ -42,12 +42,10 @@ public class FormDto implements SaveBean<Form> {
      * 类型(clz)
      */
     public String type;
-
     /**
      * 模型父类字符串集合
      */
     public String typeParentsStr;
-
     /**
      * 实体clz
      */
@@ -58,26 +56,10 @@ public class FormDto implements SaveBean<Form> {
     public String itemType;
 
     public String name;
-
-
-    /**
-     * 页面排序
-     */
-    public Integer  sort;
-
-
-
     /**
      * 图标
      */
     public String  icon;
-
-    /**
-     * 模块
-     * 字典：系统模块，业务模块等
-     */
-    public String module;
-
     /**
      * 页面大小
      * 1. 对于form可以确定弹出层大小(tailwind的比例)
@@ -86,34 +68,23 @@ public class FormDto implements SaveBean<Form> {
     public Integer modelSize;
 
     public Integer  pageSize;
-
     /**
      * 版本
-     * 保存一次版本加一
+     * 保存一次版本加一(待)
      */
     public Integer version;
-
     /**
      * 分页列表api代码路径
      */
     public String listApiPath;
-
     /**
      * 分页列表api代码路径
      */
     public String saveApiPath;
-
     /**
      * 编号前缀
-     * 需要模型实现INo接口
      */
     public String prefixNo;
-
-
-    public List<FormFieldDto> fields;
-
-    public List<FormTabDto> formTabDtos;
-
     /**
      * 接口
      */
@@ -121,11 +92,11 @@ public class FormDto implements SaveBean<Form> {
 
     public String  itemName;
 
-
     public String sysMenuId;
-    /**
-     * 紧凑布局
-     * terse
-     */
-//    public boolean terse;
+
+    public String formDesc;
+    //开发帮助文档
+    public String helpDoc;
+    public List<FormFieldDto> fields;
+    public List<FormTabDto> formTabDtos;
 }

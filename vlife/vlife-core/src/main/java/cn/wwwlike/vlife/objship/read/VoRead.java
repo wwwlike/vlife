@@ -59,26 +59,26 @@ public class VoRead extends ItemReadTemplate<VoDto> {
      */
     public VoDto readInfo(Class s) {
         VoDto dto = null;
-        // savebean其实也是voBean
-        if (VoBean.class.isAssignableFrom(s)  &&s != VoBean.class&& s != SaveBean.class) {
-        dto = new VoDto();
-        superRead(dto, s);
-        dto.setItemType(VO);
-        Class entityClz = GenericsUtils.getGenericType(s);
-        if (entityClz == null || !Item.class.isAssignableFrom(entityClz)) {
-//                dto.setState(VCT.ITEM_STATE.ERROR);
-        } else {
-            dto.setEntityClz(entityClz);
-            dto.setEntityType(entityClz.getSimpleName());
-        }
-        dto.setOrders(Constants.DEFAULT_ORDER_TYPE);
-        VClazz f = (VClazz) s.getAnnotation(VClazz.class);
-        if (f != null) {
-            if (f.orders() != null) {
-                dto.setOrders(f.orders());
+        // savebean其实也是voBean,这里需要排除掉
+        if (VoBean.class.isAssignableFrom(s) &&s != VoBean.class&& s != SaveBean.class) {
+            dto = new VoDto();
+            superRead(dto, s);
+            dto.setItemType(VO);
+            Class entityClz = GenericsUtils.getGenericType(s);
+            if (entityClz == null || !Item.class.isAssignableFrom(entityClz)) {//泛型未设置
+    //                dto.setState(VCT.ITEM_STATE.ERROR);
+            } else {
+                dto.setEntityClz(entityClz);
+                dto.setEntityType(entityClz.getSimpleName());
+            }
+            dto.setOrders(Constants.DEFAULT_ORDER_TYPE);
+            VClazz f = (VClazz) s.getAnnotation(VClazz.class);
+            if (f != null) {
+                if (f.orders() != null) {
+                    dto.setOrders(f.orders());
+                }
             }
         }
-    }
         return dto;
     }
 

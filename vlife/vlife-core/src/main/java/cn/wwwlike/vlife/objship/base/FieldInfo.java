@@ -39,7 +39,6 @@ public class FieldInfo extends ClazzInfo {
     public String entityFieldName;
     /** 字典的code */
     public String dictCode;
-
     // -----待移除-------------
     /**字段在页面显示状态1不显示，2只读， 3可写 */
     public String uiState;

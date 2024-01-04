@@ -37,16 +37,15 @@ export default () => {
   return (
     <Scrollbars autoHide={true}>
       <div className="relative rounded-md">
-        <div className=" text-red-500 absolute top-2 left-16 text-sm">
-          点击即可复制
+        <div className=" text-red-500 absolute left-16 text-sm">
+          点击即可复制(请统一把代码复制或者下载到src/api的目录下,高级版可以自动生成最新前端代码到指定的目录下,不建议在生成的代码上进行修改和逻辑编写，推荐新增封装ts类库)
         </div>
-        <div className=" text-red-500 absolute top-2 right-16 text-sm">
-          如果代码不是最新的，请后端同学运行maven-install命令
+        <div className=" text-blue-500 absolute top-4 left-16 text-sm">
+          如与服务端接口或者模型信息不同步，请后端同学运行maven-package命令后重启应用即可
         </div>
-        {/*justify-end 要配合 flex  */}
         <Button
           type="primary"
-          className=" fixed  right-10 top-20"
+          className=" fixed right-10 top-20"
           icon={<IconClose />}
           onClick={() => {
             navigate(-1);

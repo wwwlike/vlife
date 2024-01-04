@@ -290,7 +290,14 @@ export default ({ field, form, onDataChange, mode }: SiderSettingProps) => {
                       ...field,
                       x_component: data.x_component,
                       pageComponentPropDtos: data.pageComponentPropDtos
-                        ? [...data.pageComponentPropDtos]
+                        ? [
+                            //把失效的属性去除
+                            ...data.pageComponentPropDtos.filter((d) =>
+                              Object.keys(
+                                FormComponents[data.x_component].props || {}
+                              ).includes(d.propName || "")
+                            ),
+                          ]
                         : [],
                     };
                     onDataChange(fmv);

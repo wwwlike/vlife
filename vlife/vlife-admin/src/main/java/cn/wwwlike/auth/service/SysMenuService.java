@@ -4,6 +4,7 @@ import cn.wwwlike.auth.dao.SysMenuDao;
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.vo.MenuVo;
 import cn.wwwlike.common.BaseService;
+import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.query.QueryWrapper;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,5 +104,20 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
         }
     }
 
+
+    /**
+     * 给所有菜单分配表单
+     * @param entities
+     */
+    public void assignFormToMenu(List<Form> entities){
+        List<SysMenu> all=findAll();
+        all.stream().filter(m->m.getEntityType()!=null).forEach(m->{
+            Optional<Form> optional=entities.stream().filter(f->f.getType().equals(m.getEntityType())).findAny();
+            if(optional.isPresent()&&!optional.get().getId().equals(m.getFormId())){
+                m.setFormId(optional.get().getId());
+                save(m);
+            }
+        });
+    }
 
 }

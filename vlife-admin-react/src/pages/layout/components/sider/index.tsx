@@ -5,7 +5,6 @@ import { useAuth } from "@src/context/auth-context";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuVo } from "@src/api/SysMenu";
 import { MenuItem } from "../../types";
-import { useSize } from "ahooks";
 
 const { Sider } = Layout;
 export function renderIcon(icon: any) {
@@ -96,7 +95,7 @@ const Index = ({
   }, [app]);
 
   const onSelect = (data: any) => {
-    window.localStorage.setItem("currMenuId", data.itemKey);
+    window.localStorage.setItem("currMenu", data.selectedItems?.[0]?.text);
     setSelectedKeys([...data.selectedKeys]);
     navigate(data.selectedItems[0].path as string);
   };

@@ -55,20 +55,10 @@ public class FormVo implements VoBean<Form> {
   public String itemType;
 
   public String name;
-
-  /**
-   * 排序
-   */
-  public Integer sort;
   /**
    * 图标
    */
   public String  icon;
-  /**
-   * 模块
-   * 字典：系统模块，业务模块等
-   */
-  public String module;
   /**
    * 字段
    */
@@ -123,18 +113,14 @@ public class FormVo implements VoBean<Form> {
   @VField(skip = true)
   public List<FormVo> parentForm;
 
-
   @VField(skip = true)
   public List<FormVo> subForm;
 
-
   public String  itemName;
-
-
+  //模块归属应用
   public String sysMenuId;
-//  /**
-//   * 紧凑布局
-//   * terse
-//   */
-//  public boolean terse;
+  //表单使用说明
+  public String formDesc;
+  //开发帮助文档
+  public String helpDoc;
 }

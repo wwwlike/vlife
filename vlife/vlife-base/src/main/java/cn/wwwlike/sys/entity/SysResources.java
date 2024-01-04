@@ -35,36 +35,42 @@ import javax.persistence.Table;
 public class SysResources extends DbEntity{
     /**
      * 资源名称
+     * 第一行注释，用户可修改
      */
     public String name;
+
+    /**
+     * 接口注释
+     * 第一行注释
+     */
+    public String javaName;
     /**
      * 接口说明
-     * 把接口的第二行非@开头的字符串放在remark里；
-     * 没有则使用模块+name进行设置
+     * 第二行注释
      */
     public String remark;
 
     /**
      * 接口地址
+     * 全局唯一
      */
     public String url;
     /**
      * 实体标识
-     * 弃用，采用formId进行外键关联
      */
-    @VField(expire = true)
     public String entityType;
     /**
      *  所属模型
      */
     public String formId;
     /**
-     * apiCLass
+     * 接口文件
+     * className
      */
     public String actionType;
     /**
      * 权限code
-     * 接口进行转换
+     * 接口URL用“：”分隔的形式 sysUser:save ->sysUser/save
      */
     public String code;
     /**
@@ -73,30 +79,39 @@ public class SysResources extends DbEntity{
     public String icon;
     /**
      * 归属菜单
-     * 归属就开启了权限
+     * 有值那么该资源就需要授权才能访问
      */
     public String sysMenuId;
     /**
      * 主要接口
-     * 作为访问菜单的必备接口，拥有菜单下任意资源的角色都能拥有该资源的权限
+     * 作为访问菜单的必备接口
      */
     public boolean menuRequired;
     /**
-     * 启用状态
-     * 1 是 -1 待纳入
-     *  1则可以和菜单关联显示出来，进而让角色关联
+     * 授权情况
+     * single 独立授权 noPermission 无需授权 extend 继承授权
+     * 后2类都不会展示给用户看
      */
-    @VField(dictCode = "STATE")
-    public String state;
+    public String permission;
     /**
      * 归属角色
-     * 参与权限管理的角色 state=1才能进行关联
+     * 资源与菜单关联后则可以参与与角色的关联
      */
     public String sysRoleId;
     /**
      * 上级资源
-     * 依赖资源，当前未启用
+     * 当前地址包涵的地址对应的接口及上级资源 /sysUser/save/userDto的上级资源是 /save/sysUser
      */
     public String pcode;
 
+    /**
+     * 请求方式
+     */
+    public String methedType;
+
+    /**
+     * 接口分类
+     * add/edit/delete/query/import/export
+     */
+    public String resourceType;
 }

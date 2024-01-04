@@ -35,6 +35,11 @@ export interface INo extends IdBean {
   no: string;
 }
 
+export interface IUser {
+  password: string;
+  username:string;
+}
+
 //export interface IModel<T extends IdBean>{}
 /**
  * 所有模型bean基类，空实现

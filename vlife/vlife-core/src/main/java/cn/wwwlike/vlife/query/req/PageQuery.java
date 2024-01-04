@@ -18,6 +18,7 @@
 
 package cn.wwwlike.vlife.query.req;
 
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.IPage;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.PageableRequest;
@@ -34,7 +35,8 @@ import lombok.Data;
  */
 @Data
 public class PageQuery<T extends Item> extends CustomQuery<T, QueryWrapper<T>> implements IPage {
-    @JsonIgnore
+    //post提交查询后去除了 @JsonIgnore
+    @VField(skip = true)
     private PageableRequest pager = new PageableRequest();
 
     public PageQuery() {
@@ -49,5 +51,11 @@ public class PageQuery<T extends Item> extends CustomQuery<T, QueryWrapper<T>> i
         return new QueryWrapper<>(getEntityClz());
     }
 
+    public PageableRequest getPager() {
+        return pager;
+    }
 
+    public void setPager(PageableRequest pager) {
+        this.pager = pager;
+    }
 }

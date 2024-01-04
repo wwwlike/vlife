@@ -126,9 +126,10 @@ export function removeNullProperties<T extends object>(obj: T): Partial<T> {
          mm: ('' + (strDate.getMinutes() + 100)).substr(1),
          ss: ('' + (strDate.getSeconds() + 100)).substr(1),
        };
-       return strFormat.replace(/(yyyy|MM?|dd?|HH?|mm?|ss?)/g, function () {
+       const dateStr= strFormat.replace(/(yyyy|MM?|dd?|HH?|mm?|ss?)/g, function () {
          return dict[arguments[0]];
        });
+       return dateStr;
      }
    }
  

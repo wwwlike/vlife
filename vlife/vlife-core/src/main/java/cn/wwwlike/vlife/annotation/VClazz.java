@@ -36,52 +36,38 @@ import static cn.wwwlike.vlife.dict.Constants.DEFAULT_ORDER_TYPE;
 @Target(ElementType.TYPE)
 public @interface VClazz {
     /**
-     * 删除当前类，那么级联清除本表的外键的实体
+     * 删除当前实体，把本实体id作为外键需要清除的实体class数组
      */
     Class<? extends Item>[] clear() default {};
     /**
-     * 删除当前类，那么级联清除的实体类class
+     * 删除当前实体，把本实体id作为外键需要级联删除的实体Class数组
      */
     Class<? extends Item>[] remove() default {};
     /**
-     * 不级联操作
+     * 删除当前实体，不级联操作的实体
      */
     Class<? extends Item>[] nothing() default {};
     /**
-     * 禁止删除
+     * 禁止删除：有关联外键,则不允许删除的实体
      */
     Class<? extends Item>[] unableRm() default {};
 
     /**
-     * req查询的默认请求方式,如果是post，则方法名称里没有list,page,
-     * @return
+     * 是否业务表
+     * 业务表和非业务表在生成api上有区别(待)
      */
-    RequestTypeEnum requestType() default RequestTypeEnum.NULL;
+    boolean isBusiness() default false;
 
     /**
-     * 注解所在类作为入参，那么希望返回的数据类型是
-     * VoBean上部能有该注解
-     * req\dto\item上可以有该注解
-     * Class执行类型的去做查询
-     * Integer.class返回执行的数量；
-     * @return
-     */
-    Class returnType() default Object.class;
-
-//    /**
-//     * 类所属模块
-//     * @return
-//     */
-    String  module() default  "";
-
-    /**
-     * 默认实体类的排序方式
+     * 默认实体类查询的排序表达式
+     * "createDate_desc,code_asc"多字段用逗号分隔，字段与排序用下划线分隔，
      **/
     String orders() default DEFAULT_ORDER_TYPE;
 
     /**
-     * page查询对象
-     * @return
+     * 实体主字段label表达式
+     * 用非字母的字符将表达式分隔，分隔后的数组能对应到字段的则替换该表达式的字母
      */
-    Class<? extends IdBean> pageVoClz() default Item.class;
+    String label() default "" ;
+
 }

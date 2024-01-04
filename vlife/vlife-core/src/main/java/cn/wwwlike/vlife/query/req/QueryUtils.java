@@ -56,7 +56,7 @@ public class QueryUtils {
      * @return
      */
     public static <T extends AbstractWrapper> T condition(T qw, Conditions condition) {
-        if (condition.orAnd.equals("and")) {
+        if ("and".equals(condition.orAnd)) {
             //增加一组and过滤
             qw.and(ww -> where((T) ww, condition.getWhere())
                     .and(condition.conditions != null, (d -> {
@@ -65,7 +65,7 @@ public class QueryUtils {
                         }
                     })));
         }
-        if (condition.orAnd.equals("or")) {
+        if ("or".equals(condition.orAnd)) {
             qw.or(ww -> where((T) ww, condition.getWhere()).or((condition.getConditions() != null), (d -> {
                 for (Conditions cc : condition.getConditions()) {
                     ((AbstractWrapper<?, ?, ?>) ww).and(ee -> condition((T) ee, cc));//递归

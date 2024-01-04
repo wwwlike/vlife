@@ -23,7 +23,6 @@ import javax.inject.Named;
 /**
  * 业务字典
  * 用户可见可扩充，本类定义的不可修改和删除
- *
  */
 public class AuthDict {
 
@@ -84,14 +83,5 @@ public class AuthDict {
         @Named("白")
         public final static String WHITE = "white";
     }
-
-//    @Named("资源类型")
-//    public static final class SYSRESOURCES_TYPE {
-//        @Named("菜单")
-//        public final static String MENU = "1";
-//        @Named("接口")
-//        public final static String API = "2";
-//    }
-
 
 }

@@ -6,11 +6,12 @@ import cn.wwwlike.auth.vo.GroupVo;
 import cn.wwwlike.common.BaseService;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
+import cn.wwwlike.vlife.annotation.PermissionEnum;
+import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,6 @@ public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
 
     @Autowired
     public SysGroupService sysGroupService;
-
     /**
      *
      * @param roleIds 资源对应的角色
@@ -47,7 +47,9 @@ public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
     public Map<String,String> resourceGroupMap(){
         Map<String,String> map=new HashMap();
         //所有资源
-        List<SysResources> apiResources=resourcesService.findApiResources();
+        List<SysResources> allResources=resourcesService.findAll();
+        //所有参与权限控制的资源资源
+        List<SysResources> apiResources=allResources.stream().filter(res->res.getSysMenuId()!=null).collect(Collectors.toList());
         //所有权限组
         List<GroupVo> groups= sysGroupService.query(GroupVo.class,new VlifeQuery<SysGroup>());
         apiResources.forEach(res->{
@@ -69,31 +71,17 @@ public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
                     }
                 });
             });
-            map.put(res.getUrl(),StringUtils.join(groupIds,",") );
+            map.put(res.getUrl(),StringUtils.join(groupIds,","));
+            //当前资源的子资源(子资源时通过路径url确定的)过滤到后也添加到相同的权限组
+            List<SysResources> extendRresources=allResources.stream().filter(r->res.getCode().equals(r.getPcode())).filter(r->r.permission.equals(PermissionEnum.extend.name())).collect(Collectors.toList());
+            if(extendRresources!=null&&extendRresources.size()>0){
+                extendRresources.forEach(subResources->{
+                    map.put(subResources.getUrl(),StringUtils.join(groupIds,","));
+                });
+            }
         });
         return map;
     }
-    /**
-     * 所有资源路径与角色组的对应的MAP集合
-     * @return
-     */
-    public Map<String,String> resourceGroupMap1(){
-        Map<String,String> map=new HashMap();
-        List<SysResources> apiResources=resourcesService.findApiResources();
-        // 所有权限组包含角色Id的集合
-        List<GroupVo> groups= sysGroupService.query(GroupVo.class,new VlifeQuery<SysGroup>());
-        apiResources.forEach(res->{
-            //该自己以及下级资源对应的角色id
-            Set<String> roleIds=resourcesService.getResourcesAndSubsRoleId(apiResources,res.getCode());
-            // 资源所在的角色ID,去找关联的权限组
-            List<String> groupIds=groups.stream().filter(group->{
-               return hasRole(roleIds,group.getSysRoleGroup_sysRoleId());
-            }).map(GroupVo::getId).collect(Collectors.toList());
-            map.put(res.getUrl(),StringUtils.join(groupIds,",") );
-        });
-        return map;
-    }
-
 
     /**
      * 获得一个权限组下能够访问的资源code

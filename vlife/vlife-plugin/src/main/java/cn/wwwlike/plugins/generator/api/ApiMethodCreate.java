@@ -67,9 +67,9 @@ public class ApiMethodCreate {
         String[] commonts=methodComment(methodEnum,itemClz,in,out);
         BeanDto dto=null;
         CodeBlock.Builder methodComment = CodeBlock.builder();
-        methodComment.addStatement(commonts[0]);
-        methodComment.addStatement("@param "+paramsName+" "+commonts[1]);
-        methodComment.addStatement("@return "+commonts[2]);
+        methodComment.add(commonts[0] + "\n");
+        methodComment.add("@param "+paramsName+" "+commonts[1]+ "\n");
+        methodComment.add("@return "+commonts[2]+ "\n");
         //返回类型
         Class[] returnClz=methodEnum.realReturnType(out);//临时的
         TypeName returnGenic =null;

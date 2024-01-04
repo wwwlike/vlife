@@ -1,5 +1,5 @@
 import React from "react";
-import { listAll, save, saveResourcesStateDto } from "@src/api/SysResources";
+import { list, save, saveResourcesStateDto } from "@src/api/SysResources";
 import { VF } from "@src/dsl/VF";
 import FormPage from "@src/pages/common/formPage";
 import Content from "@src/pages/template/content";
@@ -13,7 +13,11 @@ export default () => {
       listType="sysResources"
       tabList={[
         { tab: "待启用", itemKey: "state-1", req: { state: "-1" } },
-        { tab: "已启用", itemKey: "state1", req: { state: "1" } },
+        {
+          tab: "已启用",
+          itemKey: "state1",
+          req: [{ field: "sysMenuId", opt: "eq", value: "123" }],
+        },
       ]}
       filterType="sysResourcesPageReq"
       btns={[
@@ -26,7 +30,7 @@ export default () => {
           saveApi: (d) => saveResourcesStateDto(d[0]),
           reaction: [
             VF.then("resourcesIds").value(() => {
-              return listAll({}).then((d) =>
+              return list({}).then((d) =>
                 d.data?.filter((r) => r.state === "1").map((r) => r.id)
               );
             }),

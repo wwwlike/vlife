@@ -97,7 +97,11 @@ export default () => {
   useEffect(() => {
     model({ type }).then((data) => {
       setCurrModel(data.data);
-      setFormInitData({ name: data.data?.name, prefixNo: data.data?.prefixNo });
+      setFormInitData({
+        name: data.data?.name,
+        prefixNo: data.data?.prefixNo,
+        formDesc: data.data?.formDesc,
+      });
     });
   }, [type]);
 
@@ -217,99 +221,117 @@ export default () => {
             setCurrField(field);
           }}
         />
-
         <div className=" border flex-grow h-full pr-4 relative">
-          {/* form模型录入相关设置 */}
-          <FormPage
-            type="form"
-            formData={formInitData}
-            reaction={[
-              VF.result(currModel.parentsName.includes("INo"))
-                .then("prefixNo")
-                .show(),
-            ]}
-            onDataChange={(model) => {
-              setCurrModel({
-                ...currModel,
-                name: model.name,
-                prefixNo: model.prefixNo,
-              });
-            }}
-            className={` center rounded-md bg-white p-4 pt-6 m-2`}
-          />
-
+          {currField !== undefined && (
+            <div className=" m-2  h-10 flex items-center justify-start">
+              <Button
+                onClick={() => {
+                  setCurrField(undefined);
+                }}
+                icon={<i className="  icon-admin-main" />}
+              >
+                编辑表单
+              </Button>
+            </div>
+          )}
           {/* 表单预览 */}
-          <div className="relative  pr-4">
+          <FormPage
+            design={true}
+            key={currModel.id + currModel.type + currModel.modelSize}
+            className={` min-h-min center rounded-md bg-white  p-4 m-2 ${
+              currModel.modelSize === undefined || currModel.modelSize === 4
+                ? "w-full"
+                : currModel.modelSize === 3
+                ? "w-10/12"
+                : currModel.modelSize === 2
+                ? "w-8/12"
+                : "w-1/2"
+            } min-w-1/2`}
+            highlight={currField}
+            type={currModel.type}
+            modelInfo={{ ...currModel }}
+            onDataChange={(d) => {}}
+            //组件div点击回调
+            onClickFieldComponent={(
+              fieldName: string,
+              opt: "click" | "must" | "delete"
+            ) => {
+              let currf: FormFieldVo = currModel.fields.filter(
+                (f) => f.fieldName === fieldName
+              )[0];
+              if (opt === "must" || opt === "delete") {
+                if (opt === "must") {
+                  currf = { ...currf, required: !currf.required };
+                } else {
+                  currf = { ...currf, x_hidden: true };
+                }
+                setCurrModel((m) => {
+                  const newModel: any = {
+                    ...m,
+                    fields: currModel.fields.map((f) => {
+                      if (f.fieldName === currField) {
+                        return currf;
+                      }
+                      return f;
+                    }),
+                  };
+                  return newModel;
+                });
+              }
+              setCurrField(currf.fieldName);
+            }}
+          />
+        </div>
+
+        <div className=" relative border w-1/4 bg-white p-4 ">
+          {/* form表单设置 */}
+          {currField === undefined && (
             <FormPage
-              design={true}
-              key={currModel.id + currModel.type + currModel.modelSize}
-              className={` min-h-min center rounded-md bg-white  p-4 m-2 ${
-                currModel.modelSize === undefined || currModel.modelSize === 4
-                  ? "w-full"
-                  : currModel.modelSize === 3
-                  ? "w-10/12"
-                  : currModel.modelSize === 2
-                  ? "w-8/12"
-                  : "w-1/2"
-              } min-w-1/2`}
-              highlight={currField}
-              type={currModel.type}
-              modelInfo={{ ...currModel }}
-              onDataChange={(d) => {}}
-              //组件div点击回调
-              onClickFieldComponent={(
-                fieldName: string,
-                opt: "click" | "must" | "delete"
-              ) => {
-                let currf: FormFieldVo = currModel.fields.filter(
-                  (f) => f.fieldName === fieldName
-                )[0];
-                if (opt === "must" || opt === "delete") {
-                  if (opt === "must") {
-                    currf = { ...currf, required: !currf.required };
-                  } else {
-                    currf = { ...currf, x_hidden: true };
-                  }
-                  setCurrModel((m) => {
-                    const newModel: any = {
-                      ...m,
+              type="form"
+              formData={formInitData}
+              reaction={[
+                VF.result(currModel.parentsName.includes("INo"))
+                  .then("prefixNo")
+                  .show(),
+              ]}
+              onDataChange={(model) => {
+                setCurrModel((es) => {
+                  if (es)
+                    return {
+                      ...es,
+                      name: model.name,
+                      prefixNo: model.prefixNo,
+                      formDesc: model.formDesc,
+                    };
+                });
+              }}
+              className={` center rounded-md bg-white`}
+            />
+          )}
+          {/* 侧边字段属性配置 */}
+          {currFieldObj && (
+            <SiderSetting
+              mode={Mode.form}
+              key={currField}
+              form={currModel}
+              onDataChange={(data: FormFieldVo) => {
+                setCurrModel((model) => {
+                  if (model) {
+                    return {
+                      ...model,
                       fields: currModel.fields.map((f) => {
                         if (f.fieldName === currField) {
-                          return currf;
+                          return data;
                         }
                         return f;
                       }),
                     };
-                    return newModel;
-                  });
-                }
-                setCurrField(currf.fieldName);
+                  }
+                  return model;
+                });
               }}
+              field={currFieldObj}
             />
-          </div>
-        </div>
-        {/* 侧边字段属性配置 */}
-        <div className=" border w-72 bg-white p-4 ">
-          {currFieldObj && (
-            <div className="compSetting ">
-              <SiderSetting
-                mode={Mode.form}
-                key={currField}
-                form={currModel}
-                onDataChange={(data: FormFieldVo) => {
-                  setCurrModel({
-                    ...currModel,
-                    fields: currModel.fields.map((f) => {
-                      if (f.fieldName === currField) {
-                        return data;
-                      }
-                      return f;
-                    }),
-                  });
-                }}
-                field={currFieldObj}
-              />
-            </div>
           )}
         </div>
       </div>

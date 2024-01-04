@@ -1,65 +1,41 @@
 
-import apiClient from "@src/api/base/apiClient";
-import { PageVo, DbEntity, PageQuery, Result, ITree,SaveBean } from "./base";
+import {PageVo,DbEntity,SaveBean,PageQuery,ITree,Result} from '@src/api/base'
+import apiClient from '@src/api/base/apiClient'
 // 科室部门
-export interface SysDept extends DbEntity,ITree {
-  code: string; // 部门编码
-  sysOrgId: string; // 机构
-  name: string; // 部门名称
+export interface SysDept extends DbEntity,ITree{
+  code: string;  // 编码
+  pcode: string;  // 上级部门
+  name: string;  // 部门名称
+  parentId: string;  // 上级部门id
 }
-// 部门查询条件
-export interface SysDeptPageReq extends PageQuery {
-  deptName: string; // 名称/编码
-  sysOrgId: string; // 机构
-}
-
-export interface SysDeptUserDto extends SaveBean{
+export interface SysDeptUserDto extends SaveBean,ITree{
   sysUser_id: string[];  // 用户
   code: string;  // 编码
   pcode: string;  // 上级部门
   name: string;  // 部门名称
 }
-
-/** */
-export const listAll = (params: {
-  entityName: string;
-}): Promise<Result<SysDept[]>> => {
-  return apiClient.get(`/sysDept/list/all`, { params: params });
+// 部门查询条件
+export interface SysDeptPageReq extends PageQuery{
+  code: string;  // 部门结构
+  name: string;  // 部门名称
+}
+/** 部门查询*/
+export const page=(req: SysDeptPageReq): Promise<Result<PageVo<SysDept>>>=>{
+  return apiClient.post(`/sysDept/page`  ,req  );
 };
-/**
- * 分页查询null;
- * @param req 部门查询条件;
- * @return null;
- */
-export const page = (req: SysDeptPageReq): Promise<Result<PageVo<SysDept>>> => {
-  return apiClient.get(`/sysDept/page`, { params: req });
+/** 部门保存*/
+export const save=(dto: SysDept): Promise<Result<SysDept>>=>{
+  return apiClient.post(`/sysDept/save`  ,dto  );
 };
-/**
- * 保存null;
- * @param dto null;
- * @return null;
- */
-export const save = (dto: SysDept): Promise<Result<SysDept>> => {
-  return apiClient.post(`/sysDept/save`, { params: dto });
+/** 所有部门*/
+export const listAll=(): Promise<Result<SysDept[]>>=>{
+  return apiClient.get(`/sysDept/list/all`  );
 };
-
-
-/** */
-export const sysDeptUserDto=(dto: SysDeptUserDto): Promise<Result<SysDeptUserDto>>=>{
-  return apiClient.post(`/sysDept/save/sysDeptUserDto`  ,dto  );
+/** 部门详情*/
+export const detail=(req:{id: string}): Promise<Result<SysDept>>=>{
+  return apiClient.get(`/sysDept/detail/${req.id}`  );
 };
-
-/**
- * 明细查询null;
- * @param id 主键id;
- * @return null;
- */
-export const detail = (id: string): Promise<Result<SysDept>> => {
-  return apiClient.get(`/sysDept/detail/${id}`);
-};
-/**
- * 逻辑删除;
- */
- export const remove = (ids: string[]): Promise<Result<number>> => {
-  return apiClient.delete(`/sysDept/remove`,{data:ids});
+/** 删除部门*/
+export const remove=(ids: String[]): Promise<Result<number>>=>{
+  return apiClient.delete(`/sysDept/remove`,{data:ids}  );
 };

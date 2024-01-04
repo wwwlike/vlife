@@ -17,13 +17,11 @@
  */
 
 package cn.wwwlike.auth.entity;
-
 import cn.wwwlike.vlife.base.IUser;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.IFkItem;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -39,33 +37,38 @@ public class SysUser extends DbEntity implements IFkItem,IUser {
      */
     public String avatar;
     /**
-     * 姓名
-     */
-    public String name;
-    /**
-     * 年龄
-     */
-    public Integer age;
-    /**
      * 用户名
      */
     public String username;
     /**
-     * 密码
+     * 姓名
      */
-    public String password;
+    public String name;
+    /**
+     * 部门
+     */
+    public String sysDeptId;
     /**
      * 权限组
+     * 为用户分配权限组，权限组关联到多个角色
      */
     public String sysGroupId ;
+    /**
+     * 邮箱
+     */
+    public String email;
+    /**
+     * 电话
+     */
+    public String tel;
     /**
      * 证件号
      */
     public String idno;
     /**
-     * 电话
+     * 年龄
      */
-    public String tel;
+    public Integer age;
     /**
      * 用户类型
      */
@@ -76,41 +79,30 @@ public class SysUser extends DbEntity implements IFkItem,IUser {
      */
     @VField(dictCode = "STATE")
     public String state;
-
-    /**
-     * 邮箱
-     */
-    public String email;
-
-    /**
-     * 部门
-     */
-    public String sysDeptId;
-
     /**
      * 登录次数
      */
     public Integer loginNum;
-
     /**
      * 用户来源
      * gitee register
      */
     public String source;
-
     /**
      * 第三方id
      */
     public String thirdId;
-
     /**
      * 第三方的token
      */
     public String thirdToken;
-
     /**
      * 超级用户
      */
     public Boolean superUser;
+    /**
+     * 密码
+     */
+    public String password;
 
 }

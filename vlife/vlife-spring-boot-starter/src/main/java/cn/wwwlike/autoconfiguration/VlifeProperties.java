@@ -17,8 +17,6 @@
  */
 
 package cn.wwwlike.autoconfiguration;
-
-import cn.wwwlike.autoconfiguration.dict.CheckModel;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -31,20 +29,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "vlife")
 @Getter
 public class VlifeProperties {
-
-    private CheckModel checkModel;
     /**
      * 扫描包路径的根节点
      */
     private String packroot;
 
-    public VlifeProperties setCheckModel(CheckModel checkModel) {
-        this.checkModel = checkModel;
-        return this;
-    }
+    private String packages;
 
     public VlifeProperties setPackroot(String packroot) {
         this.packroot = packroot;
+        return this;
+    }
+
+    public VlifeProperties setPackages(String packages) {
+        this.packages = packages;
         return this;
     }
 }

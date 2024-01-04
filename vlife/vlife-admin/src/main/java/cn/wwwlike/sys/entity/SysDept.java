@@ -18,6 +18,8 @@
 
 package cn.wwwlike.sys.entity;
 import cn.wwwlike.auth.common.IOrg;
+import cn.wwwlike.vlife.annotation.VClazz;
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
@@ -31,10 +33,12 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_dept")
+@VClazz(label = "shortName-name|code")
 public class SysDept extends DbEntity implements ITree {
     /**
      * 部门名称
      */
+    @VField
     public String name;
     /**
      * 编码
@@ -44,13 +48,10 @@ public class SysDept extends DbEntity implements ITree {
      * 上级部门
      */
     public String pcode;
-//    /**
-//     * 部门所在机构
-//     */
-//    public String sysOrgId;
     /**
      * 上级部门id
      * 冗余导入数据时采用
+     * @create_hide:true
      */
     public String parentId;
 

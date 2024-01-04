@@ -6,7 +6,7 @@ import { VfBaseProps } from "@src/dsl/component";
 import { useUrlQueryParam } from "@src/hooks/useForm";
 import { useDebounceEffect } from "ahooks";
 
-interface SearchProps extends Partial<VfBaseProps<string, null>> {
+interface SearchProps extends Partial<VfBaseProps<string>> {
   seconds?: number; //延迟毫秒数
 }
 /**

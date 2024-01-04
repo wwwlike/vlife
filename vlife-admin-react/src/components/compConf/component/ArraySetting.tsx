@@ -78,41 +78,37 @@ export default ({
 
   return (
     <>
-      {/* 根据序号listNo数据分组 同意序号的数据给到object或者basic */}
+      {/* 根据序号listNo数据分组 同一序号的数据给到object或者basic */}
       {[...new Set(datas.map((m) => m.listNo))].sort().map((line) =>
         line !== undefined ? (
           <div key={propName + line}>
             <div>
               {isBasic ? (
-                <>
-                  <BasicSetting
-                    formVo={formVo}
-                    field={field}
-                    key={"basic" + line}
-                    propName={propName}
-                    listNo={line}
-                    propInfo={propInfo}
-                    value={datas[line]}
-                    onDataChange={(d: Partial<PageComponentPropDto>) => {
-                      edit(line, [d]);
-                    }}
-                  />
-                </>
+                <BasicSetting
+                  formVo={formVo}
+                  field={field}
+                  key={"basic" + line}
+                  propName={propName}
+                  listNo={line}
+                  propInfo={propInfo}
+                  value={datas[line]}
+                  onDataChange={(d: Partial<PageComponentPropDto>) => {
+                    edit(line, [d]);
+                  }}
+                />
               ) : (
-                <>
-                  <ObjectSetting
-                    key={"object" + line}
-                    formVo={formVo}
-                    field={field}
-                    value={datas.filter((d) => d.listNo === line)}
-                    onDataChange={(datas: Partial<PageComponentPropDto>[]) => {
-                      edit(line, datas);
-                    }}
-                    lineNo={line}
-                    propName={propName}
-                    propInfo={propInfo}
-                  />
-                </>
+                <ObjectSetting
+                  key={"object" + line}
+                  formVo={formVo}
+                  field={field}
+                  value={datas.filter((d) => d.listNo === line)}
+                  onDataChange={(datas: Partial<PageComponentPropDto>[]) => {
+                    edit(line, datas);
+                  }}
+                  lineNo={line}
+                  propName={propName}
+                  propInfo={propInfo}
+                />
               )}
             </div>
           </div>
@@ -126,16 +122,17 @@ export default ({
           <div className="flex w-full justify-between text-sm ">
             <div
               onClick={create}
-              className="text-gray-500 hover:text-black cursor-pointer "
+              className="text-blue-500 hover:text-blue-900 cursor-pointer "
             >
-              +添加新的
+              <i className=" icon-create-network" />
+              添加新的
             </div>
             {arrayLength > 1 && (
               <div
                 onClick={() => remove(arrayLength - 1)}
-                className="text-gray-500 hover:text-black  cursor-pointer text-right "
+                className="text-blue-500 hover:text-blue-900  cursor-pointer text-right "
               >
-                删除最后一条
+                <i className="  icon-remove_circle_outline" /> 删除最后一条
               </div>
             )}
           </div>

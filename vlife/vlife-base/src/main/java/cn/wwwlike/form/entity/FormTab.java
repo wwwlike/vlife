@@ -13,7 +13,6 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="form_tab")
-@VClazz(module = "conf")
 public class FormTab extends DbEntity {
     /**
      * 所在表单

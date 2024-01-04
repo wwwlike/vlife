@@ -14,6 +14,7 @@ import { orderObj } from "@src/pages/common/orderPage";
 import BtnToolBar from "./component/BtnToolBar";
 import { where } from "@src/dsl/base";
 import { VFBtn } from "./types";
+import console from "console";
 
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
@@ -91,9 +92,11 @@ const TableIndex = <T extends IdBean>({
    */
   const select_show_field = useMemo(() => {
     const field: FormFieldVo[] = model.fields;
-    if (field.filter((f) => f.fieldName === "name").length > 0) return "name";
-    if (field.filter((f) => f.fieldName === "label").length > 0) return "label";
-    if (field.filter((f) => f.fieldName === "title").length > 0) return "title";
+    if (field?.filter((f) => f.fieldName === "name").length > 0) return "name";
+    if (field?.filter((f) => f.fieldName === "label").length > 0)
+      return "label";
+    if (field?.filter((f) => f.fieldName === "title").length > 0)
+      return "title";
     return undefined;
   }, [model]);
 
@@ -267,7 +270,13 @@ const TableIndex = <T extends IdBean>({
           };
         } else if (m.fieldType === "date") {
           m["render"] = (text, record, index) => {
-            return formatDate(text, "yyyy-MM-dd");
+            if (typeof text === "number") {
+              return formatDate(text, "yyyy/MM/dd");
+            } else if (text) {
+              var date = new Date(text);
+              const dateStr = formatDate(date, "yyyy/MM/dd");
+              return dateStr;
+            }
           };
         } else if (m.fieldType === "number") {
           //数值型处理
@@ -290,7 +299,6 @@ const TableIndex = <T extends IdBean>({
                 value={text}
                 read={true}
                 onDataChange={() => {}}
-                fieldName={""}
               />
             );
           };

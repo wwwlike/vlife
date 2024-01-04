@@ -8,7 +8,8 @@ import Tree, { TreeNodeData, TreeProps } from "@douyinfe/semi-ui/lib/es/tree";
 import { ITree } from "@src/api/base";
 import { VfBaseProps } from "@src/dsl/component";
 import { checkSubData } from "@src/util/func";
-interface TreeQueryProps extends VfBaseProps<string, ITree[]> {
+interface TreeQueryProps extends VfBaseProps<string> {
+  datas: ITree[];
   /**
    *点击值字段标识
    */
@@ -17,19 +18,6 @@ interface TreeQueryProps extends VfBaseProps<string, ITree[]> {
    * 根节点code,
    */
   root: string; //设置了则从他开始，没有设置就是从最短的开始
-}
-
-// const style = {
-//   width: 260,
-//   border: "1px solid var(--semi-color-border)",
-// };
-//树的数据结构
-interface treeElementProps {
-  label: string;
-  value: string;
-  key: string;
-  expandAll: boolean;
-  children?: treeElementProps[];
 }
 
 /**

@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { Space, Tag } from "@douyinfe/semi-ui";
 import { DataType } from "@src/dsl/base";
-import { VfBaseProps } from "@src/dsl/component";
+import { ISelect, VfBaseProps } from "@src/dsl/component";
 import { useUpdateEffect } from "ahooks";
 
-interface DictSelectTagProps
-  extends VfBaseProps<any, { label: string; value: string }[]> {
+interface DictSelectTagProps extends VfBaseProps<any> {
   selectMore?: boolean;
+  datas: ISelect[];
 }
 /**
  * 字典tag选择器(多用于查询模型)

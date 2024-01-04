@@ -30,7 +30,6 @@ import java.util.List;
 
 @Service
 public class SysDeptService extends BaseService<SysDept, SysDeptDao> {
-
     /**
      * 对没有编码的部门进行初始化
      */
@@ -58,8 +57,5 @@ public class SysDeptService extends BaseService<SysDept, SysDeptDao> {
             }
             j=  find(QueryWrapper.of(SysDept.class).isNull("code")).size();
         }
-
-
     }
-
 }

@@ -25,18 +25,8 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * 类说明
- *
- * @author xiaoyu
- * @date 2022/7/12
- */
-
 /**
  * 角色dto
- * roleDto直观接收数据，
- * vo管编辑页面数据展示
  */
 @Data
 public class RoleDto implements SaveBean<SysRole> {
@@ -48,23 +38,15 @@ public class RoleDto implements SaveBean<SysRole> {
      */
     public String sysMenuId;
     /**
-     * 权限接口
-     */
-    public List<String> sysResources_id;
-
-    /**
-     * 菜单
-     */
-    public List<String> sysMenu_id;
-
-    /**
-     * 绑定权限集合
-     * 菜单和接口id集合
+     * 关联权限
+     * 关联菜单和接口id集合
      */
     @VField(skip = true)
     public List<String> resourcesAndMenuIds;
-
-
+    //接口
+    public List<String> sysResources_id;
+    //菜单
+    public List<String> sysMenu_id;
     public List<String> getResourcesAndMenuIds(){
         if(resourcesAndMenuIds!=null&&resourcesAndMenuIds.size()>0){
             //写入模式

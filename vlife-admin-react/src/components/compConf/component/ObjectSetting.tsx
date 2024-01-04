@@ -5,19 +5,20 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Select, Tooltip } from "@douyinfe/semi-ui";
+import { Select } from "@douyinfe/semi-ui";
 import { PageApiParam } from "@src/api/PageApiParam";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
 import { DataModel, DataType, sourceType } from "@src/dsl/base";
 import { useUpdateEffect } from "ahooks";
 import CompConf from "..";
 import { apiDatas } from "../../../resources/ApiDatas";
-import { CompPropInfo, ParamsInfo } from "../compConf";
+import { CompPropInfo, ParamsInfo, ParamsObj, ApiInfo } from "../compConf";
 import ParamsSetting from "./ParamsSetting";
 import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
 import { FormFieldVo } from "@src/api/FormField";
 import { filterFuns } from "@src/resources/filters";
+import CompLabel from "./CompLabel";
 
 /**
  * 对象数据设置
@@ -36,41 +37,39 @@ export interface ObjectSettingProps {
 
 //判断是否是一致或者继承的数据
 const checkEq = (
-  a: { dataType: DataType; dataModel: DataModel | string },
-  b: { dataType: DataType; dataModel: DataModel | string }
+  a: { dataType?: DataType; dataModel: DataModel | string },
+  b: { dataType?: DataType; dataModel: DataModel | string }
 ): boolean => {
   return (
     a.dataModel.toLowerCase() === b.dataModel.toLowerCase() &&
-    a.dataType === b.dataType
+    (a.dataType || "basic") === (b.dataType || "basic")
   );
 };
-export const _PageLabel = ({
-  label,
-  icon,
-  remark,
-  must,
-}: {
-  label: string;
-  remark?: string;
-  icon?: ReactNode;
-  must?: boolean;
-}) => {
-  return (
-    <div className="text-sm  items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
-      {icon}
-      {remark ? (
-        <Tooltip content={remark}>
-          <label>{label}</label>
-        </Tooltip>
-      ) : (
-        <label>
-          {label}
-          {must && <span className=" font-bold text-red-600">*</span>}
-        </label>
-      )}
-    </div>
-  );
-};
+
+//查找接口信息里所有是必须的入参且来自指定实体字段的参数来源字段信息集合
+export function extractFromFields(
+  apiInfo: ApiInfo
+): { entity: string; field: string }[] {
+  const paramObj = apiInfo.params;
+  const compPropKeys: string[] = Object.keys(paramObj || {});
+  return compPropKeys
+    ?.filter(
+      (k) =>
+        paramObj &&
+        paramObj[k] &&
+        typeof paramObj[k] === "object" &&
+        (paramObj[k] as ParamsInfo).fromField &&
+        (paramObj[k] as ParamsInfo).fromField !== true &&
+        (paramObj[k] as ParamsInfo).must == true
+    )
+    .map(
+      (key) =>
+        (apiInfo?.params?.[key] as ParamsInfo).fromField as {
+          entity: string;
+          field: string;
+        }
+    );
+}
 //接口资产定义
 const VfApis = apiDatas;
 export default ({
@@ -85,11 +84,15 @@ export default ({
   const { getFormInfo } = useAuth();
 
   const check = (
-    propInfo: { dataType: DataType; dataModel: DataModel | string },
-    apiInfo: { dataType: DataType; dataModel: DataModel | string }
+    propInfo: { dataType?: DataType; dataModel: DataModel | string },
+    apiInfo: { dataType: DataType; dataModel: DataModel | string },
+    formVo?: FormVo
   ): Promise<boolean> => {
+    //先判断formField是否由缺失的字段
+
     const eq: boolean =
-      propInfo.dataModel.toLowerCase() === apiInfo.dataModel.toLowerCase() &&
+      (propInfo?.dataModel || "basic").toLowerCase() ===
+        (apiInfo?.dataModel || "basic").toLowerCase() &&
       propInfo.dataType === apiInfo.dataType;
     if (eq) {
       return new Promise((resolve) => {
@@ -119,23 +122,25 @@ export default ({
   const [apiOptionList, setApiOpenList] = useState<
     { label: string; value: any }[]
   >([]);
+
   /**
    * 1. 组件属性数据结构一致/子类的api的
    * 2. 和数组转换后match的一致/子类的api
+   * 3.  在1和2的基础上，在判断参数为必填项且来源于指定的字段formField,那么也必须满足这个接口才能选择到
    */
   useEffect(() => {
     Promise.all(
       Object.keys(apiDatas).map((apiName) => {
-        return check(propInfo, apiDatas[apiName]).then((d) => {
+        return check(propInfo, apiDatas[apiName], formVo).then((d) => {
           const match = apiDatas[apiName].match;
+          //1. 完全匹配，接口继承一致匹配
           if (d === true) {
-            //模型匹配
             return apiName;
           } else if (match) {
-            //转换match匹配
+            //需要转换match匹配
             return Promise.all(
               Object.keys(match).map((name) => {
-                return check(propInfo, match[name]).then((d) => {
+                return check(propInfo, match[name], formVo).then((d) => {
                   return d;
                 });
               })
@@ -155,7 +160,28 @@ export default ({
         .map((name) => {
           return { label: apiDatas[name || ""].label, value: name };
         });
-      setApiOpenList(apis);
+
+      //二次过滤，fromField匹配过滤(?找父节点)
+      const fromFieldFIlterApis = apis.filter((api) => {
+        const fromFields: { field: string; entity: string }[] =
+          extractFromFields(apiDatas[api.value]);
+        return (
+          fromFields === undefined ||
+          fromFields === null ||
+          fromFields.length === 0 ||
+          //没有这样的字段或者这样的字段都能匹配上
+          fromFields.filter(
+            (fromField) =>
+              formVo?.fields.filter(
+                (f) =>
+                  f.entityType === fromField.entity &&
+                  f.entityFieldName === fromField.field &&
+                  f.dataType !== "array"
+              ).length === 1
+          ).length === fromFields.length
+        );
+      });
+      setApiOpenList(fromFieldFIlterApis);
     });
   }, [propInfo]);
 
@@ -167,14 +193,6 @@ export default ({
         // listNo: undefined,
         sourceType: sourceType.api,
         propVal: propInfo.apiName,
-      });
-      //只有一个接口适配也不用选择
-    } else if (apiOptionList.length === 1) {
-      setData({
-        ...data,
-        listNo: undefined,
-        sourceType: sourceType.api,
-        propVal: apiOptionList[0].value,
       });
     }
   }, [apiOptionList, propInfo]);
@@ -191,14 +209,13 @@ export default ({
     (propVal: string): { label: string; value: any }[] => {
       if (propVal) {
         const api = VfApis[propVal];
-
         if (api) {
           const match = api.match;
           if (match)
             return Object.keys(match)
               .filter((k) => checkEq(match[k], propInfo))
               .map((k) => {
-                return { label: match[k].label, value: k };
+                return { label: match[k].label || api.label, value: k };
               });
         }
       }
@@ -238,11 +255,13 @@ export default ({
     <div className=" w-full">
       {propInfo.dataSub ? (
         <div>
-          <div className="text-sm box-border font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
-            {propInfo.label}
-            {lineNo !== undefined ? lineNo + 1 : ""}
+          <div className="text-xs justify-between flex box-border font-semibold text-gray-700 mb-1 mt-0 pr-4 align-middle leading-5 tracking-normal flex-shrink-0">
+            <div>{`${propInfo.label}(${propName})`}</div>
+            <div className=" text-gray-500">
+              {lineNo !== undefined ? `第${lineNo + 1}组 ` : ""}
+            </div>
           </div>
-          <div className=" border-t border-dashed  border-gray-400 relative " />
+          <div className=" border-t border-dashed   relative " />
           <CompConf
             formVo={formVo}
             field={field}
@@ -258,24 +277,26 @@ export default ({
       ) : (
         // api方式
         <div>
-          {/* api选择 */}
-          {propInfo.apiName === undefined &&
-            apiOptionList &&
-            apiOptionList.length !== 1 && (
-              <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-                <_PageLabel
-                  {...propInfo}
-                  remark={
-                    propInfo.remark ||
-                    `组件属性:${propName};数据类型:${propInfo.dataType}=>${propInfo.dataModel}`
-                  }
-                  icon={<i className={`icon-api`} />}
-                />
-
-                {apiOptionList.length > 0 ? (
+          <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
+            <CompLabel
+              must={propInfo.must}
+              code={propName}
+              label={propInfo.label}
+              remark={
+                propInfo.remark ||
+                `该属性数据来源于ApiDatas.ts里定义的出参类型为${propInfo.dataModel}<${propInfo.dataType}>接口`
+              }
+              icon={<i className={`icon-api text-blue-400`} />}
+            />
+            {/* api选择 */}
+            {propInfo.apiName === undefined && (
+              <>
+                {apiOptionList && apiOptionList.length > 0 ? (
                   <Select
                     optionList={apiOptionList}
+                    showClear
                     value={data.propVal}
+                    placeholder={`[${propInfo.dataType}/${propInfo.dataModel}]类型接口选择`}
                     onChange={(d) => {
                       setData({
                         ...data,
@@ -288,119 +309,168 @@ export default ({
                     className="w-full"
                   />
                 ) : (
-                  <span className=" text-sm font-bold">
-                    请添加{propInfo.dataType}-{propInfo.dataModel}类型接口
+                  <span className=" text-sm font-bold text-gray-500">
+                    没有返回{propInfo.dataType}/{propInfo.dataModel}类型接口
                   </span>
                 )}
+              </>
+            )}
+            {propInfo.apiName && (
+              <div className=" w-full flex justify-end text-sm text-center">
+                已指定apiName属性，使用
+                <span className=" text-red-500">`{propInfo.apiName}`</span>
+                接口
               </div>
             )}
-          {/* 转换器选择 */}
-          {data.propVal &&
-            matchOptionList(data.propVal) &&
-            matchOptionList(data.propVal).length > 1 && (
-              <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-                {/* <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
-                  <i
-                    style={{ fontSize: "14px" }}
-                    className={` text-red-400 pr-2   entryIcon icon icon-knowledge-recycle z-40 `}
-                  />
-                  <label></label>
-                </div> */}
-                <_PageLabel
-                  label={"适配转换"}
-                  remark={
-                    "选择的接口出参与属性结构不一致,请转换方法需选择转换方法(`ApiDatas.ts->match`)"
-                  }
-                  must={true}
-                  icon={
-                    <i className={` text-red-400   icon-knowledge-recycle  `} />
-                  }
-                />
-                <Select
-                  optionList={matchOptionList(data.propVal)}
-                  value={data.relateVal}
-                  onChange={(d) => {
-                    // setRelateVal(d?.toString());
-                    setData({ ...data, relateVal: d?.toString() });
-                  }}
-                  className="w-full"
-                />
-              </div>
-            )}
-          {/* api设置 */}
-          {paramsObj && Object.keys(paramsObj).length > 0 && (
-            <div className=" w-full">
-              {Object.keys(paramsObj).map((k) => {
-                return (
-                  <ParamsSetting
-                    key={k}
-                    formVo={formVo}
-                    field={field}
-                    paramInfo={paramsObj[k]}
-                    paramName={k}
-                    value={
-                      data.params &&
-                      data.params.filter((f) => f.paramName === k).length > 0
-                        ? data.params.filter((f) => f.paramName === k)[0]
-                        : undefined
+          </div>
+          <div className="bg-blue-50">
+            {/* 转换器选择 */}
+            {data.propVal &&
+              matchOptionList(data.propVal) &&
+              matchOptionList(data.propVal).length > 1 && (
+                <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
+                  <CompLabel
+                    blod={false}
+                    label={"适配定制"}
+                    remark={`当接口返回的数据结构与组件所需的数据结构不一致时，我们在API定义中增加了一个match函数来进行适配。目前有${
+                      matchOptionList(data.propVal).length
+                    }种适配方式可供选择，请选择适合当前组件场景的一种。`}
+                    must={true}
+                    icon={
+                      <i className={`icon-knowledge-recycle text-red-400  `} />
                     }
-                    onDataChange={(d: Partial<PageApiParam>) => {
-                      setData({
-                        ...data,
-
-                        params: data.params
-                          ? [...data.params.filter((d) => d.paramName !== k), d]
-                          : [d],
-                      });
+                  />
+                  <Select
+                    showClear
+                    optionList={matchOptionList(data.propVal)}
+                    value={data.relateVal}
+                    placeholder={"需要转换当前接口返回的数据"}
+                    onChange={(d) => {
+                      setData({ ...data, relateVal: d?.toString() });
                     }}
+                    className="w-full"
                   />
-                );
-              })}
-            </div>
-          )}
-          {/* 全局过滤器选择 */}
-          {data.propVal &&
-            data.sourceType === sourceType.api &&
-            propInfo.dataType === DataType.array &&
-            Object.keys(filterFuns).filter((k) => {
-              return (
-                filterFuns[k].dataModel ===
-                apiDatas[data.propVal || ""]?.dataModel
-              );
-            })?.length > 0 && (
-              <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
-                {/* <div className="text-sm box-border items-center font-semibold text-gray-700 mb-1 mt-0 pr-4 inline-block align-middle leading-5 tracking-normal flex-shrink-0">
-                  <i
-                    style={{ fontSize: "14px" }}
-                    className={` text-red-400 pr-2   entryIcon icon icon-filter_list z-40 `}
-                  />
-                  <label>范围筛选</label>
-                </div> */}
-                <_PageLabel
-                  label={"数据筛选"}
-                  remark={"按照filter.ts里配置筛选"}
-                  icon={<i className={`text-red-400 icon-filter_list  `} />}
-                />
-                <Select
-                  showClear
-                  style={{ width: "90%" }}
-                  value={data.filterFunc}
-                  optionList={Object.keys(filterFuns)
-                    .filter((k) => {
-                      return (
-                        filterFuns[k].dataModel ===
-                        apiDatas[data.propVal || ""].dataModel
-                      );
-                    })
-                    .map((d: string) => {
-                      return { label: filterFuns[d].title, value: d };
-                    })}
-                  onChange={(e) => {
-                    setData({ ...data, filterFunc: e?.toString() });
-                  }}
-                />
+                </div>
+              )}
+            {/* api设置 */}
+            {paramsObj && Object.keys(paramsObj).length > 0 && (
+              <div className=" w-full">
+                {Object.keys(paramsObj).map((k) => {
+                  return (
+                    <ParamsSetting
+                      key={k}
+                      formVo={formVo}
+                      field={field}
+                      paramInfo={paramsObj[k]}
+                      paramName={k}
+                      propName={propName}
+                      value={
+                        data.params &&
+                        data.params.filter((f) => f.paramName === k).length > 0
+                          ? data.params.filter((f) => f.paramName === k)[0]
+                          : undefined
+                      }
+                      onDataChange={(d: Partial<PageApiParam>) => {
+                        setData({
+                          ...data,
+
+                          params: data.params
+                            ? [
+                                ...data.params.filter((d) => d.paramName !== k),
+                                d,
+                              ]
+                            : [d],
+                        });
+                      }}
+                    />
+                  );
+                })}
               </div>
             )}
+            {/* 全局过滤器选择 */}
+            {data.propVal &&
+              data.sourceType === sourceType.api &&
+              propInfo.dataType === DataType.array &&
+              Object.keys(filterFuns).filter((k) => {
+                return (
+                  filterFuns[k].dataModel ===
+                  apiDatas[data.propVal || ""]?.dataModel
+                );
+              })?.length > 0 && (
+                <>
+                  <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
+                    <CompLabel
+                      blod={false}
+                      label={"数据筛选"}
+                      remark={"按照filter.ts里配置筛选"}
+                      icon={
+                        <i className={` icon-filter_list  text-red-400 `} />
+                      }
+                    />
+                    <Select
+                      showClear
+                      multiple
+                      placeholder={"对数据做进一步过滤"}
+                      style={{ width: "90%" }}
+                      value={
+                        data && data.filterFunc && data.filterFunc.length > 0
+                          ? data.filterFunc.split(",")
+                          : undefined
+                      }
+                      optionList={Object.keys(filterFuns)
+                        .filter((k) => {
+                          return (
+                            filterFuns[k].dataModel ===
+                            apiDatas[data.propVal || ""].dataModel
+                          );
+                        })
+                        .map((d: string) => {
+                          return { label: filterFuns[d].title, value: d };
+                        })}
+                      onChange={(e) => {
+                        setData((d: any) => {
+                          return {
+                            ...d,
+                            filterFunc: e?.toString(),
+                            filterConnectionType:
+                              d.filterConnectionType || "or",
+                          };
+                        });
+                      }}
+                    />
+                  </div>
+                  {data.filterFunc && data.filterFunc.split(",").length > 1 && (
+                    <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
+                      <CompLabel
+                        blod={false}
+                        label={"筛选整合"}
+                        remark={
+                          "经过2个以上筛选过滤器分别处理后的数据连接整合方式"
+                        }
+                        icon={<i className=" text-red-400 icon-link_record" />}
+                      />
+                      <Select
+                        showClear
+                        style={{ width: "90%" }}
+                        optionList={[
+                          { label: "取多次筛选的交集数据", value: "and" },
+                          { label: "取多次筛选的并集数据", value: "or" },
+                        ]}
+                        value={data.filterConnectionType}
+                        onChange={(e) => {
+                          setData((d: any) => {
+                            return {
+                              ...d,
+                              filterConnectionType: e?.toString(),
+                            };
+                          });
+                        }}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+          </div>
         </div>
       )}
     </div>

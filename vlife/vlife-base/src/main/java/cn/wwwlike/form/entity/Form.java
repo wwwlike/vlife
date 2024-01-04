@@ -3,6 +3,7 @@ package cn.wwwlike.form.entity;
 /**
  * 表单/列表/视图
  */
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 import javax.persistence.*;
@@ -15,8 +16,8 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table(name="form")
+@VClazz(remove = {PageComponentProp.class})
 public class Form extends DbEntity {
-
     //--------后端解析--------------
     /**
      * 模型代表字段
@@ -27,7 +28,6 @@ public class Form extends DbEntity {
      * 模型标识
      */
     public String type;
-
     /**
      * 模型父类字符串集合
      */
@@ -64,21 +64,10 @@ public class Form extends DbEntity {
      * 0 表示列表不分页
      */
     public Integer pageSize;
-
-    /**
-     * 页面排序
-     * 暂没有用
-     */
-    public Integer  sort;
     /**
      * 图标
      */
     public String  icon;
-    /**
-     * 模块
-     * 字典：系统模块，业务模块等
-     */
-    public String module;
     /**
      * 版本
      * 保存一次版本加一
@@ -88,24 +77,25 @@ public class Form extends DbEntity {
      * 分页列表api代码路径
      */
     public String listApiPath;
-
     /**
      * 分页列表api代码路径
      */
     public String saveApiPath;
-
     /**
      * 编号前缀
-     * 需要模型实现INo接口
+     * 需要实体模型实现INo接口则能设置该字段
      */
     public String prefixNo;
-
     /**
      * 关联表展示字段name
-     * 作为外键表展示字段name,为空则依次是name.title,no,id
+     * 提取vclass的label表达式
      */
     public String itemName;
-
     //页面模块appId
     public String sysMenuId;
+    //表单说明
+    public String formDesc;
+    //开发帮助文档
+    public String helpDoc;
+
 }

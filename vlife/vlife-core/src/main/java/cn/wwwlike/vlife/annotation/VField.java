@@ -39,36 +39,29 @@ public @interface VField {
      * 则注解就需要跟上协商 pathName="sysDept_name";
      */
     String pathName() default "";
-
     /**
      * 查询方式
      * 查询模型使用
      */
     Opt opt() default  Opt.VOID;
-
     /**
      * 注入字段设置它的排序规则->可覆盖实体类和VO上设置的排序规则，
      */
     String orders() default DEFAULT_ORDER_TYPE;
-
     /**
      * 数据查询&转换的方法 适用于统计分组的函数
      */
     Class<? extends DataExpressTran> tran() default DataExpressTran.class;
-
-
     /**
      * 进行and联合查询的其他字段，
      * 查询模型使用
      */
     String[] andReqFields() default {};
-
     /**
      * 进行or联合查询的其他字段
      * 查询模型使用
      */
     String[] orReqFields() default {};
-
     /**
      * 字典编码
      * 数据来源是字典则设置，也可通过配置功能设置或者覆盖
@@ -80,10 +73,10 @@ public @interface VField {
      * 一般作为实现特定逻辑的判断条件使用
      */
     boolean skip() default false;
-
     /**
      *  字段失效
      *  后续版本不在使用的字段
      */
     boolean expire() default  false;
+
 }

@@ -33,7 +33,6 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="form_reaction")
-@VClazz(module = "conf")
 public class FormReaction extends DbEntity {
     /**
      * 触发事件

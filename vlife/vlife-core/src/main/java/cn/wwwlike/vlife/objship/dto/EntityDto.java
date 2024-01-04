@@ -41,9 +41,8 @@ public class EntityDto extends BeanDto<Item> implements ISort {
     public Map<Class<? extends Item>, String> deleteMap = new HashMap<>();
     /** 排序字段 */
     public String orders;
-    /** 所在模块 */
-    public String module; //默认第一个字符串，如果VClazz注解里有则使用注解里的
-
+    /** 标题表达式 对应->vclazz label */
+    public String itemName;
     /** 是否是多对多的表  */
     public boolean isM2M() {
         return this.getClz().getDeclaredFields().length == 2 && fkTableClz != null && fkTableClz.size() == 2;

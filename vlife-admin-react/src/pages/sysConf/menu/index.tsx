@@ -1,7 +1,12 @@
 import React from "react";
-import { saveMenuResourcesDto, SysMenu } from "@src/api/SysMenu";
+import {
+  detailMenuResourcesDto,
+  saveMenuResourcesDto,
+  SysMenu,
+} from "@src/api/SysMenu";
 import Content from "../../template/content";
 import { VF } from "@src/dsl/VF";
+import { IconRegExp } from "@douyinfe/semi-icons";
 
 export default () => {
   return (
@@ -37,9 +42,15 @@ export default () => {
       ]}
       otherBtns={[
         {
-          title: "权限",
+          // title: "权限",
+          // actionType: "edit",
+          // model: "menuResourcesDto",
+          // saveApi: saveMenuResourcesDto,
+          title: "权限关联",
           actionType: "edit",
+          icon: <IconRegExp />,
           model: "menuResourcesDto",
+          loadApi: (d) => detailMenuResourcesDto({ id: d.id }),
           saveApi: saveMenuResourcesDto,
         },
       ]}

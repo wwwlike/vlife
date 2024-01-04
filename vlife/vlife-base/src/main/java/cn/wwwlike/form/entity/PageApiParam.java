@@ -13,7 +13,6 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="page_api_param")
-@VClazz(module = "conf")
 public class PageApiParam extends DbEntity {
     /***
      * 组件属性

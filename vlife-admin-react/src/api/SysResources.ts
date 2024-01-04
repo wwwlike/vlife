@@ -87,12 +87,12 @@ export const roleAllResources = (params: {
 /**
  * 全量的资源数据
  */
-export const listAll = ({
-  menuCode,
-}: {
-  menuCode?: string;
+export const list = (params: {
+  sysMenuId?: string;
+  ids?: string[];
+  formId?: string;
 }): Promise<Result<SysResources[]>> => {
-  return apiClient.get(`/sysResources/list/all?${menuCode?'menuCode='+menuCode:''}`);
+  return apiClient.get(`/sysResources/list`,{params:{...params}});
 };
 
 
@@ -101,12 +101,12 @@ export const listAll = ({
  */
  export const useAllResources = (
   options: Options<Result<SysResources[]>, any> = { manual: true }
-) => useRequest(listAll, options);
-/**
- * 全量的菜单资源
- */
-export const listMenu = (): Promise<Result<SysResources[]>> => {
-  return apiClient.get(`/sysResources/list/menu`);
+) => useRequest(list, options);
+
+
+//请求菜单可访问的资源
+export const listMenuUseableResources = (params:{sysMenuId:string}): Promise<Result<SysResources[]>> => {
+  return apiClient.get(`/sysResources/list/menuUseableResources`,{params});
 };
 
 /**

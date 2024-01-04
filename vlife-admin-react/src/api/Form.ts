@@ -15,7 +15,6 @@ export interface Form extends DbEntity {
   entityType: string;
   name: string;
   sort:number; //排序号
-  module:string;//模块
   icon:string;//图标
   modelSize:number;//模块大小 12网格里的占比大小
   pageSize:number;//分页大小
@@ -24,6 +23,9 @@ export interface Form extends DbEntity {
   saveApiPath:string; //数据保存ts方法地址
   prefixNo:string;//编号前缀
   sysMenuId:string;//所属应用
+  formDesc:string;//描述
+  itemName:string;//主字段表达式
+  helpDoc:string;//开发帮助文档
 }
 
 /**
@@ -42,7 +44,7 @@ export interface FormDto extends SaveBean,Form{
  */
 export interface FormVo extends VoBean,Omit<FormDto,"fields">  {
   parentsName:string[];//继承和实现的类的名称
-  parentForm:FormVo[];//当前form模型作为子表它所在的父表信息
+  parentForm:FormVo;//当前form模型作为子表它所在的父表信息
   fields: FormFieldVo[]; //字段信息
 }
 
@@ -127,7 +129,7 @@ export const model = (params:formPageReq): Promise<Result<FormVo>> => {
 export const entityModels = (params: {
   appId?: string;
 }): Promise<Result<FormVo[]>> => {
-  return apiClient.get(`/form/entityModels${params.appId?"?appId="+params.appId:""}`);
+  return apiClient.get(`/form/entityModels`,{params});
 };
 
 

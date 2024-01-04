@@ -26,14 +26,10 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 角色组dto
- * , VoBean<SysGroup>
+ * 权限组
  */
 @Data
 public class GroupDto implements SaveBean<SysGroup>{
-    /**
-     * 角色组id
-     */
     public String id;
     /**
      * 组名称
@@ -44,18 +40,13 @@ public class GroupDto implements SaveBean<SysGroup>{
      */
     public String remark;
     /**
-     * 角色集合
+     * 关联角色
      */
     @VField(pathName = "sysRoleGroup_sysRoleId")//多对多保存 应该保存对象
     public List<String> sysRoleId;
-
-//    public Integer scope;
-
     /**
      * 数据维度
      * 过滤模型_维度 sysUser_1->据用户表过滤，本级
      */
     public String filterType;
-
-
 }

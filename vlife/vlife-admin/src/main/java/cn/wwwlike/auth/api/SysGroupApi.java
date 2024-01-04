@@ -15,28 +15,25 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 角色聚合组接口;
+ * 权限组接口;
  */
 @RestController
 @RequestMapping("/sysGroup")
 public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
   @Autowired
   public SysResourcesService resourcesService;
-
+  //权限组列表
   @GetMapping("/list/all")
   public List<SysGroup> listAll() {
     return service.findAll();
   }
-
-  @GetMapping("/page")
+  //权限组查询
+  @PostMapping("/page")
   public PageVo<SysGroup> page(SysGroupPageReq req) {
     return service.findPage(req);
   }
-
   /**
-   * 保存角色聚合组;
-   * @param dto 角色聚合组;
-   * @return 角色聚合组;
+   * 权限组保存
    */
   @PostMapping("/save/groupDto")
   public GroupDto saveGroupDto(@RequestBody GroupDto dto) {
@@ -44,23 +41,16 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
     BaseService.groups=new HashMap<>();//刷新权限组
     return dto;
   }
-
-  /**
-   * 明细查询角色聚合组;
-   * @param id 主键id;
-   * @return 角色聚合组;
-   */
+  //权限组详情
   @GetMapping("/detail/{id}")
   public SysGroup detail(@PathVariable String id) {
     return service.findOne(id);
   }
-
   /**
-   * 逻辑删除;
+   * 删除权限组
    */
   @DeleteMapping("/remove")
   public Long remove(@RequestBody String[] ids) {
     return service.remove(ids);
   }
-
 }

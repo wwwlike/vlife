@@ -127,7 +127,7 @@ export default () => {
       <div id="body" className="flex flex-grow  w-full">
         {/* 字段选择排序 */}
         <FieldSelect
-          className=" bg-white w-64 h-full"
+          className=" bg-white w-96 h-full"
           key={currModel.type + "_fieldSelect"}
           fields={currModel.fields.filter((x) => x.fieldName !== "id")}
           mode={Mode.list}

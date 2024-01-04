@@ -60,6 +60,12 @@ import java.util.stream.Collectors;
  public class GeneratorAutoApi {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private String  baseApiClz;
+
+    public GeneratorAutoApi(String  baseApiClz){
+        this.baseApiClz=baseApiClz;
+    }
     /**
      * 当前操作的实体类信息
      */
@@ -84,7 +90,18 @@ import java.util.stream.Collectors;
         int index = packageName.lastIndexOf("entity");
         String servicePackageName = packageName.substring(0, index) + "service";
         String apiPackageName = packageName.substring(0, index) + "api";
-        ClassName superClazz = ClassName.get(VLifeApi.class);//父类
+
+        ClassName superClazz = null;
+        if(baseApiClz!=null){
+            String packagePath = baseApiClz.substring(0, baseApiClz.lastIndexOf('.'));
+            String actionName = baseApiClz.substring(baseApiClz.lastIndexOf('.') + 1);
+            superClazz= ClassName.get(packagePath, actionName);
+        }else{
+            superClazz=ClassName.get(VLifeApi.class);//父类
+        }
+
+
+
         TypeName itemName = TypeName.get(item); //实体类
         ClassName serviceName = ClassName.get(servicePackageName, item.getSimpleName() + "Service");//service类
         ParameterizedTypeName superClzAndGenic = ParameterizedTypeName.get(superClazz, itemName, serviceName);//api的类的泛型
@@ -92,7 +109,7 @@ import java.util.stream.Collectors;
                 .addMember("value", "\"/" + StringUtils.uncapitalize(item.getSimpleName()) + "\"");
         CodeBlock.Builder classComment = CodeBlock.builder();
         Class masterVo=compMasterVo(voDtos,item.getSimpleName());
-        classComment.addStatement(itemDto.getTitle() + "接口");
+        classComment.add(itemDto.getTitle() + "接口 \n");
         List<MethodSpec> methodSpecs = new ArrayList<>();
         /* step3 3.1 查询方法 ，一个DTO创建一个查询方法 */
         methodSpecs.addAll(createQueryMethod(reqDtos,voDtos,masterVo));
@@ -132,17 +149,7 @@ import java.util.stream.Collectors;
             VClazz vClazz=(VClazz) req.getClz().getAnnotation(VClazz.class);
             Method method=null;
             boolean pageQuery=PageQuery.class.isAssignableFrom(req.getClz());
-            if(vClazz==null||vClazz.requestType()== RequestTypeEnum.NULL){
-                method=pageQuery?MethodTypeEnum.page:MethodTypeEnum.list;
-            }else{
-                switch (vClazz.requestType()){
-                    /*把默认查询list,查询page get方式的查询，支持注解改成post查询并仅返回一条记录 ,这里绑定了MethodTypeEnum 不优雅*/
-                    case POST_ONE:method=MethodTypeEnum.post_one;break;//类似登录提交，路径和查询的有区别
-                    case GET_ONE:method=MethodTypeEnum.get_one;break;
-                    default:
-                        method=pageQuery?MethodTypeEnum.page:MethodTypeEnum.list;
-                }
-            }
+            method=pageQuery?MethodTypeEnum.page:MethodTypeEnum.list;
             Class voClz=compVoReturnClz(req,voDtos,masterVo);
             methodSpecs.add(ApiMethodCreate.createMethod(method
                     ,item,req.getClz(),voClz));
@@ -158,7 +165,7 @@ import java.util.stream.Collectors;
         List<MethodSpec> methodSpecs = new ArrayList<>();
         saveDtos.forEach(dto->{
             VClazz vClazz=(VClazz) dto.getClz().getAnnotation(VClazz.class);
-            if(vClazz==null||vClazz.requestType()!=RequestTypeEnum.SAVE_CustomName){
+            if(vClazz==null){
                 methodSpecs.add(ApiMethodCreate.createMethod(MethodTypeEnum.save
                         ,item,dto.clz,dto.clz));
             }else{
@@ -226,16 +233,7 @@ import java.util.stream.Collectors;
         if(voDtos==null||voDtos.size()==0){
             return  item;
         }
-        //case2
-        VClazz v=req.getClz().getAnnotation(VClazz.class);
-        if(v!=null&&v.returnType()!=Object.class){
-            Class returnType=v.returnType();
-            if(Item.class.isAssignableFrom(returnType)||VoBean.class.isAssignableFrom(returnType)){
-                return returnType;
-            }/**查询的出参既不是item,也不是voBean则异常**/
-            logger.error(req.getClz().getSimpleName()+"  VClazz[returnType] is setting error!");
-        }
-        /* case3*/
+        /* case2*/
         if(req!=null){
             String itemName=item.getSimpleName();
             String key=ApiMethodCreate.filterKey(req.getClz().getSimpleName(),itemName);

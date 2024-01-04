@@ -28,6 +28,7 @@ import cn.wwwlike.vlife.core.dsl.DslDao;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.*;
 import com.squareup.javapoet.*;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,17 @@ import java.util.stream.Collectors;
  * MVC层代码生成器
  */
 public class GeneratorMaster extends GeneratorUtils {
+
+    private String baseServiceClz;
+    private String baseApiClz;
+    private String baseDaoClz;
+
+    public GeneratorMaster(String baseApiClz,String baseServiceClz,String baseDaoClz){
+        this.baseServiceClz=baseServiceClz;
+        this.baseApiClz=baseApiClz;
+        this.baseDaoClz=baseDaoClz;
+    }
+
     List<String> error = new ArrayList<>();
 
     public  boolean doesClassExist(ClassLoader classLoader, String className) {
@@ -94,7 +106,7 @@ public class GeneratorMaster extends GeneratorUtils {
      * 随着需求变化增量的方法也要能够进入到api里,待实现
      */
     public List<JavaFile> apiGenerator(String basePath, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> reqs, List<SaveDto> saves) {
-        GeneratorAutoApi generatorApi = new GeneratorAutoApi();
+        GeneratorAutoApi generatorApi = new GeneratorAutoApi(baseApiClz);
         List<JavaFile> files = new ArrayList<>();
         entitys.forEach(entityDto -> {
             String packagePath = entityDto.getClz().getPackage().getName();
@@ -121,7 +133,15 @@ public class GeneratorMaster extends GeneratorUtils {
             String daoPackageName = packageName.substring(0, index) + "dao";
             String servicePackageName = packageName.substring(0, index) + "service";
             String daoClzName = daoPackageName + "." + item.getSimpleName() + "Dao";
-            ClassName superClazz = ClassName.get(VLifeService.class);
+            ClassName superClazz =null;
+            if(baseServiceClz!=null){
+                String packagePath = baseServiceClz.substring(0, baseServiceClz.lastIndexOf('.'));
+                String baseServiceName = baseServiceClz.substring(baseServiceClz.lastIndexOf('.') + 1);
+                superClazz= ClassName.get(packagePath, baseServiceName);
+            }else{
+                superClazz=ClassName.get(VLifeService.class);
+            }
+
             TypeName itemName = TypeName.get(item);
             ClassName daoName = ClassName.get(daoPackageName, item.getSimpleName() + "Dao");
             ParameterizedTypeName clzAndGenic = ParameterizedTypeName.get(superClazz, itemName, daoName);

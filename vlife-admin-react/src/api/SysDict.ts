@@ -1,68 +1,46 @@
-import apiClient from "@src/api/base/apiClient";
-import { PageVo, DbEntity, PageQuery, Result } from "@src/api/base";
+
+import {PageVo,DbEntity,PageQuery,Result} from '@src/api/base'
+import apiClient from '@src/api/base/apiClient'
 // 字典表
-export interface SysDict extends DbEntity {
-  val: string | undefined; // 选项值
-  code: string; // 编码
-  sort: number; // 排序号
-  color:'amber' | 'blue' | 'cyan' | 'green' | 'grey' | 'indigo' | 'light-blue' | 'light-green' | 'lime' | 'orange' | 'pink' | 'purple' | 'red' | 'teal' | 'violet' | 'yellow' | 'white'; //颜色代码
-  title: string; // 选项名
-  sys: boolean; // 系统项
-  dictType:boolean;//是否字典类别
+export interface SysDict extends DbEntity{
+  val?: string;  // 选项值
+  code: string;  // 编码
+  color: string;  // 颜色代码
+  sort: number;  // 排序号
+  title: string;  // 选项名
+  sys: boolean;  // 系统项
+  dictType: boolean;  // 是否分类
 }
 // 类说明
-export interface SysDictPageReq extends PageQuery {
-  code: string; // 编码
-  title: string; // 名称
-  sys: boolean; // 系统项
-  queryType: boolean; // 跳过检查
+export interface SysDictPageReq extends PageQuery{
+  code: string;  // 字典分类
+  sys: boolean;  // 系统项
 }
-/** */
-export const page = (req: SysDictPageReq): Promise<Result<PageVo<SysDict>>> => {
-  return apiClient.get(`/sysDict/page`, { params: req });
+/** 字典查询*/
+export const page=(req:SysDictPageReq): Promise<Result<PageVo<SysDict>>>=>{
+  return apiClient.post(`/sysDict/page`,req);
 };
-/** */
-export const all = (): Promise<Result<SysDict[]>> => {
+/** 字典大类*/
+export const listType=(): Promise<Result<SysDict[]>>=>{
+  return apiClient.get(`/sysDict/list/type`);
+};
+/** 全部字典*/
+export const all=(): Promise<Result<SysDict[]>>=>{
   return apiClient.get(`/sysDict/all`);
 };
-
-export const listType=(): Promise<Result<SysDict[]>>=>{
-  return apiClient.get(`/sysDict/list/type`  );
+/** 字典编辑*/
+export const save=(dto:SysDict): Promise<Result<SysDict>>=>{
+  return apiClient.post(`/sysDict/save`,dto);
 };
-
-export const listByCode = ({
-  code,
-}: {
-  code: string;
-}): Promise<Result<SysDict[]>> => {
-  return apiClient.get(`/sysDict/listByCode?code=${code}`);
+/** 字典详情*/
+export const detail=(req:{id:string}): Promise<Result<SysDict>>=>{
+  return apiClient.get(`/sysDict/detail/${req.id}`);
 };
-
-/**
- * 保存字典表;
- * @param dto 字典表;
- * @return 字典表;
- */
-export const save = (sysDict: Partial<SysDict>): Promise<Result<SysDict>> => {
-  return apiClient.post(`/sysDict/save`, sysDict);
+/** 字典删除*/
+export const remove=(ids:String[]): Promise<Result<number>>=>{
+return apiClient.delete(`/sysDict/remove`,{data:ids});
 };
-/**
- * 明细查询字典表;
- * @param id 主键id;
- * @return 字典表;
- */
-export const detail = (id: string): Promise<Result<SysDict>> => {
-  return apiClient.get(`/sysDict/detail/${id}`);
-};
-
-/**
- * 逻辑删除;
- */
- export const remove = (ids: string[]): Promise<Result<number>> => {
-  return apiClient.delete(`/sysDict/remove`,{data:ids});
-};
-
-/** */
-export const sync = (): Promise<Result<SysDict[]>> => {
-  return apiClient.get(`/sysDict/sync`);
+/** 根据code查询*/
+export const listByCode=(req:{code:string}): Promise<Result<SysDict[]>>=>{
+return apiClient.get(`/sysDict/listByCode`,{params:req});
 };

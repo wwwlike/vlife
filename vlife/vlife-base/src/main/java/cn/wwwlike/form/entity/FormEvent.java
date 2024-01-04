@@ -31,7 +31,6 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table(name="form_event")
-@VClazz(module = "conf")
 public class FormEvent extends DbEntity {
     /** [name] =当[formId]表[formFieldId]字段
      * [attr]属性[eventType][val]匹配事件

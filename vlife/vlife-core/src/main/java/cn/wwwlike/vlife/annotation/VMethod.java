@@ -19,13 +19,8 @@ public @interface VMethod {
     //(待)配置接口的上级接口，那么该接口可不参与系统配置；如save保存，启用停用都始于保存
 
     /**
-     *  失效接口
-     *  后续版本不在使用,陆续会下架
+     *  接口权限启用方式
      */
-    boolean expire() default  false;
-
-    /**
-     *  不会开放给前端的接口
-     */
-    boolean skip() default  false;
+    PermissionEnum permission() default  PermissionEnum.extend;
 }
+

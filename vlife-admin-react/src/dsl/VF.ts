@@ -111,10 +111,18 @@ export interface reaction{
     va.fill=false;//不满足时响应
     return va;
   }
-  // any为函数时则支持数据计算，函数需要支持返回的是Promise结果
-  value(value:any):VfAction{
+  // 表单字段值设置 常量值|回调函数(支持异步)
+  value(value:any|((formData:any,componentProps:any)=>any|Promise<any>)):VfAction{
     this.reations.push({
       state:FS_STATE.value,value
+    })
+    return this;
+  }
+  //表单字段属性设置(不支持直接设置值，有此需求应该用配置功能完成，属性设置主要是完成数据过滤场景使用)
+  //组件设置的使用场景：1：必须要有条件，否则直接配置里就能设置值；2
+  componentProps(value:(formData:any,componentProps:any)=>any|Promise<any>):VfAction{
+    this.reations.push({
+      state:FS_STATE.componentProps,value
     })
     return this;
   }
@@ -140,13 +148,7 @@ export interface reaction{
     })
     return this;
   }
-  //属性常量值设置
-  componentProps(value:any|((props:any)=>any)):VfAction{
-    this.reations.push({
-      state:FS_STATE.componentProps,value
-    })
-    return this;
-  }
+
   title(value:string):VfAction{
     this.reations.push({
       state:FS_STATE.title,value

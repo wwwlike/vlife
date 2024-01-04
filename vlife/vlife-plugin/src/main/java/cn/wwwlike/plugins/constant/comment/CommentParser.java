@@ -19,25 +19,29 @@
 package cn.wwwlike.plugins.constant.comment;
 
 import cn.wwwlike.plugins.utils.CommentUtils;
+import cn.wwwlike.vlife.annotation.PermissionEnum;
+import cn.wwwlike.vlife.annotation.VMethod;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.ModelReadCheck;
 import cn.wwwlike.vlife.objship.read.tag.ApiTag;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 import cn.wwwlike.vlife.objship.read.tag.FieldTag;
+import cn.wwwlike.vlife.objship.read.tag.ParamTag;
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.expr.MemberValuePair;
-import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.comments.Comment;
+import com.github.javaparser.ast.comments.JavadocComment;
+import com.github.javaparser.ast.comments.LineComment;
+import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,6 +49,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -118,9 +123,9 @@ public class CommentParser {
                             fieldTag.setExtendsField(true);
                         }
                         if (((FieldDeclaration) o).getComment().isPresent()) {
-                            String comment = ((FieldDeclaration) o).getComment().get().getContent();
-//                      //取注释的第一行
-                            fieldTag.setTitle(CommentUtils.parseCommentText(comment).split("\n")[0].split("\r")[0]);
+                            Comment comment=((FieldDeclaration) o).getComment().get();
+                            fieldTag.setTitle(getLineComment(comment,1));//字段注释
+                            fieldTag.setPlaceholder(getLineComment(comment,2));//字段说明
                         } else if (beanDto != null) {
                             List<FieldDto> fields = beanDto.getFields();
                             if(fields!=null){
@@ -168,21 +173,23 @@ public class CommentParser {
                     }
                 }
             }
-
-
             NodeList list = typeDeclaration.getMembers();
-            /*过滤接口*/
+            /*过滤有注解的方法接口*/
             List<MethodDeclaration> methodDeclarations= (List<MethodDeclaration>) typeDeclaration
                     .getMembers().stream().filter(t->(t instanceof MethodDeclaration)).filter(t->((MethodDeclaration)t).getAnnotations().size()>0).collect(Collectors.toList());
-            final String [] types={"GetMapping","PostMapping","RequestMapping","DeleteMapping","PutMapping"};
             ApiTag apiTag = null;
             for (MethodDeclaration method : methodDeclarations) {
-                List annotations=method.getAnnotations().stream().filter(t->
-                        Arrays.stream(types).filter(tt->tt.equals(t.getNameAsString())).count()>0).collect(Collectors.toList());
-                if(annotations.size()>0) {
-                    Object path=((AnnotationExpr) annotations.get(0)).getChildNodes().get(1);
+                Optional<AnnotationExpr> optional=readAnnotation(method.getAnnotations(), GetMapping.class, PostMapping.class, RequestMapping.class, DeleteMapping.class, PutMapping.class);
+                if(optional.isPresent()) {
+                    AnnotationExpr mappingAnnotation=optional.get();
+                    Object path=mappingAnnotation.getChildNodes().get(1);
                     apiTag=new ApiTag();
-                    apiTag.setTitle(method.getComment().isPresent()?method.getComment().get().getContent():"");
+                    if(method.getComment().isPresent()) {
+                        apiTag.setTitle(getLineComment(method.getComment().get(), 1));
+                        apiTag.setRemark(getLineComment(method.getComment().get(), 2));
+                    }else{
+                        apiTag.setTitle(method.getNameAsString());
+                    }
                     apiTag.setMethodName(method.getNameAsString());
                     apiTag.setReturnClz(method.getTypeAsString());
                     if(path.getClass()==StringLiteralExpr.class){
@@ -190,17 +197,102 @@ public class CommentParser {
                     }else if(path.getClass()== MemberValuePair.class){
                         apiTag.setPath(((MemberValuePair)path).getValue().toString());
                     }
-                    apiTag.setMethodType(method.getAnnotation(0).getChildNodes().get(0).toString());
+                    apiTag.setMethodType(mappingAnnotation.toString());
+                    //查找VMethed注解
+                    Optional<AnnotationExpr> vmethodAnnotation=readAnnotation(method.getAnnotations(), VMethod.class);
+                    if(vmethodAnnotation.isPresent()&&vmethodAnnotation.get() instanceof NormalAnnotationExpr){
+                        apiTag.setPermission(readAnnotationAttr((NormalAnnotationExpr)vmethodAnnotation.get(),"permission", PermissionEnum.class));
+                    }
                     if(method.getParameters().size()>0){
                         apiTag.setParam(method.getParameter(0).getNameAsString());
                         apiTag.setParamWrapper(method.getParameter(0).getTypeAsString());
                     }
-                    tag.getApiTagList().add(apiTag); }
-
+                    apiTag.setParamTagList(new ArrayList<>());
+                    if(method.getParameters()!=null){
+                        for(int i=0;i<method.getParameters().size();i++){
+                            ParamTag paramTag=new ParamTag();
+                            paramTag.setParamName(method.getParameter(i).getNameAsString());
+                            paramTag.setParamType(method.getParameter(i).getTypeAsString());
+                            apiTag.getParamTagList().add(paramTag);
+                        }
+                    }
+                    tag.getApiTagList().add(apiTag);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return tag;
     }
+
+
+    /**
+     * 查找集合中注解满足的第一条
+     * @param annotationExprs
+     */
+    public static Optional<AnnotationExpr> readAnnotation(NodeList<AnnotationExpr>  annotationExprs, Class ... annotationClasses){
+        List<String> names= Arrays.stream(annotationClasses).map(s->s.getSimpleName()).collect(Collectors.toList());
+        return annotationExprs.stream().filter(annotationExpr -> names.contains(annotationExpr.getNameAsString())).findFirst();
+    }
+
+    //提取注释的指定行数的字符串
+    public static String getLineComment(Comment comment,int lineIndex){
+        if (comment != null) {
+            if (comment instanceof JavadocComment) {
+                String commentStr = comment.getContent()
+                        .replaceAll("\\*", "")
+                        .replaceAll("\\r", "")
+                        .replaceAll("null", "")
+                        .replaceAll("\\;", "").trim();
+                String lines[]= commentStr.split("\n");
+                int i=1;
+                for (String line : lines) {
+                    if (!line.trim().startsWith("@")) {
+                        if (lineIndex == i) {
+                           return line.trim();
+                        }
+                    }
+                    i++;
+                }
+            } else if (comment instanceof LineComment&& lineIndex ==1) {
+                return comment.getContent();
+            }else{
+                return "";
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 读取指定注解的指定属性值
+     */
+    public static <T> T readAnnotationAttr(NormalAnnotationExpr annotationExpr, String attr, Class<T> returnType) {
+        for (MemberValuePair pair : annotationExpr.getPairs()) {
+            if (pair.getNameAsString().equals(attr)) {
+                Expression value = pair.getValue();
+                if (returnType.isEnum()) {
+                    SimpleName enumName =pair.getValue().asFieldAccessExpr().getName();
+                    Enum<?> enumVariable = Enum.valueOf((Class<? extends Enum>) returnType, enumName.asString());
+                    return returnType.cast(enumVariable);
+                }else if (returnType.equals(String.class)) {
+                    if (value.isStringLiteralExpr()) {
+                        return returnType.cast(((StringLiteralExpr) value).getValue());
+                    }
+                } else if (returnType.equals(Integer.class) || returnType.equals(int.class)) {
+                    if (value.isIntegerLiteralExpr()) {
+                        return returnType.cast(Integer.parseInt(((IntegerLiteralExpr) value).getValue()));
+                    }
+                } else if (returnType.equals(Boolean.class) || returnType.equals(boolean.class)) {
+                    if (value.isBooleanLiteralExpr()) {
+                        return returnType.cast(((BooleanLiteralExpr) value).getValue());
+                    }
+                }
+                // 如果类型不匹配，可以根据实际情况进行处理，比如抛出异常或返回默认值
+                // 这里我们选择抛出异常
+                throw new IllegalArgumentException("Annotation attribute type does not match the expected type");
+            }
+        }
+        return null;
+    }
+
 }

@@ -47,13 +47,10 @@ type Pager = { pager: { size: number; page: number } };
 export const usePage = ({
   manual = true,
   loadData = (params: Pager): Promise<Result<PageVo<any>>> => {
-    return apiClient.get(
+    return apiClient.post(
       `/${entityType}/page${
         listModel && listModel !== entityType ? "/" + listModel : ""
-      }?${qs.stringify(params, {
-        allowDots: true, //多级对象转str中间加点
-        arrayFormat: "comma", //数组采用逗号分隔 ,这里转换不通用，get查询都需要这样转换
-      })}`
+      }`,params
     );
   },//空则使用该默认值
   entityType,

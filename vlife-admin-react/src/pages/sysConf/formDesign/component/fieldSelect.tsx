@@ -17,13 +17,12 @@ import {
 import { Mode } from "@src/dsl/base";
 import VfButton from "@src/components/VfButton";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-//字段排序，隐藏组件
+//字段拖拽排序，组件隐藏
 interface FieldSelectProps {
   mode: Mode;
   className?: string;
   fields: FormFieldVo[]; //参与排序的字段
   outSelectedField?: string; //外部选中字段
-  // hide: any; //隐藏的满足条件 如：{x_hidden:true}  {listHide:false}
   onDataChange: (ang: FormFieldVo[]) => void; //数据返回出去
   onSelect: (field: string) => void; //当前选中字段
 }
@@ -32,34 +31,19 @@ const FieldSelect = ({
   mode,
   outSelectedField,
   onSelect,
-  // hide,
   className,
   onDataChange,
 }: FieldSelectProps) => {
-  //2行显示表示
-  const column2Flag = fields.length > 20;
-  /**
-   * 布局内容
-   */
-  const [content, setContent] = useState<LayoutDataType[]>();
-  const [draggable, setDraggable] = useState<boolean>(true);
-  /**
-   * 布局改变
-   * 数量，大小，位置
-   */
+  const column2Flag = fields.length > 20; //2行显示标识
+  //布局改变 数量，大小，位置
   const onLayoutChange = useCallback(
     (divLayout: LayoutDataType[]) => {
-      // alert()
-      // setContent(divLayout);
-
       const sortDiv = divLayout.sort((a, b) => {
         if (a.y === b.y) {
           return a.x - b.x;
         }
         return a.y - b.y;
       });
-      // alert(JSON.stringify(sortDiv.map((a, index) => a.i + index)));
-
       onDataChange(
         fields
           .map((f) => {
@@ -103,8 +87,8 @@ const FieldSelect = ({
 
   return (
     <div className={`${className}  bottom-1 border-black p-4`}>
-      <div className="  text-xs font-bold font-serif mx-4 bottom-1 border-black flex items-center">
-        <div className="mt-3">
+      <div className="   text-sm font-bold font-serif mx-4 bottom-1 border-black flex items-center">
+        <div className="mt-3 relative w-full flex items-center">
           可见字段(
           {mode === Mode.form || mode === Mode.filter ? (
             <>
@@ -129,7 +113,10 @@ const FieldSelect = ({
               }
             </>
           )}
-          )
+          ){" "}
+          <span className=" absolute right-0 text-xs font-thin text-blue-300">
+            <i className="  icon-h5_sort" /> 拖拽排序
+          </span>
         </div>
       </div>
       <Divider margin="12px" align="left"></Divider>
@@ -141,7 +128,7 @@ const FieldSelect = ({
           allowOverlap={false} //是否可以重叠
           onLayoutChange={onLayoutChange} // 布局改变事件
           isResizable={false}
-          isDraggable={draggable}
+          isDraggable={true}
           cols={
             !column2Flag
               ? { lg: 1, md: 1, sm: 1, xs: 1, xxs: 1 }
@@ -168,10 +155,9 @@ const FieldSelect = ({
             .map((field: FormFieldVo, index: number) => {
               return (
                 <div
-                  // style={{ width: "80px" }}
                   id={field.fieldName}
                   key={field.fieldName}
-                  className={`  relative  z-10  group flex space-x-2 items-center w-10 p-2
+                  className={` cursor-move  relative  z-10  group flex space-x-2 items-center w-10 p-2
                         hover:border hover:rounded-md hover:border-blue-500 border-dashed
                         `}
                   data-grid={{
@@ -222,7 +208,7 @@ const FieldSelect = ({
       </div>
 
       <Divider margin="12px" align="left" />
-      <div className=" text-xs font-bold font-serif mx-4 bottom-1 border-black">
+      <div className="  text-sm font-bold font-serif mx-4 bottom-1 border-black">
         不展示字段(
         {mode === Mode.form || mode === Mode.filter ? (
           <>{fields.filter((f) => f.x_hidden === true).length}</>

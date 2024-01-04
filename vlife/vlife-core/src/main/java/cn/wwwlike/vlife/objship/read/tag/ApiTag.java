@@ -18,20 +18,26 @@
 
 package cn.wwwlike.vlife.objship.read.tag;
 
+import cn.wwwlike.vlife.annotation.PermissionEnum;
 import lombok.Data;
 
+import java.util.List;
+
 /**
- * 类说明
- *
- * @author xiaoyu
- * @date 2022/8/26
+ *  接口信息
  */
 @Data
 public class ApiTag {
     /**
-     * 函数名
+     * 接口名称
+     * 第一行注释
      */
     public String title;
+    /**
+     * 接口说明
+     * 第二行注释
+     */
+    public String remark;
     /**
      * 接口路径
      */
@@ -66,4 +72,12 @@ public class ApiTag {
      * 方法名称
      */
     public String methodName;
+    /**
+     * 免权接口
+     */
+    public PermissionEnum permission;
+    /**
+     * 入参信息
+     */
+    public List<ParamTag> paramTagList;
 }

@@ -8,11 +8,12 @@ import { FormVo } from "@src/api/Form";
 import { VfBaseProps } from "@src/dsl/component";
 import { VFBtn } from "../../table/types";
 import { useNavigate } from "react-router-dom";
+import { IFkItem } from "@src/api/base";
 
 /**
  * 1对多，子表数据列表展示
  */
-interface FormTableProps extends VfBaseProps<any[], FormVo> {
+interface FormTableProps extends VfBaseProps<IFkItem[]> {
   type: string; //字段类型
   ignores?: string[]; //忽略不展示的字段
   mainForm?: any; //主表数据
@@ -31,7 +32,6 @@ export default ({
   unCreate = false,
   unRemove = false,
   unModify = false,
-  fieldName,
   onDataChange,
 }: FormTableProps) => {
   const navigate = useNavigate();
@@ -131,7 +131,7 @@ export default ({
       <TablePage<any>
         columnTitle={false}
         className="mt-1"
-        key={"table_sub" + fieldName}
+        key={"table_sub" + fieldInfo.fieldName}
         mode="hand"
         dataSource={tableData}
         listType={type || fieldInfo.fieldType + ""}

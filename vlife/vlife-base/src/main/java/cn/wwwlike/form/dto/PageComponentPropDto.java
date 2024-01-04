@@ -55,9 +55,6 @@ public class PageComponentPropDto implements SaveBean<PageComponentProp> {
     * filterFuns->key
     */
    public String filterFunc;
-
-//  /**
-//   * 接口请求后数据的转化方法
-//   */
-//  public String apiMethod;
+   // 多个多虑条件的数据连接方式
+   public String filterConnectionType;
 }

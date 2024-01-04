@@ -238,11 +238,6 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     }
 
     /**
-     * 用户配置的condition->Conditions的json形式
-     */
-//    @VField(skip = true)
-//   private String conditionJson;
-    /**
      * queryBuild的查询条件
      * 支持嵌套
      */

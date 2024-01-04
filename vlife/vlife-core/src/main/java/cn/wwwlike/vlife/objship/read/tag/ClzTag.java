@@ -39,7 +39,7 @@ public class ClzTag {
      */
     public List<String> parentsName;
     /**
-     * 类名(名字起的不好，应该是clz)
+     * 类名(应该是clz)
      */
     public String entityName;
     /**

@@ -26,17 +26,13 @@ import lombok.Data;
 @Data
 public class PageableRequest {
     public int page = 1;
-    public int size = 5;
-
+    public int size = 10;
     public PageableRequest() {
-
     }
-
     public PageableRequest(int page, int size) {
         this.page = page;
         this.size = size;
     }
-
     public PageableRequest(int page) {
         this.page = page;
     }

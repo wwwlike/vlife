@@ -4,15 +4,13 @@ import { FormFieldVo } from '@src/api/FormField';
 import { VF, VfAction } from '@src/dsl/VF';
 import { DataType, Mode, sourceType, TsType } from './base';
 
-
-
-
 /**
  * 下拉选择数据结构
  */
 export interface ISelect{
   value:any;
   label:string;
+  extra?:string;//说明信息
 }
 /**
  * 树形选择数据结构
@@ -143,27 +141,36 @@ export interface PropDef {
  * T 出参数据类型
  * D 组件类型
  */
- export interface VfBaseProps<T, D> {
+ export interface VfBaseProps1<T, D> {
     //字段初始值
     value: T;
-    //组件渲染需要的数据
-    datas?: D;
+    //暂位提示;
+    placeholder:string;
     // 表态只读状态
     read: boolean;
-    //当前实体类
-    entityType:string;
-    //css样式
-    style:any;
     //样式
     className:string;
+    //css样式
+    style:any;
+    //组件渲染需要的数据
+    design:true|false|undefined,
+    //当前表单名称取自Form的type字段
+    reaction:VfAction[];//响应
+    vf:VF[];//设置
+    //字体加粗
+    fontBold:boolean,
+    //紧凑布局
+    terse:boolean,
+    // 待移除
+    datas?: D;
+    //当前实体类
+    entityType:string;
     // 以下考虑移除，不和字段信息绑定，做纯粹的组件
     //字段名
     fieldName: string;
     //组件字段信息
     fieldInfo: Partial< FormFieldVo>;
     //当前模式
-    design:true|false|undefined,
-    //当前表单名称取自Form的type字段
     formName:string,
     //模型信息
     model:FormVo,
@@ -172,21 +179,65 @@ export interface PropDef {
     //当前字段所在表单数据
     formData:any;
      //表单设置配置
-    reaction:VfAction[];//响应
-    vf:VF[];//设置
     //表单formily对象 注入页面会卡顿
     // form:Form,
     //字段(或子表单)数据回传
     onDataChange: (data: T|undefined) => void;
     //formli表单信息回传
-    onForm:(form:Form|Form[])=>void;
-    //字体加粗
-    fontBold:boolean,
-    //紧凑布局
-    terse:boolean,
-   
-   
+    onForm:(form:Form|Form[])=>void;  
 }
+
+
+/**
+ * vlife自定义表单组件数据
+ * T 出参数据类型
+ * D 组件类型
+ */
+ export interface VfBaseProps<T> {
+  //字段初始值
+  value: T;
+  //占位提示;
+  placeholder:string;
+  // 表态只读状态
+  read: boolean;
+  //样式
+  className:string;
+  //css样式
+  style:any;
+  //组件渲染需要的数据
+  design:true|false|undefined,
+  //当前表单名称取自Form的type字段
+  reaction:VfAction[];//响应
+  vf:VF[];//设置
+  //字体加粗
+  fontBold:boolean,
+  //紧凑布局
+  terse:boolean,
+  // form 表单会固定传入的值，可不在compData里配置以下属性
+    //当前字段所在表单数据
+  formData:any;
+  //组件字段信息
+  fieldInfo: Partial< FormFieldVo>;
+  // 待移除
+  // datas?: D;
+  //当前实体类
+  // entityType:string;
+  // 以下考虑移除，不和字段信息绑定，做纯粹的组件
+  //字段名
+  // fieldName: string;
+  //模型信息
+  // model:FormVo,
+  //模型名称(未使用)
+  // modelTitle:string,
+  //  表单设置配置
+  // 表单formily对象 注入页面会卡顿
+  // form:Form,
+  // 字段(或子表单)数据回传
+  onDataChange: (data: T|undefined) => void;
+  //formliy表单信息回传 ,无需回传，form里可以请求到
+  // onForm:(form:Form|Form[])=>void;  
+}
+
 
 export interface VfBaseViewProps<D>{
   data:D;

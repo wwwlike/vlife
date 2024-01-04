@@ -47,9 +47,5 @@ public class SysResourcesPageReq extends PageQuery<SysResources> {
      * 模型
      */
     public String formId;
-    /**
-     * 启用状态
-     */
-    public String state;
 
 }
