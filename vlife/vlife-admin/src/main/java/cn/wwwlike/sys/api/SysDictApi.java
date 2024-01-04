@@ -40,12 +40,12 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
      * 字典查询
      */
     @PostMapping("/page")
-    public PageVo<SysDict> page(SysDictPageReq req) {
+    public PageVo<SysDict> page(@RequestBody SysDictPageReq req) {
         req.qw().ne("dictType",true);
         return service.findPage(req);
     }
     /**
-     * 字典大类
+     * 字典分类
      * @return
      */
     @GetMapping("/list/type")

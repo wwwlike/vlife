@@ -966,7 +966,11 @@ const SelectIcon = ({
   const VfIcon = useMemo(() => {
     if (selected && read) {
       const IconComponent = icons[selected];
-      return <IconComponent size={size} {...props} />;
+      if (IconComponent) {
+        return <IconComponent size={size} {...props} />;
+      } else {
+        return <div>-</div>;
+      }
     } else if (selected) {
       const IconComponent = icons[selected];
       return (

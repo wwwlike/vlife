@@ -7,15 +7,9 @@ import { useAuth } from "@src/context/auth-context";
 
 export default () => {
   const { user } = useAuth();
-  // itemKey: string; //视图编码(唯一)
-  // tab: string | ReactNode; //名称
-  // icon?: ReactNode; //图标
-  // active?: boolean; //当前页
-  // req?: object | { field: string; opt: string; value?: Object }[]; //视图过滤条件(简单方式)
   return (
     <Content<SysUser>
       listType="sysUser"
-      customView={true}
       tabList={[
         {
           itemKey: "all",
@@ -36,7 +30,6 @@ export default () => {
           req: { sysDeptId: user?.sysDeptId },
         },
       ]}
-      // customView={false}
       // filterType="sysUserPageReq"
       reaction={[
         // VF.field("name").eq("12345").then("usetype").componentProps({
