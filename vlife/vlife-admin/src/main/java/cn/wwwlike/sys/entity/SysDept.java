@@ -17,13 +17,10 @@
  */
 
 package cn.wwwlike.sys.entity;
-import cn.wwwlike.auth.common.IOrg;
-import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -33,7 +30,6 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_dept")
-@VClazz(label = "shortName-name|code")
 public class SysDept extends DbEntity implements ITree {
     /**
      * 部门名称

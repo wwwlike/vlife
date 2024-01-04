@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { IdBean } from "@src/api/base";
 import FormPage from "@src/pages/common/formPage";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import { useSize } from "ahooks";
 import { VfAction } from "@src/dsl/VF";
 import { Tabs } from "@douyinfe/semi-ui";
 import GroupLabel from "@src/components/form/component/GroupLabel";
+import { listByCode, SysDict } from "@src/api/SysDict";
 
 //tab页签
 type TableTab = {
@@ -26,8 +27,9 @@ type TableTab = {
 export interface ContentProps<T extends IdBean> extends TablePageProps<T> {
   title: string; //页面标题
   filterType: string; //左侧布局查询条件模型
-  filterReaction: VfAction[];
-  tabList: TableTab[]; //true表示能和用户添加视图 plus版本有该入口
+  filterReaction: VfAction[]; //左侧布局的联动数组对象
+  tabList: TableTab[]; //tab条件对象或者根据字段dictcode字典分组
+  tabDictField: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
   onReq?: (req: any) => void; //过滤条件回传
 }
 
@@ -42,47 +44,73 @@ const Content = <T extends IdBean>({
   editType,
   filterType,
   tabList,
+  tabDictField,
+  filterReaction,
   req,
   btns,
   onReq,
   ...props
 }: Partial<ContentProps<T>> & { listType: string }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [tableModel, setTableModel] = useState<FormVo>();
   const confirmModal = useNiceModal("vlifeModal");
+  const [contentTab, setContentTab] = useState<TableTab[]>();
+  useEffect(() => {
+    const tabs: TableTab[] = [{ itemKey: "all", tab: "全部", active: true }];
+    if (tabList) {
+      tabs.push(...tabList);
+    }
+    const dictcode = tableModel?.fields?.filter(
+      (f) => f.fieldName === tabDictField
+    )?.[0]?.dictCode;
+    if (tabDictField && dictcode) {
+      listByCode({ code: dictcode }).then((d) => {
+        const dicts: SysDict[] = d.data || [];
+        tabs.push(
+          ...dicts.map((d) => {
+            return {
+              itemKey: d.id, //视图编码(唯一)
+              tab: d.title,
+              req: {
+                [tabDictField]: d.val,
+              }, //视图过滤条件(简单方式)
+            };
+          })
+        );
+        setContentTab(tabs);
+      });
+    }
+  }, [tabDictField, tableModel, tabList]);
+
   const [activeKey, setActiveKey] = useState<string>(
-    tabList?.filter((tab) => tab.active === true)?.[0]?.itemKey ||
-      tabList?.[0]?.itemKey ||
+    contentTab?.filter((tab) => tab.active === true)?.[0]?.itemKey ||
+      contentTab?.[0]?.itemKey ||
       "all"
   );
   const [formData, setFormData] = useState<any>({});
 
   const tableReq = useMemo(() => {
     //自定义视图的查询方式
-    const customViewReq = tabList?.filter(
+    let customViewReq: any = contentTab?.filter(
       (item) => item.itemKey === activeKey
     )?.[0]?.req;
-    if (activeKey && tabList && customViewReq) {
-      if (Array.isArray(customViewReq)) {
-        return {
-          ...req,
-          ...formData,
-          ...customViewReq,
-          conditionGroups: [{ where: customViewReq }],
-        };
-      } else {
-        //数组
-        return {
-          ...req,
-          ...formData,
-          ...customViewReq,
-        };
+    if (activeKey && contentTab && customViewReq) {
+      //object转conditionGroup
+      if (typeof customViewReq === "object") {
+        customViewReq = Object.keys(customViewReq).map((key) => {
+          return { fieldName: key, opt: "eq", value: [customViewReq[key]] };
+        });
       }
+      return {
+        ...req,
+        ...formData,
+        ...customViewReq,
+        conditionGroups: [{ where: customViewReq }],
+      };
     } else {
       return { ...req, ...formData };
     }
-  }, [req, formData, activeKey]);
+  }, [req, formData, contentTab, activeKey]);
 
   // const windowWidth = useSize(document.querySelector("body"))?.width;
 
@@ -115,7 +143,7 @@ const Content = <T extends IdBean>({
             <GroupLabel text={`${tableModel?.name}查询`} className="mb-6" />
             <FormPage
               key={`filter${filterType}`}
-              reaction={props.filterReaction}
+              reaction={filterReaction}
               formData={req}
               // fontBold={true}
               onDataChange={(data) => {
@@ -141,13 +169,13 @@ const Content = <T extends IdBean>({
           filterOpen ? "pl-1" : ""
         } `}
       >
-        {tabList && tabList.length > 0 && (
+        {contentTab && contentTab.length > 0 && (
           <div className=" bg-white  pt-1">
             <Tabs
               style={{ height: "36px", paddingLeft: "10px" }}
               type="card"
               activeKey={activeKey}
-              tabList={tabList}
+              tabList={contentTab}
               onChange={(key) => {
                 if (key !== "add") {
                   setActiveKey(key);

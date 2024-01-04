@@ -235,7 +235,9 @@ const TableIndex = <T extends IdBean>({
               )?.[0];
               if (dict && dict.color) {
                 return (
-                  <span className={` bg-${dict.color}-100 p-2 rounded-md`}>
+                  <span
+                    className={` text-xs font-bold bg-${dict.color}-100 p-2 rounded-md`}
+                  >
                     {dict.label}
                   </span>
                 );
