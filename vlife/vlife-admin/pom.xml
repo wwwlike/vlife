@@ -154,6 +154,8 @@
                 <artifactId>vlife-plugin</artifactId>
                 <version>1.0.7</version>
                 <configuration>
+                    <!--                    自动生成代码使用baseSerivce替换默认的vlifeService-->
+                    <baseServiceClz>cn.wwwlike.common.BaseService</baseServiceClz>
                 </configuration>
                 <executions>
                     <execution>

@@ -42,14 +42,9 @@ public class MenuVo implements VoBean<SysMenu> {
      */
     public String entityType;
     /**
-     * 实体名前缀
-     */
-    public String   entityPrefix;
-    /**
      * 菜单下属资源
      */
     public List<SysResources> sysResourcesList;
-
     /**
      * 应用
      */
@@ -59,10 +54,8 @@ public class MenuVo implements VoBean<SysMenu> {
      * 如果菜单下没有任何资源/接口 则 需要将菜单和角色绑定
      */
     public String sysRoleId;
-
     /**
      * 关联模型
      */
     public String formId;
-
 }
