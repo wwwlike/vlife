@@ -3,11 +3,9 @@ import { localHistoryLoginUserName, useAuth } from "@src/context/auth-context";
 import "./login.css";
 import { useForm, useUrlQueryParam } from "@src/hooks/useForm";
 import { useNavigate } from "react-router-dom";
-import { giteeUrl, ThirdAccountDto } from "@src/api/SysUser";
 import logo from "@src/logo.png";
 import backgroundImage from "@src/assets/login_bg.jpg";
 import loginLeftImage from "@src/assets/login_left.png";
-import { Empty } from "@douyinfe/semi-ui";
 import LinkMe from "../layout/components/header/LinkMe";
 const Index: React.FC = () => {
   const localUsername = window.localStorage.getItem(localHistoryLoginUserName);
@@ -27,28 +25,6 @@ const Index: React.FC = () => {
   const handelSubmit = async () => {
     await login(values);
   };
-
-  const gitLogin = () => {
-    giteeUrl().then((d) => {
-      if (d.data) {
-        window.location.href = d.data;
-      } else {
-        alert("服务端没有启用gitee快捷登录");
-      }
-    });
-  };
-
-  const [urlParam, setUrlParam] = useUrlQueryParam(["code", "from"]);
-  useEffect(() => {
-    if (urlParam.code !== undefined) {
-      if (urlParam.from === "gitee") {
-        giteeLogin(urlParam.code).then(
-          (account: ThirdAccountDto | undefined) => {}
-        );
-      }
-    }
-  }, [urlParam]);
-
   return (
     <div
       style={{
@@ -129,5 +105,4 @@ const Index: React.FC = () => {
     </div>
   );
 };
-
 export default Index;
