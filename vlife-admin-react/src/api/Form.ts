@@ -77,7 +77,6 @@ export interface formPageReq{
   return apiClient.get(`/form/tsCode/${entity}`);
 };
 
-
 /**
  * 指定模型及接口的TS代码
  */
@@ -85,36 +84,15 @@ export interface formPageReq{
   return apiClient.get(`/form/subForms/${id}`);
 };
 
-
 /**
- * 未编辑的模型信息
+ * 单个模型
  */
 export const model = (params:formPageReq): Promise<Result<FormVo>> => {
   return apiClient.get(`/form/model`, { params });
 };
 
-// /**
-//  * 原始模型信息
-//  */
-// export const javaModel = (
-//   modelName: string
-// ): Promise<Result<ModelInfo>> => {
-//   return apiClient.get(`/form/javaModel/${modelName}`);
-// };
-
-
-// /**
-//  * 原始模型信息
-//  */
-//  export const javaModels = (
-//  req:formPageReq
-// ): Promise<Result<ModelInfo[]>> => {
-//   return apiClient.get(`/form/javaModels`,{params:req});
-// };
-
-
 /**
- * db存在的模型信息
+ * 模型列表
  */
  export const list = (
   req?:formPageReq
@@ -123,7 +101,7 @@ export const model = (params:formPageReq): Promise<Result<FormVo>> => {
  };
 
 /**
- * 已发布的所有实体模型
+ * 实体模型列表
  * @returns
  */
 export const entityModels = (params: {
@@ -134,47 +112,18 @@ export const entityModels = (params: {
 
 
 /**
- * 表单保存
+ * 模型分类
  */
  export const save = (form: Form): Promise<Result<Form>> => {
   return apiClient.post(`/form/save`, form);
 };
 
 /**
- * 表单保存
+ * 模型保存
  */
 export const saveFormDto = (dto: Partial<FormDto>): Promise<Result<FormVo>> => {
   return apiClient.post(`/form/save/formDto`, dto);
 };
 
-/**
- * 根据id查询表单详情
- */
-export const detailFormVo = ({
-  formId,
-}: {
-  formId: string;
-}): Promise<Result<FormVo>> => {
-  return apiClient.get(`/form/detail/formVo/${formId}`);
-};
 
-/**
- * 统计项选择组件数据请求
- * 考虑去重，SelectCompVo结构在后端封装了，麻烦，应该是有个转换函数，能把后端的转换过来
- * 且目前后端也没有SelectCompVo 对象，故不合理
- */
-export const formReportItemAll = (): Promise<Result<SelectCompVo[]>> => {
-  return apiClient.get(`/form/formReportItemAll`);
-};
 
-export const formReportKpiAll = (): Promise<Result<SelectCompVo[]>> => {
-  return apiClient.get(`/form/formReportKpiAll`);
-};
-
-/** 
-  * 模型初始化
-  * @return
-  */
- export const init=(id: string): Promise<Result<FormVo>>=>{
-  return apiClient.post(`/form/init/${id}`  );
-};

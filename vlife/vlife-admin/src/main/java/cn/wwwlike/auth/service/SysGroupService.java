@@ -19,30 +19,11 @@ import java.util.stream.Collectors;
 public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
     @Autowired
     public SysResourcesService resourcesService;
-
     @Autowired
     public SysGroupService sysGroupService;
     /**
-     *
-     * @param roleIds 资源对应的角色
-     * @param groupRoleIds 单个权限组的角色
-     * @return ture:表示权限组能访问
-     */
-    public boolean hasRole(Set<String> roleIds,List<String> groupRoleIds){
-        for(String id:groupRoleIds){
-            if(roleIds.contains(id)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * 所有资源路径与权限组的对应的MAP集合
-     * 正向：权限组拥有角色下的资源，且拥有这些资源所在菜单下的main资源
-     * 反向：资源对应角色所在的权限组，如果是main资源，那么下级资源对应的角色组也可以访问
-     * MAP按照反向思维来做
-     * @return
+     * {"url1":"group1,group2","url2":"group3,group2"}
      */
     public Map<String,String> resourceGroupMap(){
         Map<String,String> map=new HashMap();
@@ -86,8 +67,6 @@ public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
     /**
      * 获得一个权限组下能够访问的资源code
      * 前端用它做权限判断
-     * @param groupId 权限组id
-     * @return
      */
     public List<String> findGroupResourceCodes(String groupId){
         GroupVo vo=queryOne(GroupVo.class,groupId);

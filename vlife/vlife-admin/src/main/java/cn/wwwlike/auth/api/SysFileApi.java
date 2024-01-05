@@ -22,20 +22,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 文件存储接口;
+ * 文件接口
  */
 @RestController
 @RequestMapping("/sysFile")
 public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
-
     @Value("${file.image.path}")
     public String imgPath;
-
     @Value("${vlife.packroot}")
     public String packroot;
 
     /**
-     * wangEditor上传图片接收,不存数据库
+     * 图片上传
+     * 采用wangEditor上传图片接收,不存数据库
      */
     @PostMapping("/upload")
     public NativeResult<Map> uploadImg(@RequestParam("wangeditor-uploaded-image") MultipartFile file, HttpServletResponse response) throws IOException {
@@ -59,9 +58,7 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
                 !imgPath.startsWith("/")) {
             imgPath = "/" + imgPath;
         }
-
         File img=new File(imgPath + "/" + fileName);
-
         if (img.exists()) {
             try (FileInputStream input =new FileInputStream(img)) {
                 byte[] bytes = new byte[input.available()];
@@ -80,7 +77,7 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
     }
 
     /**
-     * 单独上传图片
+     * 图片上传入库
      */
     @PostMapping("/uploadImg")
     public SysFile upload(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
@@ -93,25 +90,18 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
         return ff;
     }
 
+    /**
+     * 图片详情
+     * @param ids
+     * @return
+     */
     @GetMapping("/details")
     public List<SysFile> detail(String ids[]) {
         return service.findByIds(ids);
     }
 
     /**
-     * 保存文件存储;
-     * @param dto 文件存储;
-     * @return 文件存储;
-     */
-    @PostMapping("/save")
-    public SysFile save(@RequestBody SysFile dto) {
-        return service.save(dto);
-    }
-
-    /**
-     * 逻辑删除;
-     * @param id 主键id;
-     * @return 已删除数量;
+     * 图片删除
      */
     @DeleteMapping("/remove/{id}")
     public Long remove(@PathVariable String id) {

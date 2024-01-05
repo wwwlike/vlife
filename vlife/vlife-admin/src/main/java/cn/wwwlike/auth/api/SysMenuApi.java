@@ -35,28 +35,28 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
   @Autowired
   public SysResourcesService resourcesService;
   /**
-   * 保存菜单;
+   * 菜单保存
    */
   @PostMapping("/save")
   public SysMenu save(@RequestBody SysMenu dto) {
     return service.save(dto);
   }
   /**
-   * 菜单明细
+   * 菜单详情
    */
   @GetMapping("/detail/{id}")
   public SysMenu detail(@PathVariable String id) {
     return service.findOne(id);
   }
   /**
-   * 所有菜单
+   * 菜单列表
    */
   @GetMapping("/list/all")
   public List<MenuVo> listAll() {
     return service.queryAll(MenuVo.class);
   }
   /**
-   * 菜单分页查询
+   * 菜单查询
    */
   @PostMapping("/page")
   public PageVo<SysMenu> page(@RequestBody SysMenuPageReq req) {
@@ -70,7 +70,8 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
     return service.remove(ids);
   }
   /**
-   * 查找一个角色的资源（角色已绑定的+未被角色绑定的）
+   * 角色可用菜单和接口查询
+   * 查询结果为封装的MenuVo的对象
    */
   @GetMapping("/list/roleResources")
   public List<MenuVo> roleResources(String sysRoleId,String appId) {
@@ -80,9 +81,7 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
     return service.getMenuVos(sysRoleId,appId);
   }
   /**
-   * 菜单关联资源详情
-   * 有保存接口，则一定有查看明细接口
-   * @return
+   * 关联资源详情
    */
   @GetMapping("/detail/menuResourcesDto/{id}")
   public MenuResourcesDto detailMenuResourcesDto(@PathVariable String id){
@@ -94,7 +93,7 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
     return dto;
   }
   /**
-   * 菜单资源关联保存
+   * 关联资源保存
    */
   @PostMapping("/save/menuResourcesDto")
   public MenuResourcesDto saveMenuResourcesDto(@RequestBody MenuResourcesDto dto){

@@ -77,7 +77,7 @@ const TableIndex = <T extends IdBean>({
   const [lineBtnMax, setListBtnMax] = useState<number>(0);
 
   const btnWidth = useMemo((): number => {
-    return lineBtnMax === 0 ? 100 : lineBtnMax * 50 + 20;
+    return lineBtnMax === 0 ? 100 : lineBtnMax * 60 + 30;
   }, [lineBtnMax]);
   // 选中的行记录
   const [selectedRow, setSelectedRow] = useState<T[]>(selected || []);

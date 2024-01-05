@@ -6,7 +6,6 @@ import lombok.Data;
 
 /**
  * 注册信息
- * SysUser 归类
  */
 @Data
 public class RegisterDto implements IModel<SysUser> {

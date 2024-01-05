@@ -33,7 +33,7 @@ import javax.persistence.Table;
 @Table(name = "sys_group")
 public class SysGroup extends DbEntity {
    /**
-    * 角色组名称
+    * 权限组名称
     */
    public String name;
    /**
@@ -42,6 +42,8 @@ public class SysGroup extends DbEntity {
    public String remark;
    /**
     * 数据维度
+    * 行级数据过滤层级选择
+    * 目前sysUser增加外键字段，需要把对应的实体也纳入到行级数据过滤，则在AuthDict里手工加入
     */
    @VField(dictCode = "GROUP_FILTER_TYPE")
    public String filterType;

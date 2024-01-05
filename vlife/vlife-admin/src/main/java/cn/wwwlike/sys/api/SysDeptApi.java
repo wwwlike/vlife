@@ -36,14 +36,14 @@ public class SysDeptApi extends VLifeApi<SysDept, SysDeptService> {
     return service.findAll();
   }
   /**
-   * 部门详情;
+   * 部门详情
    */
   @GetMapping("/detail/{id}")
   public SysDept detail(@PathVariable String id) {
     return service.findOne(id);
   }
   /**
-   * 删除部门;
+   * 删除部门
    */
   @DeleteMapping("/remove")
   public Long remove(@RequestBody String[] ids) {

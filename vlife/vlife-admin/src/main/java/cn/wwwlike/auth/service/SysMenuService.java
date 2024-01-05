@@ -22,20 +22,9 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
     @Autowired
     public SysResourcesService resourcesService;
     /**
-     * 找到一个应用的所有菜单
-     * @param appId
-     * @return
-     */
-    public List<MenuVo> findAppAllMenu(String appId){
-        SysMenu app=findOne(appId);
-        return query(MenuVo.class,QueryWrapper.of(SysMenu.class).startsWith("code",app.getCode()));
-    }
-    /**
      * 查找角色对应的菜单和资源
      * 1 已经绑定当前角色的接口和菜单
      * 2 没有绑定的任何角色的接口和菜单
-     * @param roleId
-     * @return
      */
     public List<MenuVo> getMenuVos(String roleId,String appId){
         SysMenu app=findOne(appId);
@@ -55,8 +44,6 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
     }
     /**
      * 获得指定菜单以及上级菜单
-     * @param menus
-     * @return
      */
     public List<MenuVo> findAllMenu(List<MenuVo> menus){
         QueryWrapper<SysMenu> qw=QueryWrapper.of(SysMenu.class);
@@ -80,20 +67,15 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
         }
         return findAllMenu(menus);
     }
-
     /**
      * 清除指定的菜单角色
-     * @param id
      */
     public void clearRoleId(String ...id){
         save("sysRoleId",null,id);
     }
-
-
     /**
      * 获得菜单所在应用实体
      * @param menuId
-     * @return
      */
     public SysMenu appId(String menuId){
         SysMenu menu=findOne(menuId);
@@ -103,8 +85,6 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
             return appId(find("code", menu.getPcode()).get(0).getId());
         }
     }
-
-
     /**
      * 给所有菜单分配表单
      * @param entities
@@ -119,5 +99,4 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
             }
         });
     }
-
 }

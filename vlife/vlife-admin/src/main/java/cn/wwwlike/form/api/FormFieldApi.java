@@ -28,21 +28,7 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
     FormService formService;
 
     /**
-     * 保存列表字段;
-     *
-     * @param dto 列表字段;
-     * @return 列表字段;
-     */
-    @PostMapping("/save")
-    public FormField save(@RequestBody FormField dto) {
-        return service.save(dto);
-    }
-
-    /**
-     * 明细查询列表字段;
-     *
-     * @param id null;
-     * @return 列表字段;
+     * 字段详情
      */
     @GetMapping("/detail/{id}")
     public FormField detail(@PathVariable String id) {
@@ -50,20 +36,8 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
     }
 
     /**
-     * 逻辑删除;
-     *
-     * @param id null;
-     * @return 已删除数量;
-     */
-    @DeleteMapping("/remove/{id}")
-    public Long remove(@PathVariable String id) {
-        return service.remove(id);
-    }
-
-    /**
-     * 查询当前表和子表能分组的字段
-     * @param formId
-     * @return
+     * 可分组字段查询
+     * 查询当前表和其主表能分组的字段
      */
     @GetMapping("/list/groupOption")
     public List<FieldSelect> groupOption(String formId) {
@@ -89,9 +63,7 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
     }
 
     /**
-     * 查询表的字段信息
-     * @param formId
-     * @return
+     * 模型字段筛选
      */
     @GetMapping("/list/all")
     public List<FormField> listAll(String formId) {
@@ -102,9 +74,8 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
     }
 
     /**
-     * 根据外键关键字段查询关联表的字段信息
-     * @param realationFieldId 外键关联字段
-     * @return
+     * 主表字段查询
+     * 外键字段来源表的所有字段信息
      */
     @GetMapping("/list/relationField")
     public List<FormField> listRelationField(String realationFieldId) {
@@ -121,18 +92,4 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
         return new ArrayList<>();
     }
 
-
-    /**
-     * 能够后参报表统计的字段
-     * id，日期
-     * @param formId
-     * @return
-     */
-    @GetMapping("/list/report")
-    public List<FormField> listReport(String formId) {
-        if (formId == null) {
-            return new ArrayList<>();
-        }
-        return service.find(QueryWrapper.of(FormField.class).eq("formId", formId));
-    }
 }

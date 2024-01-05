@@ -38,7 +38,7 @@ import javax.persistence.Table;
 @VClazz(orders = "code_asc,sort_asc")
 public class SysDict extends DbEntity {
     /**
-     * 是否分类
+     * 字典大类
      */
     public boolean dictType;
     /**
@@ -64,7 +64,7 @@ public class SysDict extends DbEntity {
     public String color;
     /**
      * 系统项
-     * 取自后台的为系统项，不能删除
+     * 通过类文件导入的都是系统项，不能删除
      */
     public Boolean sys;
 

@@ -134,54 +134,31 @@ export interface loadData {
    * */
   dynamic?: { [interfaceParamsName: string]: { [key: string]: string } };
 }
-
-
-/**
- * 保存列表字段;
- * @param dto 列表字段;
- * @return 列表字段;
- */
-export const save = (dto: FormField): Promise<Result<FormField>> => {
-  return apiClient.post(`/formField/save`, { params: dto });
-};
-/**
- * 明细查询列表字段;
- * @param id null;
- * @return 列表字段;
- */
+//字段详情
 export const detail = (id: string): Promise<Result<FormField>> => {
   return apiClient.get(`/formField/detail/${id}`);
 };
-/**
- * 逻辑删除;
- * @param id null;
- * @return 已删除数量;
- */
-export const remove = (id: string): Promise<Result<number>> => {
-  return apiClient.delete(`/formField/remove/${id}`);
-};
 
 /**
- * 指定模块字段全量查询
- * 后期支持查询指定字段类型
+ * 模型字段查询
  */
 export const listAll = (params: {
   formId: string;
 }): Promise<Result<FormField[]>> => {
-  return apiClient.get(`/formField/list/all${params.formId?"?formId="+params.formId:""}`);
+  return apiClient.get(`/formField/list/all`,{params});
 };
 
-
+//可分组字段查询
 export const listGroupOption = (params: {
   formId: string;
 }): Promise<Result<FormField[]>> => {
-  return apiClient.get(`/formField/list/groupOption${params.formId?"?formId="+params.formId:""}`);
+  return apiClient.get(`/formField/list/groupOption`,{params});
 };
 
 /**
- * 指定模块字段全量查询
- * 后期支持查询指定字段类型
- */
+  * 主表字段查询
+  * 外键字段来源表的所有字段信息
+  */
  export const listRelationField = (params: {
   realationFieldId: string;
 }): Promise<Result<FormField[]>> => {

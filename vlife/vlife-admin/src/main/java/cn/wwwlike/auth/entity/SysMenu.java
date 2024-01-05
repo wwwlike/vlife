@@ -29,12 +29,11 @@ public class SysMenu extends DbEntity implements ITree {
      */
     public String code;
     /**
-     * 上级菜单编码
+     * 上级菜单
      */
     public String pcode;
     /**
      * 路由地址
-     * 叶子菜单必须有url
      */
     public String url;
     /**
@@ -57,7 +56,7 @@ public class SysMenu extends DbEntity implements ITree {
     public String entityType;
     /**
      * 归属角色
-     * 如果菜单下没有任何资源/接口 则 需要将菜单和角色绑定
+     * 菜单没有关联就扣则可以和角色绑定进行权限控制
      */
     public String sysRoleId;
     /**
@@ -68,7 +67,6 @@ public class SysMenu extends DbEntity implements ITree {
      * 页面地址
      */
     public String pageLayoutId;
-
     /**
      * 实体模型
      */

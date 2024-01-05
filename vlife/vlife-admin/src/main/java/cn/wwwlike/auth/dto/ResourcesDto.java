@@ -27,8 +27,6 @@ import java.util.List;
 
 /**
  * 资源角色dto
- * @author xiaoyu
- * @date 2022/7/12
  */
 @Data
 public class ResourcesDto implements SaveBean<SysResources>{

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 角色接口;
+ * 角色接口
  */
 @RestController
 @RequestMapping("/sysRole")
@@ -55,7 +55,6 @@ public class SysRoleApi extends VLifeApi<SysRole, SysRoleService> {
   }
   /**
    * 角色列表
-   * @return
    */
   @GetMapping("/list/all")
   public List<SysRole> listAll() {

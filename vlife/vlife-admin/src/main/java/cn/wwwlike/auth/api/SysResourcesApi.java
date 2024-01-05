@@ -34,9 +34,7 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
     }
 
     /**
-     * 保存资源
-     * @param dto 权限资源
-     * @return 权限资源
+     * 资源保存
      */
     @PostMapping("/save")
     public SysResources save(@RequestBody SysResources dto) {
@@ -44,15 +42,14 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
     }
     /**
      * 资源详情
-     * @param id 主键id
-     * @return 权限资源
      */
     @GetMapping("/detail/{id}")
     public SysResources detail(@PathVariable String id) {
         return service.findOne(id);
     }
     /**
-     * 全量的资源数据/指定菜单的资源
+     * 资源列表
+     * 可查全量的资源数据和指定菜单的资源以及指定主键的资源
      */
     @GetMapping("/list")
     public List<SysResources> list(String formId,String[] ids,String sysMenuId) {
@@ -64,6 +61,7 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
        );
     }
     /**
+     * 可用资源
      * 查询指定模块下指定菜单可以绑定的资源
      */
     @GetMapping("/list/menuUseableResources")

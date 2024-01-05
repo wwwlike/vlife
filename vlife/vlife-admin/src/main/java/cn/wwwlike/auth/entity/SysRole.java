@@ -33,16 +33,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "sys_role")
 @VClazz(clear = {SysResources.class,SysMenu.class})
-public class SysRole  extends DbEntity {
+public class SysRole  extends DbEntity {//clear 删除角色的同时 把sysresources和sysMenu表里的外键信息关联清除
    /**
-    * 所在应用
+    * 管理应用
     */
    public String sysMenuId;
    /**
     * 角色名称
     */
    public String name;
-
    /**
     * 描述介绍
     */

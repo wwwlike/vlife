@@ -43,7 +43,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 模型管理接口
+ * 模型接口
  */
 @RestController
 @RequestMapping("/form")
@@ -53,60 +53,34 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @Autowired
     public FormEventService eventService;
     @Autowired
-    private RestTemplateBuilder builder;
-
-    @Autowired
     public SysGroupService groupService;
-
+    @Autowired
+    private RestTemplateBuilder builder;
+    @Autowired
+    public SysMenuService menuService;
     //spring默认已经注入了RestTemplateBuilder实例
     @Bean
     public RestTemplate restTemplate() {
         return builder.build();
     }
-
     @Value("${vlife.packroot}")
     public String packroot;
-
-    @Autowired
-    public SysMenuService menuService;
     /**
-     * 1对多的多方数据集信息
-     * 作为外键字段存在的实体表信息
+     * 子模型查询
      */
     @GetMapping("/subForms/{id}")
     public List<FormVo> subForms(@PathVariable String id){
         return service.querySubForms(service.findOne(id));
     }
     /**
-     * 查询后台解析到的模型信息
-     * @param req 根究模型类型查询itemType,根据关联的实体名称entityName查询vo,save,req模型
-     */
-    @GetMapping("/javaModels")
-    public  List<BeanDto>  javaModels(FormPageReq req){
-        if(req.getEntityType()!=null){
-            return ModelService.typeEntityModels(req.getEntityType(),req.getItemType());
-        }else if(req.getItemType()!=null) {
-            return ModelService.typeModels(req.getItemType());
-        }
-        return new ArrayList<>();
-    }
-
-    @PostMapping("/page")
-    public PageVo<Form> page(@RequestBody FormPageReq req){
-        return service.findPage(req);
-    }
-
-    /**
-     * 已启用的模型信息过滤
-     * @param req 根究模型类型查询itemType,根据关联的实体名称entityName查询vo,save,req模型
+     * 模型查询
      */
     @GetMapping("/list")
     public List<FormVo> list(FormPageReq req){
         return service.query(FormVo.class,req);
     }
-
     /**
-     * 生成指定模型代码 local模式
+     * 请求TS代码
      */
     @GetMapping("/tsCode/{type}")
     public String tsCode(@PathVariable String type) throws IOException {
@@ -132,17 +106,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
     }
 
     /**
-     * 模型信息同步
-     * 第一次进入系统就应该同步一次
-     * Integer数量大于1标识有模型信息发生了变化，前端缓存需要更新
-     */
-    @GetMapping("/sync")
-    public Integer sync(){
-        return service.sync(GlobalData.allModels());
-    }
-    /**
-     * 查询指定模型信息
-     * @return
+     * 模型详情
      */
     @GetMapping("/model")
     public FormVo model(FormPageReq req) {
@@ -189,19 +153,8 @@ public class FormApi extends VLifeApi<Form, FormService> {
         return form;
     }
 
-
     /**
-     * 查找Java内存里的模型信息
-     * @param modelName 模型名称
-     * @return
-     */
-    @GetMapping("/javaModel/{modelName}")
-    public BeanDto javaModel(@PathVariable String modelName) {
-        return service.modelInfo(modelName);
-    }
-    /**
-     * 所有实体模型
-     * @return
+     * 指定应用模型列表
      */
     @RequestMapping("/entityModels")
     public List<FormVo> entityModels(String appId) {
@@ -212,14 +165,9 @@ public class FormApi extends VLifeApi<Form, FormService> {
             return service.query(FormVo.class,QueryWrapper.of(Form.class).eq("sysMenuId",realAppId).eq("itemType","entity"));
         }
     }
-    @RequestMapping("/list/all")
-    public List<Form> listAll(){
-        return  service.find("itemType","entity");
-    }
+
     /**
-     * 模型&字段保存
-     * @param dto 列表字段;
-     * @return 列表字段;
+     * 模型保存
      */
     @PostMapping("/save/formDto")
     public FormVo saveFormDto(@RequestBody FormDto dto) {
@@ -232,47 +180,11 @@ public class FormApi extends VLifeApi<Form, FormService> {
     }
 
     /**
-     * 保存模型
-     * 并初始化字段
+     * 模型分类
      */
     @PostMapping("/save")
     public Form save(@RequestBody Form form) {
         return service.save(form);
     }
 
-    /**
-     * 单个模型信息查询
-     */
-    @GetMapping("/detail/formVo/{id}")
-    public FormVo detailFormVo(@PathVariable String id) {
-        return service.queryOne(FormVo.class, id);
-    }
-    /**
-     * 逻辑删除;
-     * @return 已删除数量;
-     */
-    @DeleteMapping("/remove/{id}")
-    public Long remove(@PathVariable String id) {
-        return service.remove(id);
-    }
-
-    /**
-     * 模型初始化
-     */
-    @PostMapping("/init/{id}")
-    public FormVo init(@PathVariable String id){
-       String type=service.deleteModel(id);
-       if(type!=null){
-           GlobalData.allModels().stream().forEach(m->{
-               service.syncOne(m.getType());
-           });
-       }
-       QueryWrapper qw=QueryWrapper.of(Form.class);
-       qw.eq("type",type);
-       List<FormVo> list= service.query(FormVo.class,qw);
-       if(list!=null&& list.size()>0){
-           return list.get(0);
-       }
-       return null;
-    }
 }

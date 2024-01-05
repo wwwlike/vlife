@@ -47,7 +47,7 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
     return service.findOne(id);
   }
   /**
-   * 删除权限组
+   * 权限组删除
    */
   @DeleteMapping("/remove")
   public Long remove(@RequestBody String[] ids) {

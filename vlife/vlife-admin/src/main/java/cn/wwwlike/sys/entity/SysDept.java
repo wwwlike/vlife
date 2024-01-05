@@ -30,7 +30,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_dept")
-public class SysDept extends DbEntity implements ITree {
+public class SysDept extends DbEntity implements ITree {//属性结构实体继承ITree
     /**
      * 部门名称
      */

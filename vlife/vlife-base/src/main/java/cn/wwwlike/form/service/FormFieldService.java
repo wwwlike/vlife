@@ -18,7 +18,6 @@ public class FormFieldService extends VLifeService<FormField, FormFieldDao> {
 
     /**
      * 是否是分组字段
-     * @return
      */
     public List<FormFieldVo> groupField(FormVo formVo){
        return formVo.getFields().stream().filter(f->
@@ -30,8 +29,6 @@ public class FormFieldService extends VLifeService<FormField, FormFieldDao> {
 
     /**
      * 将模型字段信息转成数据表的字段信息集合
-     * @param dtos
-     * @return
      */
     public List<FormField> getFieldList(List<FieldDto> dtos){
         List<FormField> fields=new ArrayList<>();
@@ -41,16 +38,7 @@ public class FormFieldService extends VLifeService<FormField, FormFieldDao> {
             BeanUtils.copyProperties(dto,formField);//dto->entityItem
             i++;
             formField.setSort(i);
-//            //组件初始化
-//            if(formField.getType().equals("string")){
-//                formField.setX_component("Input");
-//            }
-//            if(formField.getType().equals("integer")){
-//                formField.setX_component("Input");
-//            }
             fields.add(formField);
-
-
         }
         return fields;
     }

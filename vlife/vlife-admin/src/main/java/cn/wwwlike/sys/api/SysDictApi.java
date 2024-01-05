@@ -17,7 +17,6 @@
  */
 
 package cn.wwwlike.sys.api;
-
 import cn.wwwlike.sys.entity.SysDict;
 import cn.wwwlike.sys.req.SysDictPageReq;
 import cn.wwwlike.sys.service.SysDictService;
@@ -26,7 +25,6 @@ import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +43,7 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
         return service.findPage(req);
     }
     /**
-     * 字典分类
+     * 字典类型列表
      * @return
      */
     @GetMapping("/list/type")
@@ -53,7 +51,7 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
         return service.find("dictType",true);
     }
     /**
-     * 全部字典
+     * 字典列表
      */
     @GetMapping("/all")
     public List<SysDict> all() {
@@ -87,7 +85,8 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
         return service.remove(ids);
     }
     /**
-     * 根据code查询
+     * 分类查询
+     * 单项字典信息根据code查询
      */
     @GetMapping("/listByCode")
     public List<SysDict> listByCode(String code) {
