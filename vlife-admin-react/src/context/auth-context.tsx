@@ -178,8 +178,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     //取到token情况下，加载缓存数据
     if (token) {
       currUser().then((res) => {
-        setUser(res.data);
-        datasInit();
+        if (res.data?.state === "-1") {
+          window.localStorage.removeItem(localStorageKey);
+          window.localStorage.removeItem(localHistoryLoginUserName);
+          setError("账号已禁用");
+        } else {
+          setUser(res.data);
+          datasInit();
+        }
       });
     }
   });
@@ -317,8 +323,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           window.localStorage.setItem(localStorageKey, result.data);
           window.localStorage.setItem(localHistoryLoginUserName, from.username);
           currUser().then((res) => {
-            setUser(res.data);
-            datasInit();
+            if (res.data?.state === "-1") {
+              window.localStorage.removeItem(localStorageKey);
+              window.localStorage.removeItem(localHistoryLoginUserName);
+              setError("账号已禁用");
+            } else {
+              setUser(res.data);
+              datasInit();
+            }
           });
         } else {
           setError(result.msg);

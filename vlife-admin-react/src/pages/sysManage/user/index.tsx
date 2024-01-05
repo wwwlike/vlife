@@ -4,13 +4,12 @@ import { IconPlay, IconForward, IconStop } from "@douyinfe/semi-icons";
 import Content from "../../template/content";
 import { VF } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
-
 export default () => {
   const { user } = useAuth();
   return (
     <Content<SysUser>
       listType="sysUser"
-      tabDictField="usetype"
+      // tabDictField="usetype"
       tabList={[
         {
           itemKey: "state1",
@@ -24,19 +23,10 @@ export default () => {
           tab: "已停用",
           req: { state: "-1" },
         },
-        {
-          itemKey: "dept",
-          icon: <i className="  icon-group" />,
-          tab: "本部门",
-          req: { sysDeptId: user?.sysDeptId },
-        },
       ]}
-      filterType="sysUserPageReq"
+      // filterType="sysUserPageReq"
       reaction={[
-        // VF.field("name").eq("12345").then("usetype").componentProps({
-        //   test: "12345",
-        // }),
-        VF.result(user?.superUser === true)
+        VF.result(user?.superUser !== true)
           .then("superUser")
           .hide(),
         VF.field("username")
@@ -78,9 +68,10 @@ export default () => {
         {
           title: "停用",
           icon: <IconStop />,
+          disabledHide: true,
           actionType: "api",
           usableMatch: { state: "1" },
-          model: "sysUser",
+          // model: "sysUser",
           onSaveBefore(data: SysUser) {
             return { id: data.id, state: "-1" };
           },
@@ -92,7 +83,7 @@ export default () => {
           actionType: "api",
           usableMatch: { state: "-1" },
           disabledHide: true,
-          model: "sysUser",
+          // model: "sysUser",
           onSaveBefore(data: SysUser) {
             return { id: data.id, state: "1" };
           },

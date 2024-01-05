@@ -47,7 +47,7 @@ public class AuthDict {
     @Named("数据维度")
     public static final class GROUP_FILTER_TYPE {
         @Named("查看本系统数据")
-        public final static String ALL = "";
+        public final static String ALL = "all";
         @Named("查看本人数据")
         public final static String SELF = "sysUser_1";
         @Named("查看同一权限组人员的数据")

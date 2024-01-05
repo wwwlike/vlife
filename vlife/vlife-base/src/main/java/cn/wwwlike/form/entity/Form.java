@@ -93,9 +93,15 @@ public class Form extends DbEntity {
     public String itemName;
     //页面模块appId
     public String sysMenuId;
-    //表单说明
+    /**
+     * 填报说明
+     * 表单填报指导说明
+     */
     public String formDesc;
-    //开发帮助文档
+    /**
+     * 帮助文档
+     * 开发环境时给的开发人员的提示
+     */
     public String helpDoc;
 
 }

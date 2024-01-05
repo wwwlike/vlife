@@ -19,6 +19,7 @@
 package cn.wwwlike.common;
 
 import cn.wwwlike.auth.common.IBus;
+import cn.wwwlike.auth.config.AuthDict;
 import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.service.SysGroupService;
@@ -116,7 +117,7 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
             }
             String groupFilterType = group.getFilterType();
             //权限组需要进行数据权限过滤
-            if (group != null && !"".equals(group) &&
+            if (group != null && !AuthDict.GROUP_FILTER_TYPE.ALL.equals(group) &&
                     groupFilterType != null && groupFilterType.split("_").length == 2) {
                 String[] filterType = groupFilterType.split("_");
                 String filterEntityType = filterType[0]; //根据哪个外键过滤
@@ -158,11 +159,9 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
                    queryWrapper.eq("id",user.get(fieldName));
                 }else{
                     //查询实体，没有该过滤模型，则设置的行级过滤对此模块不起作用
-//                    System.out.println("1");
                 }
             }else{
                 //查看全部，不进行过滤
-//                System.out.println("1");
             }
         }
         return queryWrapper;

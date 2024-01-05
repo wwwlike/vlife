@@ -57,7 +57,7 @@ import useDelayedExecution from "@src/hooks/useDelayedExecution";
 //     ...watch: string[] //监听的对象，watch里的字段有改变则触发validate的方法执行，如果没有则val就时key的值 watch里面
 //   ) => string | Promise<Result<string>> | void; //string返回的错误信息，void表示校验通过
 // }
-
+const mode = import.meta.env.VITE_APP_MODE;
 export interface FormProps<T> {
   key?: string;
   className?: string;
@@ -906,6 +906,16 @@ export default <T extends IdBean>({
               <span className=" font-bold text-sm mr-4">填写说明:</span>
               <span className="  text-sm text-blue-500">
                 {modelInfo.formDesc}
+              </span>
+            </div>
+          )}
+          {modelInfo && mode === "dev" && modelInfo.helpDoc && (
+            <div className="flex border-dashed  w-full border items-center bg-slate-50 rounded-md p-2 justify-left mb-3 ">
+              <span className=" font-bold text-sm mr-4">
+                开发帮助(仅在dev环境展示):
+              </span>
+              <span className="  text-sm text-blue-500">
+                {modelInfo.helpDoc}
               </span>
             </div>
           )}

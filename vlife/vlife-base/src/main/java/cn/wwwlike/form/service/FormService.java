@@ -16,6 +16,7 @@ import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -180,7 +181,7 @@ public class FormService extends VLifeService<Form, FormDao> {
                                 }
                                 dbField.setJavaTitle(javaTitle);
                             }
-                            if(javaField.getPlaceholder()!=null&&dbField.getX_component_props$placeholder()==null){
+                            if(javaField.getPlaceholder()!=null&& StringUtils.isEmpty( dbField.getX_component_props$placeholder())){
                                 change = true;
                                 dbField.setX_component_props$placeholder(javaField.getPlaceholder());
                             }

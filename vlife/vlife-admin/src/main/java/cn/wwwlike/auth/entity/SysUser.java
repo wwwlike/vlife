@@ -63,6 +63,7 @@ public class SysUser extends DbEntity implements IFkItem,IUser {
     public String tel;
     /**
      * 证件号
+     * 请填写18位身份证号码
      */
     public String idno;
     /**

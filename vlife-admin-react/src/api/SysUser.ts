@@ -62,6 +62,7 @@ export interface UserDetailVo extends VoBean{
   resourceCodes: string[];  // 用户有的权限资源代码 权限组->角色权限->角色->资源——资源编码
   username: string;  // 账号
   superUser: boolean;  // 超级用户
+  state:string;//用户状态
 }
 // 用户列表信息
 export interface UserVo extends VoBean{

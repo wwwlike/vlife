@@ -101,6 +101,7 @@ export default () => {
         name: data.data?.name,
         prefixNo: data.data?.prefixNo,
         formDesc: data.data?.formDesc,
+        helpDoc: data.data?.helpDoc,
       });
     });
   }, [type]);
@@ -302,6 +303,7 @@ export default () => {
                       name: model.name,
                       prefixNo: model.prefixNo,
                       formDesc: model.formDesc,
+                      helpDoc: model.helpDoc,
                     };
                 });
               }}

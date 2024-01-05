@@ -79,6 +79,8 @@ const Content = <T extends IdBean>({
         );
         setContentTab(tabs);
       });
+    } else if (tabList) {
+      setContentTab(tabs);
     }
   }, [tabDictField, tableModel, tabList]);
 

@@ -124,5 +124,8 @@ public class  UserDetailVo implements VoBean<SysUser> {
 
     public  Boolean superUser;
 
+    //用户状态
+    public String state;
+
 
 }

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { localHistoryLoginUserName, useAuth } from "@src/context/auth-context";
 import "./login.css";
-import { useForm, useUrlQueryParam } from "@src/hooks/useForm";
+import { useForm } from "@src/hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import logo from "@src/logo.png";
 import backgroundImage from "@src/assets/login_bg.jpg";
@@ -9,9 +9,9 @@ import loginLeftImage from "@src/assets/login_left.png";
 import LinkMe from "../layout/components/header/LinkMe";
 const Index: React.FC = () => {
   const localUsername = window.localStorage.getItem(localHistoryLoginUserName);
-  const { user, login, error, giteeLogin } = useAuth();
+  const { user, login, error } = useAuth();
   const navigate = useNavigate();
-  const { values, errors, setFieldValue } = useForm<{
+  const { values, setFieldValue } = useForm<{
     username: string;
     password: string;
   }>({ username: localUsername || "", password: "" }, null);
