@@ -1,4 +1,11 @@
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { IdBean } from "@src/api/base";
 import FormPage from "@src/pages/common/formPage";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +14,8 @@ import { useNiceModal } from "@src/store";
 import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
 import { useSize } from "ahooks";
-import { VfAction } from "@src/dsl/VF";
+import { VF, VfAction } from "@src/dsl/VF";
+import BtnToolBar from "@src/components/table/component/BtnToolBar";
 import { Tabs } from "@douyinfe/semi-ui";
 import GroupLabel from "@src/components/form/component/GroupLabel";
 import { listByCode, SysDict } from "@src/api/SysDict";
@@ -52,11 +60,29 @@ const Content = <T extends IdBean>({
   ...props
 }: Partial<ContentProps<T>> & { listType: string }) => {
   const navigate = useNavigate();
-  const [tableModel, setTableModel] = useState<FormVo>();
+  const { user } = useAuth();
   const confirmModal = useNiceModal("vlifeModal");
-  const [contentTab, setContentTab] = useState<TableTab[]>();
+  const [formData, setFormData] = useState<any>({});
+  const [tableModel, setTableModel] = useState<FormVo>();
+  const allTab: TableTab = { itemKey: "all", tab: "全部", active: true };
+  //固定项页签 tab abList方式+tabDictField方式
+  const [fixedTab, setFixedTab] = useState<TableTab[]>([]);
+  //计算后的页面页签
+  const contentTab = useMemo((): TableTab[] | undefined => {
+    if (fixedTab.length > 0) {
+      return [allTab, ...fixedTab];
+    }
+    return undefined;
+  }, [fixedTab]);
+  const [activeKey, setActiveKey] = useState<string>(
+    contentTab?.filter((tab) => tab.active === true)?.[0]?.itemKey ||
+      contentTab?.[0]?.itemKey ||
+      "all"
+  );
+
+  //固定页签组装
   useEffect(() => {
-    const tabs: TableTab[] = [{ itemKey: "all", tab: "全部", active: true }];
+    const tabs: TableTab[] = [];
     if (tabList) {
       tabs.push(...tabList);
     }
@@ -77,19 +103,12 @@ const Content = <T extends IdBean>({
             };
           })
         );
-        setContentTab(tabs);
+        setFixedTab(tabs);
       });
     } else if (tabList) {
-      setContentTab(tabs);
+      setFixedTab(tabs);
     }
   }, [tabDictField, tableModel, tabList]);
-
-  const [activeKey, setActiveKey] = useState<string>(
-    contentTab?.filter((tab) => tab.active === true)?.[0]?.itemKey ||
-      contentTab?.[0]?.itemKey ||
-      "all"
-  );
-  const [formData, setFormData] = useState<any>({});
 
   const tableReq = useMemo(() => {
     //自定义视图的查询方式
@@ -171,7 +190,7 @@ const Content = <T extends IdBean>({
           filterOpen ? "pl-1" : ""
         } `}
       >
-        {contentTab && contentTab.length > 0 && (
+        {contentTab !== undefined && (
           <div className=" bg-white  pt-1">
             <Tabs
               style={{ height: "36px", paddingLeft: "10px" }}
@@ -197,9 +216,6 @@ const Content = <T extends IdBean>({
           reaction={props.reaction}
           btns={btns}
           columnTitle={filterType !== undefined ? "sort" : true}
-          // formVo={model}
-          //列表数据回传
-          //模型信息回传
           onTableModel={(formVo: FormVo) => {
             setTableModel(formVo);
           }}

@@ -88,6 +88,11 @@ const Index: React.FC = () => {
                 placeholder="请输入密码"
                 value={values.password || ""}
                 onChange={(evt) => setFieldValue("password", evt.target.value)}
+                onKeyPress={(event) => {
+                  if (event.key === "Enter") {
+                    handelSubmit();
+                  }
+                }}
                 className="h-10  text-xl  rounded w-full text-gray-700 focus:outline-none border-b border-gray-300 focus:border-blue-400 transition duration-500 px-3 pb-3"
               />
             </div>
