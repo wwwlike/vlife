@@ -28,8 +28,8 @@ public class DemoCustomerApi extends VLifeApi<DemoCustomer, DemoCustomerService>
    * @param req ;
    * @return 甲方客户;
    */
-  @GetMapping("/list")
-  public List<DemoCustomer> list(PageQuery req) {
+  @PostMapping("/list")
+  public List<DemoCustomer> list(@RequestBody PageQuery req) {
     return service.find(req);
   }
 

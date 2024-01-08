@@ -236,7 +236,14 @@ const TableIndex = <T extends IdBean>({
               if (dict && dict.color) {
                 return (
                   <span
-                    className={` text-xs font-bold bg-${dict.color}-100 p-2 rounded-md`}
+                    className={` text-white text-xs ${classNames({
+                      "bg-green-500": dict.color === "green",
+                      "bg-blue-500": dict.color === "blue",
+                      "bg-red-500": dict.color === "red",
+                      "bg-yellow-500": dict.color === "yellow",
+                      "bg-gray-500": dict.color === "gray",
+                      " bg-violet-500": dict.color === "violet",
+                    })} px-3 py-1 font-bold  rounded-lg`}
                   >
                     {dict.label}
                   </span>

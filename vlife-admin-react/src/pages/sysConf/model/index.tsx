@@ -1,10 +1,8 @@
 import react, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Avatar,
-  Button,
   Dropdown,
   SideSheet,
-  SplitButtonGroup,
   TabPane,
   Tabs,
   Tooltip,
@@ -12,13 +10,12 @@ import {
 import { FormVo, list, save } from "@src/api/Form";
 import { renderIcon } from "@src/pages/layout/components/sider";
 import Scrollbars from "react-custom-scrollbars";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   IconClose,
   IconLive,
   IconMenu,
   IconRegExp,
-  IconSetting,
   IconTerminal,
 } from "@douyinfe/semi-icons";
 import {
@@ -71,6 +68,7 @@ const Model = () => {
     return [];
   }, [menus]);
   //应用与模型关联对象
+
   const appEntity = useMemo((): appEntityType => {
     const entitys: appEntityType = {};
     if (apps && forms) {
@@ -356,68 +354,107 @@ const Model = () => {
   }, [entityType, currEntity, entityMenus]);
 
   return (
-    <VfTour
-      code="4444"
-      steps={[
-        {
-          selector: ".tscode",
-          content: "下载前端实体所有的数据模型和接口调用代码",
-        },
-        {
-          selector: ".relationModel",
-          content: "查看实体关联的req/vo/dto模型",
-        },
-        {
-          selector: ".formDesign",
-          content: "使用页面配置表单",
-        },
-        {
-          selector: ".tableDesign",
-          content: "使用页面配置列表",
-        },
-        {
-          selector: ".resourceBind",
-          content: "为当前模块关联的菜单绑定接口资源权限",
-        },
-        {
-          selector: ".visitPage",
-          content: "访问当前实体对应的页面功能",
-        },
-      ]}
-    >
-      <Scrollbars autoHide={true}>
-        <Tabs
-          activeKey={tabKey}
-          onTabClick={(key) => {
-            setEntityType(undefined);
-            setTabKey(key);
-          }}
-          className="relative bg-white"
-        >
-          {entityType && tabKey !== "app_empty" && (
-            <div className="flex p-1  items-center  space-x-2 bg-white  rounded-md ">
-              <div className="flex justify-start gap-x-2">
-                <div className="relative flex justify-center  text-sm font-bold  w-40  border rounded-md  border-dashed bg-slate-50 p-1  ">
-                  <div>
-                    {
-                      forms.filter((d) => d.entityType === entityType)?.[0]
-                        ?.title
-                    }
-                  </div>
-                  <i className=" absolute right-2 icon-sideslip_right text-xl  " />
+    // <VfTour
+    //   code="4444"
+    //   steps={[
+    //     {
+    //       selector: ".tscode",
+    //       content: "下载前端实体所有的数据模型和接口调用代码",
+    //     },
+    //     {
+    //       selector: ".relationModel",
+    //       content: "查看实体关联的req/vo/dto模型",
+    //     },
+    //     {
+    //       selector: ".formDesign",
+    //       content: "使用页面配置表单",
+    //     },
+    //     {
+    //       selector: ".tableDesign",
+    //       content: "使用页面配置列表",
+    //     },
+    //     {
+    //       selector: ".resourceBind",
+    //       content: "为当前模块关联的菜单绑定接口资源权限",
+    //     },
+    //     {
+    //       selector: ".visitPage",
+    //       content: "访问当前实体对应的页面功能",
+    //     },
+    //   ]}
+    // >
+    <Scrollbars autoHide={true}>
+      <Tabs
+        activeKey={tabKey}
+        tabBarExtraContent={
+          <div className=" w-full mr-10 ">
+            <BtnToolBar
+              position="page"
+              btns={[
+                {
+                  icon: <i className=" icon-createFolder" />,
+                  title: "创建应用",
+                  actionType: "create",
+                  model: "sysMenu",
+                  saveApi: menuSave,
+                  reaction: [
+                    VF.then("app").value(true).hide(),
+                    VF.then(
+                      "url",
+                      "formId",
+                      "placeholderUrl",
+                      "pcode",
+                      "confPage"
+                    )
+                      .hide()
+                      .clearValue(),
+                    VF.then("name").title("应用名称"),
+                  ],
+                  onSubmitFinish: (res) => {
+                    menuLoad();
+                  },
+                },
+              ]}
+            />
+          </div>
+        }
+        onTabClick={(key) => {
+          setEntityType(undefined);
+          setTabKey(key);
+        }}
+        className="relative bg-white"
+      >
+        {entityType && tabKey !== "app_empty" && (
+          <div className="flex p-1  items-center  space-x-2 bg-white  rounded-md ">
+            <div className="flex justify-start gap-x-2">
+              <div className="relative flex justify-center  text-sm font-bold  w-40  border rounded-md  border-dashed bg-slate-50 p-1  ">
+                <div>
+                  {forms.filter((d) => d.entityType === entityType)?.[0]?.title}
                 </div>
-                <BtnToolBar
-                  key={"tableBtn"}
-                  onDataChange={(datas: any[]): void => {}}
-                  btns={btns}
-                  position="page"
-                  datas={currEntity ? [currEntity] : []}
-                />
+                <i className=" absolute right-2 icon-sideslip_right text-xl  " />
               </div>
+              <BtnToolBar
+                key={"tableBtn"}
+                onDataChange={(datas: any[]): void => {}}
+                btns={btns}
+                position="page"
+                datas={currEntity ? [currEntity] : []}
+              />
             </div>
-          )}
+          </div>
+        )}
 
-          {entityType === undefined && tabKey !== "app_empty" && (
+        {tabKey && appEntity[tabKey].length === 0 && (
+          <div className="inline-block font-bold   text-center  text-sm  m-2 bg-yellow-50 border  py-2 px-2  border-dashed rounded-md">
+            {appEntity["app_empty"]?.length > 0
+              ? "请从未分配Tab页面里选择和当前应用相关的实体模型"
+              : "请先在后台创建和本应用相关的`entity,vo,dto,req`模型"}
+          </div>
+        )}
+        {tabKey &&
+          appEntity[tabKey].length !== 0 &&
+          entityType === undefined &&
+          tabKey !== "app_empty" && (
             <>
               <div className="inline-block font-bold   text-center  text-sm  m-2 bg-yellow-50 border  py-2 px-2  border-dashed rounded-md">
                 <i className="icon-chat_open" />
@@ -429,111 +466,111 @@ const Model = () => {
             </>
           )}
 
-          {tabKey === "app_empty" && (
-            <div className="inline-block text-center mx-2 text-sm bg-blue-50 border py-2 px-4 border-dashed rounded-md">
-              请将模型关联到应用后进行配置 <i className="icon-out" />
-            </div>
-          )}
-
-          {back && (
-            <IconClose
-              onClick={() => navigate(-1)}
-              className="  absolute top-2 right-2 cursor-pointer hover:bg-blue-100"
-            />
-          )}
-
-          {appEntity["app_empty"]?.length > 0 && (
-            <TabPane
-              itemKey={"app_empty"}
-              key={`app_empty`}
-              icon={<i className="icon-lift text-xl mr-2" />}
-              tab={`未分配(${appEntity["app_empty"]?.length})`}
-              className=" bg-white"
-            >
-              <div
-                role="list "
-                className="  p-2  border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
-              >
-                <div
-                  className={`text-xl h-24 border  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500 hover:text-gray-500`}
-                >
-                  未分配({appEntity["app_empty"]?.length})
-                </div>
-
-                {appEntity &&
-                  appEntity["app_empty"]
-                    ?.sort((a, b) => a.entityType.localeCompare(b.entityType))
-                    ?.map((e: any) => {
-                      return card(e);
-                    })}
-              </div>
-            </TabPane>
-          )}
-          {apps?.map((app, index) => (
-            <TabPane
-              icon={renderIcon(app.icon)}
-              itemKey={app.code}
-              key={`app${app.id}`}
-              tab={`${app.name}(${appEntity[app.code].length})`}
-              className=" bg-white"
-            >
-              <div
-                role="list "
-                className="p-2 border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 "
-              >
-                <div
-                  className={`text-xl h-24 border hover:text-gray-500  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500`}
-                >
-                  {app.name}({appEntity[app.code].length})
-                </div>
-                {appEntity &&
-                  appEntity[app.code]
-                    .sort(
-                      (a, b) =>
-                        menus.filter((m) => m.formId === b.id).length -
-                          menus.filter((m) => m.formId === a.id).length ||
-                        b.type.localeCompare(a.type)
-                    )
-                    ?.map((e) => {
-                      // @ts-ignore
-                      return card(e);
-                    })}
-              </div>
-            </TabPane>
-          ))}
-        </Tabs>
-        {currEntity && (
-          <SideSheet
-            width={520}
-            title={currEntity.title}
-            visible={entityType !== undefined && visible}
-            onCancel={() => {
-              setVisible(false);
-              // setEntityType(undefined);
-            }}
-          >
-            <RelationModel modelForm={currEntity} />
-          </SideSheet>
+        {tabKey === "app_empty" && (
+          <div className="inline-block text-center mx-2 text-sm bg-blue-50 border py-2 px-4 border-dashed rounded-md">
+            请将模型关联到应用后进行配置 <i className="icon-out" />
+          </div>
         )}
 
-        <div className=" p-4 font-sm  font-chinese space-y-2 top-2 w-full  bg-white">
-          <p>配置中心：</p>
-          <span className="block">
-            1.
-            实时同步服务端模型信息(`eneity/req/vo/dto`,服务端设计完成后运行`maven
-            package`)
-          </span>
-          <span className="block">2. 提供与模型接口匹配的`Typescript`代码</span>
-          <span className="block">3. 各模型页面配置功能的入口</span>
-          {/* <span className="block">4. 是各类和模型有关的页面配置功能的入口</span> */}
-          <div className="flex">
-            <p>欢迎反馈：</p>
-            {/* <span className="block">如有体验疑惑或优化意见可联系反馈。</span> */}
-            <LinkMe></LinkMe>
-          </div>
+        {back && (
+          <IconClose
+            onClick={() => navigate(-1)}
+            className="  absolute top-2 right-2 cursor-pointer hover:bg-blue-100"
+          />
+        )}
+
+        {appEntity["app_empty"]?.length > 0 && (
+          <TabPane
+            itemKey={"app_empty"}
+            key={`app_empty`}
+            icon={<i className="icon-lift text-xl mr-2" />}
+            tab={`未分配(${appEntity["app_empty"]?.length})`}
+            className=" bg-white"
+          >
+            <div
+              role="list "
+              className="  p-2  border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
+            >
+              <div
+                className={`text-xl h-24 border  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500 hover:text-gray-500`}
+              >
+                未分配({appEntity["app_empty"]?.length})
+              </div>
+
+              {appEntity &&
+                appEntity["app_empty"]
+                  ?.sort((a, b) => a.entityType.localeCompare(b.entityType))
+                  ?.map((e: any) => {
+                    return card(e);
+                  })}
+            </div>
+          </TabPane>
+        )}
+        {apps?.map((app, index) => (
+          <TabPane
+            icon={renderIcon(app.icon)}
+            itemKey={app.code}
+            key={`app${app.id}`}
+            tab={`${app.name}(${appEntity[app.code].length})`}
+            className=" bg-white"
+          >
+            <div
+              role="list "
+              className="p-2 border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 "
+            >
+              <div
+                className={`text-xl h-24 border hover:text-gray-500  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500`}
+              >
+                {app.name}({appEntity[app.code].length})
+              </div>
+              {appEntity &&
+                appEntity[app.code]
+                  .sort(
+                    (a, b) =>
+                      menus.filter((m) => m.formId === b.id).length -
+                        menus.filter((m) => m.formId === a.id).length ||
+                      b.type.localeCompare(a.type)
+                  )
+                  ?.map((e) => {
+                    // @ts-ignore
+                    return card(e);
+                  })}
+            </div>
+          </TabPane>
+        ))}
+      </Tabs>
+      {currEntity && (
+        <SideSheet
+          width={520}
+          title={currEntity.title}
+          visible={entityType !== undefined && visible}
+          onCancel={() => {
+            setVisible(false);
+            // setEntityType(undefined);
+          }}
+        >
+          <RelationModel modelForm={currEntity} />
+        </SideSheet>
+      )}
+
+      <div className=" p-4 font-sm  font-chinese space-y-2 top-2 w-full  bg-white">
+        <p>配置中心：</p>
+        <span className="block">
+          1.
+          实时同步服务端模型信息(`eneity/req/vo/dto`,服务端设计完成后运行`maven
+          package`)
+        </span>
+        <span className="block">2. 提供与模型接口匹配的`Typescript`代码</span>
+        <span className="block">3. 各模型页面配置功能的入口</span>
+        {/* <span className="block">4. 是各类和模型有关的页面配置功能的入口</span> */}
+        <div className="flex">
+          <p>欢迎反馈：</p>
+          {/* <span className="block">如有体验疑惑或优化意见可联系反馈。</span> */}
+          <LinkMe></LinkMe>
         </div>
-      </Scrollbars>
-    </VfTour>
+      </div>
+    </Scrollbars>
+    // </VfTour>
   );
 };
 

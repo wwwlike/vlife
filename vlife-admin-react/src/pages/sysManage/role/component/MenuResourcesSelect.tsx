@@ -24,6 +24,7 @@ export default ({
   roleId,
   value,
   appId,
+  placeholder = "请先选择应用",
   onDataChange,
 }: MenuResourcesSelectProp) => {
   //app应用
@@ -321,7 +322,7 @@ export default ({
             </TabPane>
           )
         ) : (
-          <>请先选择应用</>
+          <>{placeholder}</>
         )}
       </Tabs>
     </div>

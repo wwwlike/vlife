@@ -34,7 +34,8 @@ public class GroupDto implements SaveBean<SysGroup>{
     public String name;
     public String remark;
     /**
-     * 关联角色
+     * 角色
+     * 关联多个角色，组合成操作权限
      */
     @VField(pathName = "sysRoleGroup_sysRoleId")//多对多保存 应该保存对象
     public List<String> sysRoleId;

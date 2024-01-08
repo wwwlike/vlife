@@ -35,18 +35,17 @@ import javax.persistence.Table;
 public class SysResources extends DbEntity{
     /**
      * 资源名称
-     * 第一行注释，用户可修改
+     * 6字以内简单为好
      */
     public String name;
 
     /**
      * 接口注释
-     * 第一行注释
      */
     public String javaName;
     /**
      * 接口说明
-     * 第二行注释
+     * 请简洁描述接口的使用场景
      */
     public String remark;
 
@@ -79,18 +78,18 @@ public class SysResources extends DbEntity{
     public String icon;
     /**
      * 归属菜单
-     * 有值那么该资源就需要授权才能访问
+     * 关联后则可以参与与角色的关联
      */
     public String sysMenuId;
     /**
      * 主要接口
-     * 作为访问菜单的必备接口
+     * 进入菜单功能后一定会访问到的接口
      */
     public boolean menuRequired;
     /**
-     * 授权情况
-     * single 独立授权 noPermission 无需授权 extend 继承授权
-     * 后2类都不会展示给用户看
+     * 授权方式
+     * single(独立授权)/noAuth无需授权/extend继承授权
+     * noAuth/extend2者无需和角色关联
      */
     public String permission;
     /**

@@ -26,8 +26,8 @@ public class DemoTaskApi extends VLifeApi<DemoTask, DemoTaskService> {
    * @param req ;
    * @return 任务表;
    */
-  @GetMapping("/page")
-  public PageVo<DemoTask> page(PageQuery req) {
+  @PostMapping("/page")
+  public PageVo<DemoTask> page(@RequestBody PageQuery req) {
     return service.findPage(req);
   }
 

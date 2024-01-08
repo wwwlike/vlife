@@ -228,8 +228,8 @@ export const FormComponents: CompDatas = {
         dataType: DataType.basic,
         dataModel: DataModel.string,
         options: [
-          { label: "创建菜单", value: "/sysMenu/save" },
-          { label: "创建部门", value: "/sysDept/save" },
+          { label: "在底部可创建菜单", value: "/sysMenu/save" },
+          { label: "在底部可创建部门", value: "/sysDept/save" },
         ],
       },
     },

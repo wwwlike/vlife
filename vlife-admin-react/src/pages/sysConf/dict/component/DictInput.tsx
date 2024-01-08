@@ -15,7 +15,7 @@ export default ({ dictCode, ...props }: QuickDictProps) => {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
     const filterDict = dicts["vlife"].data.filter((f) => f.value === dictCode);
-    if (filterDict?.[0]?.sys === true || dictCode === "vlife") {
+    if (filterDict?.[0]?.type !== "field" || dictCode === "vlife") {
       setVisible(false);
     }
   }, [dictCode]);
@@ -52,7 +52,7 @@ export default ({ dictCode, ...props }: QuickDictProps) => {
               code: dictCode,
               title: label,
               sys: false,
-              dictType: false,
+              level: 2,
             }).then((d) => {
               datasInit();
               setLabel(undefined);

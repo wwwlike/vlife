@@ -20,7 +20,7 @@ export interface VFBtn{
   tooltip?:string;// 不可用时候的提醒
   disabled?:boolean;// 当前是否不可用
   icon?:ReactNode;
-  actionType:actionType //动作类型：和模型表单有关的：create|edit|createEdit|view；
+  actionType:actionType // 动作类型
   //1:boolean判断能否使用|2:属性对象完全匹配|3：函数校验(同步异步)string表示不能使用原因
   usableMatch?:boolean|any|((...datas:any[])=>string|boolean|Promise<string|boolean>);
   className?:string//按钮样式
@@ -35,7 +35,7 @@ export interface VFBtn{
   onSaveBefore?:(data:any)=>any;//提交之前进行数据处理，返回数据给saveData函数
   onSubmitFinish?:(...datas:any[])=>void; //提交完成后触发的函数
   onFormilySubmitCheck?:()=>Promise<boolean>;//内部方法不用关注，数据【提交】之前的校验，使用fomily的主动检查 在formModal里添加
-  onClick?:(...data:(any&{tableSort:number})[])=>void,//点击按钮触发的自定义事件，一般不用作接口访问，用在custom按钮使用
+  onClick?:(...data:(any&{tableSort:number})[])=>void,//点击按钮触发的自定义事件actionType='click'，一般不做接口访问，用在custom按钮使用
   //按钮触发动作
   saveApi?:(...data:(any&{tableSort:number})[])=>Promise<Result<any>>//保存类型接口
   loadApi?:(data:any)=>Promise<Result<any>|any>,

@@ -33,12 +33,13 @@ public class SysMenu extends DbEntity implements ITree {
      */
     public String pcode;
     /**
-     * 路由地址
+     * 访问路由
+     * 路由信息在router/index.tsx里定义
      */
     public String url;
     /**
-     * 通配符替换
-     * url里的*号替换地址
+     * 变量标识
+     * 替换当前路由地址`*`号部分
      */
     public String placeholderUrl;
     /**
@@ -50,25 +51,27 @@ public class SysMenu extends DbEntity implements ITree {
      */
     public String icon;
     /**
-     * 模型关联
-     * 可快速将相关接口与其关联
-     */
-    public String entityType;
-    /**
-     * 归属角色
-     * 菜单没有关联就扣则可以和角色绑定进行权限控制
+     * 关联角色
+     *
      */
     public String sysRoleId;
     /**
      * 自定义页面
+     * 菜单是否连接到页面
      */
     public Boolean confPage;
     /**
-     * 页面地址
+     * 页面
      */
     public String pageLayoutId;
+
     /**
      * 实体模型
+     * 关联后则可为其分配接口权限
      */
     public String formId;
+    /**
+     * 模型关联
+     */
+    public String entityType;//启用formId进行关联，该字段待移除
 }

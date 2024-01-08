@@ -23,8 +23,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/sysUser")
 public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
-    @Autowired
-    public SysResourcesService resourcesService;
     /**
      * 用户查询
      */
@@ -44,7 +42,7 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
         }
         return ids.length;
     }
-    //
+
     /**
      * 密码修改
      */

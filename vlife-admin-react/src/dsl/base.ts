@@ -12,6 +12,25 @@ export enum sourceType{
   fieldValue='fieldValue' //取指定字段变量(接口用到的类型)
 }
 
+export enum OptEnum{
+    eq="eq",
+    like="like",
+    notLike="notLike",
+    startsWith="startsWith",
+    endsWith="endsWith",
+    between="between",
+    notBetween="notBetween",
+    gt="gt",
+    goe="goe",
+    lt="lt",
+    loe="loe",
+    in="in",
+    ne="ne",
+    isNotNull="isNotNull",
+    isNull="isNull",
+    notIn="notIn"
+}
+
 export enum Mode{
   list="list",filter="filter",form="form"
 }

@@ -57,7 +57,6 @@ public class AdminStartInitializer implements ApplicationRunner {
     SysMenuService menuService;
     @Autowired
     private Environment env;
-
     public String getActiveProfile() {
         return env.getProperty("spring.profiles.active");
     }
@@ -70,25 +69,24 @@ public class AdminStartInitializer implements ApplicationRunner {
         System.out.println("╚════════════════════════════════════════════════════════════════╝");
     }
 
-    public List<SysDict> dictSync(){
+
+    public void dictSync(){
         List<SysDict> dbs=dictService.findAll();
         List<DictVo> sysDict = ReadCt.getSysDict();
-        dictService.saveByDictVo(sysDict,dbs);//是系统级的不可以维护
+        dictService.saveByDictVo(sysDict,dbs,AuthDict.DICT_TYPE.VLIFE);//是框架级不可以维护
         List<DictVo> autiDict = ReadCt.read(AuthDict.class);
-        dictService.saveByDictVo(autiDict,dbs);//导入的，可以维护
-        return dictService.findAll();
+        dictService.saveByDictVo(autiDict,dbs,AuthDict.DICT_TYPE.ADMIN);//平台级字典同步
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        if(getActiveProfile().equals("dev")); 开发环境启动运行带启用
+        //if(getActiveProfile().equals("dev")); 开发环境启动运行带启用
         //检查是否有title.json文件（是否运行过title.json）
         URL url = getClass().getClassLoader().getResource("title.json");
         if (url == null) {
             printErrorMessage();
             System.exit(0); // Exit without starting the application
         }
-
         //字典同步
         dictSync();
         //模型同步
@@ -96,7 +94,8 @@ public class AdminStartInitializer implements ApplicationRunner {
            if(service.syncOne(m.getType())){
               if(m.getFields()!=null){
                    m.getFields().stream().filter(f->((FieldDto)f).getDictCode()!=null).forEach(f->{
-                       dictService.createByField(((FieldDto)f).getDictCode(),((FieldDto)f).getTitle());
+                       //通过字段创建字典field级字典
+                       dictService.createByField(((FieldDto)f).getDictCode(),((FieldDto)f).getTitle(),AuthDict.DICT_TYPE.FIELD);
                    });
               }
            }

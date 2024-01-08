@@ -25,21 +25,24 @@ import lombok.Data;
  */
 @Data
 public class DictVo {
-    public DictVo(String code, String val, String title,boolean dictType,Integer sort) {
-        this.code = code;
-        this.val = val;
-        this.title = title;
-        this.dictType=dictType;
-        this.sort=sort;
-    }
-    public DictVo(String code, String title,Boolean dictType) {
-        this.code = code;
-        this.title = title;
-        this.dictType=dictType;
-    }
     public String code;
     public String val;
     public String title;
-    public boolean dictType;
+    public Integer level;
     public Integer  sort;
+
+    public DictVo(String code, String val, String title,Integer level,Integer sort) {
+        this.code = code;
+        this.val = val;
+        this.title = title;
+        this.level=level;
+        this.sort=sort;
+    }
+
+    public DictVo(String code, String title,Integer level) {
+        this.code = code;
+        this.title = title;
+        this.level=level;
+    }
+
 }

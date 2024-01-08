@@ -1,38 +1,30 @@
 # 脚手架应用
-`vlife-admin`是基于vlife低代码核心开发能力打造的开箱即用的权限管理应用，可在此系统之上进行二次开发
+`vlife-admin`是基于vlife低代码核心能力打造的开箱即用的权限管理应用，可在此系统之上进行二次开发
 
 [开发文档](http://vlice.cc/quick)   [示例项目](http://admin.vlife.cc)
 
-## 必读
-1. 已验证支持的软件版本：jdk1.8\maven3.6\
-2. 在启动项目之前，需要运行`Maven install`命令初始化项目所需的文件。
-3. 数据库实体模型发生变化，需要`Maven install` 命令。
-4. 其他模型（VO、DTO和Req）发生变化需要立即更同步给前端，请同样运行`Maven install`命令。
+## 目标
+做研发热爱的快速开发平台，为成为中小企业降本增效；
 
-## 技术架构
-1. 采用springboot+security+queryDsl+jpa的单体技术架构
-2. 目前支持mysql8\oracle11G \达梦8数据库(更多数据库支持陆续接入中)
+## 准备
+1. 支持：jdk8和jdk11
+2. 数据库：mysql8\oracle11G
+3. 采用springboot+security+queryDsl+jpa的单体技术架构
 
-## 理念
-* `vlife`追求简洁开发，强调最少规则、配置和注解。
-* 平台目标不是取代程序员的工作，而是把繁琐重复的开发部分替研发分担。
-* 平台前端封装十分完善，推崇后端进行全栈开发。
+## 项目启动
+> 项目启动过程中会建表和数据初始化
+1. 导入项目到`idea`里，项目编译版本为jdk1.8
+2. 导入依赖包后，**整个**项目运行`maven package`
+3. 创建mysql/oracle数据库，修改对应的application-mysql.yml的数据库连接信息
+4. 运行 AdminApplication.java,完成项目启动。(启动的同时自动完成数据初始化)
 
-## 后端项目启动
-1. 导入项目到`idea`里，`File\Project Structure\Project-Setting->`选择项目编译版本为jdk1.8
-2. 通过maven导入依赖包，导入完成后，整个项目运行`maven install` 命令
-3. 创建mysql/oracle数据库，修改对应的application-mysql.yml/application-oracle.yml里的数据库连接信息
-4. 运行 AdminApplication.java,项目启动，启动的同时项目会建表和导入数据，
-
-## 核心能力
-1. 能根据`req`模型对象，生成对应的where语句
-2. 能根据`vo`模型对象，将查询到的数据封装成对应的数据结构
-3. 能根据`dto`模型对象，根据表关系依次把对象数据存入
-
-## 开发流程
-1. 按`规范`设计模型
-2. 运行`maven install` 生成mvc代码,更新模型信息(title.json)
-3. 修改api接口相关逻辑；
+## 开发内容
+> VLIFE没有改变原有的研发流程，研发上手都是特别快
+- 设计模型：按照简约**规范**编写entity/req/vo/dto模型。
+- 添加注释：注释不仅提供开发提示，还作为元数据的解释**实时展示**。
+- 添加注解：在约定之外增加**灵活性**。(VClass/VMethod/VField)
+- API编写：生成的代码能满足大部分业务场景，复杂逻辑需要研发参与。
+- 编译打包：接口/模型有变化时，及时运行**maven package**，以便将最新的模型信息提供给前端。
 
 ## 开发建议
 1. 跟着开发示例写个demo;

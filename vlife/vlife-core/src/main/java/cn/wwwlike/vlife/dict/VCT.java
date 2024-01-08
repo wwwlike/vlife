@@ -21,7 +21,8 @@ package cn.wwwlike.vlife.dict;
 import javax.inject.Named;
 
 /**
- * 业务字典
+ * 框架底层字典2
+ * 用户不可见，不可扩充，页面可翻译
  */
 public class VCT {
 
@@ -79,16 +80,6 @@ public class VCT {
         public final static String NOTHING = "nothing";
     }
 
-
-    //xy轴体系的图表展示几个分析结果
-    @Named("图表展示类型")
-    public static final class GROUPS {
-        @Named("计数")
-        public final static String COUNT = "count";
-        @Named("归总字段")
-        public final static String NumField = "numField";
-    }
-
     @Named("统计类型")
     public static final class ITEM_FUNC {
         @Named("计数")
@@ -108,6 +99,5 @@ public class VCT {
         @Named("按季")
         public final static String Date_Month3 = "date_month3";
     }
-
 
 }

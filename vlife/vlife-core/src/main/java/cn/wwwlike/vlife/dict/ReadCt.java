@@ -65,11 +65,11 @@ public class ReadCt {
             for(Class clz:clazz){
                 Class innerClazz[]=clz.getDeclaredClasses();
                 DictVo vo=null;
-                for(Class dictType:innerClazz){
-                    String innerName=dictType.getSimpleName();
+                for(Class dictClz:innerClazz){
+                    String innerName=dictClz.getSimpleName();
                     Object sub=Class.forName(clz.getName()+"$"+innerName).newInstance();
                     Named obj=sub.getClass().getAnnotation(Named.class);
-                    vo=new DictVo(innerName,obj.value(),true);
+                    vo=new DictVo(innerName,obj.value(),1);
                     vos.add(vo);
                     Field[] dictDetail=sub.getClass().getFields();
                     int i=1;
@@ -77,7 +77,7 @@ public class ReadCt {
                         Named temp=field.getAnnotation(Named.class);
                         Object val=  ReflectionUtils.getFieldValue(sub,field.getName());
                         String title=temp.value();
-                        vo=new DictVo(innerName,val.toString(),title,false,i);
+                        vo=new DictVo(innerName,val.toString(),title,2,i);
                         vos.add(vo);
                         i++;
                     }

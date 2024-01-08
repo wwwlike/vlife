@@ -274,3 +274,7 @@ export function randomStr(length: number): string {
   }
   return result;
 }
+
+export function placeholderJoin(...args: (string | undefined | null)[]): string {
+  return args.filter(arg => !!arg).join('/');
+}

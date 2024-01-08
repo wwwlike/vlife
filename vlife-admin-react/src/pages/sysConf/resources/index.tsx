@@ -3,6 +3,7 @@ import { list, save, saveResourcesStateDto } from "@src/api/SysResources";
 import { VF } from "@src/dsl/VF";
 import FormPage from "@src/pages/common/formPage";
 import Content from "@src/pages/template/content";
+import { OptEnum } from "@src/dsl/base";
 /**
  * 资源管理
  */
@@ -12,69 +13,39 @@ export default () => {
     <Content
       listType="sysResources"
       tabList={[
-        { tab: "待启用", itemKey: "state-1", req: { state: "-1" } },
+        {
+          tab: "待启用",
+          itemKey: "menuNull",
+          req: [{ fieldName: "sysMenuId", opt: OptEnum.isNull }],
+        },
         {
           tab: "已启用",
-          itemKey: "state1",
-          req: [{ field: "sysMenuId", opt: "eq", value: "123" }],
+          itemKey: "menuisNotNull",
+          req: [{ fieldName: "sysMenuId", opt: OptEnum.isNotNull }],
         },
       ]}
-      filterType="sysResourcesPageReq"
+      // filterType="sysResourcesPageReq"
       btns={[
-        {
-          title: "批量启用",
-          actionType: "create",
-          model: "resourcesStateDto",
-          multiple: true, //用在全局
-          // usableMatch: true, //任何场景都可用
-          saveApi: (d) => saveResourcesStateDto(d[0]),
-          reaction: [
-            VF.then("resourcesIds").value(() => {
-              return list({}).then((d) =>
-                d.data?.filter((r) => r.state === "1").map((r) => r.id)
-              );
-            }),
-          ],
-        },
         // {
-        //   title: "主接口设置",
+        //   title: "批量启用",
         //   actionType: "create",
         //   model: "resourcesStateDto",
         //   multiple: true, //用在全局
+        //   // usableMatch: true, //任何场景都可用
         //   saveApi: (d) => saveResourcesStateDto(d[0]),
         //   reaction: [
         //     VF.then("resourcesIds").value(() => {
-        //       return listAll({}).then((d) =>
-        //         d.data?.filter((r) => r.menuRequired).map((r) => r.id)
+        //       return list({}).then((d) =>
+        //         d.data?.filter((r) => r.state === "1").map((r) => r.id)
         //       );
         //     }),
         //   ],
         // },
         {
-          title: "完善",
+          title: "编辑",
           actionType: "edit",
           model: "sysResources",
           saveApi: save,
-        },
-        {
-          title: "启用",
-          actionType: "api",
-          // model: "sysResources",
-          usableMatch: { state: "-1" },
-          onSaveBefore(data) {
-            return { ...data, state: "1" };
-          },
-          saveApi: save,
-        },
-        {
-          title: "停用",
-          actionType: "api",
-          // model: "sysResources",
-          onSaveBefore(data) {
-            return { ...data, state: "-1" };
-          },
-          saveApi: save,
-          usableMatch: { state: "1" },
         },
       ]}
     />

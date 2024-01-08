@@ -27,7 +27,7 @@ export const filterFuns:filterObj={
     title:"业务字典",
     dataModel:"SysDict",
     func:(sysDicts:SysDict[])=>{
-      return sysDicts.filter((d,index)=>d.sys===false||d.sys===undefined||d.sys===null);
+      return sysDicts.filter((d,index)=>d.type==='field');
     },
  },
    erpEntity: {

@@ -13,7 +13,7 @@ export type deps = {
 export interface designProp {
   name: string; //title
   icon?:any;
-  type: "select" | "input" | "switch"| "buttonGroup" | "form"; //设置组件的类型
+  type: "select" | "input" | "switch"| "buttonGroup" | "form" |"textArea"; //设置组件的类型
   tag?: "basic"  | "layout"; //所在分组标签
   mode?:Mode[]|Mode; //使用场景
   deps?: deps | deps[]; //字段显示依赖,如果是数组都需要满足
@@ -148,10 +148,10 @@ export const types: { title: string; value: string,icon?:any }[] = [
   },
   x_component_props$placeholder: {
     name: "填写说明",
-    type: "input",
+    type: "textArea",
     mode:Mode.form,
     tag: "basic",
-    deps: { field: "x_component", value: ["Input","VfSelect","VfSelect_DICT","Select"] },
+    // deps: { field: "x_component", value: ["Input","VfSelect","VfSelect_DICT","Select"] },
   },
   create_hide: {//保存时才会触发数据产生，无法实时预览
     name: "新增时隐藏",

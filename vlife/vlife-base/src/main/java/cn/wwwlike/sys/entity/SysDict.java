@@ -29,18 +29,17 @@ import javax.persistence.Table;
 /**
  * 字典表
  * 待：树形字典/对字典分类粒度
- * @author xiaoyu
- * @date 2022/6/17
  */
 @Data
 @Table(name = "sys_dict")
 @Entity
 @VClazz(orders = "code_asc,sort_asc")
 public class SysDict extends DbEntity {
+
     /**
-     * 字典大类
+     * 字典层级
      */
-    public boolean dictType;
+    public Integer level;
     /**
      *编码
      */
@@ -67,5 +66,10 @@ public class SysDict extends DbEntity {
      * 通过类文件导入的都是系统项，不能删除
      */
     public Boolean sys;
+
+    /**
+     * 字典类型
+     */
+    public String type;
 
 }

@@ -27,8 +27,8 @@ public class DemoProjectApi extends VLifeApi<DemoProject, DemoProjectService> {
    * @param req 项目查询
    * @return 项目表
    */
-  @GetMapping("/page")
-  public PageVo<DemoProject> page(DemoProjectPageReq req) {
+  @PostMapping("/page")
+  public PageVo<DemoProject> page(@RequestBody DemoProjectPageReq req) {
     return service.findPage(req);
   }
 

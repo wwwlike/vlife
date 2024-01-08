@@ -30,9 +30,8 @@ import java.util.List;
  */
 @Data
 public class GroupVo implements VoBean<SysGroup> {
-
     public String id;
-//    public Integer scope;
+
     public String filterType;
     /**
      * 对应的所有角色id
@@ -46,5 +45,4 @@ public class GroupVo implements VoBean<SysGroup> {
      * 权限组关联的角色名称集合
      */
     public List<String> sysRoleGroup_sysRole_name;
-
 }

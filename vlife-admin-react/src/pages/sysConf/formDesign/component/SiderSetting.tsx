@@ -9,6 +9,7 @@ import {
   Switch,
   TabPane,
   Tabs,
+  TextArea,
   Tooltip,
 } from "@douyinfe/semi-ui";
 import Form from "@src/components/form";
@@ -161,6 +162,21 @@ export default ({ field, form, onDataChange, mode }: SiderSettingProps) => {
                 });
               }}
             ></Input>
+          );
+        }
+        if (fieldsConf[key].type === "textArea") {
+          return (
+            <TextArea
+              key={"textArea_" + key}
+              value={field[key]}
+              style={{ width: "100%" }}
+              onChange={(value) => {
+                onDataChange({
+                  ...field,
+                  [key]: value,
+                });
+              }}
+            ></TextArea>
           );
         }
         if (fieldsConf[key].type === "switch") {

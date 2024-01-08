@@ -31,24 +31,35 @@ import java.util.List;
 @Service
 public class SysDictService extends VLifeService<SysDict, SysDictDao> {
 
+    public SysDict findLevel1ByCode(String code){
+        List<SysDict> result = find(QueryWrapper.of(SysDict.class).eq("level",1).eq("code",code));
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+
     /**
      * 创建业务型在字段上单独注解的业务型字典
      */
-    public void createByField(String code,String name){
-        if(find("code",code).size()==0){
+    public void createByField(String code,String name,String type){
+        SysDict levelDict=findLevel1ByCode(code);
+        if(levelDict==null){
             SysDict dict=new SysDict();
             dict.setCode(code);
             dict.setTitle(name);
-            dict.setSys(false);
-            dict.setDictType(true);
+            dict.setSys(true);
+            dict.setLevel(1);
+            dict.setType(type);
             save(dict);
+        }else if (!name.equals(levelDict.getTitle())){
+            levelDict.setTitle(name);
+            save(levelDict);
         }
     }
     /**
      * 同步一个模块的字典信息
      * @param javaDicts
      */
-    public void saveByDictVo(List<DictVo> javaDicts,List<SysDict> dbDicts){
+    public void saveByDictVo(List<DictVo> javaDicts,List<SysDict> dbDicts,String type){
         //1 原先没有的新增，title改变了的进行修订
         javaDicts.forEach(dictVo -> {
             SysDict sysDict =null;
@@ -63,6 +74,7 @@ public class SysDictService extends VLifeService<SysDict, SysDictDao> {
                 sysDict =new SysDict();
                 BeanUtils.copyProperties(dictVo, sysDict);
                 sysDict.setSys(true);
+                sysDict.setType(type);
                 sysDict.setCreateDate(new Date());
                 save(sysDict);
             }else {
@@ -78,7 +90,7 @@ public class SysDictService extends VLifeService<SysDict, SysDictDao> {
 
     public String dictVal(String dictCode){
         QueryWrapper<SysDict> qw=QueryWrapper.of(SysDict.class);
-        qw.openFullData().eq("code",dictCode).eq("dictType",false);
+        qw.openFullData().eq("code",dictCode).eq("level",2);
         return dao.count(qw)+1+"";
     }
 }

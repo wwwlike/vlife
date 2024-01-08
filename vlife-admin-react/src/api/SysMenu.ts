@@ -45,8 +45,11 @@ export interface MenuVo extends DbEntity {
 
 //菜单资源关联dto
 export interface MenuResourcesDto extends SaveBean {
-  sysResourcesId:string[]
+  sysResources_id:string[]
+  formId:string,
+  requiresIds:string[]
 }
+
 /**
  * 保存菜单;
  * @param dto 菜单;

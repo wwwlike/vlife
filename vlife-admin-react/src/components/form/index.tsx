@@ -45,12 +45,14 @@ import GroupLabel from "@src/components/form/component/GroupLabel";
 import { DataType } from "@src/dsl/base";
 import { exist } from "@src/api/base/baseService";
 import SelectIcon from "../SelectIcon";
-import { Spin } from "@douyinfe/semi-ui";
+import { Banner, Spin } from "@douyinfe/semi-ui";
 import { execVfAction, vfEventReaction, whenEl2 } from "./vfReactions";
 import { VF } from "../../dsl/VF";
 import { isFunction } from "lodash";
 import { FormComponents } from "@src/resources/CompDatas";
 import useDelayedExecution from "@src/hooks/useDelayedExecution";
+import { useAuth } from "@src/context/auth-context";
+import { placeholderJoin } from "@src/util/func";
 // export interface validate {
 //   [key: string]: (
 //     val: any, //watchDataObj
@@ -135,6 +137,7 @@ export default <T extends IdBean>({
   onForm,
   onSubForm,
 }: FormProps<T>) => {
+  const { dicts } = useAuth();
   //控制版本，让页面重新加载刷新(添加querybuild会触发)
   const [key, setKey] = useState(0);
   //当前表单阶段
@@ -449,7 +452,7 @@ export default <T extends IdBean>({
         });
       },
     });
-  }, [modelInfo, formData, readPretty, highlight, key]);
+  }, [modelInfo, formData, readPretty, highlight, key, dicts]);
   //表单可用组件加载
   const SchemaField = useMemo(() => {
     const components: any = {};
@@ -724,60 +727,66 @@ export default <T extends IdBean>({
         if (prop["x-component-props"] === undefined) {
           prop["x-component-props"] = {};
         }
-        prop["x-component-props"] = {
-          ...prop["x-component-props"],
-          ...componentProp?.[f.fieldName],
-          design,
-          //回调函数
-          [FormComponents[f.x_component]?.onDataChange || "onDataChange"]: (
-            data: any
-          ) => {
-            //自定义组件接收修订的数据
-            if (
-              (typeof data === "string" &&
-                (data === "undefined" ||
-                  data === "null" ||
-                  data === undefined ||
-                  data === null)) ||
-              (data instanceof Array && data.length === 0)
-            ) {
-              //值去除
-              form.deleteValuesIn(f.fieldName);
-            } else if (data instanceof Array) {
-              if (f.dataType === "basic") {
-                form.setValuesIn(f.fieldName, data[0]);
+        if (!sysComponents.includes(f.x_component)) {
+          prop["x-component-props"] = {
+            ...prop["x-component-props"],
+            ...componentProp?.[f.fieldName],
+            design,
+            //回调函数
+            [FormComponents[f.x_component]?.onDataChange || "onDataChange"]: (
+              data: any
+            ) => {
+              //自定义组件接收修订的数据
+              if (
+                (typeof data === "string" &&
+                  (data === "undefined" ||
+                    data === "null" ||
+                    data === undefined ||
+                    data === null)) ||
+                (data instanceof Array && data.length === 0)
+              ) {
+                //值去除
+                form.deleteValuesIn(f.fieldName);
+              } else if (data instanceof Array) {
+                if (f.dataType === "basic") {
+                  form.setValuesIn(f.fieldName, data[0]);
+                } else {
+                  form.setValuesIn(
+                    f.fieldName,
+                    JSON.parse(JSON.stringify(data))
+                  );
+                }
               } else {
-                form.setValuesIn(f.fieldName, JSON.parse(JSON.stringify(data)));
+                form.setValuesIn(f.fieldName, data);
               }
-            } else {
-              form.setValuesIn(f.fieldName, data);
-            }
-          },
-          //自定义组件 VfBaseProps 的入参
-          fieldInfo: {
-            ...f, //把字段信息全放入
-          },
-          formData: form.values, //表单数据
-          model: modelInfo, //模型信息
-          // form: form, //formliy的表单信息传入到字段里；（子表单使用，把子form注入到父form里）
-          entityType: modelInfo.entityType,
-          componentSetting: f.componentSetting,
-          //组件设置信息
-          pageComponentPropDtos: f.pageComponentPropDtos,
-          placeholder:
-            f.x_component_props$placeholder ||
-            `${f.required ? "必填" : ""}  ${
-              f.validate_unique ? "唯一不能重复" : ""
-            }`,
-          read: readPretty, //预览状态
-          vf: vf
-            ?.filter((s) => s.subField === f.fieldName) //f.pathName
-            ?.map((subFs, index) => {
-              return { ...subFs, subField: undefined };
-            }), //子表单VF联动
-          terse,
-          fontBold,
-        };
+            },
+            //自定义组件 VfBaseProps 的入参
+            fieldInfo: {
+              ...f, //把字段信息全放入
+            },
+            formData: form.values, //表单数据
+            model: modelInfo, //模型信息
+            // form: form, //formliy的表单信息传入到字段里；（子表单使用，把子form注入到父form里）
+            entityType: modelInfo.entityType,
+            componentSetting: f.componentSetting,
+            //组件设置信息
+            pageComponentPropDtos: f.pageComponentPropDtos,
+            placeholder:
+              f.x_component_props$placeholder ||
+              placeholderJoin(
+                f.required ? "必填" : undefined,
+                f.validate_unique ? "不能重复" : undefined
+              ),
+            read: readPretty, //预览状态
+            vf: vf
+              ?.filter((s) => s.subField === f.fieldName) //f.pathName
+              ?.map((subFs, index) => {
+                return { ...subFs, subField: undefined };
+              }), //子表单VF联动
+            terse,
+            fontBold,
+          };
+        }
         // 组件配置里CompData里props配置的固定属性值提取（boolean,string,number,date,ReactNode,function）
         const propInfo = FormComponents[f.x_component]?.props;
         if (propInfo) {
@@ -901,23 +910,31 @@ export default <T extends IdBean>({
     <PreviewText.Placeholder value="-">
       <FormProvider form={form}>
         <div className={`${className ? className : ""} relative`}>
-          {modelInfo && modelInfo.formDesc && (
-            <div className="flex border-dashed h-8 w-full border items-center bg-slate-50 rounded-md p-2 justify-left mb-3 ">
-              <span className=" font-bold text-sm mr-4">填写说明:</span>
-              <span className="  text-sm text-blue-500">
-                {modelInfo.formDesc}
-              </span>
-            </div>
-          )}
-          {modelInfo && mode === "dev" && modelInfo.helpDoc && (
-            <div className="flex border-dashed  w-full border items-center bg-slate-50 rounded-md p-2 justify-left mb-3 ">
-              <span className=" font-bold text-sm mr-4">
-                开发帮助(仅在dev环境展示):
-              </span>
-              <span className="  text-sm text-blue-500">
-                {modelInfo.helpDoc}
-              </span>
-            </div>
+          {modelInfo && (modelInfo.formDesc || modelInfo.helpDoc) && (
+            <Banner
+              className="!mt-0 mb-2"
+              fullMode={false}
+              type="danger"
+              bordered
+              // closeIcon={null}
+              title={
+                mode === "dev" &&
+                modelInfo.helpDoc && (
+                  <div className=" font-thin text-xs">
+                    <span className=" font-bold">开发帮助:</span>
+                    {modelInfo.helpDoc}
+                  </div>
+                )
+              }
+              description={
+                modelInfo.formDesc && (
+                  <div className=" font-thin text-xs">
+                    <span className=" font-bold">填写说明:</span>
+                    {modelInfo.formDesc}
+                  </div>
+                )
+              }
+            />
           )}
           <SchemaField
             schema={schema}

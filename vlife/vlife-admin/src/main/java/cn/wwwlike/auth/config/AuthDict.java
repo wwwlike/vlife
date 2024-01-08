@@ -21,8 +21,8 @@ package cn.wwwlike.auth.config;
 import javax.inject.Named;
 
 /**
- * 业务字典
- * 用户可见可扩充，本类定义的不可修改和删除
+ * 平台字典
+ * 用户可见，不可扩充，页面可翻译
  */
 public class AuthDict {
 
@@ -58,6 +58,19 @@ public class AuthDict {
         public final static String DEPT2 = "sysDept_2";
     }
 
+    @Named("字典类型")
+    public static final class DICT_TYPE{
+        //CT VCT里的
+        @Named("框架")
+        //authDICT
+        public final static String VLIFE = "vlife";
+        @Named("平台")
+        public final static String ADMIN = "admin";
+        //通过字段创建的
+        @Named("业务")
+        public final static String FIELD= "field";
+    }
+
     @Named("对齐方式")
     public static final class COLUMN_ALGIN {
         @Named("左")
@@ -70,7 +83,7 @@ public class AuthDict {
 
 
 //'amber' | 'blue' | 'cyan' | 'green' | 'grey' | 'indigo' | 'light-blue' | 'light-green' | 'lime' | 'orange' | 'pink' | 'purple' | 'red' | 'teal' | 'violet' | 'yellow' | 'white'; //颜色代码
-    @Named("字典颜色")
+    @Named("颜色")
     public static final class DICT_COLOR {
         @Named("红")
         public final static String RED = "red";
@@ -82,6 +95,16 @@ public class AuthDict {
         public final static String BLUE = "blue";
         @Named("白")
         public final static String WHITE = "white";
+    }
+
+
+    //xy轴体系的图表展示几个分析结果
+    @Named("图表展示类型")
+    public static final class GROUPS {
+        @Named("计数")
+        public final static String COUNT = "count";
+        @Named("归总字段")
+        public final static String NumField = "numField";
     }
 
 }

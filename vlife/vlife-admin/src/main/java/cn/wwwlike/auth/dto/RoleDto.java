@@ -39,7 +39,7 @@ public class RoleDto implements SaveBean<SysRole> {
     public String sysMenuId;
     /**
      * 关联权限
-     * 角色关联的菜单和接口数据集合
+     * 请先选择应用
      */
     @VField(skip = true)
     public List<String> resourcesAndMenuIds;

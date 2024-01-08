@@ -17,6 +17,7 @@
  */
 
 package cn.wwwlike.sys.api;
+import cn.wwwlike.auth.config.AuthDict;
 import cn.wwwlike.sys.entity.SysDict;
 import cn.wwwlike.sys.req.SysDictPageReq;
 import cn.wwwlike.sys.service.SysDictService;
@@ -35,11 +36,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/sysDict")
 public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
     /**
-     * 字典查询
+     * 字典项查询
      */
     @PostMapping("/page")
     public PageVo<SysDict> page(@RequestBody SysDictPageReq req) {
-        req.qw().ne("dictType",true);
+        req.qw().eq("level",2).eq("type", AuthDict.DICT_TYPE.FIELD);
         return service.findPage(req);
     }
     /**
@@ -48,7 +49,7 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
      */
     @GetMapping("/list/type")
     public List<SysDict> listType() {
-        return service.find("dictType",true);
+        return service.find("level",1);
     }
     /**
      * 字典列表
@@ -60,14 +61,16 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
         );
     }
     /**
-     * 字典编辑
+     * 字典项保存
      */
     @PostMapping("/save")
     public SysDict save(@RequestBody SysDict dto) {
+        SysDict type=service.findLevel1ByCode(dto.getCode());
         dto.setSys(false);
-        if(dto.getVal()==null&&dto.isDictType()==false){
+        if(dto.getVal()==null){
             dto.setVal(service.dictVal(dto.getCode()));
         }
+        dto.setType(type.getType());
         return service.save(dto);
     }
     /**

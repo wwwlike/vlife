@@ -238,7 +238,7 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                 bean.setIcon(optional.get().getIcon());
             }else{
                 bean.setResourceType("other");
-                bean.setIcon("other");
+                bean.setIcon("IconBytedanceLogo");
             }
             bean.setName(api.getTitle());
             bean.setJavaName(api.getTitle());

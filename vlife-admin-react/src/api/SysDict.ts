@@ -9,7 +9,8 @@ export interface SysDict extends DbEntity{
   sort: number;  // 排序号
   title: string;  // 选项名
   sys: boolean;  // 系统项
-  dictType: boolean;  // 是否分类
+  type: string;  // 字典类型
+  level:number;//层级
 }
 // 类说明
 export interface SysDictPageReq extends PageQuery{

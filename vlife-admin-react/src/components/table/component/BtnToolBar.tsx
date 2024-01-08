@@ -6,7 +6,6 @@ import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
 import { objectIncludes } from "@src/util/func";
 import { VFBtn } from "../types";
-import { IconAlertCircle } from "@douyinfe/semi-icons";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|
@@ -165,7 +164,7 @@ export default <T extends IdBean>({
         formModal.show({
           type: btn.model,
           formData: btn.actionType === "create" ? {} : data,
-          btns,
+          btns: [btn], //取消掉btns简化逻辑，弹出层值显示一个按钮
           terse: !btn.saveApi ? true : false, //紧凑
           fontBold: !btn.saveApi ? true : false, //加粗
           readPretty: btn.actionType === "api" || !btn.saveApi ? true : false,

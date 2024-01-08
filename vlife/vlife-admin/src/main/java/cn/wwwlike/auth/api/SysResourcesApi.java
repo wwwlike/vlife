@@ -29,7 +29,7 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
      * 资源查询
      */
     @PostMapping("/page")
-    public PageVo<SysResources> page(SysResourcesPageReq req) {
+    public PageVo<SysResources> page(@RequestBody SysResourcesPageReq req) {
         return service.findPage(req);
     }
 

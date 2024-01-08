@@ -23,7 +23,7 @@ import lombok.Data;
 import javax.inject.Named;
 
 /**
- * 系统字典
+ * 框架底层字典1
  * 用户不可见，不可扩充，页面可翻译
  */
 @Data

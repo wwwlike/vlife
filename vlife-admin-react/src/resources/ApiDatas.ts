@@ -5,7 +5,7 @@ import { ISelect, ITreeData } from '@src/dsl/component';
 import { listAll as deptList, SysDept } from "@src/api/SysDept";
 import { allRouter, listAll as menuList,  SysMenu } from "@src/api/SysMenu";
 import { ApiDatas, selectObj } from '../components/compConf/compConf';
-import { detailFormVo, entityModels, FormVo, subForms } from '@src/api/Form';
+import { entityModels, FormVo, model, subForms } from '@src/api/Form';
 import {listAll as formFieldListAll ,listGroupOption,listRelationField} from "@src/api/FormField";
 import { list } from '@src/api/demo/DemoCustomer';
 
@@ -45,9 +45,9 @@ export const apiDatas:ApiDatas={
     },
     filter:(data:SysDict[],{code}:{code:string}):SysDict[]=>{ //固定要进行数据过滤的方法
       if(code===undefined||code==="vlife"){
-        return data.filter(d=>d.dictType===true)
+        return data.filter(d=>d.level===1)
       }else {
-        return data.filter(d=>d.code===code&&d.dictType!==true)
+        return data.filter(d=>d.code===code&&d.level===2)
       }
     },
     params:{
@@ -288,9 +288,9 @@ export const apiDatas:ApiDatas={
     label: "单个数据集",
     dataType:DataType.object,
     dataModel:"FormVo",
-    api: detailFormVo,
+    api: model,
     params: {
-      formId: { 
+      id: { 
         must:true,
         label: "模型id", 
         dataModel:DataModel.string,

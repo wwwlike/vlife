@@ -8,7 +8,7 @@ import {
   Dropdown,
   Empty,
 } from "@douyinfe/semi-ui";
-import { IconDesktop, IconGithubLogo, IconSetting } from "@douyinfe/semi-icons";
+import { IconDesktop, IconGithubLogo } from "@douyinfe/semi-icons";
 import logo from "@src/logo.png";
 import "../../index.scss";
 import { useAuth } from "@src/context/auth-context";
@@ -145,11 +145,14 @@ const Index = ({
                       </Button>
                       <Button
                         theme="borderless"
+                        style={{
+                          color: "var(--semi-color-text-2)",
+                        }}
                         onClick={() => {
                           navigate("/sysConf/icon");
                         }}
                         icon={
-                          <i className="icon-descending-order2 text-xl text-indigo-500"></i>
+                          <i className="icon-descending-order2 text-xl"></i>
                         }
                       >
                         图标库

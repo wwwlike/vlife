@@ -14,6 +14,8 @@ import java.util.List;
 public class MenuResourcesDto implements SaveBean<SysMenu> {
     //菜单id
     public String id;
+    //表单id
+    public String formId;
     //关联资源
     public List<String> sysResources_id;
     /**

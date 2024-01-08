@@ -19,6 +19,7 @@ import BtnToolBar from "@src/components/table/component/BtnToolBar";
 import { Tabs } from "@douyinfe/semi-ui";
 import GroupLabel from "@src/components/form/component/GroupLabel";
 import { listByCode, SysDict } from "@src/api/SysDict";
+import { OptEnum } from "@src/dsl/base";
 
 //tab页签
 type TableTab = {
@@ -26,7 +27,7 @@ type TableTab = {
   tab: string | ReactNode; //名称
   icon?: ReactNode; //图标
   active?: boolean; //当前页
-  req?: object | { field: string; opt: string; value?: Object }[]; //视图过滤条件(简单方式)
+  req?: object | { fieldName: string; opt: OptEnum; value?: Object }[]; //视图过滤条件(简单方式)
 };
 /**
  * 查询列表的布局page组件
@@ -84,7 +85,25 @@ const Content = <T extends IdBean>({
   useEffect(() => {
     const tabs: TableTab[] = [];
     if (tabList) {
-      tabs.push(...tabList);
+      tabs.push(
+        ...tabList.map((tab: TableTab) => {
+          if (Array.isArray(tab.req) || tab.req === undefined) {
+            return tab;
+          } else {
+            const fields: string[] = Object.keys(tab.req);
+            return {
+              ...tab,
+              req: fields.map((f) => {
+                return {
+                  fieldName: f,
+                  opt: OptEnum.eq,
+                  value: [(tab.req as any)[f]],
+                };
+              }),
+            };
+          }
+        })
+      );
     }
     const dictcode = tableModel?.fields?.filter(
       (f) => f.fieldName === tabDictField
@@ -97,9 +116,13 @@ const Content = <T extends IdBean>({
             return {
               itemKey: d.id, //视图编码(唯一)
               tab: d.title,
-              req: {
-                [tabDictField]: d.val,
-              }, //视图过滤条件(简单方式)
+              req: [
+                {
+                  fieldName: tabDictField,
+                  opt: OptEnum.eq,
+                  value: [d.val],
+                },
+              ], //视图过滤条件(简单方式)
             };
           })
         );
@@ -116,16 +139,9 @@ const Content = <T extends IdBean>({
       (item) => item.itemKey === activeKey
     )?.[0]?.req;
     if (activeKey && contentTab && customViewReq) {
-      //object转conditionGroup
-      if (typeof customViewReq === "object") {
-        customViewReq = Object.keys(customViewReq).map((key) => {
-          return { fieldName: key, opt: "eq", value: [customViewReq[key]] };
-        });
-      }
       return {
         ...req,
         ...formData,
-        ...customViewReq,
         conditionGroups: [{ where: customViewReq }],
       };
     } else {

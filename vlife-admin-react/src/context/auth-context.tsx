@@ -22,6 +22,7 @@ export interface dictObj {
       value: string | undefined;
       label: string;
       sys?: boolean;
+      ["type"]: string;
       color: string;
     }[];
     label: string;
@@ -121,7 +122,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           obj[d.code] = {
             label: "",
-            data: [{ label: d.title, value: d.val, color: d.color }],
+            data: [
+              { label: d.title, value: d.val, color: d.color, type: d.type },
+            ],
           };
         }
       } else {
@@ -132,6 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             label: d.title,
             value: d.val,
             color: d.color,
+            type: d.type,
           });
         }
       }
@@ -139,9 +143,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     obj["vlife"] = {
       label: "字典类目",
       data: dbDicts
-        .filter((d) => d.dictType === true)
+        .filter((d) => d.level === 1)
         .map((d) => {
-          return { value: d.code, label: d.title, sys: d.sys, color: d.color };
+          return {
+            value: d.code,
+            label: d.title,
+            sys: d.sys,
+            color: d.color,
+            type: d.type,
+          };
         }),
     };
     setDicts(obj);
