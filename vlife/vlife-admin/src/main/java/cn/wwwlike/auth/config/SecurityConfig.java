@@ -113,9 +113,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(new EAccessDeniedHandler());
 
 
-        //接口资源同步，做更新，不做初始化
-        if(resourcesService.findAll().size()!=0){
-            resourcesService.sync();
+        try {
+            //接口资源同步，做更新，不做初始化
+            if(resourcesService.findAll().size()!=0){
+                resourcesService.sync();
+            }
+        }catch (Exception e){
+            System.out.println("╔════════════════════════════════════════════════════════════════╗");
+            System.out.println("║                                                                ║");
+            System.out.println("║                please run 'mvn package' command.               ║");
+            System.out.println("║                                                                ║");
+            System.out.println("╚════════════════════════════════════════════════════════════════╝");
+            System.exit(0); // Exit without starting the application
         }
 
         Map<String, String> map = groupService.resourceGroupMap();
