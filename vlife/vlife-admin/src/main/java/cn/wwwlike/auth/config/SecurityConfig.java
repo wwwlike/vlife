@@ -113,8 +113,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(new EAccessDeniedHandler());
 
 
-        //接口资源同步
-        resourcesService.sync();
+        //接口资源同步，做更新，不做初始化
+        if(resourcesService.findAll().size()!=0){
+            resourcesService.sync();
+        }
+
         Map<String, String> map = groupService.resourceGroupMap();
         for (String url : map.keySet()) {
             // 资源路径与角色组绑定，以此资源为父资源角色所在的角色组

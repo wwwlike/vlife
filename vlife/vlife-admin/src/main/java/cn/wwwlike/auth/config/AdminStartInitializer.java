@@ -43,7 +43,7 @@ import java.util.List;
  * db数据与Java模型数据比对完成数据初始化和更新
  */
 @Component
-@Order(3)
+@Order(2)
 public class AdminStartInitializer implements ApplicationRunner {
     @Autowired
     FormService service;

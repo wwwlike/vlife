@@ -38,22 +38,23 @@ public class SysDictService extends VLifeService<SysDict, SysDictDao> {
 
 
     /**
-     * 创建业务型在字段上单独注解的业务型字典
+     * 通过字段注解来创建和更新字典（@VField(dictCode="code")
      */
     public void createByField(String code,String name,String type){
         SysDict levelDict=findLevel1ByCode(code);
-        if(levelDict==null){
-            SysDict dict=new SysDict();
-            dict.setCode(code);
-            dict.setTitle(name);
-            dict.setSys(true);
-            dict.setLevel(1);
-            dict.setType(type);
-            save(dict);
-        }else if (!name.equals(levelDict.getTitle())){
-            levelDict.setTitle(name);
-            save(levelDict);
-        }
+            if(levelDict==null){
+                SysDict dict=new SysDict();
+                dict.setCode(code);
+                dict.setTitle(name);
+                dict.setSys(true);
+                dict.setLevel(1);
+                dict.setType(type);
+                save(dict);
+            }else if (type.equals(levelDict.getType())&&!name.equals(levelDict.getTitle())){
+                levelDict.setTitle(name);
+                save(levelDict);
+            }
+
     }
     /**
      * 同步一个模块的字典信息
