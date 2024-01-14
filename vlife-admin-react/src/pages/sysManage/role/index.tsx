@@ -7,11 +7,13 @@ export default () => {
   return (
     <Content<SysRole>
       listType="sysRole"
-      editType="roleDto"
-      reaction={[
-        VF.field("sysMenuId").isNull().then("resourcesAndMenuIds").hide(),
-        VF.field("sysMenuId").change().then("resourcesAndMenuIds").value([]),
-      ]}
+      editType={{
+        type: "roleDto",
+        reaction: [
+          VF.field("sysMenuId").isNull().then("resourcesAndMenuIds").hide(),
+          VF.field("sysMenuId").change().then("resourcesAndMenuIds").value([]),
+        ],
+      }}
     />
   );
 };

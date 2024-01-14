@@ -143,31 +143,33 @@ export default <T extends IdBean>({
   // 按钮名称计算
   const btnTitle = useCallback(
     (btn: VFBtn): string | ReactNode => {
-      if (position === "formFooter") {
-        if (
-          btn.actionType == "save" ||
-          btn.actionType == "create" ||
-          btn.actionType === "edit"
-        ) {
-          return "保存";
-        }
-      } else if (position === "tableToolbar") {
-        if (btn.actionType === "save" || btn.actionType === "create") {
-          if (btn.title && !btn.title.toString().startsWith("新增")) {
-            if (btn.title === "") {
-              return "新增";
-            } else {
-              return "新增" + btn.title;
+      if (typeof btn.title === "string") {
+        if (position === "formFooter") {
+          if (
+            btn.actionType == "save" ||
+            btn.actionType == "create" ||
+            btn.actionType === "edit"
+          ) {
+            return "保存";
+          }
+        } else if (position === "tableToolbar") {
+          if (btn.actionType === "save" || btn.actionType === "create") {
+            if (!btn.title.startsWith("新增")) {
+              if (btn.title === "") {
+                return "新增";
+              } else {
+                return "新增" + btn.title;
+              }
             }
           }
-        }
-      } else if (position === "tableLine") {
-        if (btn.actionType === "save") {
-          if (btn.title !== "修改") {
-            if (btn.title === "") {
-              return "修改";
-            } else {
-              return "修改" + btn.title;
+        } else if (position === "tableLine") {
+          if (btn.actionType === "save") {
+            if (btn.title !== "修改") {
+              if (btn.title === "") {
+                return "修改";
+              } else {
+                return "修改" + btn.title;
+              }
             }
           }
         }
