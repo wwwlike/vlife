@@ -300,10 +300,6 @@ const Model = () => {
         onSubmitFinish: menuLoad,
         reaction: [
           VF.then("name").value(currEntity?.title),
-          // VF.resul
-          //   .eq("123")
-          //   .then("pcode")
-          //   .componentProps({ treeData: [] }),
           VF.then(
             "app",
             "placeholderUrl",
@@ -311,16 +307,15 @@ const Model = () => {
             "code",
             "confPage",
             "pageLayoutId",
-            "sort",
-            "formId"
+            "sort"
           ).hide(),
-          VF.then("formId").value(currEntity?.id).hide(),
-          VF.field("url")
-            .endsWidth("*")
-            .then("placeholderUrl")
-            .show()
-            .then("placeholderUrl")
-            .required(),
+          VF.then("formId").value(currEntity?.id),
+          // VF.field("url")
+          //   .endsWidth("*")
+          //   .then("placeholderUrl")
+          //   .show()
+          //   .then("placeholderUrl")
+          //   .required(),
         ],
       },
     ];

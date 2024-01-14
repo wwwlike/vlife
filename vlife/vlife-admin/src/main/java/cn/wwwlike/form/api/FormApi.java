@@ -19,6 +19,7 @@ import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.ModelService;
+import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.utils.FileUtil;
 import cn.wwwlike.web.security.core.SecurityUser;
@@ -75,8 +76,8 @@ public class FormApi extends VLifeApi<Form, FormService> {
     /**
      * 模型查询
      */
-    @GetMapping("/list")
-    public List<FormVo> list(FormPageReq req){
+    @PostMapping("/list")
+    public List<FormVo> list(@RequestBody FormPageReq req){
         return service.query(FormVo.class,req);
     }
     /**
@@ -107,6 +108,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
 
     /**
      * 模型详情
+     * 查找父组件以及模型父类
      */
     @GetMapping("/model")
     public FormVo model(FormPageReq req) {
@@ -157,7 +159,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
      * 指定应用模型列表
      */
     @RequestMapping("/entityModels")
-    public List<FormVo> entityModels(String appId) {
+    public List<FormVo> entityModels(String appId,String pcode) {
         if(appId==null||"".equals(appId)||"null".equals(appId)||"undefined".equals(appId) ){
             return service.queryAll(FormVo.class).stream().filter(v -> v.getItemType().equals("entity")).collect(Collectors.toList());
         }else{
@@ -184,7 +186,17 @@ public class FormApi extends VLifeApi<Form, FormService> {
      */
     @PostMapping("/save")
     public Form save(@RequestBody Form form) {
-        return service.save(form);
+        service.save(form);
+        //与实体相关的模型也一同归类
+        if(form.getItemType().equals("entity")&&form.getSysMenuId()!=null) {
+            List<Form> forms = service.find(QueryWrapper.of(Form.class).eq("entityType", form.getType()).ne("itemType","entity"));
+            forms.forEach(f -> {
+                f.setSysMenuId(form.getSysMenuId());
+                service.save(f);
+            });
+        }
+            return form;
+
     }
 
 }

@@ -26,6 +26,7 @@ export interface Form extends DbEntity {
   formDesc:string;//描述
   itemName:string;//主字段表达式
   helpDoc:string;//开发帮助文档
+  typeParentsStr:string;//模型类接口
 }
 
 /**
@@ -97,7 +98,7 @@ export const model = (params:formPageReq): Promise<Result<FormVo>> => {
  export const list = (
   req?:formPageReq
  ): Promise<Result<FormVo[]>> => {
-   return apiClient.get(`/form/list`,{params:req});
+   return apiClient.post(`/form/list`,req||{});
  };
 
 /**

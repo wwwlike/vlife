@@ -19,7 +19,7 @@ import BtnToolBar from "@src/components/table/component/BtnToolBar";
 import { Tabs } from "@douyinfe/semi-ui";
 import GroupLabel from "@src/components/form/component/GroupLabel";
 import { listByCode, SysDict } from "@src/api/SysDict";
-import { OptEnum } from "@src/dsl/base";
+import { OptEnum, where } from "@src/dsl/base";
 
 //tab页签
 type TableTab = {
@@ -35,12 +35,25 @@ type TableTab = {
  */
 export interface ContentProps<T extends IdBean> extends TablePageProps<T> {
   title: string; //页面标题
-  filterType: string; //左侧布局查询条件模型
-  filterReaction: VfAction[]; //左侧布局的联动数组对象
+  filterType: string | { type: string; reaction: VfAction[] }; //左侧布局查询条件模型以及级联响应的低代码
   tabList: TableTab[]; //tab条件对象或者根据字段dictcode字典分组
   tabDictField: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
   onReq?: (req: any) => void; //过滤条件回传
 }
+
+/**
+ * 对象转condition的where查询语法
+ */
+const objToConditionWhere = (obj: any): Partial<where>[] => {
+  const fieldNames: string[] = Object.keys(obj);
+  return fieldNames.map((f) => {
+    return {
+      fieldName: f,
+      opt: OptEnum.eq,
+      value: Array.isArray(obj[f]) ? obj[f] : [obj[f]],
+    };
+  });
+};
 
 /**
  * crud 左右布局模版
@@ -54,7 +67,6 @@ const Content = <T extends IdBean>({
   filterType,
   tabList,
   tabDictField,
-  filterReaction,
   req,
   btns,
   onReq,
@@ -68,7 +80,7 @@ const Content = <T extends IdBean>({
   const allTab: TableTab = { itemKey: "all", tab: "全部", active: true };
   //固定项页签 tab abList方式+tabDictField方式
   const [fixedTab, setFixedTab] = useState<TableTab[]>([]);
-  //计算后的页面页签
+  //页签组装
   const contentTab = useMemo((): TableTab[] | undefined => {
     if (fixedTab.length > 0) {
       return [allTab, ...fixedTab];
@@ -90,16 +102,9 @@ const Content = <T extends IdBean>({
           if (Array.isArray(tab.req) || tab.req === undefined) {
             return tab;
           } else {
-            const fields: string[] = Object.keys(tab.req);
             return {
               ...tab,
-              req: fields.map((f) => {
-                return {
-                  fieldName: f,
-                  opt: OptEnum.eq,
-                  value: [(tab.req as any)[f]],
-                };
-              }),
+              req: objToConditionWhere(tab.req),
             };
           }
         })
@@ -120,7 +125,7 @@ const Content = <T extends IdBean>({
                 {
                   fieldName: tabDictField,
                   opt: OptEnum.eq,
-                  value: [d.val],
+                  value: typeof [d.val],
                 },
               ], //视图过滤条件(简单方式)
             };
@@ -133,20 +138,22 @@ const Content = <T extends IdBean>({
     }
   }, [tabDictField, tableModel, tabList]);
 
+  //查询条件组装
   const tableReq = useMemo(() => {
-    //自定义视图的查询方式
     let customViewReq: any = contentTab?.filter(
       (item) => item.itemKey === activeKey
     )?.[0]?.req;
-    if (activeKey && contentTab && customViewReq) {
-      return {
-        ...req,
-        ...formData,
-        conditionGroups: [{ where: customViewReq }],
-      };
-    } else {
-      return { ...req, ...formData };
+    const where: Partial<where>[] = [];
+    if (customViewReq) {
+      where.push(...customViewReq);
     }
+    if (req) {
+      where.push(...objToConditionWhere(req));
+    }
+    return {
+      ...formData,
+      conditionGroups: [{ where }],
+    };
   }, [req, formData, contentTab, activeKey]);
 
   // const windowWidth = useSize(document.querySelector("body"))?.width;
@@ -180,14 +187,18 @@ const Content = <T extends IdBean>({
             <GroupLabel text={`${tableModel?.name}查询`} className="mb-6" />
             <FormPage
               key={`filter${filterType}`}
-              reaction={filterReaction}
+              reaction={
+                typeof filterType === "string" ? undefined : filterType.reaction
+              }
               formData={req}
               // fontBold={true}
               onDataChange={(data) => {
                 setFormData({ ...data });
                 onReq?.(data);
               }}
-              type={filterType}
+              type={
+                typeof filterType === "string" ? filterType : filterType.type
+              }
             />
           </div>
           <i
@@ -223,13 +234,12 @@ const Content = <T extends IdBean>({
         )}
         {/* 列表行 */}
         <TablePage<T>
-          className="flex-grow  "
+          className="flex-grow"
           width={tableWidth}
           key={listType}
           listType={listType}
           editType={editType}
           req={tableReq}
-          reaction={props.reaction}
           btns={btns}
           columnTitle={filterType !== undefined ? "sort" : true}
           onTableModel={(formVo: FormVo) => {

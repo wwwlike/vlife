@@ -234,13 +234,13 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
 
     /**
      * queryBuild的查询条件
-     * 支持嵌套
+     * 老的支持嵌套的复杂型，接收TagFilter
      */
     @VField(skip = true)
     private Conditions conditions;
     /**
-     * queryBuild的查询条件
-     * 不支持嵌套，（a and b and c） or (aa and cc and dd)
+     * queryBuild的查询条件()
+     * 新的，不支持嵌套，只支持括号内and，括号外or查询(a and b and c) or (aa and cc and dd)
      */
     @VField(skip = true)
     private List<ConditionGroup> conditionGroups;

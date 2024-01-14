@@ -30,19 +30,6 @@ const IconPage = lazy(() => import("@src/pages/common/IconContainer"));
 //业务系统
 const LoginPage = lazy(() => import("@src/pages/login"));
 const LayoutPage = lazy(() => import("@src/pages/layout"));
-//示例
-const Form1Page = lazy(() => import("@src/pages/example/form/Form1"));
-const Form2Page = lazy(() => import("@src/pages/example/form/Form2"));
-const Form3Page = lazy(() => import("@src/pages/example/form/Form3"));
-const Form4Page = lazy(() => import("@src/pages/example/form/Form4"));
-const List1Page = lazy(() => import("@src/pages/example/list/List1"));
-const List2Page = lazy(() => import("@src/pages/example/list/List2"));
-const List3Page = lazy(() => import("@src/pages/example/list/List3"));
-const List4Page = lazy(() => import("@src/pages/example/list/List4"));
-const Page1Page = lazy(() => import("@src/pages/example/page/Page1"));
-const Page2Page = lazy(() => import("@src/pages/example/page/Page2"));
-//demo项目管理
-const ProjectPage = lazy(() => import("@src/pages/demo/project"));
 
 export const allRoute: any[] = [
   //系统业务
@@ -99,7 +86,7 @@ export const allRoute: any[] = [
         element: (
           <WrapperRouteComponent
             element={<TemplatePage />}
-            titleId="所有实体通用模版(单实体CRUD可用)"
+            titleId="通用CRUD页面模版"
             auth
           />
         ),
@@ -255,132 +242,7 @@ export const allRoute: any[] = [
       },
     ],
   },
-  {
-    path: "/demo",
-    element: (
-      <WrapperRouteComponent element={<LayoutPage />} titleId="项目管理" auth />
-    ),
-    children: [
-      {
-        path: "project",
-        element: (
-          <WrapperRouteComponent
-            element={<ProjectPage />}
-            titleId="项目管理"
-            auth
-          />
-        ),
-      },
-    ],
-  },
-  {
-    path: "/example",
-    element: (
-      <WrapperRouteComponent element={<LayoutPage />} titleId="组件演示" auth />
-    ),
-    children: [
-      {
-        path: "form1",
-        element: (
-          <WrapperRouteComponent
-            element={<Form1Page />}
-            titleId="简单表单"
-            auth
-          />
-        ),
-      },
-      {
-        path: "form2",
-        element: (
-          <WrapperRouteComponent
-            element={<Form2Page />}
-            titleId="关联表单"
-            auth
-          />
-        ),
-      },
-      {
-        path: "form3",
-        element: (
-          <WrapperRouteComponent
-            element={<Form3Page />}
-            titleId="表单联动"
-            auth
-          />
-        ),
-      },
-      {
-        path: "form4",
-        element: (
-          <WrapperRouteComponent
-            element={<Form4Page />}
-            titleId="表单校验"
-            auth
-          />
-        ),
-      },
-      {
-        path: "list1",
-        element: (
-          <WrapperRouteComponent
-            element={<List1Page />}
-            titleId="常规列表"
-            auth
-          />
-        ),
-      },
-      {
-        path: "list2",
-        element: (
-          <WrapperRouteComponent
-            element={<List2Page />}
-            titleId="工具栏按钮"
-            auth
-          />
-        ),
-      },
-      {
-        path: "list3",
-        element: (
-          <WrapperRouteComponent
-            element={<List3Page />}
-            titleId="列表按钮"
-            auth
-          />
-        ),
-      },
-      {
-        path: "list4",
-        element: (
-          <WrapperRouteComponent
-            element={<List4Page />}
-            titleId="详情页按钮"
-            auth
-          />
-        ),
-      },
-      {
-        path: "page1",
-        element: (
-          <WrapperRouteComponent
-            element={<Page1Page />}
-            titleId="项目管理1"
-            auth
-          />
-        ),
-      },
-      {
-        path: "page2",
-        element: (
-          <WrapperRouteComponent
-            element={<Page2Page />}
-            titleId="项目管理2"
-            auth
-          />
-        ),
-      },
-    ],
-  },
+
   {
     path: "/login",
     element: <LoginPage />,
@@ -412,6 +274,38 @@ const RenderRouter: FC = () => {
   // }, [routeList]);
 
   return <AppProviders>{element}</AppProviders>;
+};
+
+// 自己添加
+export const allRouter = (): { label: string; value: string }[] => {
+  const all: { label: string; value: string }[] = [];
+  const child = (
+    path: string | null,
+    route: any,
+    all: { label: string; value: string }[]
+  ) => {
+    const thisPath =
+      path === null
+        ? route.path
+        : path.endsWith("/")
+        ? path + route.path
+        : path + "/" + route.path;
+    all.push({
+      label: `${thisPath} ${
+        route.element.props.titleId ? route.element.props.titleId : ""
+      }`,
+      value: thisPath,
+    });
+    if (route.children) {
+      route.children.forEach((c: any) => {
+        child(thisPath, c, all);
+      });
+    }
+  };
+  allRoute.forEach((r) => {
+    child(null, r, all);
+  });
+  return all;
 };
 
 export default RenderRouter;

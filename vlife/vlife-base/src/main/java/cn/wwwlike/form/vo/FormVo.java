@@ -73,11 +73,11 @@ public class FormVo implements VoBean<Form> {
    */
   public List<SysResources> resources;
 
+  public String typeParentsStr;
 
   public Integer modelSize;
 
   public Integer  pageSize;
-
 
   /**
    * 版本

@@ -29,7 +29,7 @@ import classNames from "classnames";
 import VfSearch from "@src/components/VfSearch";
 import { useNavigate } from "react-router-dom";
 import { VFBtn } from "@src/components/table/types";
-import { FormItemCondition, where } from "@src/dsl/base";
+import { Conditions, OptEnum, where } from "@src/dsl/base";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 // 后端排序字符串格式创建
@@ -62,7 +62,7 @@ type apiError = {
 // T为列表listType的类型
 export interface TablePageProps<T extends IdBean> extends ListProps<T> {
   listType: string; //列表模型
-  editType: string; //编辑模型，需要和listType有相同的实体模型(entityType)
+  editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req: any; //查询条件obj
   selected: T[]; //前选中的行数据(relation组件使用)
   design: true | undefined; //true则是设计器模式
@@ -76,7 +76,7 @@ export interface TablePageProps<T extends IdBean> extends ListProps<T> {
   onGetData: (datas: T[]) => void; //请求的列表数据传出
   onHttpError: (error: apiError) => void; //异常信息传出，设计阶段时接口没有会用到
   //form表单需要使用的透传给按钮使用props
-  reaction: VfAction[]; //form联动关系
+  // reaction: VfAction[]; //form联动关系
   otherBtns: VFBtn[]; // 按钮触发的增量功能
 }
 
@@ -97,7 +97,7 @@ const TablePage = <T extends IdBean>({
   onGetData,
   onHttpError,
   onTableModel,
-  reaction,
+  // reaction,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const appMode = import.meta.env.VITE_APP_MODE;
@@ -120,9 +120,7 @@ const TablePage = <T extends IdBean>({
   //   useState<ConditionGroup[]>(); //builder查询条件
   const [columnWheres, setColumnWheres] = useState<Partial<where>[]>([]); //字段的查询条件
   //支持嵌套的查询条件组装inputSearch和columnFilter
-  const [condition, setCondition] = useState<
-    Partial<FormItemCondition> | undefined
-  >({
+  const [condition, setCondition] = useState<Partial<Conditions> | undefined>({
     orAnd: "or",
     where: [],
   });
@@ -151,10 +149,11 @@ const TablePage = <T extends IdBean>({
   }, [listType]);
 
   const editModelType = useMemo(() => {
-    // f?.parentsName.includes("SaveBean")
-    // ? f?.type || ""
-    // : f?.entityType || ""
-    return editType ? editType : tableModel?.entityType;
+    return editType
+      ? typeof editType === "string"
+        ? editType
+        : editType.type
+      : tableModel?.entityType;
   }, [editType, tableModel]);
 
   const tableHight = useMemo(() => {
@@ -183,7 +182,7 @@ const TablePage = <T extends IdBean>({
   }, [pageData]);
 
   const searchAndColumnCondition = useMemo(():
-    | Partial<FormItemCondition>
+    | Partial<Conditions>
     | undefined => {
     if (
       condition?.where &&
@@ -241,11 +240,10 @@ const TablePage = <T extends IdBean>({
           : conditionJson
           ? JSON.parse(conditionJson)
           : undefined,
-      conditions: searchAndColumnCondition,
+      conditions: searchAndColumnCondition, //列表上的组件过滤(待合并到groups里)
       order: { orders: orderStr(order) },
       pager: pager,
     };
-    // alert(reqParams.conditionGroups);
     if (pageLoad) {
       pageLoad(reqParams)
         .then((data: Result<PageVo<T>>) => {
@@ -296,7 +294,9 @@ const TablePage = <T extends IdBean>({
       if (
         b.model === undefined &&
         b.saveApi &&
-        (b.actionType === "create" || b.actionType === "edit")
+        (b.actionType === "create" ||
+          b.actionType === "edit" ||
+          b.actionType === "save")
       ) {
         b.model = entity;
       }
@@ -323,7 +323,11 @@ const TablePage = <T extends IdBean>({
       }
       return {
         ...b,
-        reaction: b.reaction || (b.model ? reaction : undefined),
+        reaction:
+          b.reaction ||
+          (typeof editType === "object" && editType.type === b.model
+            ? editType.reaction
+            : undefined),
         submitConfirm:
           b.submitConfirm !== undefined
             ? b.submitConfirm
@@ -348,23 +352,14 @@ const TablePage = <T extends IdBean>({
         (tableModel?.entityType !== editModelType ? ":" + editModelType : "");
       const defaultBtns: VFBtn[] = [
         {
-          title: "新增",
-          actionType: "create",
-          model: editModelType,
-          permissionCode: savePermissionCode,
+          title: "",
+          actionType: "save",
           icon: <IconUserAdd />,
-          reaction: reaction,
-          saveApi: save(tableModel?.entityType || "", editModelType),
-        },
-        {
-          title: "修改",
-          actionType: "edit",
           multiple: false,
           permissionCode: savePermissionCode,
           model: editModelType,
-          icon: <IconEdit />,
-          reaction: reaction,
-          // submitClose: true,
+          reaction:
+            typeof editType === "object" ? editType.reaction : undefined,
           saveApi: save(tableModel?.entityType || "", editModelType),
           loadApi:
             editModelType === listType
@@ -555,7 +550,7 @@ const TablePage = <T extends IdBean>({
                   .map((f) => {
                     return {
                       fieldName: f.fieldName,
-                      opt: "like",
+                      opt: OptEnum.like,
                       value: [v],
                     };
                   });

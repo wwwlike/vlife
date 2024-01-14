@@ -14,15 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 表单响应接口;
+ * 事件响应接口
  */
 @RestController
 @RequestMapping("/formReaction")
 public class FormReactionApi extends VLifeApi<FormReaction, FormReactionService> {
   /**
-   * 保存表单响应;
-   * @param dto 表单响应;
-   * @return 表单响应;
+   * 保存表单响应
    */
   @PostMapping("/save")
   public FormReaction save(@RequestBody FormReaction dto) {
@@ -30,9 +28,7 @@ public class FormReactionApi extends VLifeApi<FormReaction, FormReactionService>
   }
 
   /**
-   * 明细查询表单响应;
-   * @param id 主键id;
-   * @return 表单响应;
+   * 明细查询表单响应
    */
   @GetMapping("/detail/{id}")
   public FormReaction detail(@PathVariable String id) {
@@ -41,8 +37,6 @@ public class FormReactionApi extends VLifeApi<FormReaction, FormReactionService>
 
   /**
    * 逻辑删除;
-   * @param id 主键id;
-   * @return 已删除数量;
    */
   @DeleteMapping("/remove/{id}")
   public Long remove(@PathVariable String id) {

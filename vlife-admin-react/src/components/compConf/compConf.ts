@@ -2,7 +2,9 @@
 import { Result } from '@src/api/base';
 import { FormVo } from '@src/api/Form';
 import { FormFieldVo } from '@src/api/FormField';
-import { DataModel, DataType } from '@src/dsl/base';
+import { DataModel, DataType, OptEnum } from '@src/dsl/base';
+import { loadApiParams } from '@src/resources/ApiDatas';
+// import { filterObj } from '@src/resources/filters';
 import { ReactNode } from 'react';
 
 //给定的常量下拉选择数据结构
@@ -18,8 +20,9 @@ export type optionObj={
 //通过下拉窗口取属性或者接口值的3种方式
 export type Options=
   selectObj[]| //手写指定选项范围
-  optionObj |  //指定接口的2个字段分别取lable和value
-  ((form?:FormVo,field?:FormFieldVo)=>Promise<Partial<selectObj>[]>)// 异步函数可封装逻辑组装options  
+  loadApiParams //取值来自指定配置转换过滤的接口
+  // optionObj |  //指定接口的2个字段分别取lable和value
+  // ((form?:FormVo,field?:FormFieldVo)=>Promise<Partial<selectObj>[]>)// 异步函数可封装逻辑组装options  
 
 /**
  * 组件属性定义数据结构
@@ -64,10 +67,9 @@ export interface CompInfo{
   h?: number,//组件在grid布局里的高度
 }
 
-//结构参数和组件属性公用结构
-export interface ParamsInfo{
+export interface AttrInfo{
   label?:string, //参数名称
-  must?:boolean;//必填参数
+  required?:boolean;//必填参数
   dataType?: DataType; //属性大类 默认是basic
   dataModel:DataModel|string //基本类型
   remark?:string;//说明
@@ -78,34 +80,66 @@ export interface ParamsInfo{
    * 2:{entity:string,field:string} -> 表示去找指定的字段,**如当前没有则使用父组件上的该字段** (propload.ts)
    * 待：如为2，也找不到；且must；则页面目前没有提示
    */
-  fromField?:true|{entity:string,field:string} 
+    fromField?:true|{entity:string,field:string} 
+
+}
+//接口参数和组件属性公用结构
+export interface ParamsInfo extends AttrInfo{
+  dynamicParams?:boolean;//动态入参，采用condition来接收,默认eq
+  dynamicParamsOpt?:OptEnum;//动态入参匹配方式
+  send?:boolean;//是否发送到后端,false说明该菜单用来做数据转换筛选逻辑
 }
 
 
 //组件属性结构
-export interface CompPropInfo extends  ParamsInfo{
+export interface CompPropInfo extends  AttrInfo{
   dataSub?:CompProp //复杂对象打散的数据结构嵌套,对子节点的属性进行匹配
-  apiName?:string, //绑定指定API(则不使用type/model方式匹配)
+  apiMatch?:loadApiParams,//属性直接匹配指定的api
+  // apiMatch?:{api:string,match:string}, //绑定指定API(则不使用type/model方式匹配)
 }
 
+//是固定(string,boolean,number)值时，服务端需要专有对象对应的属性来接收
 export type ParamsObj={[key:string]:(ParamsInfo|string|boolean|number)}
+
+export type MatchObj={ [key:string]:{
+  label?:string, //转换器名称,为空则使用api的label
+  dataType:DataType; //转换后的大类
+  dataModel:DataModel|string; //转换后的模型 
+  remark?:string;//解释说明,
+  filterKey?:string[],//指定支持的过滤器的key,不传则全部可以使用，传[]则全部不使用
+  params?:ParamsObj //该类型数据需要的接口入参
+  func?:(data:any,params?:any)=>any;//数据转换方法，为空说明不转换直接使用
+ } }
+
+ // export interface filter{
+//   title:string;//过滤器标题
+//   func:(datas:any[])=>any[],
+//   dataType?:DataType;//出参数据类型。可以省
+//   dataModel?:TsType|string; //数据模型
+//   remark?:string;//解释说明
+// }
+
+// export interface filterObj{
+//   [key:string]:filter
+// }
+//过滤器结构
+export type filterObj={
+  [dbKey:string]: {
+    title:string,
+    func?:(datas:any[])=>any[]//|string// 方法过滤和字典字段过滤
+  }
+  
+} //过滤器
 //接口组成信息
 export interface ApiInfo{
-  label:string,//接口名称(ok)
+  label:string,//接口名称
   dataType: DataType; //出参数据类型-大类 和comp的属性进行比对
   dataModel:DataModel|string //出参数据类型-明细
   remark?:string;//解释说明,
-  api:(params?:any)=>Promise<Result<any>>;//异步接口primise
-  params?:ParamsObj //参数配置/固定值
+  api:(params?:any)=>Promise<Result<any>>;//关联接口
+  filters?:filterObj;//作为接口的可选过滤器，是无参数过滤器,如果必须过滤则在适配方法里完成即可
   //接口取得的数据过滤执行顺序 api->filter->match; 可选过滤的选择单独定义在src\resources\filters.ts文件；
-  filter?:(data:any,params?:any)=>any;  //强制过滤
-  match?: { //数据转换 让dataModel&dataType的出参数据类型能够转换成其他的模型实现一个接口多用
-   [key:string]:{
-    label?:string, //转换器名称,为空则使用key
-    dataType:DataType; //转换后的大类
-    dataModel:DataModel|string; //转换后的模型
-    remark?:string;//解释说明,
-    func:(data:any,params?:any)=>any;//数据转换方法
-   } 
-  },
+  match:MatchObj  //数据转换 让dataModel&dataType的出参数据类型能够转换成其他的模型实现一个接口多用
+  // params?:ParamsObj //参数配置/固定值
+  // filter?:(data:any,params?:any)=>any;  //强制过滤 待删除
 }

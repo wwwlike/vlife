@@ -28,8 +28,8 @@ export interface GroupVo extends VoBean{
   filterType: string;  //     public Integer scope;
 }
 /** 权限组列表*/
-export const listAll=(): Promise<Result<SysGroup[]>>=>{
-  return apiClient.get(`/sysGroup/list/all`);
+export const listAll=(req?:PageQuery): Promise<Result<SysGroup[]>>=>{
+  return apiClient.post(`/sysGroup/list/all`,req||{});
 };
 /** 权限组查询*/
 export const page=(req:SysGroupPageReq): Promise<Result<PageVo<SysGroup>>>=>{

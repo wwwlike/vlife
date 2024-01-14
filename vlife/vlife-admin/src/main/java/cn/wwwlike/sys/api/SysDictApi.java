@@ -18,12 +18,16 @@
 
 package cn.wwwlike.sys.api;
 import cn.wwwlike.auth.config.AuthDict;
+import cn.wwwlike.auth.entity.SysUser;
+import cn.wwwlike.auth.req.SysUserPageReq;
 import cn.wwwlike.sys.entity.SysDict;
 import cn.wwwlike.sys.req.SysDictPageReq;
 import cn.wwwlike.sys.service.SysDictService;
 import cn.wwwlike.vlife.base.OrderRequest;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.vlife.query.CustomQuery;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -36,32 +40,24 @@ import java.util.stream.Collectors;
 @RequestMapping("/sysDict")
 public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
     /**
-     * 字典项查询
+     * 字典分页
      */
     @PostMapping("/page")
     public PageVo<SysDict> page(@RequestBody SysDictPageReq req) {
-        req.qw().eq("level",2).eq("type", AuthDict.DICT_TYPE.FIELD);
+//        req.qw().eq("level",2).eq("type", AuthDict.DICT_TYPE.FIELD);
         return service.findPage(req);
-    }
-    /**
-     * 字典类型列表
-     * @return
-     */
-    @GetMapping("/list/type")
-    public List<SysDict> listType() {
-        return service.find("level",1);
     }
     /**
      * 字典列表
      */
-    @GetMapping("/all")
-    public List<SysDict> all() {
-        return service.findAll(new OrderRequest().addOrder("code", Sort.Direction.ASC)
-                .addOrder("val", Sort.Direction.ASC)
-        );
+    @PostMapping("/list")
+    public List<SysDict> list(@RequestBody PageQuery req) {
+        req.getOrder().addOrder("code", Sort.Direction.ASC)
+                .addOrder("val", Sort.Direction.ASC);
+        return service.find(req);
     }
     /**
-     * 字典项保存
+     * 字典保存
      */
     @PostMapping("/save")
     public SysDict save(@RequestBody SysDict dto) {

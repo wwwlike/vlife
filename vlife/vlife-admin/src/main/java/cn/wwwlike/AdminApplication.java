@@ -4,6 +4,7 @@ import cn.wwwlike.auth.config.UniqueNameGenerator;
 import cn.wwwlike.web.annotation.EnableRespWrap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 /**
  * @author xiaoyu
@@ -15,7 +16,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         "cn.wwwlike.sys",
         "cn.wwwlike.form",
         "cn.wwwlike.demo",
+        "cn.vlife.erp",
 },nameGenerator =UniqueNameGenerator.class )
+@EntityScan(basePackages = {"cn.wwwlike", "cn.vlife"})
 public class AdminApplication {
     public static void main(String[] args) {
         //请注意，使用本项目需要安装Java环境并使用JDK8。

@@ -9,6 +9,7 @@ import { FormVo } from "@src/api/Form";
 import VfImage from "@src/components/VfImage";
 import { FormFieldVo } from "@src/api/FormField";
 import CompLabel from "./CompLabel";
+import { loadApi } from "@src/resources/ApiDatas";
 
 /**
  * 基础数据设置
@@ -41,34 +42,21 @@ export default ({
     subName,
     listNo,
   });
-  const [selectOptions, setSelectOptions] = useState<Partial<selectObj>[]>();
+  const [selectOptions, setSelectOptions] = useState<Partial<selectObj>[]>([]);
   //sourceType 默认是固定值
   const [type, setType] = useState<sourceType>(sourceType.fixed);
   //options非数组的另外两种模式产生数组数据
   useEffect(() => {
-    if (propInfo.options && !Array.isArray(propInfo.options)) {
-      if (typeof propInfo.options === "object") {
-        const labelkey = propInfo.options.labelKey;
-        const valuekey = propInfo.options.valueKey;
-        propInfo.options.func().then((d) => {
-          setSelectOptions(
-            d.data?.map((dd) => {
-              return {
-                label: dd[labelkey],
-                value: dd[valuekey],
-              };
-            })
-          );
-        });
-      } else {
-        (
-          propInfo.options as (
-            form?: FormVo,
-            field?: FormFieldVo
-          ) => Promise<any>
-        )(formVo, field).then((d) => {
+    if (propInfo.options) {
+      if (
+        !Array.isArray(propInfo.options) &&
+        typeof propInfo.options === "object"
+      ) {
+        loadApi(propInfo.options).then((d) => {
           setSelectOptions(d);
         });
+      } else {
+        setSelectOptions(propInfo.options);
       }
     }
   }, [propInfo]);
@@ -90,7 +78,7 @@ export default ({
           }${subName || propName}
             `}
           label={propInfo.label}
-          must={propInfo.must}
+          required={propInfo.required}
           remark={propInfo.remark}
           icon={<i className={` text-blue-400  icon-knowledge_file `} />}
         />
@@ -99,21 +87,6 @@ export default ({
             {/* 1. 基础数据采用选项方式录入 */}
             {propInfo.options ? (
               <>
-                {/* option取自固定值域 */}
-                {Array.isArray(propInfo.options) && (
-                  <Select
-                    showClear
-                    className="w-full"
-                    optionList={propInfo.options}
-                    value={data.propVal}
-                    placeholder={`请选择${subName || propName}属性值`}
-                    onChange={(v) => {
-                      setData({ ...data, propVal: v });
-                    }}
-                  />
-                )}
-
-                {/* option取自接口值域 */}
                 {selectOptions && (
                   <Select
                     showClear

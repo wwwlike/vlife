@@ -143,7 +143,7 @@ public class GenericsUtils {
     /**
      * 通过反射,获得方法返回值第一个泛型参数的实际类型. 如: public Map<String, Buyer> getNames(){}
      *
-     * @param Method method 方法
+     * @param method 方法
      * @return 泛型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回
      * <code>Object.class</code>
      */
@@ -157,8 +157,8 @@ public class GenericsUtils {
      * 通过反射,获得方法输入参数第index个输入参数的所有泛型参数的实际类型. 如: public void add(Map<String,
      * Buyer> maps, List<String> names){}
      *
-     * @param Method method 方法
-     * @param int    index 第几个输入参数
+     * @param method 方法
+     * @param index 第几个输入参数
      * @return 输入参数的泛型参数的实际类型集合, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回空集合
      */
     @SuppressWarnings("unchecked")
@@ -192,7 +192,7 @@ public class GenericsUtils {
      * 通过反射,获得方法输入参数第一个输入参数的所有泛型参数的实际类型. 如: public void add(Map<String, Buyer>
      * maps, List<String> names){}
      *
-     * @param Method method 方法
+     * @param method 方法
      * @return 输入参数的泛型参数的实际类型集合, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回空集合
      */
     @SuppressWarnings("unchecked")
@@ -204,8 +204,8 @@ public class GenericsUtils {
     /**
      * 通过反射,获得Field泛型参数的实际类型. 如: public Map<String, Buyer> names;
      *
-     * @param Field field 字段
-     * @param int   index 泛型参数所在索引,从0开始.
+     * @param  field 字段
+     * @param  index 泛型参数所在索引,从0开始.
      * @return 泛型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回
      * <code>Object.class</code>
      */
@@ -231,12 +231,10 @@ public class GenericsUtils {
     /**
      * 通过反射,获得Field泛型参数的实际类型. 如: public Map<String, Buyer> names;
      *
-     * @param Field field 字段
-     * @param int   index 泛型参数所在索引,从0开始.
+     * @param field 字段
      * @return 泛型参数的实际类型, 如果没有实现ParameterizedType接口，即不支持泛型，所以直接返回
      * <code>Object.class</code>
      */
-    @SuppressWarnings("unchecked")
     public static Class getFieldGenericType(Field field) {
 
         return getFieldGenericType(field, 0);

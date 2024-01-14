@@ -1,11 +1,11 @@
 // import { AuthForm, useCurrUser, useLogin } from "@src/provider/userProvider";
 // import { useAllDict } from "@src/provider/dictProvider";
 import { TranDict } from "@src/api/base";
-import { useAllResources } from "@src/api/SysResources";
+import { list as resourcesList } from "@src/api/SysResources";
 import { useMount, useSize } from "ahooks";
 import React, { ReactNode, useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { all, SysDict } from "@src/api/SysDict";
+import { list as dictList, SysDict } from "@src/api/SysDict";
 import { currUser, ThirdAccountDto, UserDetailVo } from "@src/api/SysUser";
 import { login as userLogin } from "@src/api/login";
 import { FormVo, model, formPageReq } from "@src/api/Form";
@@ -43,7 +43,7 @@ const AuthContext = React.createContext<
       menuState: MenuState;
       setMenuState: (state: MenuState) => void;
       //所有模型
-      models: any;
+      models: { [key: string]: FormVo | undefined };
       //当前屏幕大小
       screenSize?: { width: number; height: number; sizeKey: string };
       // 所有字典信息
@@ -94,7 +94,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [allResources, setAllResources] = useState<SysResources[]>();
   //存模型信息的对象，key是modelName, modelInfoProps
   // 与数据库一致的，有UI场景的模型信息
-  const [models, setModels] = useState<any>({});
+  const [models, setModels] = useState<{ [key: string]: FormVo | undefined }>(
+    {}
+  );
   /** 数据库结构的字典信息 */
   const [dbDicts, setDbDicts] = useState<SysDict[]>([]);
   /** 权限组集合 */
@@ -103,12 +105,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   /**封装好的全量字典信息 */
   const [dicts, setDicts] = useState<dictObj>({});
   const [error, setError] = useState<string | null>();
-  const navigate = useNavigate();
-  // const { data: currUser, runAsync: runCurruser } = useCurrUser();
-  const { runAsync: asyncResources } = useAllResources();
-
-  // const { runAsync: userLogin } = useLogin();
-  // const { data: allDict, runAsync } = useAllDict();
 
   /**
    * 字典数据加载则更新
@@ -162,13 +158,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    */
   const datasInit = useCallback(() => {
     //字典初始化
-    all().then((res) => {
-      if (res.data) {
-        setDbDicts(res.data);
-      }
+    dictList().then((res) => {
+      setDbDicts(res.data || []);
     });
     //同步拉取全量资源信息
-    asyncResources({}).then((d) => {
+    resourcesList().then((d) => {
       setAllResources(d.data);
     });
     //角色组全量提取
@@ -243,7 +237,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         let form = await (await model(params)).data;
         setModels({
           ...models,
-          [key]: { ...form },
+          [key]: form,
         });
         return form;
         //组件设置json转对象

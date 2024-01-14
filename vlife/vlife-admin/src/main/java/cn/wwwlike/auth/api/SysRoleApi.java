@@ -9,6 +9,7 @@ import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -56,9 +57,9 @@ public class SysRoleApi extends VLifeApi<SysRole, SysRoleService> {
   /**
    * 角色列表
    */
-  @GetMapping("/list/all")
-  public List<SysRole> listAll() {
-    return service.findAll();
+  @PostMapping("/list/all")
+  public List<SysRole> listAll(@RequestBody PageQuery req) {
+    return service.find(req);
   }
   /**
    * 角色删除

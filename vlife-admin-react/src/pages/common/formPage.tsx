@@ -6,6 +6,7 @@ import { IdBean } from "@src/api/base";
 import { VF, VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
+import { isNull } from "lodash";
 const mode = import.meta.env.VITE_APP_MODE;
 /**
  * 入参：formData=> 表单初始化数据
@@ -109,22 +110,16 @@ const FormPage = <T extends IdBean>({
   const formPageReaction = useMemo((): VfAction[] => {
     let pageReaction: VfAction[] = [];
     model?.fields.forEach((f) => {
-      if (design !== true) {
-        if (f.create_hide) {
-          pageReaction.push(
-            VF.result(initData.id === undefined)
-              .then(f.fieldName)
-              .hide()
-          );
-        }
-        if (f.modify_read) {
-          pageReaction.push(
-            VF.result(initData.id !== null)
-              .then(f.fieldName)
-              .readPretty()
-          );
-        }
-      }
+      // if (design !== true) {
+      //   if (f.create_hide) {
+      //     pageReaction.push(VF.result(!initData.id).then(f.fieldName).hide());
+      //   }
+      //   if (f.modify_read) {
+      //     pageReaction.push(
+      //       VF.result(initData.id).then(f.fieldName).readPretty()
+      //     );
+      //   }
+      // }
     });
     return reaction ? [...reaction, ...pageReaction] : pageReaction;
   }, [reaction, model, design, initData]);

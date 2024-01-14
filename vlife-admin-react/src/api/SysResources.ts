@@ -22,6 +22,7 @@ export interface SysResources extends DbEntity ,ITree,IFkItem {
   state:string//鉴权状态 1鉴权 0不鉴权 -1 待处理
   remark:string//说明
   formId:string//所属板块
+  permission:string;//授权方式
 }
 // 类说明
 export interface ResourcesDto extends SaveBean {
@@ -84,25 +85,25 @@ export const roleAllResources = (params: {
 }): Promise<Result<SysResources[]>> => {
   return apiClient.get(`/sysResources/roleAllResources/${params.id}`);
 };
+// /**
+//  * 全量的资源数据
+//  */
+// export const list = (params: {
+//   sysMenuId?: string;
+//   ids?: string[];
+//   formId?: string;
+// }): Promise<Result<SysResources[]>> => {
+//   return apiClient.get(`/sysResources/list`,{params:{...params}});
+// };
+
 /**
- * 全量的资源数据
+ * 
+ * @param params 资源查询
+ * @returns 
  */
-export const list = (params: {
-  sysMenuId?: string;
-  ids?: string[];
-  formId?: string;
-}): Promise<Result<SysResources[]>> => {
-  return apiClient.get(`/sysResources/list`,{params:{...params}});
+export const list = (params?: PageQuery): Promise<Result<SysResources[]>> => {
+  return apiClient.post(`/sysResources/list`,params||{});
 };
-
-
-/**
- * 请求全部资源
- */
- export const useAllResources = (
-  options: Options<Result<SysResources[]>, any> = { manual: true }
-) => useRequest(list, options);
-
 
 //请求菜单可访问的资源
 export const listMenuUseableResources = (params:{sysMenuId:string}): Promise<Result<SysResources[]>> => {

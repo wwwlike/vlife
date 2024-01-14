@@ -16,7 +16,6 @@ public class MenuVo implements VoBean<SysMenu> {
     public String url;
     public Integer sort;
     public String icon;
-    public String entityType;
     public boolean app;
     public String sysRoleId;
     public String formId;

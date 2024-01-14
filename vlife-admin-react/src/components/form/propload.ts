@@ -2,9 +2,9 @@ import {
   PageComponentProp,
   PageComponentPropDto,
 } from "@src/api/PageComponentProp";
-import { DataModel, sourceType } from "@src/dsl/base";
+import { DataModel, OptEnum, sourceType } from "@src/dsl/base";
 import { Field } from "@formily/core";
-import { filterFuns } from "@src/resources/filters";
+// import { filterFuns } from "@src/resources/filters";
 import {
   CompInfo,
   CompProp,
@@ -12,7 +12,7 @@ import {
   ParamsInfo,
   ParamsObj,
 } from "../compConf/compConf";
-import { apiDatas } from "@src/resources/ApiDatas";
+import { apiDatas, loadApi } from "@src/resources/ApiDatas";
 import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 
@@ -168,7 +168,7 @@ const hasAllValues=(paramObjs:any,params:ParamsObj):boolean=>{
     }else{
       const paramInfo:ParamsInfo=params[paramName] as ParamsInfo;//参数信息
       const paramObj=paramObjs[paramName]; //参数值
-      if(paramInfo.must===undefined||paramInfo.must===false||(
+      if(paramInfo.required===undefined||paramInfo.required===false||(
         paramObj!==undefined &&paramObj!==null&& //有字段有值
         (!Array.isArray(paramObj)||(Array.isArray(paramObj)&&paramObj.length>0))
       )){
@@ -178,7 +178,26 @@ const hasAllValues=(paramObjs:any,params:ParamsObj):boolean=>{
     }
   })
 }
-
+/**
+ * 1. 取出动态属性，组装进conditions里
+ * 2. 取出不用给后端的参数      ((allParam[k] as ParamsInfo).send!==false)&& //
+ */
+export const dynamicParamsTran=(obj:any,params:ParamsObj):any=>{
+  const paramName:string[]=Object.keys(params);
+  // 
+  const where=paramName.filter(key=> typeof params[key]==="object"&& (params[key] as ParamsInfo).dynamicParams && (params[key] as ParamsInfo).send!==false ).map(key=>{
+    return {
+      fieldName:key,
+      opt: (params[key] as ParamsInfo).dynamicParamsOpt||OptEnum.eq,
+      value: Array.isArray(obj[key])?obj[key]:[obj[key]],
+    }
+  })
+  const {...newObj}=obj
+  paramName.filter(key=> typeof params[key]==="object" && ((params[key] as ParamsInfo).dynamicParams||(params[key] as ParamsInfo).send===false)).forEach(key=> {
+    delete newObj[key];
+  })
+  return {...newObj, conditionGroups: [{ where }],};
+}
 /**
  * 异步方式请求组件属性信息
  */
@@ -205,9 +224,11 @@ export const fetchPropObj = (
           if (prop.propVal && prop.propName) {
             if (prop.sourceType === sourceType.api) {
               const apiInfo = apiDatas[prop.propVal]; //接口配置信息
-              const allParam = apiInfo?.params; //接口入参配置信息
+              const allParam=prop.relateVal?apiDatas[prop.propVal]?.match?.[prop.relateVal]?.params:{};
+              // const allParam = {...apiInfo?.params,...matchParams}; //接口入参配置信息
               const paramNames: string[] =
                 allParam !== undefined ? Object.keys(allParam) : []; //所有参数name数组
+            
               const paramObj: any = {}; //参数对象
               //参数来源于同表单/页面的其他字段(组件)
               if (allParam) {
@@ -230,7 +251,7 @@ export const fetchPropObj = (
               paramNames.filter(name=> 
                 typeof allParam[name] !== "string" &&
                 typeof allParam[name] !== "boolean" &&
-                typeof allParam[name] !== "number"
+                typeof allParam[name] !== "number" 
               ).forEach((name) => {
                   const paramInfo: ParamsInfo = allParam[name] as ParamsInfo;
                   //数据库里查找param字段
@@ -243,6 +264,8 @@ export const fetchPropObj = (
                     }else if (db[0].sourceType === sourceType.field) {
                       paramObj[name] = field.query(db[0].paramVal).get("value");
                     }
+                }else{
+                  // alert("找不到")
                 }
               });
               //传参配置里是固定值
@@ -255,62 +278,17 @@ export const fetchPropObj = (
                 paramObj[name] = allParam[name];
               })
               }
-              //执行接口，组装组件prop属性对象(直接赋值/转换赋值)  //接口异步请求到的数据，存储到缓存里
-              if  (apiInfo &&  apiInfo.api&& (apiInfo.params==undefined||hasAllValues(paramObj,apiInfo.params))){
-                propsObj = await apiInfo.api({ ...paramObj }).then((d) => {
-                  //异步请求到的数据
-                  let datas = d.data;
-                  //1. api里指定的过滤器
-                  if (apiInfo.filter) {
-                    //api方法要求都是对象,
-                    datas = apiInfo.filter(datas, paramObj);
-                  }
-                  //2 用户配置的数据过滤执行
-                  if (prop.filterFunc  && datas) {
-                    const filterFunNames=prop.filterFunc.split(",")
-                    if(filterFuns[prop.filterFunc]){//一种过滤方式
-                      datas = filterFuns[prop.filterFunc].func(datas); //数据过滤
-                    }else if(filterFunNames.length>1) {
-                      const filterDatas=filterFunNames.map(funName=>filterFuns[funName].func(datas))
-                      if(prop.filterConnectionType==="or"){
-                        //并集
-                        datas =   filterDatas.reduce((acc, arr) => {
-                          arr.forEach(obj => {
-                            if (!acc.some(item => item.id === obj.id)) {
-                              acc.push(obj);
-                            }
-                          });
-                          return acc;
-                        }, []);
-                      }else{
-                        //交集
-                        datas =  filterDatas.reduce((acc, arr) => {
-                          arr.forEach(obj => {
-                            if (filterDatas.every(subArr => subArr.some(item => item.id === obj.id))) {
-                              if (!acc.some(item => item.id === obj.id)) {
-                                acc.push(obj);
-                              }
-                            }
-                          });
-                          return acc;
-                        }, []);
-                      }
-                    }
-                  }
-                  //执行数据转换
-                  if (prop.relateVal && apiInfo.match) {
-                    //数据一致的转换函数
-                    datas = apiInfo.match[prop.relateVal].func(datas,paramObj);
-                  }
+              if  (prop.sourceType==="api"&& apiInfo &&prop.relateVal&& (allParam===undefined||hasAllValues(paramObj,allParam))){
+                //对入参进行转换，动态参数放入到 conditions里
+                propsObj = await loadApi({apiInfoKey:prop.propVal,paramObj,match:prop.relateVal,filterConnectionType:prop.filterConnectionType,filterFunc:prop.filterFunc}).then((d) => {
                   if (prop.propName && prop.propName in propsObj === false) {
-                    propsObj = valueAdd(prop, propsObj, datas);
+                    propsObj = valueAdd(prop, propsObj, d);
                   }
                   return propsObj;
-                });
-          
-              } else {
+                })
+              }
+              else {
                 propsObj = valueAdd(prop, propsObj, undefined);
-                // alert("为空")
               }
             } else if (prop.sourceType === sourceType.field && field) {
               valueAdd(prop, propsObj, field.query(prop.propVal).get("value"));

@@ -47,7 +47,7 @@ export function extractFromFields(
         typeof compInfo.props[k] === "object" &&
         (compInfo.props[k] as CompPropInfo).fromField &&
         (compInfo.props[k] as CompPropInfo).fromField !== true &&
-        (compInfo.props[k] as CompPropInfo).must == true
+        (compInfo.props[k] as CompPropInfo).required == true
     )
     .map(
       (key) =>

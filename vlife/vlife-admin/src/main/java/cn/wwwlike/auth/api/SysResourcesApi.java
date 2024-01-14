@@ -6,11 +6,15 @@ import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.auth.service.SysRoleService;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
+import cn.wwwlike.vlife.base.PageableRequest;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.QueryWrapper;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +36,6 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
     public PageVo<SysResources> page(@RequestBody SysResourcesPageReq req) {
         return service.findPage(req);
     }
-
     /**
      * 资源保存
      */
@@ -49,25 +52,10 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
     }
     /**
      * 资源列表
-     * 可查全量的资源数据和指定菜单的资源以及指定主键的资源
      */
-    @GetMapping("/list")
-    public List<SysResources> list(String formId,String[] ids,String sysMenuId) {
-       return service.find(
-               QueryWrapper.of(SysResources.class)
-                       .eq(formId!=null,"formId", formId)
-                       .eq(sysMenuId!=null,"sysMenuId", formId)
-                     .in(ids!=null,"id",ids)
-       );
-    }
-    /**
-     * 可用资源
-     * 查询指定模块下指定菜单可以绑定的资源
-     */
-    @GetMapping("/list/menuUseableResources")
-    public List<SysResources> listMenuUseableResources(String sysMenuId){
-        SysMenu menu=menuService.findOne(sysMenuId);
-        return service.menuUseableResources(menu.getFormId(),sysMenuId);
+    @PostMapping("/list")
+    public List<SysResources> list(@RequestBody PageQuery req) {
+       return service.find(req);
     }
     /**
      * 资源删除

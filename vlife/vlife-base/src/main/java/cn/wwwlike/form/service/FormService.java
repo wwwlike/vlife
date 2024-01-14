@@ -132,6 +132,10 @@ public class FormService extends VLifeService<Form, FormDao> {
         if(javaDto!=null&&javaDto.commentRead) {
             if (formDto != null) {//更新
                 boolean formChange=false;
+                if(formDto.getTypeParentsStr()==null&&javaDto.getParentsName()!=null){
+                    formDto.setTypeParentsStr(String.join(",", javaDto.getParentsName()));
+                    formChange=true;
+                }
                 if ((javaDto.getTitle()!=null&&!javaDto.getTitle().equals(formDto.getTitle()))) {
                     if(formDto.getTitle()==null||formDto.getTitle().equals(formDto.getName())){
                         formDto.setName(javaDto.getTitle());
@@ -242,6 +246,7 @@ public class FormService extends VLifeService<Form, FormDao> {
                     int size = dto.getFields().size();
                     dto.setModelSize(size > 16 ? 4 : size > 10 ? 3 : 2);
                 }
+                dto.setTypeParentsStr(String.join(",", javaDto.getParentsName()));
                 dto.setPageSize(10);
                 dto.setName(dto.getTitle());
                 save(dto);

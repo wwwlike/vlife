@@ -17,17 +17,13 @@ export interface SysDictPageReq extends PageQuery{
   code: string;  // 字典分类
   sys: boolean;  // 系统项
 }
-/** 字典查询*/
+/** 字典分页*/
 export const page=(req:SysDictPageReq): Promise<Result<PageVo<SysDict>>>=>{
   return apiClient.post(`/sysDict/page`,req);
 };
-/** 字典大类*/
-export const listType=(): Promise<Result<SysDict[]>>=>{
-  return apiClient.get(`/sysDict/list/type`);
-};
-/** 全部字典*/
-export const all=(): Promise<Result<SysDict[]>>=>{
-  return apiClient.get(`/sysDict/all`);
+/** 列表查询*/
+export const list=(req?:PageQuery): Promise<Result<SysDict[]>>=>{
+  return apiClient.post(`/sysDict/list`,req||{});
 };
 /** 字典编辑*/
 export const save=(dto:Partial<SysDict>): Promise<Result<SysDict>>=>{

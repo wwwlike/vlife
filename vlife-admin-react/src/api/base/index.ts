@@ -1,3 +1,4 @@
+import { ConditionGroup, Conditions, where } from '@src/dsl/base';
 import { SysDict } from "../SysDict";
 
 /**
@@ -74,11 +75,18 @@ export interface Result<D> {
 /**
  * 分页查询条件
  */
-export interface PageQuery {
+export interface PageQuery extends CustomQuery {
   pager: {
     page: number;
     size: number;
   };
+}
+/**
+ * 一般分页
+ */
+export interface CustomQuery {
+  conditions:Conditions
+  conditionGroups:ConditionGroup[];
 }
 
 /**

@@ -275,6 +275,7 @@ export function randomStr(length: number): string {
   return result;
 }
 
+/**字符串中间用/分隔 */
 export function placeholderJoin(...args: (string | undefined | null)[]): string {
   return args.filter(arg => !!arg).join('/');
 }

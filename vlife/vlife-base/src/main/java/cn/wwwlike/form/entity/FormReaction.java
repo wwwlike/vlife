@@ -26,9 +26,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * 表单响应
- *
- * 记录和formField
+ * 事件响应
  */
 @Entity
 @Data
@@ -42,7 +40,6 @@ public class FormReaction extends DbEntity {
      * 响应字段
      */
     public String formFieldId;
-
     /**
      * 响应的字段
      */

@@ -21,15 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 触发事件接口;
+ * 表单事件接口
  */
 @RestController
 @RequestMapping("/formEvent")
 public class FormEventApi extends VLifeApi<FormEvent, FormEventService> {
   /**
-   * 保存字段事件响应表单;
-   * @param dto 字段事件响应表单;
-   * @return 字段事件响应表单;
+   * 保存字段事件响应表单
    */
   @PostMapping("/save/formEventDto")
   public FormEventDto saveFormEventDto(@RequestBody FormEventDto dto) {
@@ -37,9 +35,7 @@ public class FormEventApi extends VLifeApi<FormEvent, FormEventService> {
   }
 
   /**
-   * 明细查询触发事件;
-   * @param id 主键id;
-   * @return 触发事件;
+   * 触发事件详情
    */
   @GetMapping("/detail/{id}")
   public FormEvent detail(@PathVariable String id) {
@@ -57,11 +53,8 @@ public class FormEventApi extends VLifeApi<FormEvent, FormEventService> {
     wrapper.eq("formId",formId);
     return service.query(FormEventVo.class, wrapper);
   }
-
   /**
-   * 逻辑删除;
-   * @param id 主键id;
-   * @return 已删除数量;
+   * 事件删除
    */
   @DeleteMapping("/remove/{id}")
   public Long remove(@PathVariable String id) {

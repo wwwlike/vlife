@@ -108,7 +108,5 @@ public class AdminStartInitializer implements ApplicationRunner {
         //
         //部门初始化
         sysDeptService.initEmptyCodeDepts();
-        //菜单关联到模型
-        menuService.assignFormToMenu(formService.find("itemType","entity"));
     }
 }

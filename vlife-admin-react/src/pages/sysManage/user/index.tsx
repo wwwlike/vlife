@@ -1,8 +1,7 @@
 import React from "react";
-import { remove, reset, save, state, SysUser } from "@src/api/SysUser";
+import { reset, state, SysUser } from "@src/api/SysUser";
 import { IconPlay, IconForward, IconStop } from "@douyinfe/semi-icons";
 import Content from "../../template/content";
-import { VF } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
 import { OptEnum } from "@src/dsl/base";
 export default () => {
@@ -11,6 +10,7 @@ export default () => {
     <Content<SysUser>
       listType="sysUser"
       // tabDictField="state"
+      // filterType="sysUserPageReq"
       tabList={[
         {
           itemKey: "state1",
@@ -25,15 +25,41 @@ export default () => {
           req: [{ fieldName: "state", opt: OptEnum.eq, value: ["-1"] }],
         },
       ]}
-      // filterType="sysUserPageReq"
-      reaction={[
-        // VF.result(user?.superUser !== true)
-        //   .then("superUser")
-        //   .hide(),
-        VF.field("username")
-          .regex(/^[a-zA-Z0-9]+$/)
-          .then("username")
-          .feedback("不能包含特殊字符串"),
+      otherBtns={[
+        {
+          title: "密码重置",
+          actionType: "api",
+          icon: <IconForward />,
+          multiple: true,
+          onSaveBefore(data: SysUser[]) {
+            return data.map((d) => d.id);
+          },
+          saveApi: reset,
+        },
+        {
+          title: "停用",
+          icon: <IconStop />,
+          disabledHide: true,
+          actionType: "api",
+          usableMatch: { state: "1" },
+          // model: "sysUser",
+          onSaveBefore(data: SysUser) {
+            return { id: data.id, state: "-1" };
+          },
+          saveApi: state,
+        },
+        {
+          title: "启用",
+          icon: <IconPlay />,
+          actionType: "api",
+          usableMatch: { state: "-1" },
+          disabledHide: true,
+          // model: "sysUser",
+          onSaveBefore(data: SysUser) {
+            return { id: data.id, state: "1" };
+          },
+          saveApi: state,
+        },
       ]}
     />
   );

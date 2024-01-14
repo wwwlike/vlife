@@ -35,8 +35,8 @@ export const page=(req:SysRolePageReq): Promise<Result<PageVo<SysRole>>>=>{
   return apiClient.post(`/sysRole/page`,req);
 };
 /** 角色列表*/
-export const listAll=(): Promise<Result<SysRole[]>>=>{
-  return apiClient.get(`/sysRole/list/all`);
+export const listAll=(req?:PageQuery): Promise<Result<SysRole[]>>=>{
+  return apiClient.post(`/sysRole/list/all`,req||{});
 };
 /** 角色删除*/
 export const remove=(ids:String[]): Promise<Result<number>>=>{

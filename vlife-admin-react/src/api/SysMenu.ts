@@ -1,6 +1,6 @@
 import { allRoute } from "@src/router";
 import apiClient from "@src/api/base/apiClient";
-import { DbEntity, Result, SaveBean } from "@src/api/base";
+import { DbEntity, PageQuery, Result, SaveBean } from "@src/api/base";
 import { SysResources } from "@src/api/SysResources";
 import { FormVo } from './Form';
 // 菜单
@@ -15,10 +15,10 @@ export interface SysMenu extends DbEntity {
   app: boolean; //是否作为APP
   sort: number; //排序号
   sysRoleId: string; //绑定的角色
-  // plus
-  confPage: boolean; //是否连接到配置页面
-  pageLayoutId: string; //配置页面信息
   formId:string;
+  // plus
+  // confPage: boolean; //是否连接到配置页面
+  // pageLayoutId: string; //配置页面信息
 }
 
 /**
@@ -31,15 +31,14 @@ export interface MenuVo extends DbEntity {
   name: string; // 菜单名称
   icon: string; // 图标
   url: string; // 路由地址
-  // entityType: string; //对应模型
   sort: number; //排序号
-  sysResourcesList: SysResources[]; //接口数据
   sysRoleId: string; //绑定的角色
   placeholderUrl:string;
   pageLayoutId: string; //配置页面信息
   formId:string;
+  sysResourcesList: SysResources[]; //接口数据
   // plus
-  confPage: boolean; //是否连接到配置页面
+  // confPage: boolean; //是否连接到配置页面
   // pageLayout:PageLayout;//配置页面信息
 }
 
@@ -81,8 +80,8 @@ export const detail = (id: string): Promise<Result<SysMenu>> => {
  * @param id ;
  * @return 菜单;
  */
-export const listAll = (): Promise<Result<MenuVo[]>> => {
-  return apiClient.get(`/sysMenu/list/all`);
+export const listAll = (req?:PageQuery): Promise<Result<MenuVo[]>> => {
+  return apiClient.post(`/sysMenu/list/all`,req||{});
 };
 /**
  * 逻辑删除;
@@ -110,38 +109,6 @@ export const roleResources = (req: {
 */
 export const appFormVo=(appId: string): Promise<Result<FormVo[]>>=>{
   return apiClient.get(`/sysMenu/appFormVo/${appId}`  );
-};
-
-// 自己添加
-export const allRouter = (): { label: string; value: string }[] => {
-  const all: { label: string; value: string }[] = [];
-  const child = (
-    path: string | null,
-    route: any,
-    all: { label: string; value: string }[]
-  ) => {
-    const thisPath =
-      path === null
-        ? route.path
-        : path.endsWith("/")
-        ? path + route.path
-        : path + "/" + route.path;
-    all.push({
-      label: `${thisPath} ${
-        route.element.props.titleId ? route.element.props.titleId : ""
-      }`,
-      value: thisPath,
-    });
-    if (route.children) {
-      route.children.forEach((c: any) => {
-        child(thisPath, c, all);
-      });
-    }
-  };
-  allRoute.forEach((r) => {
-    child(null, r, all);
-  });
-  return all;
 };
 
 /** 

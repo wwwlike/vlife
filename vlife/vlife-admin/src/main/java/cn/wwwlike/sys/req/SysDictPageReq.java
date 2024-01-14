@@ -17,27 +17,14 @@
  */
 
 package cn.wwwlike.sys.req;
-
 import cn.wwwlike.sys.entity.SysDict;
-import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import lombok.Data;
-
 /**
- * 类说明
- *
- * @author xiaoyu
- * @date 2022/7/19
+ * 字典查询
  */
 @Data
 public class SysDictPageReq extends PageQuery<SysDict> {
-    /**
-     * 字典分类
-     */
     public String code;
-
     public Boolean sys;
-
-//    public Boolean dictType;
-
 }

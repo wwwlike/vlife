@@ -8,9 +8,10 @@ import { ParamsInfo, selectObj } from "../compConf";
 import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import CompLabel from "./CompLabel";
+import { loadApi } from "@src/resources/ApiDatas";
 
 /**
- * 接口入参设置
+ * 单个接口入参设置
  */
 export interface ParamsSettingProps {
   paramName: string; //参数标识
@@ -42,31 +43,16 @@ export default ({
 
   //异步下拉框组装
   useEffect(() => {
-    if (paramInfo.options && !Array.isArray(paramInfo.options)) {
-      if (typeof paramInfo.options === "object") {
-        const labelkey = paramInfo.options.labelKey;
-        const valuekey = paramInfo.options.valueKey;
-        paramInfo.options.func().then((d) => {
-          setSelectOptions(
-            d.data?.map((dd) => {
-              return {
-                label: dd[labelkey],
-                value: dd[valuekey],
-              };
-            })
-          );
-          setType(sourceType.fixed);
-        });
-      } else {
-        (
-          paramInfo.options as (
-            form?: FormVo,
-            field?: FormFieldVo
-          ) => Promise<any>
-        )(formVo, field).then((d) => {
-          setType(sourceType.fixed);
+    if (paramInfo.options) {
+      if (
+        !Array.isArray(paramInfo.options) &&
+        typeof paramInfo.options === "object"
+      ) {
+        loadApi(paramInfo.options).then((d) => {
           setSelectOptions(d);
         });
+      } else {
+        setSelectOptions(paramInfo.options);
       }
     }
   }, [paramInfo]);
@@ -93,51 +79,30 @@ export default ({
   return (
     <div className="flex space-x-2 mb-2 w-full mt-2 items-center">
       <CompLabel
-        must={paramInfo.must}
+        required={paramInfo.required}
         code={paramName}
-        label={paramInfo.label}
+        // label={paramInfo.label}
         remark={paramInfo.remark || remark}
         icon={<i className={` text-red-400  icon-laptop_mac  `} />}
       />
       {paramInfo.fromField === undefined && (
         <>
-          {/* 1 下拉方式取值 */}
-          {paramInfo.options && (
-            <>
-              {/* 1.1 options来自固定的值域 */}
-              {Array.isArray(paramInfo.options) && (
-                <Select
-                  className="w-full"
-                  optionList={paramInfo.options}
-                  placeholder={`[${paramInfo.dataType}/${paramInfo.dataModel}]接口参数选择`}
-                  value={data.paramVal}
-                  onChange={(v) => {
-                    setData({
-                      ...data,
-                      sourceType: type,
-                      paramVal: v?.toString(),
-                    });
-                  }}
-                />
-              )}
-
-              {/* 1.2 options来自接口的值域 */}
-              {selectOptions && (
-                <Select
-                  className="w-full"
-                  placeholder={`[${paramInfo.dataType}/${paramInfo.dataModel}]接口参数选择`}
-                  optionList={selectOptions}
-                  value={data.paramVal}
-                  onChange={(v) => {
-                    setData({
-                      ...data,
-                      sourceType: type,
-                      paramVal: v?.toString(),
-                    });
-                  }}
-                />
-              )}
-            </>
+          {/*  1 下拉方式取值 */}
+          {selectOptions && (
+            <Select
+              className="w-full"
+              // placeholder={`[${paramInfo.dataType}/${paramInfo.dataModel}]接口参数选择`}
+              placeholder={`${paramInfo.label}`}
+              optionList={selectOptions}
+              value={data.paramVal}
+              onChange={(v) => {
+                setData({
+                  ...data,
+                  sourceType: type,
+                  paramVal: v?.toString(),
+                });
+              }}
+            />
           )}
           {/* 2手写入参 */}
           {(paramInfo.dataType === undefined ||
@@ -149,7 +114,8 @@ export default ({
                   <Input
                     className="w-full"
                     value={data.paramVal}
-                    placeholder={`[${paramInfo.dataType}/${paramInfo.dataModel}]接口参数值录入`}
+                    // placeholder={`[${paramInfo.dataType}/${paramInfo.dataModel}]接口参数值录入`}
+                    placeholder={`${paramInfo.label}`}
                     onChange={(v) => {
                       setData({
                         ...data,
@@ -162,7 +128,7 @@ export default ({
                 {paramInfo.dataModel === DataModel.date && (
                   <TimePicker
                     value={data.paramVal}
-                    placeholder={`接口入参`}
+                    placeholder={`${paramInfo.label}`}
                     onChange={(v) => {
                       setData({
                         ...data,
@@ -175,7 +141,7 @@ export default ({
                 {paramInfo.dataModel === DataModel.number && (
                   <InputNumber
                     value={data.paramVal}
-                    placeholder={`接口入参`}
+                    placeholder={`${paramInfo.label}`}
                     onChange={(v) => {
                       setData({
                         ...data,

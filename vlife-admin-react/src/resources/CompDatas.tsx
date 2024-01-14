@@ -83,7 +83,7 @@ export const FormComponents: CompDatas = {
     props: {
       options: {
         label: "复选框数据",
-        must: true,
+        required: true,
         dataType: DataType.array,
         dataModel: "ISelect",
       },
@@ -91,6 +91,7 @@ export const FormComponents: CompDatas = {
         label: "排列方向",
         dataType: DataType.basic,
         dataModel: DataModel.string,
+        // options: { apiInfoKey: "dictOpenApi", match: "ISelect_TYPE" },
         options: [
           { label: "横向", value: "horizontal" },
           { label: "纵向", value: "vertical" },
@@ -134,7 +135,7 @@ export const FormComponents: CompDatas = {
     props: {
       optionList: {
         label: "字典数据",
-        apiName: "dictDatas",
+        apiMatch: { apiInfoKey: "dictOpenApi", match: "ISelect_ITEMS" },
         dataType: DataType.array,
         dataModel: "ISelect",
       },
@@ -203,7 +204,7 @@ export const FormComponents: CompDatas = {
   //       label: "可选数据类型",
   //       dataType: DataType.array,
   //       dataModel: "ITree",
-  //       must: true,
+  //       required: true,
   //     },
   //   },
   // },
@@ -220,7 +221,7 @@ export const FormComponents: CompDatas = {
         label: "树形结构数据",
         dataType: DataType.array,
         dataModel: "ITreeData",
-        must: true,
+        required: true,
       },
       outerBottomSlot: <QuickCreate />,
       saveData: {
@@ -272,7 +273,7 @@ export const FormComponents: CompDatas = {
         label: "字典数据",
         dataModel: "ISelect",
         dataType: DataType.array,
-        must: true,
+        required: true,
       },
     },
   },
@@ -287,7 +288,7 @@ export const FormComponents: CompDatas = {
         label: "选项数据",
         dataType: DataType.array,
         dataModel: "ITree",
-        must: true,
+        required: true,
       },
       expandAll: false,
       valField: "code",
@@ -304,7 +305,7 @@ export const FormComponents: CompDatas = {
         label: "分组数据",
         dataType: DataType.array,
         dataModel: "PageSelectData",
-        must: true,
+        required: true,
       },
       dataEmpty: {
         label: "空数据时文案",
@@ -322,7 +323,7 @@ export const FormComponents: CompDatas = {
     icon: "IconComponent",
     props: {
       appId: {
-        must: true,
+        required: true,
         label: "应用ID",
         dataType: DataType.basic,
         dataModel: DataModel.string,
@@ -330,7 +331,7 @@ export const FormComponents: CompDatas = {
       },
       roleId: {
         label: "角色id",
-        must: true,
+        required: true,
         dataType: DataType.basic,
         dataModel: DataModel.string,
         fromField: { entity: "sysRole", field: "id" },

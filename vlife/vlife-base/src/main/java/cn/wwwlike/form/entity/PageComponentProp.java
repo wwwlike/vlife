@@ -18,25 +18,20 @@ public class PageComponentProp extends DbEntity {
     /***
      * 所属组件
      */
-    public String pageComponentId;
-
+//    public String pageComponentId;
     /**
      * 关联字段
      * FormField里选择x_component后，其属性信息在本表里存储
      */
     public String formFieldId;
-
     /**
      * 属性名称
      */
     public String propName;
-
-
     /**
      * 子属性名称
      */
     public String subName;
-
     /**
      * 数组排序号
      */
@@ -51,22 +46,21 @@ public class PageComponentProp extends DbEntity {
      * 属性值
      */
     public String propVal;
-
     /**
-     * 接口转换key
+     * 接口数据适配
      * match->func-key
      */
     public String relateVal;
-
     /***
      * 数据过滤
-     * 支持多个条件过滤，
-     * 多个条件之间用逗号隔开，
+     * 多个过滤器之间用逗号隔开，字段与字段值之间用冒号隔开
+     * [type:eee,ageFunc] 表示使用查询type=eee和ageFunc函数进行数据过过滤
      */
     public String filterFunc;
-
-    // 多个过滤条件的连接方式
-    // and/or 交集/并集
+    /**
+     * 过滤条件的连接方式
+     * and/or
+     */
     public String filterConnectionType;
 
 }

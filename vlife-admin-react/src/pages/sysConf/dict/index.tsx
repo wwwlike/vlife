@@ -9,6 +9,7 @@ export default () => {
     <Content<SysDict>
       listType="sysDict"
       filterType="sysDictPageReq"
+      req={{ level: 2, type: "field" }}
       onReq={(d: any) => {
         setReq({ ...d });
       }}
@@ -22,8 +23,7 @@ export default () => {
             VF.then("level", "type").hide(),
           ],
           actionType: "create",
-          usableMatch: (...datas: any[]) =>
-            req?.code === undefined ? "请在左侧选择一个字典类目" : true,
+          usableMatch: req?.code ? true : "请在左侧选择一个字典类目",
           saveApi: save,
         },
         {

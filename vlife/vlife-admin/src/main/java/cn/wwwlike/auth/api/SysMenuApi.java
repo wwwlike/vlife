@@ -5,6 +5,8 @@ import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.req.SysMenuPageReq;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.auth.vo.MenuVo;
+import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.bean.DbEntity;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import cn.wwwlike.vlife.query.req.PageQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,18 +30,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 菜单接口;
+ * 菜单接口
  */
 @RestController
 @RequestMapping("/sysMenu")
 public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
   @Autowired
   public SysResourcesService resourcesService;
+
+  @Autowired
+  public FormService formService;
   /**
    * 菜单保存
    */
   @PostMapping("/save")
   public SysMenu save(@RequestBody SysMenu dto) {
+    if(dto.getFormId()!=null&&dto.getPlaceholderUrl()==null&&dto.getUrl()!=null&&dto.getUrl().indexOf("*")!=-1){
+      Form form=formService.findOne(dto.getFormId());
+      dto.setPlaceholderUrl(form.getType());
+    }
     return service.save(dto);
   }
   /**
@@ -51,9 +61,9 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
   /**
    * 菜单列表
    */
-  @GetMapping("/list/all")
-  public List<MenuVo> listAll() {
-    return service.queryAll(MenuVo.class);
+  @PostMapping("/list/all")
+  public List<MenuVo> listAll(@RequestBody PageQuery req) {
+    return service.query(MenuVo.class,req);
   }
   /**
    * 菜单查询

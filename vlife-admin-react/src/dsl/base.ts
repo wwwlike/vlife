@@ -67,7 +67,7 @@ export enum DataModel{
 export interface where {
   fieldId:string,
   /** 搜索条件来源 */
-  from: "searchInput" | "coulumnFilter" | "queryBuilder";
+  from?: "searchInput" | "coulumnFilter" | "queryBuilder";
   /** 字段 */
   fieldName: string;
   /** 所在实体类 */
@@ -75,7 +75,7 @@ export interface where {
   /** 字段类型 */
   fieldType?: "string" | "number" | "date" | "boolean";
   /** 匹配方式 */
-  opt: string;
+  opt: OptEnum;
   /** 转换函数 */
   tran: string;
   /** 匹配值 */
@@ -85,14 +85,15 @@ export interface where {
 }
 //简单条件分组 where内部是and(且条件), where之间是or(或条件)
 export interface ConditionGroup {
+  entityName:string;
   where: Partial<where>[];
 }
 
 export type andOr = "and" | "or";
 
 //复杂条件分组，每组内部由orAnd决定联合方式
-export interface FormItemCondition {
+export interface Conditions {
   orAnd: andOr;
   where: Partial<where>[];
-  conditions: Partial<FormItemCondition>[];
+  conditions: Partial<Conditions>[];
 }

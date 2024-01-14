@@ -8,6 +8,7 @@ export interface SysDept extends DbEntity,ITree{
   name: string;  // 部门名称
   parentId: string;  // 上级部门id
 }
+
 export interface SysDeptUserDto extends SaveBean,ITree{
   sysUser_id: string[];  // 用户
   code: string;  // 编码
@@ -28,8 +29,8 @@ export const save=(dto: SysDept): Promise<Result<SysDept>>=>{
   return apiClient.post(`/sysDept/save`  ,dto  );
 };
 /** 所有部门*/
-export const listAll=(): Promise<Result<SysDept[]>>=>{
-  return apiClient.get(`/sysDept/list/all`  );
+export const list=(req?:PageQuery): Promise<Result<SysDept[]>>=>{
+  return apiClient.post(`/sysDept/list` ,req||{} );
 };
 /** 部门详情*/
 export const detail=(req:{id: string}): Promise<Result<SysDept>>=>{

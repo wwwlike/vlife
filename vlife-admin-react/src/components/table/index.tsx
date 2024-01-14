@@ -14,10 +14,7 @@ import { orderObj } from "@src/pages/common/orderPage";
 import BtnToolBar from "./component/BtnToolBar";
 import { where } from "@src/dsl/base";
 import { VFBtn } from "./types";
-import console from "console";
 import classNames from "classnames";
-import dict from "@src/pages/sysConf/dict";
-
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
   currency: "CNY",
@@ -54,7 +51,6 @@ const TableIndex = <T extends IdBean>({
   model,
   dataSource,
   fkMap,
-  columnTitle = true,
   column,
   parentMap,
   select_more,
@@ -169,37 +165,31 @@ const TableIndex = <T extends IdBean>({
         list.forEach((f) => {
           columnshow.push({
             ...f,
-            title:
-              columnTitle !== false ? (
-                <ColumnTitle
-                  opt={columnTitle}
-                  entityName={model.entityType}
-                  option={f.dictCode ? dicts[f.dictCode]?.data : undefined}
-                  field={f}
-                  where={wheres?.filter((w) => w.fieldId === f.id)}
-                  onFilter={(where: Partial<where>[] | void) => {
-                    if (onColumnFilter) {
-                      if (where) {
-                        onColumnFilter([
-                          ...wheres.filter((t) => t.fieldId !== f.id),
-                          ...where,
-                        ]);
-                      } else {
-                        onColumnFilter(
-                          wheres.filter((t) => t.fieldId !== f.id)
-                        );
-                      }
+            title: (
+              <ColumnTitle
+                entityName={model.entityType}
+                option={f.dictCode ? dicts[f.dictCode]?.data : undefined}
+                field={f}
+                where={wheres?.filter((w) => w.fieldId === f.id)}
+                onFilter={(where: Partial<where>[] | void) => {
+                  if (onColumnFilter) {
+                    if (where) {
+                      onColumnFilter([
+                        ...wheres.filter((t) => t.fieldId !== f.id),
+                        ...where,
+                      ]);
+                    } else {
+                      onColumnFilter(wheres.filter((t) => t.fieldId !== f.id));
                     }
-                  }}
-                  onSort={(data: orderObj) => {
-                    if (onColumnSort) {
-                      onColumnSort(data);
-                    }
-                  }}
-                />
-              ) : (
-                f.title
-              ),
+                  }
+                }}
+                onSort={(data: orderObj) => {
+                  if (onColumnSort) {
+                    onColumnSort(data);
+                  }
+                }}
+              />
+            ),
             width: f.listWidth
               ? f.listWidth + avgAddWidth
               : fieldDefaultWidthObj[f.fieldType] + avgAddWidth,

@@ -8,9 +8,9 @@ import { objectIncludes } from "@src/util/func";
 import { VFBtn } from "../types";
 /**
  * 显示场景
- * tableToolbar:列表工具栏|
- * tableLine:列表行
- * formFooter:表单底部
+ * tableToolbar:列表工具栏|(可多多条数据操作，可新增)
+ * tableLine:列表行 (对单条数据操作，有模型和直接操作api)
+ * formFooter:表单底部 (单条数据操作，只能对有模型的进行操作)
  * page:  其他场景页面
  */
 type BtnToolBarPosition = "tableToolbar" | "tableLine" | "formFooter" | "page";
@@ -143,14 +143,34 @@ export default <T extends IdBean>({
   // 按钮名称计算
   const btnTitle = useCallback(
     (btn: VFBtn): string | ReactNode => {
-      //对于编辑类型按钮(actionType=edit)在表单页且按钮模型和表单模型一致，则名称改为保存
-      if (
-        btn.actionType !== "api" &&
-        position === "formFooter" &&
-        btn.model !== undefined &&
-        btn.saveApi !== undefined
-      ) {
-        return "保存";
+      if (position === "formFooter") {
+        if (
+          btn.actionType == "save" ||
+          btn.actionType == "create" ||
+          btn.actionType === "edit"
+        ) {
+          return "保存";
+        }
+      } else if (position === "tableToolbar") {
+        if (btn.actionType === "save" || btn.actionType === "create") {
+          if (btn.title && !btn.title.toString().startsWith("新增")) {
+            if (btn.title === "") {
+              return "新增";
+            } else {
+              return "新增" + btn.title;
+            }
+          }
+        }
+      } else if (position === "tableLine") {
+        if (btn.actionType === "save") {
+          if (btn.title !== "修改") {
+            if (btn.title === "") {
+              return "修改";
+            } else {
+              return "修改" + btn.title;
+            }
+          }
+        }
       }
       return btn.title;
     },
@@ -163,7 +183,11 @@ export default <T extends IdBean>({
       const modal = (data: any) => {
         formModal.show({
           type: btn.model,
-          formData: btn.actionType === "create" ? {} : data,
+          formData:
+            btn.actionType === "create" ||
+            (btn.actionType === "save" && position === "tableToolbar")
+              ? {}
+              : data,
           btns: [btn], //取消掉btns简化逻辑，弹出层值显示一个按钮
           terse: !btn.saveApi ? true : false, //紧凑
           fontBold: !btn.saveApi ? true : false, //加粗
@@ -172,10 +196,14 @@ export default <T extends IdBean>({
             setBtnDatas([d]);
           },
           reaction: btn.reaction,
-          // ...props,
         });
       };
-      if (btn.loadApi === undefined) {
+      if (
+        btn.actionType === "create" ||
+        (btn.actionType === "save" && position === "tableToolbar")
+      ) {
+        modal([]);
+      } else if (btn.loadApi === undefined) {
         modal(btnDatas?.[0] || btn.initData || {});
       } else if (btnDatas) {
         btn.loadApi(btnDatas[0]).then((d) => {
@@ -198,14 +226,19 @@ export default <T extends IdBean>({
   const btnUsableMatch = useCallback(
     (btn: VFBtn): boolean | string | Promise<boolean | string> => {
       //布尔值匹配
-      if (typeof btn.usableMatch === "boolean") {
+      if (
+        (btn.actionType === "create" && btn.usableMatch === undefined) ||
+        (btn.actionType === "save" && position === "tableToolbar")
+      ) {
+        return true;
+      } else if (typeof btn.usableMatch === "boolean") {
         return btn.usableMatch;
       } else if (typeof btn.usableMatch === "string") {
         return btn.usableMatch;
       } else if (btn.usableMatch instanceof Promise<boolean | string>) {
+        //异步函数转同步返回
         const result = btn.usableMatch;
         return result;
-        //异步函数转同步返回
       } else if (typeof btn.usableMatch === "object") {
         if (datas === undefined || datas.length === 0) {
           return false;
@@ -225,19 +258,9 @@ export default <T extends IdBean>({
             ? btnDatas[0]
             : undefined
         );
-      } else if (
-        btn.actionType !== "create" &&
-        (btnDatas === undefined || btnDatas?.length === 0)
-      ) {
+      } else if (btnDatas === undefined || btnDatas?.length === 0) {
         //1 没有选中数据，非创建类按钮不可用
         return false;
-      } else if (
-        btn.actionType === "create" &&
-        (btnDatas === undefined ||
-          btnDatas?.length === 0 ||
-          btnDatas[0].id === undefined)
-      ) {
-        return true;
       } else if (btn.usableMatch === undefined) {
         return true;
       }
@@ -255,7 +278,10 @@ export default <T extends IdBean>({
       if (position === "tableToolbar") {
         //列表工具栏 新增和操作多个数据的按钮
         toolBarBtns = btns.filter(
-          (b) => b.multiple === true || b.actionType === "create"
+          (b) =>
+            b.multiple === true ||
+            b.actionType === "create" ||
+            b.actionType === "save"
         );
       } else if (position === "tableLine") {
         //行按钮->排除新增和多个操作的按钮
@@ -268,7 +294,7 @@ export default <T extends IdBean>({
           //模型数据为空
           toolBarBtns = btns.filter(
             (b) =>
-              b.actionType === "create" &&
+              (b.actionType === "create" || b.actionType === "save") &&
               (formModel ? b.model === formModel : true)
           );
         } else {

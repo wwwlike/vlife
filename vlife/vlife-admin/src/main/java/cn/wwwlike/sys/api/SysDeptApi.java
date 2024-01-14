@@ -5,6 +5,7 @@ import cn.wwwlike.sys.req.SysDeptPageReq;
 import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -15,7 +16,8 @@ import java.util.List;
 @RequestMapping("/sysDept")
 public class SysDeptApi extends VLifeApi<SysDept, SysDeptService> {
   /**
-   * 部门查询
+   * 部门分页
+   * @return
    */
   @PostMapping("/page")
   public PageVo<SysDept> page(@RequestBody SysDeptPageReq req) {
@@ -29,11 +31,11 @@ public class SysDeptApi extends VLifeApi<SysDept, SysDeptService> {
    return service.save(dto);
   }
   /**
-   * 所有部门
+   * 部门列表
    */
-  @GetMapping("/list/all")
-  public List<SysDept> listAll() {
-    return service.findAll();
+  @PostMapping("/list")
+  public List<SysDept> list(@RequestBody PageQuery req) {
+    return service.find(req);
   }
   /**
    * 部门详情

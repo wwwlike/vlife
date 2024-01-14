@@ -64,14 +64,9 @@ public class SysMenu extends DbEntity implements ITree {
      * 页面
      */
     public String pageLayoutId;
-
     /**
      * 实体模型
      * 关联后则可为其分配接口权限
      */
     public String formId;
-    /**
-     * 模型关联
-     */
-    public String entityType;//启用formId进行关联，该字段待移除
 }

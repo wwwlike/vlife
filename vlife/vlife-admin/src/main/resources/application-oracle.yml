@@ -1,8 +1,3 @@
-server:
-  port: 8288
-  address: 0.0.0.0
-  servlet:
-    context-path: /oa
 spring:
   datasource:
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
@@ -17,8 +12,3 @@ spring:
 endpoints:
   metrics:
     sensitive: false
-vlife: # 前端代码同步地址
-  packroot: http://124.222.47.47:8288/oa
-file: # 上传图片存储路径
-  image:
-    path: img

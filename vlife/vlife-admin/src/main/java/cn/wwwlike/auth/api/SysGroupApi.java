@@ -8,6 +8,7 @@ import cn.wwwlike.common.BaseService;
 import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 权限组接口;
+ * 权限组接口
  */
 @RestController
 @RequestMapping("/sysGroup")
@@ -23,9 +24,9 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
   @Autowired
   public SysResourcesService resourcesService;
   //权限组列表
-  @GetMapping("/list/all")
-  public List<SysGroup> listAll() {
-    return service.findAll();
+  @PostMapping("/list/all")
+  public List<SysGroup> listAll(@RequestBody PageQuery req) {
+    return service.find(req);
   }
   //权限组查询
   @PostMapping("/page")

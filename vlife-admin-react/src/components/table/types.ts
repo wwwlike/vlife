@@ -8,12 +8,15 @@ import {  ReactNode } from 'react';
  */
 /**
  * 按钮动作类型
- * create:需要对模型进行操作
- * edit: 模型编辑，保存修改 有数据无saveApi就是预览
- * api ：无需模型，直接触发
- * click:自定义点击事件的按钮
+ * # 模型弹出层操作
+ * create: 需要对模型进行操作  usableMatch有效
+ * edit: 数据修改 有数据无saveApi就是预览
+ * save: 数据新增和修改 是create/edit的合体 usableMatch对新增无效；
+ * 非模型操作
+ * api ：无需模型，直接触发 saveApi方法
+ * click:自定义点击事件的按钮 触发的实际onCLick房啊
  */
-export type actionType= "create"|"edit"|"api"|"click";
+export type actionType= "create"|"save"|"edit"|"api"|"click";
 
 export interface VFBtn{
   title:string|ReactNode;//按钮名称 ●

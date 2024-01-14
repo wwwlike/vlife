@@ -8,7 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * 组件API参数设置
+ * API参数设置
+ * 组件属性数据来源于api的相关入参信息
  */
 @Entity
 @Data

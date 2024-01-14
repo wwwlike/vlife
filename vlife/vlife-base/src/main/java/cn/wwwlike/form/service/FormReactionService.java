@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FormReactionService extends VLifeService<FormReaction, FormReactionDao> {
-
-
     /**
      * 新增时隐藏是否存在
      * @param relationFieldId 隐藏的字段id

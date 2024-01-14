@@ -7,7 +7,7 @@ export default ({
   icon,
   code,
   remark,
-  must,
+  required,
   blod = true,
 }: {
   blod?: boolean;
@@ -15,7 +15,7 @@ export default ({
   label?: string;
   remark?: string;
   icon?: ReactNode;
-  must?: boolean;
+  required?: boolean;
 }) => {
   const Thislabel = useMemo((): any => {
     return (
@@ -34,10 +34,10 @@ export default ({
             </div>
           )}
         </div>
-        {must && <span className=" font-bold text-red-600 mr-1">*</span>}
+        {required && <span className=" font-bold text-red-600 mr-1">*</span>}
       </div>
     );
-  }, [label, code, must]);
+  }, [label, code, required]);
   return (
     <div
       className={`text-sm ${classNames({

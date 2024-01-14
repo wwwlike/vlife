@@ -8,7 +8,7 @@ import {
 import { FormFieldVo } from "@src/api/FormField";
 import VfSearch from "@src/components/VfSearch";
 import { ISelect } from "@src/dsl/component";
-import { where } from "@src/dsl/base";
+import { OptEnum, where } from "@src/dsl/base";
 
 interface ColumnFilterProps {
   entityName: string; //查询模型标识
@@ -34,7 +34,7 @@ export default ({
 
   const allWhere = (
     val: any,
-    opt: string,
+    opt: OptEnum,
     where: Partial<where>[]
   ): Partial<where>[] => {
     return [
@@ -52,14 +52,14 @@ export default ({
   };
 
   const change = useCallback(
-    (val: any, opt: string) => {
+    (val: any, opt: OptEnum) => {
       if (val) {
         let wheres = allWhere(val, opt, where);
-        if (opt === "goe" && loeVal) {
-          wheres = allWhere(loeVal, "loe", wheres);
+        if (opt === OptEnum.goe && loeVal) {
+          wheres = allWhere(loeVal, OptEnum.loe, wheres);
         }
-        if (opt === "loe" && goeVal) {
-          wheres = allWhere(goeVal, "goe", wheres);
+        if (opt === OptEnum.loe && goeVal) {
+          wheres = allWhere(goeVal, OptEnum.goe, wheres);
         }
         onChange(wheres);
       } else {
@@ -79,7 +79,7 @@ export default ({
             hideBtn={true}
             value={where?.filter((w) => w.opt === "like")?.[0]?.value}
             onDataChange={(v) => {
-              change(v, "like");
+              change(v, OptEnum.like);
             }}
           />
         )}
@@ -92,7 +92,7 @@ export default ({
             hideBtn={true}
             onChange={setGoeVal}
             onDataChange={(v) => {
-              change(v, "goe");
+              change(v, OptEnum.goe);
             }}
           />
           <span>~</span>
@@ -103,7 +103,7 @@ export default ({
             value={where?.filter((w) => w.opt === "loe")?.[1]?.value}
             hideBtn={true}
             onDataChange={(v) => {
-              change(v, "loe");
+              change(v, OptEnum.loe);
             }}
           />
         </div>
@@ -115,7 +115,7 @@ export default ({
             placeholder="最小日期"
             value={where?.filter((w) => w.opt === "goe")?.[0]?.value}
             onChange={(e, v) => {
-              change(v, "goe");
+              change(v, OptEnum.goe);
             }}
           />
           <span>~</span>
@@ -124,7 +124,7 @@ export default ({
             value={where?.filter((w) => w.opt === "loe")?.[0]?.value}
             placeholder="最大日期"
             onChange={(e, v) => {
-              change(v, "loe");
+              change(v, OptEnum.loe);
             }}
           />
         </div>
@@ -167,7 +167,7 @@ export default ({
           options={option}
           value={where?.filter((w) => w.opt === "in")?.[0]?.value}
           onChange={(d: any[]) => {
-            change(d, "in");
+            change(d, OptEnum.in);
           }}
         />
       )}

@@ -1,3 +1,8 @@
+server:
+  port: 8288
+  address: 0.0.0.0
+  servlet:
+    context-path: /oa
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
@@ -30,4 +35,9 @@ logging:
   level:
     com:
       th: debug
-
+vlife: # 前端代码同步地址
+  packroot: http://124.222.47.47:8288/oa
+  packages: cn.wwwlike,cn.vlife
+file: # 上传图片存储路径
+  image:
+    path: img

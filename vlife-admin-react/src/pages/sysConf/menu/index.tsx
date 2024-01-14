@@ -44,9 +44,11 @@ export default () => {
       ]}
       btns={[
         {
-          title: "创建应用",
-          actionType: "create",
+          title: "应用",
+          actionType: "save",
           model: "sysMenu",
+          usableMatch: { app: true },
+          disabledHide: true,
           saveApi: save,
           reaction: [
             VF.then("app").value(true).hide(),
@@ -57,10 +59,12 @@ export default () => {
           ],
         },
         {
-          title: "创建菜单",
-          actionType: "create",
+          title: "菜单",
+          actionType: "save",
           model: "sysMenu",
           saveApi: save,
+          usableMatch: { app: false },
+          disabledHide: true,
           reaction: [
             VF.then("app").value(false).hide(),
             VF.field("confPage")
@@ -68,6 +72,11 @@ export default () => {
               .then("url", "formId", "placeholderUrl")
               .hide()
               .clearValue(),
+            VF.result((sysMenu: any) => {
+              return sysMenu?.url && sysMenu.url.indexOf("*") !== -1;
+            })
+              .then("formId")
+              .required(),
             VF.field("confPage").eq(true).then("pageLayoutId").show(),
             VF.field("url")
               .endsWidth("*")
@@ -76,13 +85,6 @@ export default () => {
               .then("placeholderUrl")
               .required(),
           ],
-        },
-        {
-          title: "编辑",
-          actionType: "edit",
-          icon: <IconEdit />,
-          model: "sysMenu",
-          saveApi: save,
         },
         {
           title: "删除",
@@ -101,6 +103,7 @@ export default () => {
           usableMatch: (...datas: SysMenu[]) => {
             return datas[0]?.formId !== undefined && datas[0]?.formId !== null;
           },
+          reaction: [VF.then("id").hide(), VF.then("formId").hide()],
           icon: <IconRegExp />,
           model: "menuResourcesDto",
           loadApi: (d) => detailMenuResourcesDto({ id: d.id }),

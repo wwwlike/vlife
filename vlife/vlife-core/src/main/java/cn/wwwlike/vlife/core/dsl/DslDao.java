@@ -67,9 +67,6 @@ import java.util.stream.Collectors;
  */
 public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
-
-
-
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * 当前类的实体信息
@@ -255,7 +252,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     @Override
     public <W extends QueryWrapper<T>, R extends CustomQuery<T, W>> Long count(R request) {
-        return dslQuery(entityClz, request.qw(), null, null).fetchCount();
+        return dslQuery(entityClz, addConditionFilter(request,request.qw()), null, null).fetchCount();
     }
 
     /**
@@ -263,7 +260,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     @Override
     public <W extends QueryWrapper<T>, R extends CustomQuery<T, W>> List<T> find(R request) {
-        return dslQuery(entityClz, request.qw(), null, request.getOrder()).fetch();
+        return dslQuery(entityClz, addConditionFilter(request,request.qw()), null, request.getOrder()).fetch();
     }
 
     /**
@@ -281,13 +278,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     @Override
     public <E extends PageQuery<T>> PageVo<T> findPage(E pageRequest) {
         QueryWrapper qw=pageRequest.qw(entityClz);
-        if(pageRequest.getConditions()!=null){
-            QueryUtils.condition(qw,pageRequest.getConditions());
-        }
-        if(pageRequest.getConditionGroups()!=null){
-            QueryUtils.condition(qw,pageRequest.getConditionGroups());
-        }
-        QueryResults queryResults = dslQuery(entityClz, qw, pageRequest.getPager(), pageRequest.getOrder()).fetchResults();
+        QueryResults queryResults = dslQuery(entityClz, addConditionFilter(pageRequest,pageRequest.qw()), pageRequest.getPager(), pageRequest.getOrder()).fetchResults();
         List list = queryResults.getResults();
         return new PageVo(list, pageRequest.getPager().getSize(),
                 pageRequest.getPager().getPage(), queryResults.getTotal());
@@ -299,13 +290,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     @Override
     public <E extends VoBean<T>, N extends PageQuery<T>> PageVo<E> queryPage(Class<E> vo, N pageRequest) {
         QueryWrapper qw=pageRequest.qw(entityClz);
-        if(pageRequest.getConditions()!=null){
-            QueryUtils.condition(qw,pageRequest.getConditions());
-        }
-        if(pageRequest.getConditionGroups()!=null){
-            QueryUtils.condition(qw,pageRequest.getConditionGroups());
-        }
-        QueryResults queryResults = dslQuery(vo, qw, pageRequest.getPager(), pageRequest.getOrder()).fetchResults();
+        QueryResults queryResults = dslQuery(vo, addConditionFilter(pageRequest,qw), pageRequest.getPager(), pageRequest.getOrder()).fetchResults();
         List mainResult = queryResults.getResults();
         VoDto voDto = GlobalData.voDto(vo);
         if (mainResult.size() > 0) {
@@ -506,6 +491,21 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
                 jQuery.orderBy(expression.desc());
         });
         return jQuery;
+    }
+
+    /**
+     * 添加动态条件过滤
+     * @param request
+     * @param qw
+     */
+    private QueryWrapper addConditionFilter(CustomQuery request, QueryWrapper qw){
+        if(request.getConditions()!=null){
+            QueryUtils.condition(qw,request.getConditions());
+        }
+        if(request.getConditionGroups()!=null){
+            QueryUtils.condition(qw,request.getConditionGroups());
+        }
+        return qw;
     }
 
     /**

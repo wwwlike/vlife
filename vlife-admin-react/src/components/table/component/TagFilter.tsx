@@ -5,7 +5,7 @@ import { FormVo } from "@src/api/Form";
 import { orderObj } from "@src/pages/common/orderPage";
 import { FormFieldVo } from "@src/api/FormField";
 import { useAuth } from "@src/context/auth-context";
-import { where } from "@src/dsl/base";
+import { OptEnum, where } from "@src/dsl/base";
 export interface TagFilterProps {
   where: Partial<where>[]; //查询条件
   order: orderObj[]; //排序信息
@@ -45,9 +45,9 @@ const TagFilter = ({
         where
           .filter((w) => w.fieldId === field.id)
           .map((w) =>
-            w.opt === "isNull"
+            w.opt === OptEnum.isNull
               ? "未填写"
-              : w.opt === "isNotNull"
+              : w.opt === OptEnum.isNotNull
               ? "已填写"
               : field.dictCode
               ? dicts[field.dictCode].data
@@ -56,12 +56,14 @@ const TagFilter = ({
                   )
                   .map((d) => d.label)
                   .toString()
-              : (w.opt === "loe" && where.map((w) => w.opt).includes("goe")) ||
-                (w.opt === "goe" && where.map((w) => w.opt).includes("loe"))
-              ? w.opt === "loe"
+              : (w.opt === OptEnum.loe &&
+                  where.map((w) => w.opt).includes(OptEnum.goe)) ||
+                (w.opt === OptEnum.goe &&
+                  where.map((w) => w.opt).includes(OptEnum.loe))
+              ? w.opt === OptEnum.loe
                 ? undefined
-                : `${where.filter((w) => w.opt === "goe")[0].value}~${
-                    where.filter((w) => w.opt === "loe")[0].value
+                : `${where.filter((w) => w.opt === OptEnum.goe)[0].value}~${
+                    where.filter((w) => w.opt === OptEnum.loe)[0].value
                   }`
               : w.value[0]
           )

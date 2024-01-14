@@ -85,18 +85,4 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
             return appId(find("code", menu.getPcode()).get(0).getId());
         }
     }
-    /**
-     * 给所有菜单分配表单
-     * @param entities
-     */
-    public void assignFormToMenu(List<Form> entities){
-        List<SysMenu> all=findAll();
-        all.stream().filter(m->m.getEntityType()!=null).forEach(m->{
-            Optional<Form> optional=entities.stream().filter(f->f.getType().equals(m.getEntityType())).findAny();
-            if(optional.isPresent()&&!optional.get().getId().equals(m.getFormId())){
-                m.setFormId(optional.get().getId());
-                save(m);
-            }
-        });
-    }
 }
