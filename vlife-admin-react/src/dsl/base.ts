@@ -85,7 +85,7 @@ export interface where {
 }
 //简单条件分组 where内部是and(且条件), where之间是or(或条件)
 export interface ConditionGroup {
-  entityName:string;
+  entityName?:string;
   where: Partial<where>[];
 }
 

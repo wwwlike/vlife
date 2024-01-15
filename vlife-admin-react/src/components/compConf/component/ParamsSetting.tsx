@@ -172,7 +172,8 @@ export default ({
         <Select
           showClear
           emptyContent="未找到类型匹配的字段"
-          placeholder={`参数${paramName}值等于的字段选取`}
+          // placeholder={`参数${paramName}值等于的字段选取`}
+          placeholder={`${paramInfo.label}`}
           className="w-full"
           optionList={formVo.fields
             .filter(

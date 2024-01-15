@@ -1,7 +1,7 @@
 import { FormVo, list } from '@src/api/Form';
 import { list as deptList,SysDept } from '@src/api/SysDept';
 import { list as dictList, SysDict } from '@src/api/SysDict';
-import { listAll } from '@src/api/SysGroup';
+import { listAll as groupList } from '@src/api/SysGroup';
 import { listAll as roleList,SysRole } from '@src/api/SysRole';
 import { listAll as menuList, SysMenu } from '@src/api/SysMenu';
 import { list as resourcesList, SysResources } from '@src/api/SysResources';
@@ -9,9 +9,9 @@ import { ApiInfo } from '@src/components/compConf/compConf';
 import { DataModel, DataType, OptEnum } from '@src/dsl/base';
 import { ISelect, ITreeData } from '@src/dsl/component';
 import { allRouter } from '@src/router';
-import { match } from 'assert';
 import { isNull } from 'lodash';
 import { itree2TreeData } from '../ApiDatas';
+import { listAll as fieldList,FormFieldVo, FormField } from '@src/api/FormField';
 /**
  * 平台接口定义文件
  */
@@ -235,6 +235,14 @@ export const formOpenApi:ApiInfo= {
       dataType:DataType.array,
       dataModel:"ISelect",
       label:"选项值为主键",
+      params:{
+        sysMenuId:{
+          fromField:true,
+          dataModel:DataModel.string,
+          dataType:DataType.basic,
+          label:"应用id",
+        }
+      },
       func:(datas:FormVo[]):ISelect[]=>{
         return datas.map((data:{id:string,title:string})=>{return {value:data.id,label:data.title}});
       }
@@ -248,7 +256,7 @@ export const formOpenApi:ApiInfo= {
       }
     },
     entityRelationModel:{
-      label:"实体相关模型",
+      label:"关联dto/vo/req模型",
       dataType:DataType.array,
       dataModel:"ISelect",
       params:{
@@ -265,37 +273,82 @@ export const formOpenApi:ApiInfo= {
         return datas.filter(d=>d.entityType===entityType&&(d.itemType==="save"||d.itemType==="entity")).map((data:{type:string,title:string})=>{return {value:data.type,label:data.type}});
       }
     },
-    // resources:{
-    //     label:"与资源关联",
-    //     dataType:DataType.array,
-    //     dataModel:"ITreeData",
-    //     func:(datas:FormVo[],params:any):ITreeData[]=>{
-    //       //根据参数进行转换
-    //       return datas.map((data:FormVo)=>{
-    //         // if(params.appId){
-    //         //   return {key:data.id,value:data.id,label:data.title,
-    //         //     //菜单已关联和可关联的接口信息
-    //         //     children:data.resources?.filter(r=>(r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId)&&r.state==="1").map(r=>{return {key:r.id,value:r.id,label:r.name}})}
-    //         // }
-    //         if(params.appId){
-    //           return {key:data.id,value:data.id,label:data.title,
-    //             //菜单已关联和可关联的接口信息
-    //             children:data.resources?.filter(r=>(r.sysMenuId===undefined||r.sysMenuId===null||r.sysMenuId===params.appId)&&r.state==="1").map(r=>{return {key:r.id,value:r.id,label:r.name}})}
-    //         }else{
-    //           return {key:data.id,value:data.id,label:data.title,
-    //             //菜单已关联和可关联的接口信息
-    //             children:data.resources?.map(r=>{return {key:r.id,value:r.id,label:r.name}})}
-    //         }
-    //    })}
-    //   },
-    // }
-  }
+    subModel:{
+      label:"关联外键实体模型",
+      dataType:DataType.array,
+      dataModel:"FormVo",
+      params:{
+        entityId:{
+          dataModel:DataModel.string,
+          dataType:DataType.basic,
+          fromField:true,
+          send:false,
+        }
+      },
+      filterKey:[],
+      func:(datas:FormVo[],{entityId}:{entityId:string}):FormVo[]=>{
+        const model=datas.filter(d=>d.id===entityId)?.[0];
+        const fkEntityName:string[]=model.fields.filter(f=>f.entityType!==model.type).map(f=>f.entityType);
+        return datas.filter(d=>fkEntityName.includes(d.type));
+      }
+    },
+    groupFieldSelect:{
+      label:"表和其外键表可分组字段",
+      dataType:DataType.array,
+      dataModel:"ISelect",
+      params:{
+        formId:{
+          dataModel:DataModel.string,
+          dataType:DataType.basic,
+          fromField:true,
+          send:false,
+        }
+      },
+      filterKey:[],
+      func:(datas:FormVo[],{formId}:{formId:string}):ISelect[]=>{
+        const model=datas.filter(d=>d.id===formId)?.[0];
+        const fkEntityName:string[]=model.fields.filter(f=>f.entityType!==model.type).map(f=>f.entityType);
+        const fkModel= datas.filter(d=>fkEntityName.includes(d.type));
+        const groupField:ISelect[]=[]
+       //主表字段
+        groupField.push(... model.fields.filter((f:FormFieldVo)=>f.dataType==="basic"&&(f.dictCode||f.fieldType==="date"||f.pathName.endsWith("Id"))).map(f=>{
+            return {label:f.title,value:f.id}
+        }))
+       //外键表可分组字段
+       fkModel.forEach(m=>{
+        groupField.push(
+          ...m.fields.filter((f:FormFieldVo)=>f.dataType==="basic"&&(f.dictCode||f.fieldType==="date"||f.pathName.endsWith("Id"))).map(f=>{
+            return {label:`${m.title}.${f.title}`,value:f.id}
+          })
+        )})
+        return groupField
+      }
+    },
+    single:{
+      label:"单个模型",
+      dataModel:"FormVo",
+      dataType:DataType.object,
+      params:{
+        id:{
+          label:"模型ID",
+          dataType:DataType.basic,
+          dataModel:DataModel.string,
+          required:true,
+          fromField:true,
+        }
+      },
+      func:(data:FormVo[], params:any)=> {
+          return data[0]
+      },
+    }
+  },
+
 }
 export const groupOpenApi:ApiInfo={
   label:"权限组",
   dataType: DataType.array,
   dataModel:'SysGroup',
-  api:listAll,
+  api:groupList,
   match:{
    ISelect:{
       dataType: DataType.array,
@@ -323,7 +376,56 @@ export const roleOpenApi:ApiInfo={
   }
 }
 
-
+export const fieldOpenApi:ApiInfo={
+  label:"字段",
+  dataType: DataType.array,
+  dataModel:'FormField',
+  api:fieldList,
+  filters:{
+    total:{
+      title:"可统计字段",
+      func:(datas)=>{return datas.filter((f)=>{
+        return f.dataType === "basic" &&(f.fieldType === "number"||f.fieldName==="id")
+      })}
+    }
+  },
+  match:{
+    IselectId:{
+      label:"统计模型字段选择(主键)",
+      dataType:DataType.array,
+      dataModel:"ISelect",
+      params:{
+        formId:{
+          label:"模型id",
+          dataType:DataType.basic,
+          dataModel:DataModel.string,
+          fromField:true,
+          required:true
+        }
+      },
+      func:(datas:FormFieldVo[]):ISelect[]=>{
+        return datas.map((d)=>{return {value:d.id,label:d.fieldName==="id"?"数据总量":d.title}});
+      }
+    },IselectFieldName:{
+      label:"模型字段选择(fieldName)",
+      dataType:DataType.array,
+      dataModel:"ISelect",
+      params:{
+        formId:{
+          label:"模型id",
+          dataType:DataType.basic,
+          dataModel:DataModel.string,
+          dynamicParams:true,
+          fromField:true,
+          required:true
+        }
+      },
+      func:(datas:FormField[]):ISelect[]=>{
+        return datas.map((d)=>{return {value:d.fieldName,label:d.fieldName==="id"?"数据总量":d.title}});
+      }
+    }
+  }
+}
 
 export const routeOpenApi:ApiInfo={
   label:"路由列表",

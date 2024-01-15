@@ -80,7 +80,7 @@ export interface AttrInfo{
    * 2:{entity:string,field:string} -> 表示去找指定的字段,**如当前没有则使用父组件上的该字段** (propload.ts)
    * 待：如为2，也找不到；且must；则页面目前没有提示
    */
-    fromField?:true|{entity:string,field:string} 
+  fromField?:true|{entity:string,field:string} 
 
 }
 //接口参数和组件属性公用结构

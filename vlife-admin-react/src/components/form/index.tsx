@@ -210,7 +210,7 @@ export default <T extends IdBean>({
       ).forEach((f) => {
         if (isFunction(f.result)) {
           const funcResult = f.result({ ...m.values, parent: parentFormData });
-          if (typeof funcResult === "object") {
+          if (typeof funcResult === "object" && funcResult !== null) {
             //1 异步promise函数
             funcResult.then((d) => {
               if (typeof d === "boolean") {
@@ -909,6 +909,7 @@ export default <T extends IdBean>({
   return form && formStep === "onForm" ? (
     <PreviewText.Placeholder value="-">
       <FormProvider form={form}>
+        {/* {JSON.stringify(componentProp)} */}
         <div className={`${className ? className : ""} relative`}>
           {modelInfo && (modelInfo.formDesc || modelInfo.helpDoc) && (
             <Banner

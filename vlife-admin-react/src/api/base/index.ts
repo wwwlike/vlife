@@ -76,7 +76,7 @@ export interface Result<D> {
  * 分页查询条件
  */
 export interface PageQuery extends CustomQuery {
-  pager: {
+  pager?: {
     page: number;
     size: number;
   };
@@ -85,8 +85,8 @@ export interface PageQuery extends CustomQuery {
  * 一般分页
  */
 export interface CustomQuery {
-  conditions:Conditions
-  conditionGroups:ConditionGroup[];
+  conditions?:Conditions
+  conditionGroups?:ConditionGroup[];
 }
 
 /**

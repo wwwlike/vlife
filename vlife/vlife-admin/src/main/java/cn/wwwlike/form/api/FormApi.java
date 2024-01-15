@@ -66,13 +66,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
     }
     @Value("${vlife.packroot}")
     public String packroot;
-    /**
-     * 子模型查询
-     */
-    @GetMapping("/subForms/{id}")
-    public List<FormVo> subForms(@PathVariable String id){
-        return service.querySubForms(service.findOne(id));
-    }
+
     /**
      * 模型查询
      */
@@ -80,6 +74,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
     public List<FormVo> list(@RequestBody FormPageReq req){
         return service.query(FormVo.class,req);
     }
+
     /**
      * 请求TS代码
      */
@@ -156,19 +151,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
     }
 
     /**
-     * 指定应用模型列表
-     */
-    @RequestMapping("/entityModels")
-    public List<FormVo> entityModels(String appId,String pcode) {
-        if(appId==null||"".equals(appId)||"null".equals(appId)||"undefined".equals(appId) ){
-            return service.queryAll(FormVo.class).stream().filter(v -> v.getItemType().equals("entity")).collect(Collectors.toList());
-        }else{
-            String realAppId=menuService.appId(appId).getId();
-            return service.query(FormVo.class,QueryWrapper.of(Form.class).eq("sysMenuId",realAppId).eq("itemType","entity"));
-        }
-    }
-
-    /**
      * 模型保存
      */
     @PostMapping("/save/formDto")
@@ -196,7 +178,29 @@ public class FormApi extends VLifeApi<Form, FormService> {
             });
         }
             return form;
-
     }
+
+
+    /**
+     * 指定应用模型列表
+     */
+//    @RequestMapping("/entityModels")
+//    public List<FormVo> entityModels(String appId,String pcode) {
+//        if(appId==null||"".equals(appId)||"null".equals(appId)||"undefined".equals(appId) ){
+//            return service.queryAll(FormVo.class).stream().filter(v -> v.getItemType().equals("entity")).collect(Collectors.toList());
+//        }else{
+//            String realAppId=menuService.appId(appId).getId();
+//            return service.query(FormVo.class,QueryWrapper.of(Form.class).eq("sysMenuId",realAppId).eq("itemType","entity"));
+//        }
+//    }
+
+
+    //    /**
+//     * 子模型查询
+//     */
+//    @GetMapping("/subForms/{id}")
+//    public List<FormVo> subForms(@PathVariable String id){
+//        return service.querySubForms(service.findOne(id));
+//    }
 
 }

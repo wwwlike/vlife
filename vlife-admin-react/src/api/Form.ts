@@ -49,20 +49,6 @@ export interface FormVo extends VoBean,Omit<FormDto,"fields">  {
   fields: FormFieldVo[]; //字段信息
 }
 
-
-export interface SelectCompVo extends VoBean {
-  id: string;
-  name: string;
-  detailList: { id: string; label: string }[];
-}
-/**
- * 未编辑的模型信息
- */
-export const models = (uiType: string): Promise<Result<FormVo[]>> => {
-  return apiClient.get(`/form/models/${uiType}`);
-};
-
-
 export interface formPageReq{ 
   itemType?:"entity"|"save"|"req"|"vo"|"fk"|"relation"|"bean", //模型类型
   entityType?:string, //关联实体类型
@@ -74,15 +60,8 @@ export interface formPageReq{
 /**
  * 指定模型及接口的TS代码
  */
- export const tsCode = (entity: string): Promise<Result<string>> => {
+export const tsCode = (entity: string): Promise<Result<string>> => {
   return apiClient.get(`/form/tsCode/${entity}`);
-};
-
-/**
- * 指定模型及接口的TS代码
- */
- export const subForms = ({id}: {id:string}): Promise<Result<FormVo[]>> => {
-  return apiClient.get(`/form/subForms/${id}`);
 };
 
 /**
@@ -95,27 +74,16 @@ export const model = (params:formPageReq): Promise<Result<FormVo>> => {
 /**
  * 模型列表
  */
- export const list = (
+export const list = (
   req?:formPageReq
- ): Promise<Result<FormVo[]>> => {
-   return apiClient.post(`/form/list`,req||{});
- };
-
-/**
- * 实体模型列表
- * @returns
- */
-export const entityModels = (params: {
-  appId?: string;
-}): Promise<Result<FormVo[]>> => {
-  return apiClient.get(`/form/entityModels`,{params});
+  ): Promise<Result<FormVo[]>> => {
+    return apiClient.post(`/form/list`,req||{});
 };
-
-
+  
 /**
  * 模型分类
  */
- export const save = (form: Form): Promise<Result<Form>> => {
+export const save = (form: Form): Promise<Result<Form>> => {
   return apiClient.post(`/form/save`, form);
 };
 
@@ -127,4 +95,28 @@ export const saveFormDto = (dto: Partial<FormDto>): Promise<Result<FormVo>> => {
 };
 
 
+//---------------删除---------------------
 
+/**
+ * 指定模型及接口的TS代码
+ */
+ export const subForms = ({id}: {id:string}): Promise<Result<FormVo[]>> => {
+    return apiClient.get(`/form/subForms/${id}`);
+  };
+  /**
+   * 实体模型列表
+   * @returns
+   */
+  export const entityModels = (params: {
+    appId?: string;
+  }): Promise<Result<FormVo[]>> => {
+  return apiClient.get(`/form/entityModels`,{params});
+  };
+
+
+  /**
+ * 未编辑的模型信息
+ */
+export const models = (uiType: string): Promise<Result<FormVo[]>> => {
+  return apiClient.get(`/form/models/${uiType}`);
+};

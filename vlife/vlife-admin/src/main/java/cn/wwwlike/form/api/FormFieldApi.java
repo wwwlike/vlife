@@ -11,6 +11,7 @@ import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.QueryWrapper;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,35 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
     public FormField detail(@PathVariable String id) {
         return service.findOne(id);
     }
+
+    /**
+     * 字段列表
+     */
+    @PostMapping("/list/all")
+    public List<FormField> listAll(@RequestBody PageQuery req) {
+        return service.find(req);
+    }
+
+
+    /**
+     * 主表字段查询
+     * 外键字段来源表的所有字段信息
+     */
+    @GetMapping("/list/relationField")
+    public List<FormField> listRelationField(String realationFieldId) {
+        if (realationFieldId == null) {
+            return new ArrayList<>();
+        }
+        FormField field=service.findOne(realationFieldId);
+        //外键
+        if(!field.getFieldName().equals("id")&&field.getEntityFieldName().equals("id")){
+            return service.find(QueryWrapper.of(FormField.class).eq("entityType", field.getEntityType(), Form.class)
+                    .eq("itemType", "entity", Form.class)
+            );
+        }
+        return new ArrayList<>();
+    }
+
 
     /**
      * 可分组字段查询
@@ -60,36 +90,6 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
 //            options.addAll(subGroupField.stream().map(f->new FieldSelect(f.getId(),subFormVo.getName()+"."+f.getTitle())).collect(Collectors.toList()));
 //        });
         return options;
-    }
-
-    /**
-     * 模型字段筛选
-     */
-    @GetMapping("/list/all")
-    public List<FormField> listAll(String formId) {
-        if (formId == null) {
-            return new ArrayList<>();
-        }
-        return service.find(QueryWrapper.of(FormField.class).eq("formId", formId));
-    }
-
-    /**
-     * 主表字段查询
-     * 外键字段来源表的所有字段信息
-     */
-    @GetMapping("/list/relationField")
-    public List<FormField> listRelationField(String realationFieldId) {
-        if (realationFieldId == null) {
-            return new ArrayList<>();
-        }
-        FormField field=service.findOne(realationFieldId);
-        //外键
-        if(!field.getFieldName().equals("id")&&field.getEntityFieldName().equals("id")){
-            return service.find(QueryWrapper.of(FormField.class).eq("entityType", field.getEntityType(), Form.class)
-                    .eq("itemType", "entity", Form.class)
-            );
-        }
-        return new ArrayList<>();
     }
 
 }

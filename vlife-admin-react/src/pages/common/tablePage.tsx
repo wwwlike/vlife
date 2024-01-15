@@ -63,11 +63,10 @@ type apiError = {
 export interface TablePageProps<T extends IdBean> extends ListProps<T> {
   listType: string; //列表模型
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
-  req: any; //查询条件obj
+  req: any; //查询条件obj  //自定义tab页签条件，filter过滤条件
+  conditionJson?: string; //db视图过滤的条件
   selected: T[]; //前选中的行数据(relation组件使用)
   design: true | undefined; //true则是设计器模式
-  conditionJson?: string; //视图过滤的条件
-  //预删除
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
   mode: "view" | "hand" | "normal"; //列表的三个场景模式  预览(精简无按钮，有搜索分页)|input传值(不从数据库取值，无需系统内置按钮和分页)|一般场景
@@ -75,8 +74,6 @@ export interface TablePageProps<T extends IdBean> extends ListProps<T> {
   onTableModel: (formVo: FormVo) => void; //列表模型信息传出
   onGetData: (datas: T[]) => void; //请求的列表数据传出
   onHttpError: (error: apiError) => void; //异常信息传出，设计阶段时接口没有会用到
-  //form表单需要使用的透传给按钮使用props
-  // reaction: VfAction[]; //form联动关系
   otherBtns: VFBtn[]; // 按钮触发的增量功能
 }
 
@@ -124,10 +121,6 @@ const TablePage = <T extends IdBean>({
     orAnd: "or",
     where: [],
   });
-  const [visible, setVisible] = useState(false); //高级查询
-  const change = () => {
-    setVisible(!visible);
-  };
 
   useEffect(() => {
     if (model) setTableModel(model);
@@ -234,12 +227,11 @@ const TablePage = <T extends IdBean>({
   const query = useCallback(() => {
     const reqParams = {
       ...req,
-      conditionGroups:
-        req && req.conditionGroups
-          ? req.conditionGroups
-          : conditionJson
-          ? JSON.parse(conditionJson)
-          : undefined,
+      conditionGroups: conditionJson
+        ? JSON.parse(conditionJson)
+        : req && req.conditionGroups && req.conditionGroups.length > 0
+        ? req.conditionGroups
+        : undefined,
       conditions: searchAndColumnCondition, //列表上的组件过滤(待合并到groups里)
       order: { orders: orderStr(order) },
       pager: pager,
