@@ -1,11 +1,12 @@
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
-import { Button, Tooltip, Typography } from "@douyinfe/semi-ui";
+import { Button, Dropdown, Tag, Tooltip, Typography } from "@douyinfe/semi-ui";
 import { IdBean, Result } from "@src/api/base";
 import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
 import { objectIncludes } from "@src/util/func";
 import { VFBtn } from "../types";
+import { IconMore } from "@douyinfe/semi-icons";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|(可多多条数据操作，可新增)
@@ -20,10 +21,11 @@ type BtnToolBarPosition = "tableToolbar" | "tableLine" | "formFooter" | "page";
 export interface BtnToolBarProps<T extends IdBean> {
   btnType?: "button" | "link"; //按钮类型
   className?: string;
+  dropdown?: boolean; //是否下拉
   btns: VFBtn[]; //按钮对象
   formModel?: string; //传入，则会对btns根据model进行过滤
   datas?: T[]; //操作的数据
-  position: BtnToolBarPosition; //显示场景(过滤出满足条件的按钮)
+  position?: BtnToolBarPosition; //显示场景(过滤出满足条件的按钮)
   line?: number; //行号 tableLine模式下使用 临时数据可用行号当索引进行操作
   readPretty?: boolean; //当前页面模式(过滤按钮使用)
   onDataChange?: (datas: any[]) => void; //数据修订好传输出去
@@ -40,11 +42,12 @@ export default <T extends IdBean>({
   datas,
   btns,
   btnType = "button",
-  position,
   className,
   formModel,
   readPretty,
+  dropdown = false,
   onDataChange,
+  position = "page",
   onBtnNum,
   ...props
 }: BtnToolBarProps<T>) => {
@@ -114,18 +117,17 @@ export default <T extends IdBean>({
         //2. 按钮触发接口调用
         if (btn.submitConfirm) {
           // 需确认;
-          confirmModal
-            .show({
-              title: `确认${btn.title}${
-                btnDatas?.length === 1 ? "该" : btnDatas.length
-              }条记录?`,
-              saveFun: () => {
-                return submit(btn, btnDatas, index).then((d: any) => {});
-              },
-            })
-            .then((data: any) => {
-              confirmModal.hide();
-            });
+          confirmModal.show({
+            title: `确认${btn.title}${
+              btnDatas?.length === 1 ? "该" : btnDatas.length
+            }条记录?`,
+            saveFun: () => {
+              return submit(btn, btnDatas, index).then((d: any) => {});
+            },
+          });
+          // .then((data: any) => {
+          //   confirmModal.hide();
+          // });
         } else {
           submit(btn, btnDatas, index).then((d: any) => {});
         }
@@ -387,43 +389,106 @@ export default <T extends IdBean>({
     onBtnNum && onBtnNum(currBtns.length);
   }, [currBtns]);
 
-  return (
-    <div className={`  ${className} space-x-1`}>
+  return dropdown === false ? (
+    <div className={` ${className} space-x-1`}>
       {currBtns.map((btn, index) => {
-        // const tooltip = btnUsableMatch(btn);
-        // const disabled = typeof tooltip === "boolean" ? !tooltip : true;
-        const Btn: any = btnType === "button" ? Button : Text;
-        const key = `${position}btn${index}`;
-        const BtnComp = (
-          <Btn
-            onClick={() => {
-              if (!btn.disabled) {
-                btnClick(btn, index);
-              }
-            }}
-            loading={loadbtn && loadbtn === key}
-            theme={`${btnTitle(btn) === "保存" ? "solid" : "light"}`}
-            className={` hover:cursor-pointer  ${classNames({
-              "cursor-pointer hover:text-blue-600 hover:font-bold":
-                position === "tableLine",
-            })} ${btn.className}`}
-            key={key}
-            icon={btnType === "link" ? undefined : btn.icon}
-            disabled={btn.disabled}
-          >
-            {btnTitle(btn)}
-          </Btn>
-        );
-        return (
-          <span key={`${position}btn${index}`}>
-            {btn.tooltip ? (
-              <Tooltip content={btn.tooltip}>{BtnComp}</Tooltip>
-            ) : (
-              BtnComp
-            )}
-          </span>
-        );
+        if (
+          position !== "formFooter" &&
+          (btn.onlyIcon === true || btn.onlyIcon?.includes(position))
+        ) {
+          return (
+            <div
+              key={`icon${index}`}
+              onClick={() => {
+                if (!btn.disabled) {
+                  btnClick(btn, index);
+                }
+              }}
+            >
+              {btn.title ? (
+                <Tooltip content={btn.title}>{btn.icon}</Tooltip>
+              ) : (
+                <>{btn.icon}</>
+              )}
+            </div>
+          );
+        } else {
+          const Btn: any = btnType === "button" ? Button : Text;
+          const key = `${position}btn${index}`;
+          const BtnComp = (
+            <Btn
+              onClick={() => {
+                if (!btn.disabled) {
+                  btnClick(btn, index);
+                }
+              }}
+              loading={loadbtn && loadbtn === key}
+              theme={`${
+                (btn.actionType === "edit" ||
+                  btn.actionType === "create" ||
+                  btn.actionType === "save") &&
+                position === "formFooter"
+                  ? "solid"
+                  : "light"
+              }`}
+              className={`hover:cursor-pointer  ${classNames({
+                "cursor-pointer hover:text-blue-600 hover:font-bold":
+                  position === "tableLine",
+              })} ${btn.className}`}
+              key={key}
+              icon={btnType === "link" ? undefined : btn.icon}
+              disabled={btn.disabled}
+            >
+              <span className=" space-x-2 items-center">
+                {/* {btn.icon} */}
+                {btnTitle(btn)}
+              </span>
+            </Btn>
+          );
+          return (
+            <span key={`${position}btn${index}`}>
+              {btn.tooltip ? (
+                <Tooltip content={btn.tooltip}>{BtnComp}</Tooltip>
+              ) : (
+                BtnComp
+              )}
+            </span>
+          );
+        }
       })}
+    </div>
+  ) : (
+    <div className={`${className}`}>
+      <Dropdown
+        trigger={"click"}
+        position={"bottom"}
+        clickToHide={true}
+        render={
+          <Dropdown.Menu>
+            {currBtns.map((btn, index) => {
+              return (
+                <Dropdown.Item
+                  key={`${position}btn${index}`}
+                  className={` text-xs`}
+                  onClick={() => {
+                    if (!btn.disabled) {
+                      btnClick(btn, index);
+                    }
+                  }}
+                  icon={btn.icon}
+                >
+                  {btnTitle(btn)}
+                </Dropdown.Item>
+              );
+            })}
+          </Dropdown.Menu>
+        }
+      >
+        {/* <Tag className=" hidden w-4 text-xl "> */}
+        {/* 默认图标 */}
+        <i className=" icon-more_vert hover:bg-gray-200 p-1 rounded-md" />
+        {/* </Tag> */}
+      </Dropdown>
     </div>
   );
 };

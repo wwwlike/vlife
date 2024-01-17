@@ -7,7 +7,7 @@ import SuspendFallbackLoading from "../../components/fallback-loading";
 import FormModal from "../common/modal/formModal";
 import VlifeModal from "../common/modal/vlifeModal";
 import ConfirmModal from "../common/modal/confirmModal";
-import { MenuVo, SysMenu } from "@src/api/SysMenu";
+import { MenuVo } from "@src/api/SysMenu";
 import { useAuth } from "@src/context/auth-context";
 import { findSubs, findTreeRoot } from "@src/util/func";
 import FullScreenHeader from "./components/header/FullScreenHeader";
@@ -15,19 +15,19 @@ const { Content } = Layout;
 
 const Index: React.FC = () => {
   const { pathname } = useLocation();
+  const { allMenus, user } = useAuth();
   const searchParams = new URLSearchParams(location.search);
   const fullTitle = searchParams.get("fullTitle") || undefined;
-  const userMenus: MenuVo[] = useAuth().user?.menus || []; //所有菜单
+  const userMenus = user?.superUser && allMenus ? allMenus : user?.menus || []; //所有菜单
   const apps: MenuVo[] = //所有应用
-    useAuth()
-      .user?.menus.filter((m) => m.app === true)
-      ?.sort((a, b) => a.sort - b.sort) || [];
+    userMenus?.filter((m) => m.app === true)?.sort((a, b) => a.sort - b.sort) ||
+    [];
 
   const [currApp, setCurrApp] = useState<MenuVo>(); //当前应用
   const [currMenu, setCurrMenu] = useState<MenuVo>(); //当前菜单
 
   useEffect(() => {
-    const menu = userMenus.filter(
+    const menu = userMenus?.filter(
       (m) =>
         pathname.indexOf(
           m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
@@ -84,7 +84,6 @@ const Index: React.FC = () => {
               >
                 <Outlet />
               </Suspense>
-              {/* <Scrollbars autoHide={true}></Scrollbars> */}
             </Content>
           </Layout>
         </>

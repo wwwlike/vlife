@@ -29,8 +29,8 @@ public class CustomerApi extends VLifeApi<Customer, CustomerService> {
    * @return 客户详情
    */
   @PostMapping("/page")
-  public PageVo<CustomerVo> page(@RequestBody CustomerPageReq req) {
-    return service.queryPage(CustomerVo.class,req);
+  public PageVo<Customer> page(@RequestBody CustomerPageReq req) {
+    return service.findPage(req);
   }
 
   /**

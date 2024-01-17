@@ -113,6 +113,7 @@ const Content = <T extends IdBean>({
     const dictcode = tableModel?.fields?.filter(
       (f) => f.fieldName === tabDictField
     )?.[0]?.dictCode;
+
     if (tabDictField && dictcode) {
       listByCode({ code: dictcode }).then((d) => {
         const dicts: SysDict[] = d.data || [];
@@ -125,7 +126,7 @@ const Content = <T extends IdBean>({
                 {
                   fieldName: tabDictField,
                   opt: OptEnum.eq,
-                  value: typeof [d.val],
+                  value: [d.val],
                 },
               ], //视图过滤条件(简单方式)
             };

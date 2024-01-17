@@ -28,6 +28,7 @@ import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.objship.dto.*;
+import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.StringUtils;
@@ -99,9 +100,6 @@ import java.util.stream.Collectors;
         }else{
             superClazz=ClassName.get(VLifeApi.class);//父类
         }
-
-
-
         TypeName itemName = TypeName.get(item); //实体类
         ClassName serviceName = ClassName.get(servicePackageName, item.getSimpleName() + "Service");//service类
         ParameterizedTypeName superClzAndGenic = ParameterizedTypeName.get(superClazz, itemName, serviceName);//api的类的泛型
@@ -112,7 +110,8 @@ import java.util.stream.Collectors;
         classComment.add(itemDto.getTitle() + "接口 \n");
         List<MethodSpec> methodSpecs = new ArrayList<>();
         /* step3 3.1 查询方法 ，一个DTO创建一个查询方法 */
-        methodSpecs.addAll(createQueryMethod(reqDtos,voDtos,masterVo));
+        methodSpecs.add(createQueryMethodPage(reqDtos));
+        methodSpecs.add(createQueryMethodList(reqDtos));
         /* step3 3.2 保存方法 ，一个DTO创建一个SAVE方法 */
         methodSpecs.addAll(createSaveMethod(saveDtos));
         /* step3 3.3 明细方法 根据ID返回单条结果 */
@@ -131,9 +130,36 @@ import java.util.stream.Collectors;
         return javaFile;
     }
 
+    //创建分页查询方法
+    private MethodSpec createQueryMethodPage(List<ReqDto> reqDtos){
+        Class pageReqClz=PageQuery.class;
+        if(reqDtos!=null){
+            for(ReqDto req:reqDtos){
+                if(PageQuery.class.isAssignableFrom(req.getClz())){
+                    pageReqClz=req.getClz();
+                }
+            }
+        }
+        return ApiMethodCreate.createMethod(MethodTypeEnum.page
+                ,item,pageReqClz,item);
+    }
+
+    //创建列表查询方法(非业务表可创建)
+    private MethodSpec createQueryMethodList(List<ReqDto> reqDtos){
+        Class pageReqClz=PageQuery.class;
+        if(reqDtos!=null){
+            for(ReqDto req:reqDtos){
+                if(CustomQuery.class.isAssignableFrom(req.getClz())){
+                    pageReqClz=req.getClz();
+                }
+            }
+        }
+        return ApiMethodCreate.createMethod(MethodTypeEnum.list
+                ,item,pageReqClz,item);
+    }
     /**
-     * 创建查询方法
-     * 没有查询条件(REQ)则无法产生列表、分页类型的查询方法
+     * 创建查询方法，分页查询实体(不支持)
+     * 没有查询条件(REQ)模型，则采用PageQuery
      */
     private List<MethodSpec> createQueryMethod(List<ReqDto> reqDtos,List<VoDto> voDtos,Class masterVo){
         List<MethodSpec> methodSpecs = new ArrayList<>();
@@ -231,7 +257,7 @@ import java.util.stream.Collectors;
     private  Class compVoReturnClz(ReqDto req,List<VoDto> voDtos,Class masterVo){
         //case1
         if(voDtos==null||voDtos.size()==0){
-            return  item;
+            return item;
         }
         /* case2*/
         if(req!=null){

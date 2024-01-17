@@ -125,40 +125,34 @@ const Index = ({
           items={menuItems}
           footer={
             <>
-              {(mode === "dev" || user?.superUser) && (
+              {user?.superUser && (
                 <>
-                  {user?.superUser && (
-                    <>
-                      <Button
-                        theme="borderless"
-                        onClick={() => {
-                          navigate("/sysConf/model");
-                        }}
-                        style={{
-                          color: "var(--semi-color-text-2)",
-                        }}
-                        icon={
-                          <i className="icon-settings text-xl text-indigo-500"></i>
-                        }
-                      >
-                        配置中心
-                      </Button>
-                      <Button
-                        theme="borderless"
-                        style={{
-                          color: "var(--semi-color-text-2)",
-                        }}
-                        onClick={() => {
-                          navigate("/sysConf/icon");
-                        }}
-                        icon={
-                          <i className="icon-descending-order2 text-xl"></i>
-                        }
-                      >
-                        图标库
-                      </Button>
-                    </>
-                  )}
+                  <Button
+                    theme="borderless"
+                    onClick={() => {
+                      navigate("/sysConf/model");
+                    }}
+                    style={{
+                      color: "var(--semi-color-text-2)",
+                    }}
+                    icon={
+                      <i className="icon-settings text-xl text-indigo-500"></i>
+                    }
+                  >
+                    配置中心
+                  </Button>
+                  <Button
+                    theme="borderless"
+                    style={{
+                      color: "var(--semi-color-text-2)",
+                    }}
+                    onClick={() => {
+                      navigate("/sysConf/icon");
+                    }}
+                    icon={<i className="icon-descending-order2 text-xl"></i>}
+                  >
+                    图标库
+                  </Button>
                   <LinkMe />
                   <Button
                     theme="borderless"

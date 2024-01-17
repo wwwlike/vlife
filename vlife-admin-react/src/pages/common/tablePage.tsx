@@ -13,14 +13,13 @@ import { find, useDetail, useRemove, useSave } from "@src/api/base/baseService";
 import { FormFieldVo } from "@src/api/FormField";
 import {
   IconDeleteStroked,
-  IconEdit,
   IconSetting,
   IconUserAdd,
 } from "@douyinfe/semi-icons";
 import apiClient from "@src/api/base/apiClient";
 import { VfAction } from "@src/dsl/VF";
 import TagFilter from "@src/components/table/component/TagFilter";
-import { Empty, Pagination } from "@douyinfe/semi-ui";
+import { Empty, Pagination, Tooltip } from "@douyinfe/semi-ui";
 import { orderObj } from "./orderPage";
 import { useSize } from "ahooks";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
@@ -94,9 +93,9 @@ const TablePage = <T extends IdBean>({
   onGetData,
   onHttpError,
   onTableModel,
-  // reaction,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
+  const { user } = useAuth();
   const appMode = import.meta.env.VITE_APP_MODE;
   const navigate = useNavigate();
   const { getFormInfo } = useAuth();
@@ -507,17 +506,13 @@ const TablePage = <T extends IdBean>({
       className={`${className} relative h-full flex flex-col text-sm  `}
     >
       <div
-        className={`
-      ${classNames({
-        hidden:
-          mode === "hand" ||
-          (mode === "view" &&
-            tableModel.fields.filter((f) => f.listSearch).length === 0),
-      })}
-      flex bg-white items-center p-2 border-gray-100  justify-start  `}
+        className={`flex bg-white items-center p-2 border-gray-100  justify-start  `}
       >
         {/* 1. tableToolBar列表工具栏 */}
         <BtnToolBar<T>
+          className={` ${classNames({
+            hidden: mode !== "normal",
+          })}`}
           // model={tableModel.entityType}
           key={"tableBtn"}
           onDataChange={(datas: any[]): void => {
@@ -632,13 +627,16 @@ const TablePage = <T extends IdBean>({
           </div>
         </div>
       )}
-      {model === undefined && appMode === "dev" && (
-        <div className=" absolute  z-50 top-4  right-2 font-bold text-blue-500 cursor-pointer">
-          <IconSetting
-            onClick={() => {
-              navigate(`/sysConf/tableDesign/${listType}`);
-            }}
-          />
+      {model === undefined && user?.superUser === true && (
+        <div
+          onClick={() => {
+            navigate(`/sysConf/tableDesign/${listType}`);
+          }}
+          className="absolute z-50 top-4  right-2 font-bold text-gray-500 hover:text-blue-500 cursor-pointer"
+        >
+          <Tooltip content="列表配置">
+            <IconSetting />
+          </Tooltip>
         </div>
       )}
     </div>

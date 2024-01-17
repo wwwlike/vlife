@@ -1,10 +1,7 @@
-// import { AuthForm, useCurrUser, useLogin } from "@src/provider/userProvider";
-// import { useAllDict } from "@src/provider/dictProvider";
 import { TranDict } from "@src/api/base";
 import { list as resourcesList } from "@src/api/SysResources";
 import { useMount, useSize } from "ahooks";
 import React, { ReactNode, useCallback, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { list as dictList, SysDict } from "@src/api/SysDict";
 import { currUser, ThirdAccountDto, UserDetailVo } from "@src/api/SysUser";
 import { login as userLogin } from "@src/api/login";
@@ -12,10 +9,10 @@ import { FormVo, model, formPageReq } from "@src/api/Form";
 import { SysResources } from "@src/api/SysResources";
 import { useEffect } from "react";
 import { listAll, SysGroup } from "@src/api/SysGroup";
-import { SysMenu } from "@src/api/SysMenu";
+import { listAll as menuAll, MenuVo, SysMenu } from "@src/api/SysMenu";
 import { gitToken } from "@src/api/pro/gitee";
 export const localStorageKey = "__auth_provider_token__";
-
+const mode = import.meta.env.VITE_APP_MODE;
 export interface dictObj {
   [key: string]: {
     data: {
@@ -39,11 +36,14 @@ const AuthContext = React.createContext<
       /**1 attr */
       //当前用户
       user: UserDetailVo | undefined;
-      //菜单状态
+      //菜单展开状态
       menuState: MenuState;
       setMenuState: (state: MenuState) => void;
       //所有模型
       models: { [key: string]: FormVo | undefined };
+      //所有菜单
+      allMenus?: MenuVo[];
+      setAllMenus: (allMenus: MenuVo[]) => void;
       //当前屏幕大小
       screenSize?: { width: number; height: number; sizeKey: string };
       // 所有字典信息
@@ -104,6 +104,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   /**封装好的全量字典信息 */
   const [dicts, setDicts] = useState<dictObj>({});
+
+  const [allMenus, setAllMenus] = useState<MenuVo[]>();
+
   const [error, setError] = useState<string | null>();
 
   /**
@@ -189,6 +192,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setUser(res.data);
           datasInit();
+          if (res.data?.superUser) {
+            menuAll().then((m) => {
+              setAllMenus(m.data);
+            });
+          }
         }
       });
     }
@@ -426,6 +434,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           app,
           setApp,
           models,
+          allMenus,
+          setAllMenus,
           screenSize,
           dicts,
           error,

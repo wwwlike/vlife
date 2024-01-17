@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Breadcrumb } from "@douyinfe/semi-ui";
 import { useLocation } from "react-router-dom";
 import { MenuItem } from "../../types";
@@ -6,7 +6,7 @@ import { MenuItem } from "../../types";
 interface BreadcrumbItem {
   key: string;
   path?: string;
-  title: string;
+  title: string | ReactNode;
 }
 
 const { Item } = Breadcrumb;
@@ -40,16 +40,7 @@ const getBreadcrumbByPathName = (
 
 const Index: React.FC = () => {
   const { pathname } = useLocation();
-  // const { formatMessage } = useLocale()
   const [_, setState] = useState(1);
-
-  // useEffect(() => {
-  //   end = false;
-  //   if (pathname === "/") getBreadcrumbByPathName(menuList, "/order-list");
-  //   else getBreadcrumbByPathName(menuList, pathname);
-  //   setState((state) => state + 1);
-  // }, [pathname]);
-
   return (
     <Breadcrumb>
       {breadcrumbList.map((e) => {

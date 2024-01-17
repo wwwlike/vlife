@@ -8,6 +8,7 @@ import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
+import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +24,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/itemStock")
 public class ItemStockApi extends VLifeApi<ItemStock, ItemStockService> {
   /**
-   * 分页查询商品库存(视图)
+   * 分页查询商品库存
    * @param req 库存查询
-   * @return 商品库存(视图)
+   * @return 商品库存
    */
   @PostMapping("/page")
-  public PageVo<ItemStockVo> page(@RequestBody ItemStockPageReq req) {
-    return service.queryPage(ItemStockVo.class,req);
+  public PageVo<ItemStock> page(@RequestBody ItemStockPageReq req) {
+    return service.findPage(req);
+  }
+
+  /**
+   * 列表查询商品库存
+   * @param req 库存查询
+   * @return 商品库存
+   */
+  @PostMapping("/list")
+  public List<ItemStock> list(@RequestBody ItemStockPageReq req) {
+    return service.find(req);
   }
 
   /**

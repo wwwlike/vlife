@@ -19,10 +19,11 @@ import {  ReactNode } from 'react';
 export type actionType= "create"|"save"|"edit"|"api"|"click";
 
 export interface VFBtn{
-  title:string|ReactNode;//按钮名称 ●
+  title?:string;//按钮名称(入口名称)
+  icon?:ReactNode;//图标 
+  onlyIcon?:string[]|true,//只显示图标的场景，true表示仅显示图标
   tooltip?:string;// 不可用时候的提醒
   disabled?:boolean;// 当前是否不可用
-  icon?:ReactNode;
   actionType:actionType // 动作类型
   //1:boolean判断能否使用|2:属性对象完全匹配|3：函数校验(同步异步)string表示不能使用原因
   usableMatch?:boolean|any|((...datas:any[])=>string|boolean|Promise<string|boolean>);

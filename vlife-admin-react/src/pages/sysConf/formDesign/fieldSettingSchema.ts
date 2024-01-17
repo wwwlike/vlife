@@ -2,7 +2,7 @@
 import {
   IconGridView,IconArticle,IconListView,IconCommand
 } from "@douyinfe/semi-icons";
-import { Mode } from './base';
+import { Mode } from '@src/dsl/base';
 //显示的依赖定义
 export type deps = {
   field: string; //依赖的属性

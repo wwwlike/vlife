@@ -10,7 +10,6 @@ import { FormVo, model, saveFormDto } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import VfButton from "@src/components/VfButton";
 import { Mode } from "@src/dsl/base";
-import { SchemaClz } from "@src/dsl/field";
 import FormPage from "@src/pages/common/formPage";
 import { useLocation, useNavigate } from "react-router-dom";
 import SiderSetting from "./component/SiderSetting";
@@ -21,6 +20,7 @@ import { useAuth } from "@src/context/auth-context";
 import { VF } from "@src/dsl/VF";
 import { IllustrationConstruction } from "@douyinfe/semi-illustrations";
 import { useNiceModal } from "@src/store";
+import { SchemaClz } from "./fieldSettingSchema";
 
 //form设置选项信息
 export const formSettingDatas: SchemaClz = {

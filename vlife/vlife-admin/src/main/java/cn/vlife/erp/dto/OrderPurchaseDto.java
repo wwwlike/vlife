@@ -17,7 +17,6 @@ import java.util.List;
 public class OrderPurchaseDto implements SaveBean<OrderPurchase>, INo {
     public String id;
     public String no;
-    public List<OrderPurchaseDetail> details;
     public String supplierId;
     public Date orderDate;
     public String sysUserId;
@@ -25,4 +24,5 @@ public class OrderPurchaseDto implements SaveBean<OrderPurchase>, INo {
     public String remark;
     public Double totalPrice;
     public String warehouseId;
+    public List<OrderPurchaseDetail> details;
 }

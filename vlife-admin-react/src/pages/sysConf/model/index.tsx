@@ -58,8 +58,6 @@ const Model = () => {
   const [tabKey, setTabKey] = useState<string>();
   //侧边栏可见标识
   const [visible, setVisible] = useState<boolean>(false);
-  //明细数据加载
-  const { runAsync: getDetail } = useDetail({});
   //系统应用
   const apps = useMemo((): MenuVo[] => {
     if (menus) {
@@ -145,8 +143,15 @@ const Model = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const paramEntityType = searchParams.get("type") || undefined;
+    const paramFormId = searchParams.get("formId") || undefined;
     setBack(searchParams.get("goBack") ? true : false);
-    setEntityType(paramEntityType);
+    if (paramEntityType) {
+      setEntityType(paramEntityType);
+    } else if (paramFormId && forms) {
+      setVisible(true);
+      setEntityType(forms.filter((f) => f.id === paramFormId)?.[0]?.type);
+    }
+
     if (
       tabKey === undefined &&
       paramEntityType === undefined &&
@@ -155,7 +160,7 @@ const Model = () => {
     ) {
       setTabKey(apps[0].code);
     }
-  }, [location.search, apps]);
+  }, [location.search, apps, forms]);
 
   const card = useCallback(
     (e: modelForm, className?: string) => {
@@ -300,22 +305,21 @@ const Model = () => {
         onSubmitFinish: menuLoad,
         reaction: [
           VF.then("name").value(currEntity?.title),
-          VF.then(
-            "app",
-            "placeholderUrl",
-            "sysRoleId",
-            "code",
-            "confPage",
-            "pageLayoutId",
-            "sort"
-          ).hide(),
           VF.then("formId").value(currEntity?.id),
-          // VF.field("url")
-          //   .endsWidth("*")
-          //   .then("placeholderUrl")
-          //   .show()
-          //   .then("placeholderUrl")
-          //   .required(),
+          VF.then("app").value(false).hide(),
+          VF.field("confPage")
+            .eq(true)
+            .then("url", "formId", "placeholderUrl")
+            .hide()
+            .clearValue(),
+          VF.then("formId").readPretty(),
+          VF.field("confPage").eq(true).then("pageLayoutId").show(),
+          VF.field("url")
+            .endsWidth("*")
+            .then("placeholderUrl")
+            .show()
+            .then("placeholderUrl")
+            .required(),
         ],
       },
     ];

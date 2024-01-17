@@ -8,7 +8,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 菜单资源绑定
+ * 权限导入
+ * 完成菜单资源绑定操作，并能设置主要接口
  */
 @Data
 public class MenuResourcesDto implements SaveBean<SysMenu> {

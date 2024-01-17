@@ -17,10 +17,10 @@ import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
 import { Mode } from "@src/dsl/base";
-import schemaDef, { deps, SchemaClz, types } from "@src/dsl/field";
 import VlifeButton from "@src/components/VfButton";
 import FieldSetting from "./FieldSetting";
 import { FormComponents } from "@src/resources/CompDatas";
+import schemaDef, { deps, SchemaClz, types } from "../fieldSettingSchema";
 
 interface SiderSettingProps {
   mode: Mode; //当前组件场景

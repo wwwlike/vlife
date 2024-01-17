@@ -7,6 +7,7 @@ import { VF, VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
 import { isNull } from "lodash";
+import { Tooltip } from "@douyinfe/semi-ui";
 const mode = import.meta.env.VITE_APP_MODE;
 /**
  * 入参：formData=> 表单初始化数据
@@ -174,23 +175,18 @@ const FormPage = <T extends IdBean>({
 
   return (
     <>
-      {mode === "pro" || type === undefined ? (
-        <>{vlife_form}</>
-      ) : (
-        <>
-          {vlife_form}
-          {
-            <div className=" absolute top-2 right-2 font-bold text-blue-500 cursor-pointer">
-              <a
-                onClick={() => {
-                  navigate(`/sysConf/formDesign/${type}`);
-                }}
-              >
-                <IconSetting />
-              </a>
-            </div>
-          }
-        </>
+      {vlife_form}
+      {modelInfo === undefined && user?.superUser === true && (
+        <div
+          onClick={() => {
+            navigate(`/sysConf/formDesign/${type}`);
+          }}
+          className=" absolute top-2 right-2 font-bold text-gray-500 hover:text-blue-500 cursor-pointer"
+        >
+          <Tooltip content="表单配置">
+            <IconSetting />
+          </Tooltip>
+        </div>
       )}
     </>
   );

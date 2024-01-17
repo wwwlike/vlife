@@ -7,6 +7,7 @@ import {
 import { AppProviders } from "@src/context";
 import Empty from "@src/pages/common/Empty";
 import Visit403 from "@src/pages/common/Visit403";
+import FormModal from "@src/pages/common/modal/formModal";
 const DashboardPage = lazy(() => import("@src/pages/dashboard"));
 const TemplatePage = lazy(() => import("@src/pages/template"));
 
@@ -263,16 +264,6 @@ export const allRoute: any[] = [
 const RenderRouter: FC = () => {
   const [routeList, setRouteList] = useState<RouteObject[]>(allRoute);
   const element = useRoutes([...routeList]);
-
-  // const element = useRoutes([...routeList]);
-
-  // /**
-  //  * 静态路由
-  //  */
-  // const routes = useMemo((): any => {
-  //   return element;
-  // }, [routeList]);
-
   return <AppProviders>{element}</AppProviders>;
 };
 

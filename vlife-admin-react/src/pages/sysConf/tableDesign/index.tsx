@@ -6,7 +6,6 @@ import { VF } from "@src/dsl/VF";
 import VfButton from "@src/components/VfButton";
 import { useAuth } from "@src/context/auth-context";
 import { Mode, TsType } from "@src/dsl/base";
-import { SchemaClz } from "@src/dsl/field";
 import FormPage from "@src/pages/common/formPage";
 import TablePage from "@src/pages/common/tablePage";
 import { useSize } from "ahooks";
@@ -14,6 +13,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FieldSelect from "../formDesign/component/fieldSelect";
 import FormSetting from "../formDesign/component/formSetting";
+import { SchemaClz } from "../formDesign/fieldSettingSchema";
 
 //列表全局设置json
 export const tableSettingDatas: SchemaClz = {};
