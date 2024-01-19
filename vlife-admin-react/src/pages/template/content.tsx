@@ -18,8 +18,9 @@ import { VF, VfAction } from "@src/dsl/VF";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
 import { Tabs } from "@douyinfe/semi-ui";
 import GroupLabel from "@src/components/form/component/GroupLabel";
-import { listByCode, SysDict } from "@src/api/SysDict";
+import { SysDict } from "@src/api/SysDict";
 import { OptEnum, where } from "@src/dsl/base";
+import { loadApi } from "@src/resources/ApiDatas";
 
 //tab页签
 type TableTab = {
@@ -115,8 +116,12 @@ const Content = <T extends IdBean>({
     )?.[0]?.dictCode;
 
     if (tabDictField && dictcode) {
-      listByCode({ code: dictcode }).then((d) => {
-        const dicts: SysDict[] = d.data || [];
+      loadApi({
+        apiInfoKey: "dictOpenApi",
+        match: "dictItem",
+        paramObj: { code: dictcode },
+      }).then((d) => {
+        const dicts: SysDict[] = d;
         tabs.push(
           ...dicts.map((d) => {
             return {
@@ -134,8 +139,6 @@ const Content = <T extends IdBean>({
         );
         setFixedTab(tabs);
       });
-    } else if (tabList) {
-      setFixedTab(tabs);
     }
   }, [tabDictField, tableModel, tabList]);
 
