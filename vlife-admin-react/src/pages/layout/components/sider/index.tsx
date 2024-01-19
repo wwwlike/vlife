@@ -80,7 +80,7 @@ export default ({
     return {
       title: title || "新增菜单",
       icon: <i className="  icon-task_add-02" />,
-      actionType: "create",
+      actionType: "save",
       model: "sysMenu",
       reaction: [
         VF.then("app").hide().value(false),
@@ -238,7 +238,7 @@ export default ({
                   {menu.pcode === app?.code && (
                     <BtnToolBar
                       key={menu.id}
-                      datas={[menu]}
+                      // datas={[menu]}
                       btns={[
                         {
                           ...createMenuBtn(menu.code, "添加下级菜单"),

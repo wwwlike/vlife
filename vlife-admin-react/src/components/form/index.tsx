@@ -312,6 +312,7 @@ export default <T extends IdBean>({
               if (m.errors.length > 0 && onError !== undefined) {
                 setTimeout(() => onError(m.errors), 200);
               }
+              formInitReaction(m);
               //fieldValueChange里处理更优
               formDynamicReaction(m);
               formStaticReaction(m);
@@ -909,7 +910,6 @@ export default <T extends IdBean>({
   return form && formStep === "onForm" ? (
     <PreviewText.Placeholder value="-">
       <FormProvider form={form}>
-        {/* {JSON.stringify(componentProp)} */}
         <div className={`${className ? className : ""} relative`}>
           {modelInfo && (modelInfo.formDesc || modelInfo.helpDoc) && (
             <Banner

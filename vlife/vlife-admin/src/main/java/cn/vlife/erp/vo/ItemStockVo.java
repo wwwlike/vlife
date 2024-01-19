@@ -7,16 +7,10 @@ import lombok.Data;
 @Data
 public class ItemStockVo implements VoBean<ItemStock> {
     public String id;
-    //产品名称
-    public String productName;
-    //仓库名称
-    public String warehouseName;
-    // 产品
+    public String product_name;
+    public String warehouse_name;
     public String productId;
-    //所在仓库
     public String warehouseId;
-    //当前数量
     public Integer total;
-    //成本
     public Double costPrice;
 }

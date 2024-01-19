@@ -17,6 +17,7 @@
  */
 
 package cn.wwwlike.auth.config;
+import cn.vlife.erp.common.ErpDict;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
@@ -76,6 +77,8 @@ public class AdminStartInitializer implements ApplicationRunner {
         dictService.saveByDictVo(sysDict,dbs,AuthDict.DICT_TYPE.VLIFE);//是框架级不可以维护
         List<DictVo> autiDict = ReadCt.read(AuthDict.class);
         dictService.saveByDictVo(autiDict,dbs,AuthDict.DICT_TYPE.ADMIN);//平台级字典同步
+        List<DictVo> erpDict = ReadCt.read(ErpDict.class);
+        dictService.saveByDictVo(erpDict,dbs,AuthDict.DICT_TYPE.FIELD);// erp字典
     }
 
     @Override

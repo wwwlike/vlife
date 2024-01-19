@@ -29,7 +29,4 @@ public class OrderSendDetail extends DbEntity {
     public Double price;
     //发货总额
     public Double  total;
-    //发货来源
-    //节省一张表
-    public String productFrom;
 }

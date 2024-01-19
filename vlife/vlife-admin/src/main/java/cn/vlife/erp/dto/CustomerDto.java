@@ -12,14 +12,14 @@ import java.util.List;
 @Data
 public class CustomerDto implements SaveBean<Customer> {
     public String id;
-    public String sysUserId;
     public String name;
     public String address;
-    public String remark;
     public String tel;
     public String bank;
     public String accountNo;
     public  String  taxNo;
     public  String  taxTitle;
+    public String remark;
+    public String sysUserId;
     public List<LinkMan> linkManList ;
 }

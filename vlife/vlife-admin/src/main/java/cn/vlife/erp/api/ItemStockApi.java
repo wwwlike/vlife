@@ -39,8 +39,8 @@ public class ItemStockApi extends VLifeApi<ItemStock, ItemStockService> {
    * @return 商品库存
    */
   @PostMapping("/list")
-  public List<ItemStock> list(@RequestBody ItemStockPageReq req) {
-    return service.find(req);
+  public List<ItemStockVo> list(@RequestBody ItemStockPageReq req) {
+    return service.query(ItemStockVo.class,req);
   }
 
   /**
@@ -54,13 +54,13 @@ public class ItemStockApi extends VLifeApi<ItemStock, ItemStockService> {
   }
 
   /**
-   * 明细查询商品库存(视图)
+   * 明细查询商品库存
    * @param id 主键id
-   * @return 商品库存(视图)
+   * @return 商品库存
    */
   @GetMapping("/detail/{id}")
-  public ItemStockVo detail(@PathVariable String id) {
-    return service.queryOne(ItemStockVo.class,id);
+  public ItemStock detail(@PathVariable String id) {
+    return service.findOne(id);
   }
 
   /**

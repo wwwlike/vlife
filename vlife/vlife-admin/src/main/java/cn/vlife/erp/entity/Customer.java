@@ -16,22 +16,13 @@ import javax.persistence.Table;
 @Table(name = "erp_customer")
 public class Customer extends DbEntity {
     /**
-     * 相关销售
-     */
-    public String sysUserId;
-    /**
      * 客户名称
      */
     public String name;
-
     /**
      * 客户地址
      */
     public String address;
-    /**
-     * 备注
-     */
-    public String remark;
     /**
      * 电话号码
      */
@@ -40,20 +31,24 @@ public class Customer extends DbEntity {
      * 开户银行
      */
     public String bank;
-
     /**
      * 银行账号
      */
     public String accountNo;
-
     /**
      * 纳税人识别号
      */
     public  String  taxNo;
-
     /**
      * 开票抬头
      */
     public  String  taxTitle;
-
+    /**
+     * 备注
+     */
+    public String remark;
+    /**
+     * 相关销售
+     */
+    public String sysUserId;
 }

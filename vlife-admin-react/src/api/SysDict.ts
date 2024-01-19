@@ -37,7 +37,3 @@ export const detail=(req:{id:string}): Promise<Result<SysDict>>=>{
 export const remove=(ids:String[]): Promise<Result<number>>=>{
 return apiClient.delete(`/sysDict/remove`,{data:ids});
 };
-/** 根据code查询*/
-export const listByCode=(req:{code:string}): Promise<Result<SysDict[]>>=>{
-return apiClient.get(`/sysDict/listByCode`,{params:req});
-};

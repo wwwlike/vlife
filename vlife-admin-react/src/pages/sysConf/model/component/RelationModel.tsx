@@ -11,7 +11,7 @@ export interface RelationModelPorps {
 }
 
 export default ({ modelForm }: RelationModelPorps) => {
-  const { vo, dto, req, bean } = modelForm;
+  const { list, form, req, bean } = modelForm;
   const navigate = useNavigate();
   const className =
     " group relative h-20 flex flex-col justify-center items-center  border border-dashed rounded-md mb-2 hover:bg-blue-50 ";
@@ -41,7 +41,7 @@ export default ({ modelForm }: RelationModelPorps) => {
           </div>
         </div>
 
-        {dto?.map((d) => {
+        {form?.map((d) => {
           return (
             <div key={`dto${d.type}`} className={`${className}`}>
               <p>{d.title}</p>
@@ -60,22 +60,7 @@ export default ({ modelForm }: RelationModelPorps) => {
       </div>
       <GroupLabel text={`列表模型`} icon={<i className="icon-table" />} />
       <div className=" grid gap-2  grid-cols-3">
-        <div className={`${className}`}>
-          <p>{modelForm.title}</p>
-          <p>{modelForm.type}</p>
-          <div
-            className={`${designClassName}`}
-            onClick={() => {
-              navigate(
-                `/sysConf/tableDesign/${modelForm.type}?fullTitle=列表设计`
-              );
-            }}
-          >
-            配置
-          </div>
-        </div>
-
-        {vo?.map((d) => {
+        {list?.map((d) => {
           return (
             <div key={`vo${d.type}`} className={`${className}`}>
               <p>{d.title}</p>

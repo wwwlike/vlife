@@ -92,7 +92,11 @@ public class ApiMethodCreate {
         methodAnnotation.addMember("value", "\"" + methodEnum.getPath(methodName) + "\"");
         MethodContent mtype= methodEnum.getMethodContent();
         if(MethodContent.save==mtype){
-            methodSpec.addStatement("return service.save("+paramsName+")");
+            if(Item.class.isAssignableFrom((in))){
+                methodSpec.addStatement("return service.save("+paramsName+")");
+            }else{
+                methodSpec.addStatement("return service.save("+paramsName+",true)");
+            }
         }else if(mtype==MethodContent.remove){
             methodSpec.addStatement("return service.remove("+paramsName+")");
         }else if(mtype==MethodContent.page&&Item.class.isAssignableFrom(out)){

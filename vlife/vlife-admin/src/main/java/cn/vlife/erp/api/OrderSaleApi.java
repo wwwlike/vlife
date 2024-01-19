@@ -4,10 +4,12 @@ import cn.vlife.erp.dto.OrderSaleDto;
 import cn.vlife.erp.entity.OrderSale;
 import cn.vlife.erp.req.OrderSalePageReq;
 import cn.vlife.erp.service.OrderSaleService;
+import cn.vlife.erp.vo.OrderSaleVo;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
+import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,13 +35,36 @@ public class OrderSaleApi extends VLifeApi<OrderSale, OrderSaleService> {
   }
 
   /**
+   * 列表查询销售单
+   * @param req 销售单查询
+   * @return 销售单
+   */
+  @PostMapping("/list")
+  public List<OrderSaleVo> list(@RequestBody OrderSalePageReq req) {
+    return service.query(OrderSaleVo.class,req);
+  }
+
+  /**
    * 保存销售单据
    * @param orderSaleDto 销售单据
    * @return 销售单据
    */
   @PostMapping("/save/orderSaleDto")
   public OrderSaleDto saveOrderSaleDto(@RequestBody OrderSaleDto orderSaleDto) {
-    return service.save(orderSaleDto);
+    if(orderSaleDto.getState()==null){
+      orderSaleDto.setState("1");
+    }
+    return service.save(orderSaleDto,true);
+  }
+
+  /**
+   * 保存销售单
+   * @param orderSale 销售单
+   * @return 销售单
+   */
+  @PostMapping("/save")
+  public OrderSale save(@RequestBody OrderSale orderSale) {
+    return service.save(orderSale);
   }
 
   /**
@@ -48,8 +73,8 @@ public class OrderSaleApi extends VLifeApi<OrderSale, OrderSaleService> {
    * @return 销售单
    */
   @GetMapping("/detail/{id}")
-  public OrderSale detail(@PathVariable String id) {
-    return service.findOne(id);
+  public OrderSaleVo detail(@PathVariable String id) {
+    return service.queryOne(OrderSaleVo.class,id);
   }
 
   /**

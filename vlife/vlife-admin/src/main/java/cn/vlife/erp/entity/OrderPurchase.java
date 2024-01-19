@@ -16,6 +16,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "erp_order_purchase")
+@VClazz(orders = "state_asc,orderDate_desc")
 public class OrderPurchase extends DbEntity implements INo {
     /**
      * 采购单号

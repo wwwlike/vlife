@@ -7,6 +7,7 @@ import { useNiceModal } from "@src/store";
 import { objectIncludes } from "@src/util/func";
 import { VFBtn } from "../types";
 import { IconMore } from "@douyinfe/semi-icons";
+import { isNull } from "lodash";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|(可多多条数据操作，可新增)
@@ -145,37 +146,32 @@ export default <T extends IdBean>({
   // 按钮名称计算
   const btnTitle = useCallback(
     (btn: VFBtn): string | ReactNode => {
-      if (typeof btn.title === "string") {
-        if (position === "formFooter") {
-          if (
-            btn.actionType == "save" ||
-            btn.actionType == "create" ||
-            btn.actionType === "edit"
-          ) {
-            return "保存";
+      if (position === "formFooter") {
+        if (
+          btn.actionType == "save" ||
+          btn.actionType == "create" ||
+          btn.actionType === "edit"
+        ) {
+          return "保存";
+        }
+      } else if (position === "tableToolbar") {
+        if (btn.actionType === "save" || btn.actionType === "create") {
+          if (isNull(btn.title) || btn.title === undefined) {
+            return "新增";
+          } else if (!btn?.title?.startsWith("新增")) {
+            return "新增" + btn.title;
           }
-        } else if (position === "tableToolbar") {
-          if (btn.actionType === "save" || btn.actionType === "create") {
-            if (!btn.title.startsWith("新增")) {
-              if (btn.title === "") {
-                return "新增";
-              } else {
-                return "新增" + btn.title;
-              }
-            }
-          }
-        } else if (position === "tableLine") {
-          if (btn.actionType === "save") {
-            if (btn.title !== "修改") {
-              if (btn.title === "") {
-                return "修改";
-              } else {
-                return "修改" + btn.title;
-              }
-            }
+        }
+      } else if (position === "tableLine") {
+        if (btn.actionType === "save") {
+          if (isNull(btn.title) || btn.title === undefined) {
+            return "修改";
+          } else if (!btn?.title?.startsWith("修改")) {
+            return "修改" + btn.title;
           }
         }
       }
+
       return btn.title;
     },
     [position]
@@ -190,7 +186,7 @@ export default <T extends IdBean>({
           formData:
             btn.actionType === "create" ||
             (btn.actionType === "save" && position === "tableToolbar")
-              ? {}
+              ? undefined
               : data,
           btns: [btn], //取消掉btns简化逻辑，弹出层值显示一个按钮
           terse: !btn.saveApi ? true : false, //紧凑
@@ -229,10 +225,17 @@ export default <T extends IdBean>({
   //可用性比对检查 false&&string不可用， true可用
   const btnUsableMatch = useCallback(
     (btn: VFBtn): boolean | string | Promise<boolean | string> => {
-      //布尔值匹配
+      //创建型按钮可用的情况
       if (
-        (btn.actionType === "create" && btn.usableMatch === undefined) ||
-        (btn.actionType === "save" && position === "tableToolbar")
+        (btn.actionType === "create" ||
+          (btn.actionType === "save" && position === "tableToolbar") ||
+          (btn.actionType === "save" &&
+            position === "formFooter" &&
+            btnDatas?.[0]?.id === undefined)) &&
+        (btn.usableMatch === undefined ||
+          btn.usableMatch === true ||
+          typeof btn.usableMatch === "object" ||
+          typeof btn.usableMatch === "function") //any和函数的校验方式对新增按钮类型无效(这类是需要表单内数据做支撑)
       ) {
         return true;
       } else if (typeof btn.usableMatch === "boolean") {
@@ -255,13 +258,16 @@ export default <T extends IdBean>({
         );
       } else if (typeof btn.usableMatch === "function") {
         //同步函数
-        return btn.usableMatch(
+        const match = btn.usableMatch(
           position === "tableToolbar"
             ? btnDatas || []
             : btnDatas
             ? btnDatas[0]
             : undefined
         );
+        return match === undefined && btnDatas && btnDatas.length > 0
+          ? true
+          : match;
       } else if (btnDatas === undefined || btnDatas?.length === 0) {
         //1 没有选中数据，非创建类按钮不可用
         return false;

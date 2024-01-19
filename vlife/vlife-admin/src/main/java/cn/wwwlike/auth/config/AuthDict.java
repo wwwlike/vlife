@@ -62,7 +62,6 @@ public class AuthDict {
     public static final class DICT_TYPE{
         //CT VCT里的
         @Named("框架")
-        //authDICT
         public final static String VLIFE = "vlife";
         @Named("平台")
         public final static String ADMIN = "admin";

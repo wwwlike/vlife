@@ -10,10 +10,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 采购单据
+ * 采购订单单据
  */
 @Data
-@VClazz(orders = "state_asc,orderDate_desc")
 public class OrderPurchaseDto implements SaveBean<OrderPurchase>, INo {
     public String id;
     public String no;

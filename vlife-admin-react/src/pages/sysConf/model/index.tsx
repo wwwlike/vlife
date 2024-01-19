@@ -36,9 +36,9 @@ import { useDetail } from "@src/api/base/baseService";
 import { VFBtn } from "@src/components/table/types";
 
 export type modelForm = FormVo & {
-  vo?: FormVo[];
+  list?: FormVo[];
   req?: FormVo[];
-  dto?: FormVo[];
+  form?: FormVo[];
   bean?: FormVo[];
 };
 type appEntityType = { [menuCode: string]: modelForm[] };
@@ -103,15 +103,12 @@ const Model = () => {
           .map((entity) => {
             return {
               ...entity,
-              vo:
+              list: [entity],
+              form:
                 result.data?.filter(
                   (f) =>
-                    f.itemType === "vo" && f.entityType === entity.entityType
-                ) || [],
-              dto:
-                result.data?.filter(
-                  (f) =>
-                    f.itemType === "save" && f.entityType === entity.entityType
+                    (f.itemType === "save" || f.itemType === "vo") &&
+                    f.entityType === entity.entityType
                 ) || [],
               req:
                 result.data?.filter(
@@ -191,9 +188,9 @@ const Model = () => {
               content={`${
                 1 +
                 (e?.req?.length || 0) +
-                (e?.vo?.length || 0) +
+                (e?.list?.length || 0) +
                 (e?.bean?.length || 0) +
-                (e?.dto?.length || 0)
+                (e?.form?.length || 0)
               }个相关模型可配`}
             >
               <Avatar
@@ -207,9 +204,9 @@ const Model = () => {
               >
                 {1 +
                   (e?.req?.length || 0) +
-                  (e?.vo?.length || 0) +
+                  (e?.list?.length || 0) +
                   (e?.bean?.length || 0) +
-                  (e?.dto?.length || 0)}
+                  (e?.form?.length || 0)}
               </Avatar>
             </Tooltip>
           </div>
@@ -271,9 +268,9 @@ const Model = () => {
         title: `模型管理(${
           1 +
           (currEntity?.req?.length || 0) +
-          (currEntity?.vo?.length || 0) +
+          (currEntity?.list?.length || 0) +
           (currEntity?.bean?.length || 0) +
-          (currEntity?.dto?.length || 0)
+          (currEntity?.form?.length || 0)
         })`,
         disabledHide: false,
         actionType: "click",

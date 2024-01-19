@@ -173,11 +173,6 @@ export const FormModal = createNiceModal(
             if (onDataChange) {
               onDataChange(data, field);
             }
-            // setModifyData(data);
-            // console.log(data);
-            // setData((d: any) => {
-            //   return { ...data };
-            // });
           }}
           onForm={setForm} //formily表单信息
           onVfForm={setFormVo} //vf模型信息

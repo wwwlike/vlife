@@ -44,7 +44,7 @@ export const dictOpenApi:ApiInfo={
     },
     match:{
       ISelect_ITEMS:{
-        label:'分项选择',
+        label:'字典项选择',
         dataType: DataType.array,
         dataModel:"ISelect",
         filterKey:[],//不使client用过滤
@@ -70,6 +70,24 @@ export const dictOpenApi:ApiInfo={
         filterKey:["field","vlife"],
         func:(datas:SysDict[]):ISelect[]=>{
           return datas.filter(d=>d.level===1).map((d)=>{return {value:d.code,label:d.title}})
+        }
+      },
+      dictItem:{
+        label:'字典项信息',
+        dataType: DataType.array,
+        dataModel:"SysDict",
+        params:{//参数配置
+          code:{
+            label:'字典编码',
+            required:true,
+            dynamicParams:true,
+            dataModel:DataModel.string,
+            dataType:DataType.basic,
+            options:{apiInfoKey:"dictOpenApi",match:"ISelect_TYPE"}
+          }
+        },
+        func:(datas:SysDict[]):SysDict[]=>{
+          return   datas.filter(d=>d.level===2)
         }
       }
   }

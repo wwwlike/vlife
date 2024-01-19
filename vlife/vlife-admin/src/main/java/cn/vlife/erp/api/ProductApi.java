@@ -7,6 +7,8 @@ import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,15 +22,23 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/product")
-public class ProductApi extends VLifeApi<Product, ProductService> {
+public class
+ProductApi extends VLifeApi<Product, ProductService> {
   /**
-   * 分页查询产品
-   * @param req 产品查询
-   * @return 产品
+   * 产品查询
    */
   @PostMapping("/page")
   public PageVo<Product> page(@RequestBody ProductPageReq req) {
     return service.findPage(req);
+  }
+
+
+  /**
+   * 产品列表
+   */
+  @PostMapping("/list")
+  public List<Product> list(@RequestBody ProductPageReq req) {
+    return service.find(req);
   }
 
   /**

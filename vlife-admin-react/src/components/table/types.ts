@@ -26,7 +26,7 @@ export interface VFBtn{
   disabled?:boolean;// 当前是否不可用
   actionType:actionType // 动作类型
   //1:boolean判断能否使用|2:属性对象完全匹配|3：函数校验(同步异步)string表示不能使用原因
-  usableMatch?:boolean|any|((...datas:any[])=>string|boolean|Promise<string|boolean>);
+  usableMatch?:boolean|any|((...datas:any[])=>string|boolean|Promise<string|boolean>); // create新增是不支持有数据的any和函数模型
   className?:string//按钮样式
   initData?:any;//初始化数据新增时使用的默认值
   permissionCode?:string;//权限编码,不传则根据->`实体名:方法名(动作:模型名)`组成 sysUser:save:sysUserDto对应后端sysUser的API下的saveSysUserDto方法

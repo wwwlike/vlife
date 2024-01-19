@@ -64,7 +64,6 @@ export interface TablePageProps<T extends IdBean> extends ListProps<T> {
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req: any; //查询条件obj  //自定义tab页签条件，filter过滤条件
   conditionJson?: string; //db视图过滤的条件
-  selected: T[]; //前选中的行数据(relation组件使用)
   design: true | undefined; //true则是设计器模式
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
@@ -92,6 +91,7 @@ const TablePage = <T extends IdBean>({
   loadApi,
   onGetData,
   onHttpError,
+  read,
   onTableModel,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
@@ -345,7 +345,7 @@ const TablePage = <T extends IdBean>({
         {
           title: "",
           actionType: "save",
-          icon: <IconUserAdd />,
+          icon: <i className=" icon-add_circle_outline" />,
           multiple: false,
           permissionCode: savePermissionCode,
           model: editModelType,
@@ -362,7 +362,7 @@ const TablePage = <T extends IdBean>({
         {
           title: "删除",
           actionType: "api",
-          icon: <IconDeleteStroked />,
+          icon: <i className="  icon-remove_circle_outline1" />,
           usableMatch: { status: "1" }, //都可以修改
           multiple: true,
           permissionCode: tableModel?.entityType + ":remove",
@@ -562,6 +562,7 @@ const TablePage = <T extends IdBean>({
           }}
         />
       </div>
+
       <Table<T>
         className={"flex justify-center flex-grow"}
         key={tableModel.type + pageSize + pager?.page}
@@ -573,6 +574,7 @@ const TablePage = <T extends IdBean>({
         onSelected={(data: T[]) => {
           setSelected(data);
         }}
+        read={read}
         wheres={columnWheres}
         onColumnFilter={setColumnWheres}
         pagination={mode === "view" ? pagination : false}

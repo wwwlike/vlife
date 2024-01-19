@@ -1,10 +1,11 @@
 import { ITree } from '@src/api/base';
 import { DataModel, DataType } from '@src/dsl/base';
 import {  ITreeData } from '@src/dsl/component';
-import { ApiDatas, ApiInfo, ParamsObj, selectObj } from '../components/compConf/compConf';
+import { ApiDatas, ApiInfo, ParamsObj } from '@src/components/compConf/compConf';
 import { FormVo,  } from '@src/api/Form';
-import { deptOpenApi, dictOpenApi, formOpenApi, groupOpenApi, menuOpenApi, resourcesOpenApi, roleOpenApi, routeOpenApi } from './apis/Admin';
+import { deptOpenApi, dictOpenApi, fieldOpenApi, formOpenApi, groupOpenApi, menuOpenApi, resourcesOpenApi, roleOpenApi, routeOpenApi } from './apis/Admin';
 import { dynamicParamsTran } from '@src/components/form/propload';
+import { orderSaleOpenApi, productOpenApi, stockItemOpenApi } from './apis/Erp';
 /**
  * 将db里的树形数据转换成组件可用的树形数据
  */
@@ -19,7 +20,6 @@ export const itree2TreeData=(data:ITree[],valueName:"id"|"code"="id",root?:strin
     })
   }
 }
-
 export type loadApiParams={
   apiInfoKey:string,
   match:string,
@@ -137,4 +137,9 @@ export const apiDatas:ApiDatas={
   groupOpenApi,//权限组
   roleOpenApi,//角色
   formOpenApi,//模型
+  fieldOpenApi,//字段
+  //erp
+  productOpenApi,//产品接口
+  stockItemOpenApi,//库存接口
+  orderSaleOpenApi,//展厅
 }

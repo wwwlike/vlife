@@ -4,11 +4,11 @@ import cn.vlife.erp.dto.CustomerDto;
 import cn.vlife.erp.entity.Customer;
 import cn.vlife.erp.req.CustomerPageReq;
 import cn.vlife.erp.service.CustomerService;
-import cn.vlife.erp.vo.CustomerVo;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
+import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,13 +24,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/customer")
 public class CustomerApi extends VLifeApi<Customer, CustomerService> {
   /**
-   * 分页查询客户详情
+   * 分页查询客户
    * @param req 客户查询
-   * @return 客户详情
+   * @return 客户
    */
   @PostMapping("/page")
   public PageVo<Customer> page(@RequestBody CustomerPageReq req) {
     return service.findPage(req);
+  }
+
+  /**
+   * 列表查询客户
+   * @param req 客户查询
+   * @return 客户
+   */
+  @PostMapping("/list")
+  public List<Customer> list(@RequestBody CustomerPageReq req) {
+    return service.find(req);
   }
 
   /**
@@ -44,13 +54,13 @@ public class CustomerApi extends VLifeApi<Customer, CustomerService> {
   }
 
   /**
-   * 明细查询客户详情
+   * 明细查询客户
    * @param id 主键id
-   * @return 客户详情
+   * @return 客户
    */
   @GetMapping("/detail/{id}")
-  public CustomerVo detail(@PathVariable String id) {
-    return service.queryOne(CustomerVo.class,id);
+  public Customer detail(@PathVariable String id) {
+    return service.findOne(id);
   }
 
   /**

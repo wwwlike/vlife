@@ -7,6 +7,8 @@ import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import java.lang.Long;
 import java.lang.String;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +31,13 @@ public class OrderSaleDetailApi extends VLifeApi<OrderSaleDetail, OrderSaleDetai
   @PostMapping("/page")
   public PageVo<OrderSaleDetail> page(@RequestBody PageQuery req) {
     return service.findPage(req);
+  }
+
+
+  //销售明细列表
+  @PostMapping("/list")
+  public List<OrderSaleDetail> list(@RequestBody PageQuery req) {
+    return service.find(req);
   }
 
   /**

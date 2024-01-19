@@ -17,21 +17,15 @@
  */
 
 package cn.wwwlike.sys.api;
-import cn.wwwlike.auth.config.AuthDict;
-import cn.wwwlike.auth.entity.SysUser;
-import cn.wwwlike.auth.req.SysUserPageReq;
 import cn.wwwlike.sys.entity.SysDict;
 import cn.wwwlike.sys.req.SysDictPageReq;
 import cn.wwwlike.sys.service.SysDictService;
-import cn.wwwlike.vlife.base.OrderRequest;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
-import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 字典表接口
@@ -44,7 +38,6 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
      */
     @PostMapping("/page")
     public PageVo<SysDict> page(@RequestBody SysDictPageReq req) {
-//        req.qw().eq("level",2).eq("type", AuthDict.DICT_TYPE.FIELD);
         return service.findPage(req);
     }
     /**
@@ -56,9 +49,7 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
                 .addOrder("val", Sort.Direction.ASC);
         return service.find(req);
     }
-    /**
-     * 字典保存
-     */
+    //字典保存
     @PostMapping("/save")
     public SysDict save(@RequestBody SysDict dto) {
         SysDict type=service.findLevel1ByCode(dto.getCode());
@@ -69,9 +60,7 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
         dto.setType(type.getType());
         return service.save(dto);
     }
-    /**
-     * 字典详情
-     */
+    //字典详情
     @GetMapping("/detail/{id}")
     public SysDict detail(@PathVariable String id) {
         return service.findOne(id);
@@ -83,13 +72,4 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
     public Long remove(@RequestBody String[] ids) {
         return service.remove(ids);
     }
-    /**
-     * 分类查询
-     * 单项字典信息根据code查询
-     */
-    @GetMapping("/listByCode")
-    public List<SysDict> listByCode(String code) {
-        return service.find("code", code).stream().filter(s -> s.val != null).collect(Collectors.toList());
-    }
-
 }

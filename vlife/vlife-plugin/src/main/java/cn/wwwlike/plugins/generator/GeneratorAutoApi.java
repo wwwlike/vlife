@@ -186,23 +186,17 @@ import java.util.stream.Collectors;
 
     /**
      * 创建保存类方法
+     * 实体和saveBean类型创建
      */
     private List<MethodSpec> createSaveMethod(List<SaveDto> saveDtos){
         List<MethodSpec> methodSpecs = new ArrayList<>();
         saveDtos.forEach(dto->{
             VClazz vClazz=(VClazz) dto.getClz().getAnnotation(VClazz.class);
-            if(vClazz==null){
-                methodSpecs.add(ApiMethodCreate.createMethod(MethodTypeEnum.save
-                        ,item,dto.clz,dto.clz));
-            }else{
-                methodSpecs.add(ApiMethodCreate.createMethod(MethodTypeEnum.commit
-                        ,item,dto.clz,dto.clz));
-            }
-        });
-        if(methodSpecs.size()==0){
             methodSpecs.add(ApiMethodCreate.createMethod(MethodTypeEnum.save
-                    ,item,item,item));
-        }
+                    ,item,dto.clz,dto.clz));
+        });
+        methodSpecs.add(ApiMethodCreate.createMethod(MethodTypeEnum.save
+                ,item,item,item));
         return methodSpecs;
     }
 

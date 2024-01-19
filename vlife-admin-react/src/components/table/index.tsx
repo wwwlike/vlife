@@ -36,7 +36,7 @@ export interface ListProps<T extends IdBean> {
   onSelected?: (selecteds: T[]) => void; //选中后的回调事件
   onLineClick?: (obj: T) => void; //行点击事件触发
   onColumnSort?: (orderObj: orderObj) => void;
-  dataSource?: IdBean[];
+  dataSource?: T[];
   btns: VFBtn[];
   height?: number;
   pagination?: any;
@@ -244,39 +244,6 @@ const TableIndex = <T extends IdBean>({
                 return text;
               }
             }
-            // return dicts[dictCode || "vlife"] &&
-            //   dicts[dictCode || "vlife"].data ? (
-            //   dicts[dictCode || "vlife"].data?.filter(
-            //     (d) => d.value + "" === text + ""
-            //   ).length > 0 ? (
-            //     dicts[dictCode || "vlife"].data?.filter(
-            //       (d) => d.value + "" === text + ""
-            //     )[0].color ? (
-            //       <div
-            //       className={` vf`}
-            //         color={
-            //           dicts[dictCode || "vlife"].data?.filter(
-            //             (d) => d.value + "" === text + ""
-            //           )[0].color
-            //         }
-            //       >
-            //         {
-            //           dicts[dictCode || "vlife"].data?.filter(
-            //             (d) => d.value + "" === text + ""
-            //           )[0].label
-            //         }
-            //       </div>
-            //     ) : (
-            //       dicts[dictCode || "vlife"].data?.filter(
-            //         (d) => d.value + "" === text + ""
-            //       )[0].label
-            //     )
-            //   ) : (
-            //     "-"
-            //   )
-            // ) : (
-            //   "-"
-            // );
           };
         } else if (m.fieldType === "boolean") {
           m["render"] = (text, record, index) => {
@@ -368,7 +335,6 @@ const TableIndex = <T extends IdBean>({
       if (index % 2 === 1) {
         return {
           style: {
-            // background: "var(--semi-color-fill-0)",
             background: "#f9fafc",
           },
           onClick: (e: any) => {

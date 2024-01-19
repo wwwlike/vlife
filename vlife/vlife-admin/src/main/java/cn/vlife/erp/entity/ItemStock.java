@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 /**
  * 商品库存
+ * 一个商品在一个仓库里一条记录
  */
 @Data
 @Entity
