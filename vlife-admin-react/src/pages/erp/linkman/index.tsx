@@ -1,8 +1,8 @@
 import React from "react";
 import Content from "../../template/content";
-import { LinkMan } from "@src/api/LinkMan";
 import { useLocation } from "react-router-dom";
 import { VF } from "@src/dsl/VF";
+import { LinkMan } from "@src/api/erp/LinkMan";
 
 export default () => {
   const local = useLocation();
