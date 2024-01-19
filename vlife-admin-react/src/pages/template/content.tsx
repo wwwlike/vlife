@@ -139,6 +139,8 @@ const Content = <T extends IdBean>({
         );
         setFixedTab(tabs);
       });
+    } else if (tabList) {
+      setFixedTab(tabs);
     }
   }, [tabDictField, tableModel, tabList]);
 
