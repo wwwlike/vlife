@@ -49,6 +49,7 @@ public class FormService extends VLifeService<Form, FormDao> {
         }
         PageComponentPropDto prop=null;
         String x_component="Input";
+        //字典匹配
         if(dto.getDictCode()!=null){
             prop=new PageComponentPropDto();
             if(itemType.equals("req")){
@@ -58,9 +59,9 @@ public class FormService extends VLifeService<Form, FormDao> {
                 x_component="VfSelect_DICT";
                 prop.setPropName("optionList");
             }
-            prop.setPropVal("dictDatas");
+            prop.setPropVal("dictOpenApi");
             prop.setSourceType("api");
-            prop.setRelateVal("ISelect");
+            prop.setRelateVal("ISelect_ITEMS");
             PageApiParam apiParam=new PageApiParam();
             apiParam.setParamVal(dto.getDictCode());
             apiParam.setParamName("code");
@@ -78,33 +79,42 @@ public class FormService extends VLifeService<Form, FormDao> {
             if(dto.getFieldType().equals("string")&&itemType.equals("req")){
                 x_component="SearchInput";
             }else if(dto.getFieldType().equals("string")&&itemType.equals("entity")){
-                x_component="Input";
+                if("img,IMAGE,photo,avatar".toLowerCase().indexOf(dto.getFieldName().toLowerCase())!=-1){
+                    x_component="VfImage";
+                }else if(dto.getFieldName().toLowerCase().indexOf("icon")!=-1){
+                    x_component="SelectIcon";
+                }else{
+                    x_component="Input";
+                }
             }else if(dto.getFieldType().equals("number")){
                 x_component="InputNumber";
             }else if(dto.getFieldType().equals("boolean")){
                 x_component="VfCheckbox";
-            }else if("imgImgIMAGEPHOTOphoto".indexOf(dto.getFieldName())!=-1){
-                x_component="VfImage";
             }
         }else if(dto.getDataType().equals("array")&&itemType.equals("save")){
-            x_component="table";
-            dto.setHideLabel(true);
-            dto.setX_decorator_props$layout("vertical");
-            dto.setX_decorator_props$gridSpan(3);
-            dto.setX_decorator_props$labelAlign("left");
-            dto.setDivider(true);
-            dto.setDividerLabel(dto.getTitle());
-            PageComponentPropDto pageComponentProp=new PageComponentPropDto();
-            pageComponentProp.setPropName("type");
-            pageComponentProp.setPropVal("entityType");
-            pageComponentProp.setSourceType("sys");
-            dto.setPageComponentPropDtos(Arrays.asList(pageComponentProp));
+            if(dto.getFieldType().equals("string")){
+                x_component="RelationTagInput";
+            }else{
+                x_component="table";
+                dto.setHideLabel(true);
+                dto.setX_decorator_props$layout("vertical");
+                dto.setX_decorator_props$gridSpan(3);
+                dto.setX_decorator_props$labelAlign("left");
+                dto.setDivider(true);
+                dto.setDividerLabel(dto.getTitle());
+                PageComponentPropDto pageComponentProp=new PageComponentPropDto();
+                pageComponentProp.setPropName("type");
+                pageComponentProp.setPropVal("entityType");
+                pageComponentProp.setSourceType("sys");
+                dto.setPageComponentPropDtos(Arrays.asList(pageComponentProp));
+            }
         }
         if(dto.getFieldType().equals("date")){
             x_component="DatePicker";
         }
         if(dto.getFieldName().equals("code")){
             dto.setX_hidden(true);
+            dto.setListHide(true);
         }
         if(dto.getFieldName().equals("no")&&INo.class.isAssignableFrom(javaDto.getClz())){
             dto.setX_hidden(true);

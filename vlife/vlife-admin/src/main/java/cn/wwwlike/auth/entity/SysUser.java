@@ -33,10 +33,6 @@ import javax.persistence.Table;
 @Table(name = "sys_user")
 public class SysUser extends DbEntity implements IFkItem,IUser {
     /**
-     * 头像
-     */
-    public String avatar;
-    /**
      * 用户名
      */
     public String username;
@@ -75,6 +71,10 @@ public class SysUser extends DbEntity implements IFkItem,IUser {
      */
     @VField(dictCode = "USER_TYPE")
     public String usetype;
+    /**
+     * 头像
+     */
+    public String avatar;
     /**
      * 启用状态
      */

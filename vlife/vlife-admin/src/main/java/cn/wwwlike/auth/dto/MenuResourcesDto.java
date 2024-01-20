@@ -13,11 +13,11 @@ import java.util.List;
  */
 @Data
 public class MenuResourcesDto implements SaveBean<SysMenu> {
-    //菜单id
+    //菜单
     public String id;
-    //表单id
+    //数据集
     public String formId;
-    //关联资源
+    //导入权限
     public List<String> sysResources_id;
     /**
      * 主要接口

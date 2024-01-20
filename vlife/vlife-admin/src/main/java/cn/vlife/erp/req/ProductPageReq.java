@@ -21,8 +21,4 @@ public class ProductPageReq extends PageQuery<Product> {
      */
     public  String brand;
 
-    /**
-     * 销售单
-     */
-    public String orderSaleDetail_orderSaleId;
 }
