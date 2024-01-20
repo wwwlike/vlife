@@ -21,8 +21,7 @@ export type optionObj={
 export type Options=
   selectObj[]| //手写指定选项范围
   loadApiParams //取值来自指定配置转换过滤的接口
-  // optionObj |  //指定接口的2个字段分别取lable和value
-  // ((form?:FormVo,field?:FormFieldVo)=>Promise<Partial<selectObj>[]>)// 异步函数可封装逻辑组装options  
+
 
 /**
  * 组件属性定义数据结构

@@ -147,7 +147,7 @@ export const  getObjElStr1=(depsIndex:number,condition:VfCondition|undefined,for
         }else if (condition.opt === FS_OPT.iSNULL) {
           return `($deps[${sort}]===null||$deps[${sort}]===undefined||$deps[${sort}]==="")`;
         }else if (condition.opt === FS_OPT.CHANGE) {
-          return `$deps[${sort}]`;
+          return `$deps[${sort}]||$deps[${sort}]===null||$deps[${sort}]===undefined||$deps[${sort}]===""`;
         }else if (condition.opt === FS_OPT.START_WITH) {
           return `($deps[${sort}]&&$deps[${sort}].startsWith("${condition.value}"))`
         }else if (condition.opt === FS_OPT.END_WITH) {

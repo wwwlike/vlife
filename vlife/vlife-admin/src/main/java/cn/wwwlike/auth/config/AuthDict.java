@@ -106,4 +106,14 @@ public class AuthDict {
         public final static String NumField = "numField";
     }
 
+
+    @Named("视图场景")
+    public static final class CONDITION_TYPE{
+        @Named("图表")
+        public final static String REPORT = "report";
+        @Named("列表")
+        public final static String TABLE = "table";
+
+    }
+
 }

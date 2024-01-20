@@ -65,13 +65,13 @@ export const FormModal = createNiceModal(
       if (props.readPretty) {
         return formVo?.name + "详情" + no;
       } else {
-        if (formData && formData.id) {
+        if (form?.values && form.values.id) {
           return formVo?.name + "" + no;
         } else {
           return "新建(" + formVo?.name + ")";
         }
       }
-    }, [formData, formVo && formVo.name]);
+    }, [formData, form, formVo && formVo.name]);
 
     const handleSubmit = useCallback(() => {
       if (formVo) {

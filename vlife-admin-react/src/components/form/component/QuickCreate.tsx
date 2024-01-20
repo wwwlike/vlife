@@ -50,7 +50,7 @@ export default ({
   const saveData = useCallback((): Promise<Result<any>> => {
     return apiClient.post(
       `${
-        pageComponentPropDtos?.filter((f) => f.propName === "saveData")[0]
+        pageComponentPropDtos?.filter((f) => f.propName === "quickCreate")[0]
           .propVal
       }`,
       formData
@@ -60,7 +60,7 @@ export default ({
   return pageComponentPropDtos !== null &&
     pageComponentPropDtos?.filter(
       (f) =>
-        f.propName === "saveData" &&
+        f.propName === "quickCreate" &&
         f.propVal !== null &&
         f.propVal !== undefined &&
         f.propVal !== ""

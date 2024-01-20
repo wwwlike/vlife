@@ -160,7 +160,7 @@ export const FormComponents: CompDatas = {
         dataType: DataType.array,
         dataModel: "ISelect",
       },
-      saveData: {
+      quickCreate: {
         label: "是否支持添加选项",
         remark: "选项是在CompData.tsx里配置的添加选项的数据保存接口",
         dataType: DataType.basic,

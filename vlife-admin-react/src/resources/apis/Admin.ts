@@ -318,6 +318,7 @@ export const formOpenApi:ApiInfo= {
         formId:{
           dataModel:DataModel.string,
           dataType:DataType.basic,
+          required:true,
           fromField:true,
           send:false,
         }
@@ -325,8 +326,8 @@ export const formOpenApi:ApiInfo= {
       filterKey:[],
       func:(datas:FormVo[],{formId}:{formId:string}):ISelect[]=>{
         const model=datas.filter(d=>d.id===formId)?.[0];
-        const fkEntityName:string[]=model.fields.filter(f=>f.entityType!==model.type).map(f=>f.entityType);
-        const fkModel= datas.filter(d=>fkEntityName.includes(d.type));
+        const fkEntityName:string[]=model?.fields?.filter(f=>f.entityType!==model.type).map(f=>f.entityType);
+        const fkModel= datas?.filter(d=>fkEntityName.includes(d.type));
         const groupField:ISelect[]=[]
        //主表字段
         groupField.push(... model.fields.filter((f:FormFieldVo)=>f.dataType==="basic"&&(f.dictCode||f.fieldType==="date"||f.pathName.endsWith("Id"))).map(f=>{
