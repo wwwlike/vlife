@@ -529,12 +529,6 @@ export default <T extends IdBean>({
     }
     //过滤条设计器里不展示字段
     fields
-      .filter(
-        (f) =>
-          f.fieldName === "id" ||
-          f.x_hidden === undefined ||
-          f.x_hidden === false
-      )
       .sort((a, b) => {
         return a.sort - b.sort;
       })
@@ -911,32 +905,34 @@ export default <T extends IdBean>({
     <PreviewText.Placeholder value="-">
       <FormProvider form={form}>
         <div className={`${className ? className : ""} relative`}>
-          {modelInfo && (modelInfo.formDesc || modelInfo.helpDoc) && (
-            <Banner
-              className="!mt-0 mb-2"
-              fullMode={false}
-              type="danger"
-              bordered
-              // closeIcon={null}
-              title={
-                mode === "dev" &&
-                modelInfo.helpDoc && (
-                  <div className=" font-thin text-xs">
-                    <span className=" font-bold">开发帮助:</span>
-                    {modelInfo.helpDoc}
-                  </div>
-                )
-              }
-              description={
-                modelInfo.formDesc && (
-                  <div className=" font-thin text-xs">
-                    <span className=" font-bold">填写说明:</span>
-                    {modelInfo.formDesc}
-                  </div>
-                )
-              }
-            />
-          )}
+          {modelInfo &&
+            (modelInfo.formDesc ||
+              ((mode === "dev" || design === true) && modelInfo.helpDoc)) && (
+              <Banner
+                className="!mt-0 mb-2"
+                fullMode={false}
+                type="danger"
+                bordered
+                // closeIcon={null}
+                title={
+                  (mode === "dev" || design === true) &&
+                  modelInfo.helpDoc && (
+                    <div className=" font-thin text-xs">
+                      <span className=" font-bold">开发帮助:</span>
+                      {modelInfo.helpDoc}
+                    </div>
+                  )
+                }
+                description={
+                  modelInfo.formDesc && (
+                    <div className=" font-thin text-xs">
+                      <span className=" font-bold">填写说明:</span>
+                      {modelInfo.formDesc}
+                    </div>
+                  )
+                }
+              />
+            )}
           <SchemaField
             schema={schema}
             scope={{

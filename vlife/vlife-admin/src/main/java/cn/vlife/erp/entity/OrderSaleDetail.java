@@ -33,4 +33,13 @@ public class OrderSaleDetail extends DbEntity {
      */
     public Double price;
 
+    /**
+     * 合计金额
+     */
+    public Double totalPrice;
+
+
+    public Double getTotalPrice() {
+        return total * price;
+    }
 }

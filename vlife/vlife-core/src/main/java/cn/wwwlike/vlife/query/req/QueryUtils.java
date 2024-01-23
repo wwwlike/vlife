@@ -76,8 +76,9 @@ public class QueryUtils {
     }
 
     public static <T extends AbstractWrapper> T condition(T qw, List<ConditionGroup> groups) {
-        qw.or(ww -> groups.forEach(g->((T)ww).and(www->where((T) www,g.getWhere()))));
-
+        qw.or(ww -> groups.forEach(g->
+            ((T)ww).and(www->where((T) www,g.getWhere()))
+        ));
 //        qw.and(ww -> groups.stream()
 //                .map(g -> where((T) ww, g.getWhere()))
 //                .reduce((g1, g2) -> g1.or((Consumer) g2))
@@ -105,7 +106,7 @@ public class QueryUtils {
                 if (!w.getOpt().equals("isNotNull")&&!w.getOpt().equals("isNull")&&w.getValue()!=null
                  &&w.getValue()!=null&& w.getValue().length > 0 && Arrays.stream(w.getValue()).filter(v->v!=null&&StringUtils.isNotBlank(v.toString())).count()==w.getValue().length
                 ) {
-                    //动态范围
+                    //动态条件
                     if (w.getOpt().equals("dynamic")) {
                         LocalDate today = LocalDate.now();
                         Integer currentMonth = LocalDate.now().getMonthValue();
@@ -113,48 +114,49 @@ public class QueryUtils {
                         DateRange dateRange = DateRange.valueOf(w.getValue()[0].toString().toUpperCase());
                         switch (dateRange) {
                             case TODAY:
-                                qw.eq(w.getFieldName(), Date.valueOf(today));
+                                qw.eq(w.getFieldName(), Date.valueOf(today),w.getClazz());
                                 break;
                             case YESTERDAY:
-                                qw.eq(w.getFieldName(), Date.valueOf(today.minusDays(1)));
+                                qw.eq(w.getFieldName(), Date.valueOf(today.minusDays(1)),w.getClazz());
                                 break;
                             case THIS_WEEK:
                                 Integer currentWeek = LocalDate.now().get(WeekFields.ISO.weekOfWeekBasedYear());
-                                qw.eq(true, w.getFieldName(), currentWeek, new WeekExpressTran());
+                                qw.eq(true, w.getFieldName(), currentWeek, new WeekExpressTran(),w.getClazz());
                                 break;
                             case LAST_WEEK:
                                 Integer lastWeek = LocalDate.now().minusWeeks(1).get(WeekFields.ISO.weekOfWeekBasedYear());
-                                qw.eq(true, w.getFieldName(), lastWeek, new WeekExpressTran());
+                                qw.eq(true, w.getFieldName(), lastWeek, new WeekExpressTran(),w.getClazz());
                                 break;
                             case THIS_MONTH:
                                 Integer yearMonth = Integer.parseInt(String.format("%04d%02d", currentYear, currentMonth));
-                                qw.eq(true, w.getFieldName(), yearMonth, new MonthExpressTran());
+                                qw.eq(true, w.getFieldName(), yearMonth, new MonthExpressTran(),w.getClazz());
                                 break;
                             case LAST_MONTH:
                                 Integer lastMonth = Integer.parseInt(String.format("%04d%02d", currentYear, LocalDate.now().minusMonths(1).getMonthValue()));
-                                qw.eq(true, w.getFieldName(), lastMonth, new MonthExpressTran());
+                                qw.eq(true, w.getFieldName(), lastMonth, new MonthExpressTran(),w.getClazz());
                                 break;
                             case THIS_YEAR:
-                                qw.eq(true, w.getFieldName(), currentYear, new YearExpressTran());
+                                qw.eq(true, w.getFieldName(), currentYear, new YearExpressTran(),w.getClazz());
                                 break;
                             case LAST_YEAR:
                                 Integer lastYear = LocalDate.now().minusYears(1).getYear();
-                                qw.eq(true, w.getFieldName(), lastYear, new YearExpressTran());
+                                qw.eq(true, w.getFieldName(), lastYear, new YearExpressTran(),w.getClazz());
                                 break;
                             case LAST_7_DAYS:
                                 LocalDate last7Days = today.minusDays(7);
-                                qw.goe(w.getFieldName(), Date.valueOf(last7Days));
+                                qw.goe(w.getFieldName(), Date.valueOf(last7Days),w.getClazz());
                                 break;
                             case LAST_30_DAYS:
                                 LocalDate last30Days = today.minusDays(30);
-                                qw.goe(w.getFieldName(), Date.valueOf(last30Days));
+                                qw.goe(w.getFieldName(), Date.valueOf(last30Days),w.getClazz());
                                 break;
                             case LAST_90_DAYS:
                                 LocalDate last90Days = today.minusDays(90);
-                                qw.goe(w.getFieldName(), Date.valueOf(last90Days));
+                                qw.goe(w.getFieldName(), Date.valueOf(last90Days),w.getClazz());
                                 break;
                             case LAST_1_YEAR:
                                 LocalDate last1Year = today.minusYears(1);
+                                qw.goe(w.getFieldName(), Date.valueOf(last1Year),w.getClazz());
                         }
                     }  else {
                         Object value = w.getValue()[0];

@@ -16,8 +16,8 @@ export default () => {
       editType={{
         type: "product",
         reaction: [
-          VF.then("name").readPretty(),
-          VF.then("name").value((formData: Product) => {
+          VF.then("title").readPretty(),
+          VF.then("title").value((formData: Product) => {
             return loadApi({
               apiInfoKey: "dictOpenApi",
               match: "ISelect_ITEMS",
@@ -25,8 +25,8 @@ export default () => {
             }).then((selects: ISelect[]) => {
               return (
                 selects.filter((s) => s.value === formData.brand)?.[0].label +
-                (formData.xh ? "-" + formData.xh : "") +
-                (formData.title ? "-" + formData.title : "")
+                (formData.name ? "-" + formData.name : "") +
+                (formData.xh ? "-" + formData.xh : "")
               );
             });
           }),

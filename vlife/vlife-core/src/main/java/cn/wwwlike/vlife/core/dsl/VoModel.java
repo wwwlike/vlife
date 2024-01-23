@@ -451,12 +451,10 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      * @return where条件的表达式
      */
     public static BooleanExpression filter(EntityPathBase path, String fieldName, AbstractWrapper.Element element,String dbType) {
-
         SimpleExpression fieldlDsl = (SimpleExpression) ReflectionUtils.getFieldValue(path, fieldName == null ? "id" : fieldName);
         if (element.getTran() != null) {
             fieldlDsl = element.getTran().tran(fieldlDsl,dbType);
         }
-
         Opt opt = element.getOpt();
         Object[] vals = element.getVals();
         Method method = null;

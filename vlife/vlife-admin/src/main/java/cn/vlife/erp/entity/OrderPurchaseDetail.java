@@ -34,7 +34,7 @@ public class OrderPurchaseDetail extends DbEntity {
     public Double price;
 
     /**
-     * 总价
+     * 合计金额
      */
     public Double totalPrice;
 

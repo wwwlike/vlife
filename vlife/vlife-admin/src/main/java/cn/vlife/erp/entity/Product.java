@@ -18,11 +18,11 @@ public class Product  extends DbEntity {
      */
     public String productNo;
     /**
-     * 标题
+     * 产品名称
      */
     public String name;
     /**
-     * 产品名称
+     * 数据标题
      */
     public String title;
     /**

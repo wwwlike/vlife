@@ -410,52 +410,6 @@ public class QueryHelper {
         return totalMap;
     }
 
-
-//    /**
-//     * List<Tuple>数据转成 List<Map>,并放入到指定的
-//     *
-//     * @param list 全量返回到端的数据
-//     * @return
-//     */
-//    public List<Map> tran(List<Map> list, List<Tuple> tuples, List<String> names, Expression expression[]) {
-//        Map biEntity = null;
-//        for (Tuple tuple : tuples) {
-//            Object val = tuple.get(expression[expression.length - 1]);
-//            Map<String, Object> title = new HashMap<>();
-//            for (int i = 0; i < names.size() - 1; i++) {
-//                Object obj = tuple.get(expression[i]);
-//                title.put(names.get(i), obj);
-//            }
-//
-//            Optional<Map> optional = list.stream().filter(line -> {
-//                for (int i = 0; i < names.size() - 1; i++) {
-//                    if (!tuple.get(expression[i]).toString().equals(line.getTitle().get(names.get(i)).toString())) {
-//                        continue;
-//                    }
-//                    if (i == names.size() - 2) {
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }).findAny();
-//
-//            if (optional.isPresent()) {
-//                biEntity = optional.get();
-//            } else {
-//                try {
-//                    biEntity = clz.newInstance();
-//                    biEntity.setTitle(title);
-//                    list.add(biEntity);
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//            ReflectionUtils.setFieldValue(biEntity, names.get(names.size() - 1), val);
-//        }
-//        return list;
-//    }
-
-
    //得到查询里用到的所有 entityPath对象
     public static List<EntityPathBase> getQueryEntityPath(JPAQuery query){
         QueryMetadata queryMetadata = query.getMetadata();

@@ -117,27 +117,10 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         getDbType();
     }
 
-
-//    private  DataSource dataSource;
-//
-//    public DslDao(DataSource dataSource) {
-//        this.dataSource=dataSource;
-//    }
-//    public String getDatabaseType() {
-//        try (Connection connection = dataSource.getConnection()) {
-//            DatabaseMetaData metaData = connection.getMetaData();
-//            String databaseType = metaData.getDatabaseProductName();
-//            return databaseType;
-//        }catch (SQLException e) {
-//            return "Unknown";
-//        }
-//    }
-//    public  String dbType=getDatabaseType();
     /**
      * 通过视图VO类信息得到Dao封装的VO的查询模型
      */
     protected QModel select(Class<? extends IdBean> voClz) {
-//        return new VoModel(factory, voClz);
         if (models.get(voClz) == null) {
             models.put(voClz, new VoModel(factory, voClz,dbType));
         }
@@ -146,7 +129,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * 得到VO查询的模型(每次都new)
-     *
      * @param prefix 本次vo里主查询的alias的前缀
      */
     protected QModel selectNew(Class<? extends IdBean> vo, String prefix) {
@@ -167,7 +149,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * ✦✦✦✦原子查询✦✦✦✦
-     *
      * @param entityVoClz 查询对象CLz信息
      * @param wrapper     查询条件
      * @param page        分页条件
@@ -201,7 +182,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * 用包装条件进行VO类型数据查询数据查询
-     *
      * @param vo          返回查询的结果类型
      * @param wrapper     包裹条件对象
      * @param isMainQuery 本次是否是主查询(该方法支持递归)
@@ -223,7 +203,6 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
 
     /**
      * 用包装条件进行 VO and DO 类型数据查询数据查询
-     *
      * @param entityVoClz 返回视图的类信息
      * @param wrapper     包装条件
      * @param page        分页参数
