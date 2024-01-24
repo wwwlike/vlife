@@ -12,14 +12,11 @@ import cn.wwwlike.form.service.FormEventService;
 import cn.wwwlike.form.service.FormFieldService;
 import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.vlife.base.ITree;
-import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
-import cn.wwwlike.vlife.objship.read.ModelService;
-import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.utils.FileUtil;
 import cn.wwwlike.web.security.core.SecurityUser;
@@ -37,7 +34,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -177,30 +173,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
                 service.save(f);
             });
         }
-            return form;
+        return form;
     }
-
-
-    /**
-     * 指定应用模型列表
-     */
-//    @RequestMapping("/entityModels")
-//    public List<FormVo> entityModels(String appId,String pcode) {
-//        if(appId==null||"".equals(appId)||"null".equals(appId)||"undefined".equals(appId) ){
-//            return service.queryAll(FormVo.class).stream().filter(v -> v.getItemType().equals("entity")).collect(Collectors.toList());
-//        }else{
-//            String realAppId=menuService.appId(appId).getId();
-//            return service.query(FormVo.class,QueryWrapper.of(Form.class).eq("sysMenuId",realAppId).eq("itemType","entity"));
-//        }
-//    }
-
-
-    //    /**
-//     * 子模型查询
-//     */
-//    @GetMapping("/subForms/{id}")
-//    public List<FormVo> subForms(@PathVariable String id){
-//        return service.querySubForms(service.findOne(id));
-//    }
 
 }

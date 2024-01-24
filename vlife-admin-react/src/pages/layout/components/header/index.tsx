@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 import {
   Layout,
@@ -10,7 +10,6 @@ import {
 } from "@douyinfe/semi-ui";
 import {
   IconDelete,
-  IconDeleteStroked,
   IconDesktop,
   IconEditStroked,
   IconGithubLogo,
@@ -45,7 +44,6 @@ const Index = () => {
     setAllMenus,
   } = useAuth();
   const pathname = window.location.href;
-
   //所有菜单
   const userMenus = useMemo(() => {
     return user?.superUser && allMenus ? allMenus : user?.menus || [];
@@ -58,12 +56,6 @@ const Index = () => {
         ?.sort((a, b) => a.sort - b.sort) || []
     );
   }, [userMenus]);
-
-  // useEffect(() => {
-  //   if (app === undefined) {
-  //     // setApp(apps[0]); //选中第一个
-  //   }
-  // }, [apps]);
 
   function renderIcon(icon: any) {
     if (!icon) {
@@ -83,7 +75,7 @@ const Index = () => {
           if (m.url) navigate(m.url);
           setApp(m);
         },
-        text: (
+        text: user?.superUser ? (
           <div className=" z-10 flex items-center relative">
             {m.name}
             <div
@@ -181,42 +173,46 @@ const Index = () => {
               />
             </div>
           </div>
+        ) : (
+          m.name
         ),
       };
     });
-    _apps.push({
-      itemKey: "createApp",
-      text: (
-        <BtnToolBar
-          key={"createApp"}
-          datas={[]}
-          btns={[
-            {
-              title: "新增应用",
-              icon: <i className="  icon-task_add-02" />,
-              actionType: "save",
-              model: "sysMenu",
-              saveApi: save,
-              onlyIcon: true,
-              reaction: [
-                VF.then("app").value(true).hide(),
-                VF.then("url", "formId", "placeholderUrl", "pcode", "confPage")
-                  .hide()
-                  .clearValue(),
-                VF.then("name").title("应用名称"),
-              ],
-              onSubmitFinish: (...datas) => {
-                setAllMenus([
-                  ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),
-                  datas[0],
-                ]);
-                setApp(datas[0]);
+    if (user?.superUser) {
+      _apps.push({
+        itemKey: "createApp",
+        text: (
+          <BtnToolBar
+            key={"createApp"}
+            datas={[]}
+            btns={[
+              {
+                title: "新增应用",
+                icon: <i className="  icon-task_add-02" />,
+                actionType: "save",
+                model: "sysMenu",
+                saveApi: save,
+                onlyIcon: true,
+                reaction: [
+                  VF.then("app").value(true).hide(),
+                  VF.then("url", "formId", "placeholderUrl", "pcode")
+                    .hide()
+                    .clearValue(),
+                  VF.then("name").title("应用名称"),
+                ],
+                onSubmitFinish: (...datas) => {
+                  setAllMenus([
+                    ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),
+                    datas[0],
+                  ]);
+                  setApp(datas[0]);
+                },
               },
-            },
-          ]}
-        />
-      ),
-    });
+            ]}
+          />
+        ),
+      });
+    }
     return _apps;
   }, [apps, pathname]);
 
@@ -310,7 +306,6 @@ const Index = () => {
                   >
                     使用指南
                   </Button>
-
                   <Button
                     theme="borderless"
                     icon={<IconGithubLogo size="large" />}
@@ -360,5 +355,4 @@ const Index = () => {
     </>
   );
 };
-
 export default Index;
