@@ -44,6 +44,8 @@ const AuthContext = React.createContext<
       //所有菜单
       allMenus?: MenuVo[];
       setAllMenus: (allMenus: MenuVo[]) => void;
+      app: MenuVo | undefined; //当前应用
+      setApp: (app: MenuVo | undefined) => void; //当前应用
       //当前屏幕大小
       screenSize?: { width: number; height: number; sizeKey: string };
       // 所有字典信息
@@ -59,8 +61,7 @@ const AuthContext = React.createContext<
       getFormInfo: (params: formPageReq) => Promise<FormVo | undefined>;
       //模型缓存信息清除
       clearModelInfo: (modelName?: string) => void;
-      app: SysMenu | undefined; //当前应用
-      setApp: (app: SysMenu | undefined) => void; //当前应用
+
       //登录(可以移除到一般service里)
       login: (form: { password: string; username: string }) => void;
       giteeLogin: (code: string) => Promise<ThirdAccountDto | undefined>;
@@ -83,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   /**
    * 当前模块menuId
    */
-  const [app, setApp] = useState<SysMenu | undefined>();
+  const [app, setApp] = useState<MenuVo | undefined>();
   /** 当前用户信息 */
   const [user, setUser] = useState<UserDetailVo>();
   /** 当前菜单状态 */

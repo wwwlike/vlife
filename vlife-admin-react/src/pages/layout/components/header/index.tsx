@@ -8,49 +8,62 @@ import {
   Dropdown,
   Empty,
 } from "@douyinfe/semi-ui";
-import { IconDesktop, IconGithubLogo } from "@douyinfe/semi-icons";
+import {
+  IconDelete,
+  IconDeleteStroked,
+  IconDesktop,
+  IconEditStroked,
+  IconGithubLogo,
+} from "@douyinfe/semi-icons";
 import logo from "@src/logo.png";
 import "../../index.scss";
 import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
+import { VF } from "@src/dsl/VF";
 import {
   saveUserPasswordModifyDto,
   UserPasswordModifyDto,
 } from "@src/api/SysUser";
 import { useNavigate } from "react-router-dom";
-import { MenuVo } from "@src/api/SysMenu";
+import { MenuVo, remove, save } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
 import LinkMe from "./LinkMe";
-
-const mode = import.meta.env.VITE_APP_MODE;
+import BtnToolBar from "@src/components/table/component/BtnToolBar";
 const { Header } = Layout;
-/**
- *
- *  当前地址没有和菜单关联，如何定位一级菜单
- */
-const Index = ({
-  appMenus,
-  onAppClick,
-  outApp,
-}: {
-  appMenus: MenuVo[];
-  onAppClick: (menuVo: MenuVo) => void;
-  outApp?: MenuVo; //通过url确定的应用
-}) => {
+
+const Index = () => {
   const navigate = useNavigate();
   const formModal = useNiceModal("formModal");
-  const { loginOut, user, checkBtnPermission } = useAuth();
-  const [app, setApp] = useState<MenuVo | undefined>(outApp);
+  const {
+    loginOut,
+    user,
+    app,
+    setApp,
+    checkBtnPermission,
+    allMenus,
+    setAllMenus,
+  } = useAuth();
+  const pathname = window.location.href;
 
-  useEffect(() => {
-    if (app === undefined) {
-      setApp(appMenus[0]); //选中第一个
-      onAppClick(appMenus[0]);
-    } else {
-      setApp(outApp);
-    }
-  }, [app, appMenus, outApp]);
+  //所有菜单
+  const userMenus = useMemo(() => {
+    return user?.superUser && allMenus ? allMenus : user?.menus || [];
+  }, [user, allMenus]);
+  //所有应用
+  const apps = useMemo((): MenuVo[] => {
+    return (
+      userMenus
+        ?.filter((m) => m.app === true)
+        ?.sort((a, b) => a.sort - b.sort) || []
+    );
+  }, [userMenus]);
+
+  // useEffect(() => {
+  //   if (app === undefined) {
+  //     // setApp(apps[0]); //选中第一个
+  //   }
+  // }, [apps]);
 
   function renderIcon(icon: any) {
     if (!icon) {
@@ -62,19 +75,150 @@ const Index = ({
     return icon.render();
   }
   const menuItems = useMemo((): Partial<MenuItem>[] => {
-    return appMenus.map((m: MenuVo) => {
+    const _apps: Partial<MenuItem>[] = apps.map((m: MenuVo) => {
       return {
         itemKey: m.id,
-        text: m.name,
         icon: m.icon ? renderIcon(m.icon) : null,
         onClick: () => {
           if (m.url) navigate(m.url);
-          onAppClick(m);
           setApp(m);
         },
+        text: (
+          <div className=" z-10 flex items-center relative">
+            {m.name}
+            <div
+              className="!z-20"
+              onClick={(event) => {
+                event.cancelable = true; //阻止事件冒泡
+                event.stopPropagation();
+              }}
+            >
+              <BtnToolBar
+                dropdown={true}
+                key={`app_${m.id}`}
+                datas={[m]}
+                btns={[
+                  {
+                    title: "新增模块",
+                    icon: <i className="  icon-task_add-02" />,
+                    actionType: "create",
+                    model: "sysMenu",
+                    saveApi: save,
+                    reaction: [
+                      VF.then("name").title("模块名称"),
+                      VF.then("app").hide().value(false),
+                      VF.then("pcode").value(m.code).readPretty(),
+                      VF.field("confPage")
+                        .eq(true)
+                        .then("url", "formId", "placeholderUrl")
+                        .hide()
+                        .clearValue(),
+                      VF.field("url").isNotNull().then("formId").show(),
+                      VF.result((sysMenu: any) => {
+                        return sysMenu?.url && sysMenu.url.indexOf("*") !== -1;
+                      })
+                        .then("formId")
+                        .required(),
+                      VF.field("confPage").eq(true).then("pageLayoutId").show(),
+                      VF.field("url")
+                        .endsWidth("*")
+                        .then("placeholderUrl")
+                        .show()
+                        .then("placeholderUrl")
+                        .required(),
+                    ],
+                    onSubmitFinish: (...datas) => {
+                      setAllMenus([
+                        ...(allMenus?.filter((f) => f.id !== datas[0].id) ||
+                          []),
+                        datas[0],
+                      ]);
+                    },
+                  },
+
+                  {
+                    title: "编辑应用",
+                    icon: <IconEditStroked size="small" className="z-20" />,
+                    actionType: "edit",
+                    model: "sysMenu",
+                    saveApi: save,
+                    onSubmitFinish: (...datas) => {
+                      setAllMenus([
+                        ...(allMenus?.filter((f) => f.id !== datas[0].id) ||
+                          []),
+                        datas[0],
+                      ]);
+                    },
+                    reaction: [
+                      VF.then("app").value(true).hide(),
+                      VF.then(
+                        "url",
+                        "formId",
+                        "placeholderUrl",
+                        "pcode",
+                        "confPage"
+                      )
+                        .hide()
+                        .clearValue(),
+                      VF.then("name").title("应用名称"),
+                    ],
+                  },
+                  {
+                    title: "删除应用",
+                    icon: <IconDelete size="small" className="z-20" />,
+                    actionType: "api",
+                    saveApi: (...data: any[]) => {
+                      return remove([m.id]);
+                    },
+                    submitConfirm: true,
+                    onSubmitFinish: (...datas) => {
+                      setAllMenus([
+                        ...(allMenus?.filter((f) => f.id !== m.id) || []),
+                      ]);
+                    },
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        ),
       };
     });
-  }, [appMenus]);
+    _apps.push({
+      itemKey: "createApp",
+      text: (
+        <BtnToolBar
+          key={"createApp"}
+          datas={[]}
+          btns={[
+            {
+              title: "新增应用",
+              icon: <i className="  icon-task_add-02" />,
+              actionType: "save",
+              model: "sysMenu",
+              saveApi: save,
+              onlyIcon: true,
+              reaction: [
+                VF.then("app").value(true).hide(),
+                VF.then("url", "formId", "placeholderUrl", "pcode", "confPage")
+                  .hide()
+                  .clearValue(),
+                VF.then("name").title("应用名称"),
+              ],
+              onSubmitFinish: (...datas) => {
+                setAllMenus([
+                  ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),
+                  datas[0],
+                ]);
+                setApp(datas[0]);
+              },
+            },
+          ]}
+        />
+      ),
+    });
+    return _apps;
+  }, [apps, pathname]);
 
   const editPassword = () => {
     formModal
@@ -101,7 +245,6 @@ const Index = ({
               className=" flex items-center cursor-pointer "
               onClick={() => {
                 navigate("/");
-                // setApp(undefined);
               }}
             >
               <Empty
@@ -121,7 +264,7 @@ const Index = ({
               />
             </div>
           }
-          defaultSelectedKeys={[(app && app.id) || ""]}
+          selectedKeys={[app?.id || ""]}
           items={menuItems}
           footer={
             <>
@@ -212,7 +355,7 @@ const Index = ({
               </Dropdown>
             </>
           }
-        ></Nav>
+        />
       </Header>
     </>
   );

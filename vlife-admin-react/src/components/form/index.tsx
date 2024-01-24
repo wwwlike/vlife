@@ -76,6 +76,7 @@ export interface FormProps<T> {
   //单字段模式，只显示fieldMode里的一个字段
   fieldMode?: string;
   componentProp?: { [fieldName: string]: object }; //为特定字段传入固定的入参属性
+  fieldOutApiParams?: { [fieldName: string]: any }; //指定字段访问api取值的补充外部入参
   onDataChange?: (
     data: any, //表单数据
     field: string //当前触发改变的字段
@@ -99,7 +100,12 @@ registerValidateLocale({
   },
 });
 //field对应的组件的prop来源于异步加载数据(联动数据)
-const load = async (field: Field, parentFormData: any, formVo: FormVo) => {
+const load = async (
+  field: Field,
+  parentFormData: any,
+  formVo: FormVo,
+  fieldOutParams: any
+) => {
   if (
     field.componentProps["fieldInfo"] &&
     field.componentProps["fieldInfo"].x_component
@@ -113,7 +119,8 @@ const load = async (field: Field, parentFormData: any, formVo: FormVo) => {
       // field.componentProps.apiCommonParams, //下面设置进来的
       field, //字段信息；其实只传这一个值，上面三个可以都取得到
       parentFormData,
-      formVo
+      formVo,
+      fieldOutParams
     ).then((field: Field) => {});
   }
 };
@@ -131,6 +138,7 @@ export default <T extends IdBean>({
   terse = false,
   fontBold = false,
   componentProp,
+  fieldOutApiParams,
   onClickFieldComponent,
   onError,
   onDataChange,
@@ -824,13 +832,23 @@ export default <T extends IdBean>({
           prop["x-reactions"] = [
             ...prop["x-reactions"],
             (field: Field) => {
-              load(field, parentFormData, modelInfo);
+              load(
+                field,
+                parentFormData,
+                modelInfo,
+                fieldOutApiParams?.[f.fieldName]
+              );
             },
           ];
         } else {
           prop["x-reactions"] = [
             (field: Field) => {
-              load(field, parentFormData, modelInfo);
+              load(
+                field,
+                parentFormData,
+                modelInfo,
+                fieldOutApiParams?.[f.fieldName]
+              );
             },
           ];
         }

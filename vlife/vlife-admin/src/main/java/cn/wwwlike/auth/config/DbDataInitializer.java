@@ -57,6 +57,10 @@ public class DbDataInitializer implements ApplicationRunner {
     @Autowired
     private Environment env;
 
+    public String getActiveProfile() {
+        return env.getProperty("spring.profiles.active");
+    }
+
     public DbDataInitializer(JdbcTemplate jdbcTemplate,ResourceLoader resourceLoader,DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.resourceLoader=resourceLoader;
@@ -107,9 +111,6 @@ public class DbDataInitializer implements ApplicationRunner {
         return true; // 所有表都为空，返回true
     }
 
-    public String getActiveProfile() {
-        return env.getProperty("spring.profiles.active");
-    }
 
     //转成oracle的insert语句
     public static String convertToOracleInsert(String mysqlInsert) {
@@ -180,7 +181,7 @@ public class DbDataInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         //启动时判断是否是空库
-        if(isDatabaseEmpty()){
+        if(!getActiveProfile().equals("pro")&&isDatabaseEmpty()){
             dataRestore();
         }
     }

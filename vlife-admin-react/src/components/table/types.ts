@@ -13,8 +13,8 @@ import {  ReactNode } from 'react';
  * edit: 数据修改 有数据无saveApi就是预览
  * save: 数据新增和修改 是create/edit的合体 usableMatch对新增无效；
  * 非模型操作
- * api ：无需模型，直接触发 saveApi方法
- * click:自定义点击事件的按钮 触发的实际onCLick房啊
+ * api ：无需模型，直接触发saveApi方法
+ * click:自定义点击事件的按钮 触发的实际onCLick方法
  */
 export type actionType= "create"|"save"|"edit"|"api"|"click";
 
@@ -36,6 +36,7 @@ export interface VFBtn{
   disabledHide?:boolean,//不可以用时是否隐藏
   submitClose?:boolean,//model层面的接口调用完成后是否关闭页面
   reaction?:VfAction[],//表单内的级联关系
+  fieldOutApiParams?: { [fieldName: string]: any }; //指定字段访问api取值的补充外部入参
   onSaveBefore?:(data:any)=>any;//提交之前进行数据处理，返回数据给saveData函数
   onSubmitFinish?:(...datas:any[])=>void; //提交完成后触发的函数
   onFormilySubmitCheck?:()=>Promise<boolean>;//内部方法不用关注，数据【提交】之前的校验，使用fomily的主动检查 在formModal里添加

@@ -254,7 +254,8 @@ export default <T extends IdBean>({
             (btn.actionType === "save" && position === "tableToolbar")
               ? undefined
               : data,
-          btns: [btn], //取消掉btns简化逻辑，弹出层值显示一个按钮
+          fieldOutApiParams: btn.fieldOutApiParams, //指定字段访问api取值的补充外部入参
+          btns: [btn], //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
           terse: !btn.saveApi ? true : false, //紧凑
           fontBold: !btn.saveApi ? true : false, //加粗
           readPretty: btn.actionType === "api" || !btn.saveApi ? true : false,

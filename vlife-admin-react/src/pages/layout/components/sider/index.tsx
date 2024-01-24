@@ -16,6 +16,7 @@ import { IconDelete, IconEditStroked, IconRegExp } from "@douyinfe/semi-icons";
 import classNames from "classnames";
 import { VF } from "@src/dsl/VF";
 import { VFBtn } from "@src/components/table/types";
+import { findSubs, findTreeRoot } from "@src/util/func";
 
 const { Sider } = Layout;
 export function renderIcon(icon: any) {
@@ -43,22 +44,37 @@ function findMenuByPath(menus: MenuItem[], path: string, keys: any[]): any {
   return [];
 }
 
-export default ({
-  menus,
-  app,
-  onClick,
-}: {
-  menus: MenuVo[];
-  app: MenuVo | undefined;
-  onClick: (menuVo: MenuVo) => void;
-}) => {
+export default () => {
   const navigate = useNavigate();
   const [height, setHeight] = useState(window.innerHeight);
   const { pathname } = useLocation();
-
   const [openKeys, setOpenKeys] = useState<string[]>([]); //打开节点
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]); //选中节点
-  const { user, setMenuState, allMenus, setAllMenus } = useAuth();
+  const { user, setMenuState, app, setApp, allMenus, setAllMenus } = useAuth();
+  //用户的所有菜单
+  const userAllMenus = useMemo(() => {
+    return user?.superUser && allMenus ? allMenus : user?.menus || [];
+  }, [user, allMenus]);
+  //用户当前应用的菜单
+  const appMenus = useMemo((): MenuVo[] => {
+    if (userAllMenus && userAllMenus.length > 0 && app) {
+      return findSubs(userAllMenus, app);
+    } else {
+      return [];
+    }
+  }, [userAllMenus, app]);
+
+  useEffect(() => {
+    const menu = userAllMenus?.filter(
+      (m) =>
+        pathname.indexOf(
+          m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
+        ) !== -1
+    )?.[0];
+    if (menu) {
+      setApp(findTreeRoot(userAllMenus, menu));
+    }
+  }, [userAllMenus, pathname]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -70,56 +86,61 @@ export default ({
     };
   }, []);
 
-  useEffect(() => {
-    if (app && app.url) {
-      navigate(app.url);
-    }
-  }, [app]);
+  // useEffect(() => {
+  //   if (app && app.url) {
+  //     navigate(app.url);
+  //   }
+  // }, [app]);
 
-  const createMenuBtn = useCallback((pcode: string, title?: string): VFBtn => {
-    return {
-      title: title || "新增菜单",
-      icon: <i className="  icon-task_add-02" />,
-      actionType: "save",
-      model: "sysMenu",
-      reaction: [
-        VF.then("app").hide().value(false),
-        VF.then("pcode").value(pcode),
-        VF.field("confPage")
-          .eq(true)
-          .then("url", "formId", "placeholderUrl")
-          .hide()
-          .clearValue(),
-        VF.field("url").isNotNull().then("formId").show(),
-        VF.result((sysMenu: any) => {
-          return sysMenu?.url && sysMenu.url.indexOf("*") !== -1;
-        })
-          .then("formId")
-          .required(),
-        VF.field("confPage").eq(true).then("pageLayoutId").show(),
-        VF.field("url")
-          .endsWidth("*")
-          .then("placeholderUrl")
-          .show()
-          .then("placeholderUrl")
-          .required(),
-      ],
-      saveApi: save,
-      onSubmitFinish: (...datas) => {
-        setAllMenus([
-          ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),
-          datas[0],
-        ]);
-      },
-    };
-  }, []);
+  const createMenuBtn = useCallback(
+    (pcode: string, title?: string): VFBtn => {
+      return {
+        title: title || "创建模块菜单",
+        icon: <i className="  icon-task_add-02" />,
+        actionType: "save",
+        model: "sysMenu",
+        fieldOutApiParams: { formId: { sysMenuId: app?.id } },
+        reaction: [
+          VF.then("app").hide().value(false),
+          VF.then("pcode").value(pcode).readPretty(),
+          VF.field("confPage")
+            .eq(true)
+            .then("url", "formId", "placeholderUrl")
+            .hide()
+            .clearValue(),
+          VF.field("url").isNotNull().then("formId").show(),
+          VF.result((sysMenu: any) => {
+            return sysMenu?.url && sysMenu.url.indexOf("*") !== -1;
+          })
+            .then("formId")
+            .required(),
+          VF.field("confPage").eq(true).then("pageLayoutId").show(),
+          VF.field("url")
+            .endsWidth("*")
+            .then("placeholderUrl")
+            .show()
+            .then("placeholderUrl")
+            .required(),
+        ],
+        saveApi: save,
+        onSubmitFinish: (...datas) => {
+          setAllMenus([
+            ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),
+            datas[0],
+          ]);
+        },
+      };
+    },
+    [allMenus, app]
+  );
+
   /**
-   * 当前应用当前用户拥有权限下的所有菜单
+   * 菜单转换nav类型
    */
   const currAppMenuList = useMemo(() => {
     // const size useSize()
     const nav = (root: MenuVo): MenuItem[] => {
-      return menus
+      return appMenus
         .sort((a, b) => a.sort - b.sort)
         .filter((m) => m.pcode === root.code)
         .map((menu) => {
@@ -262,17 +283,17 @@ export default ({
           };
         });
     };
-    if (app && menus) {
+    if (app && appMenus) {
       return nav(app);
     }
     return [];
-  }, [menus, app, selectedKeys, pathname]);
+  }, [appMenus, app, selectedKeys, pathname]);
 
   const onSelect = (data: any) => {
     if (data.selectedKeys[0]) {
       window.localStorage.setItem(
         "currMenu",
-        menus.filter((m) => m.id === data.selectedKeys[0])?.[0].name
+        appMenus.filter((m) => m.id === data.selectedKeys[0])?.[0].name
       );
     }
     setSelectedKeys([...data.selectedKeys]);
@@ -325,8 +346,10 @@ export default ({
           setMenuState(open ? "mini" : "show");
         }}
       >
-        {(!currAppMenuList || currAppMenuList.length === 0) && app?.code && (
-          <BtnToolBar btns={[createMenuBtn(app.code)]} />
+        {appMenus.length === 0 && app?.code && (
+          <div className=" w-full h-96 flex items-center justify-center">
+            <BtnToolBar btns={[createMenuBtn(app.code)]} />
+          </div>
         )}
         <Nav.Footer className=" absolute bottom-0" collapseButton={true} />
       </Nav>

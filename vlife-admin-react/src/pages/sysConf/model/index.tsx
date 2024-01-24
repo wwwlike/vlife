@@ -148,7 +148,6 @@ const Model = () => {
       setVisible(true);
       setEntityType(forms.filter((f) => f.id === paramFormId)?.[0]?.type);
     }
-
     if (
       tabKey === undefined &&
       paramEntityType === undefined &&
@@ -382,38 +381,6 @@ const Model = () => {
     <Scrollbars autoHide={true}>
       <Tabs
         activeKey={tabKey}
-        tabBarExtraContent={
-          <div className=" w-full mr-10 ">
-            <BtnToolBar
-              position="page"
-              btns={[
-                {
-                  icon: <i className=" icon-createFolder" />,
-                  title: "创建应用",
-                  actionType: "create",
-                  model: "sysMenu",
-                  saveApi: menuSave,
-                  reaction: [
-                    VF.then("app").value(true).hide(),
-                    VF.then(
-                      "url",
-                      "formId",
-                      "placeholderUrl",
-                      "pcode",
-                      "confPage"
-                    )
-                      .hide()
-                      .clearValue(),
-                    VF.then("name").title("应用名称"),
-                  ],
-                  onSubmitFinish: (res) => {
-                    menuLoad();
-                  },
-                },
-              ]}
-            />
-          </div>
-        }
         onTabClick={(key) => {
           setEntityType(undefined);
           setTabKey(key);

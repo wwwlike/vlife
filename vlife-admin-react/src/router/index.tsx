@@ -8,6 +8,7 @@ import { AppProviders } from "@src/context";
 import Empty from "@src/pages/common/Empty";
 import Visit403 from "@src/pages/common/Visit403";
 import FormModal from "@src/pages/common/modal/formModal";
+import { ISelect } from "@src/dsl/component";
 const DashboardPage = lazy(() => import("@src/pages/dashboard"));
 const TemplatePage = lazy(() => import("@src/pages/template"));
 
@@ -33,6 +34,25 @@ const LoginPage = lazy(() => import("@src/pages/login"));
 const LayoutPage = lazy(() => import("@src/pages/layout"));
 
 export const allRoute: any[] = [
+  //CRUD页面模版，根据路由后缀确定访问哪个模型
+  {
+    path: "/vlife",
+    element: (
+      <WrapperRouteComponent element={<LayoutPage />} titleId="业务模版" auth />
+    ),
+    children: [
+      {
+        path: "*",
+        element: (
+          <WrapperRouteComponent
+            element={<TemplatePage />}
+            titleId="CRUD页面模版"
+            auth
+          />
+        ),
+      },
+    ],
+  },
   //系统业务
   {
     path: "/",
@@ -75,25 +95,7 @@ export const allRoute: any[] = [
       },
     ],
   },
-  //CRUD页面模版，根据路由后缀确定访问哪个模型
-  {
-    path: "/vlife",
-    element: (
-      <WrapperRouteComponent element={<LayoutPage />} titleId="业务模版" auth />
-    ),
-    children: [
-      {
-        path: "*",
-        element: (
-          <WrapperRouteComponent
-            element={<TemplatePage />}
-            titleId="通用CRUD页面模版"
-            auth
-          />
-        ),
-      },
-    ],
-  },
+
   //系统管理
   {
     path: "/sysManage",
@@ -243,7 +245,6 @@ export const allRoute: any[] = [
       },
     ],
   },
-
   {
     path: "/login",
     element: <LoginPage />,
@@ -267,34 +268,33 @@ const RenderRouter: FC = () => {
   return <AppProviders>{element}</AppProviders>;
 };
 
-// 自己添加
-export const allRouter = (): { label: string; value: string }[] => {
-  const all: { label: string; value: string }[] = [];
-  const child = (
-    path: string | null,
-    route: any,
-    all: { label: string; value: string }[]
-  ) => {
+//可选择路由
+export const allRouter = (): ISelect[] => {
+  const all: ISelect[] = [];
+  const child = (path: string | null, route: any, flag: boolean) => {
     const thisPath =
       path === null
         ? route.path
         : path.endsWith("/")
         ? path + route.path
         : path + "/" + route.path;
-    all.push({
-      label: `${thisPath} ${
-        route.element.props.titleId ? route.element.props.titleId : ""
-      }`,
-      value: thisPath,
-    });
+    if (flag && thisPath !== "/*") {
+      all.push({
+        label: `${thisPath} ${
+          route.element.props.titleId ? route.element.props.titleId : ""
+        }`,
+        value: thisPath,
+      });
+    }
+
     if (route.children) {
       route.children.forEach((c: any) => {
-        child(thisPath, c, all);
+        child(thisPath, c, true);
       });
     }
   };
   allRoute.forEach((r) => {
-    child(null, r, all);
+    child(null, r, false);
   });
   return all;
 };

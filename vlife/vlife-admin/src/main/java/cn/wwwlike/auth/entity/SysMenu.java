@@ -1,5 +1,7 @@
 package cn.wwwlike.auth.entity;
 
+import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.bean.DbEntity;
@@ -14,7 +16,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_menu")
-@VClazz(orders = "code_asc")
+@VClazz(orders = "code_asc",clear ={Form.class, SysResources.class},remove = {SysRole.class})//删除应用的时候删除角色
 public class SysMenu extends DbEntity implements ITree {
     /**
      * 应用

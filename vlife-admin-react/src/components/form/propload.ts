@@ -206,7 +206,8 @@ export const fetchPropObj = (
   componentInfo: CompInfo, //组件信息
   field: Field, //formily的字段信息
   parentData: any, //作为子表单，父表单数据
-  formVo: FormVo //当前表单模型信息
+  formVo: FormVo, //当前表单模型信息
+  fieldOutParams?: any
 ): Promise<Field> => {
   let propsObj: any = {}; //组件属性对象
   //1 db存储的静态值提取=(非接口方式数据组装)
@@ -280,7 +281,7 @@ export const fetchPropObj = (
               }
               if  (prop.sourceType==="api"&& apiInfo &&prop.relateVal&& (allParam===undefined||hasAllValues(paramObj,allParam))){
                 //对入参进行转换，动态参数放入到 conditions里
-                propsObj = await loadApi({apiInfoKey:prop.propVal,paramObj,match:prop.relateVal,filterConnectionType:prop.filterConnectionType,filterFunc:prop.filterFunc}).then((d) => {
+                propsObj = await loadApi({apiInfoKey:prop.propVal,paramObj:{...paramObj,...fieldOutParams},match:prop.relateVal,filterConnectionType:prop.filterConnectionType,filterFunc:prop.filterFunc}).then((d) => {
                   if (prop.propName && prop.propName in propsObj === false) {
                     propsObj = valueAdd(prop, propsObj, d);
                   }

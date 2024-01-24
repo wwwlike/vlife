@@ -1,6 +1,6 @@
 package cn.wwwlike.auth.test;
 
-import cn.vlife.erp.service.ProductService;
+
 import cn.wwwlike.AdminApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +18,4 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = AdminApplication.class)
 public class ErpTest {
 
-    @Autowired
-    public ProductService productService;
-    @Test
-    public void test(){
-
-    }
 }
