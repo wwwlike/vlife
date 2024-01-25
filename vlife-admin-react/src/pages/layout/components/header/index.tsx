@@ -24,7 +24,7 @@ import {
   UserPasswordModifyDto,
 } from "@src/api/SysUser";
 import { useNavigate } from "react-router-dom";
-import { MenuVo, remove, save } from "@src/api/SysMenu";
+import { listAll, MenuVo, remove, save } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
 import LinkMe from "./LinkMe";
@@ -121,11 +121,13 @@ const Index = () => {
                         .required(),
                     ],
                     onSubmitFinish: (...datas) => {
-                      setAllMenus([
-                        ...(allMenus?.filter((f) => f.id !== datas[0].id) ||
-                          []),
-                        datas[0],
-                      ]);
+                      listAll().then((d) =>
+                        setAllMenus([
+                          ...(d.data?.filter((f) => f.id !== datas[0].id) ||
+                            []),
+                          datas[0],
+                        ])
+                      );
                     },
                   },
 

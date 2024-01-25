@@ -343,7 +343,6 @@ const TablePage = <T extends IdBean>({
         (tableModel?.entityType !== editModelType ? ":" + editModelType : "");
       const defaultBtns: VFBtn[] = [
         {
-          title: "",
           actionType: "save",
           icon: <i className=" icon-add_circle_outline" />,
           multiple: false,
