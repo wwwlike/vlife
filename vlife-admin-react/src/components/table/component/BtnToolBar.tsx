@@ -1,12 +1,18 @@
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
-import { Button, Dropdown, Tooltip, Typography } from "@douyinfe/semi-ui";
+import {
+  Button,
+  Dropdown,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@douyinfe/semi-ui";
 import { IdBean, Result } from "@src/api/base";
 import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
 import { objectIncludes } from "@src/util/func";
 import { VFBtn } from "../types";
-import { isNull } from "lodash";
+import { create, isNull } from "lodash";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|(可新增和支持多数据操作型按钮)
@@ -59,11 +65,10 @@ export default <T extends IdBean>({
   const [btnDatas, setBtnDatas] = useState<T[] | undefined>(datas); //当前操作的数据
   const confirmModal = useNiceModal("confirmModal");
   const [currBtns, setCurrBtns] = useState<VFBtn[]>([]); //当前页面应该显示的按钮
-
+  const [continueCreate, setContinueCreate] = useState<boolean>();
   useEffect(() => {
     setBtnDatas(datas);
   }, [datas]);
-
   //返回按钮数量
   useEffect(() => {
     onBtnNum && onBtnNum(currBtns.length);
@@ -85,7 +90,6 @@ export default <T extends IdBean>({
           (b) => b.actionType !== "create" && b.multiple !== true
         );
       } else if (position === "formFooter") {
-        //明细页按钮
         if (btnDatas === undefined || btnDatas?.[0]?.id === undefined) {
           //模型数据为空
           toolBarBtns = btns.filter(
@@ -94,10 +98,8 @@ export default <T extends IdBean>({
               (formModel ? b.model === formModel : true)
           );
         } else {
-          //模型数据为空
           toolBarBtns = btns.filter(
             (b) =>
-              b.actionType !== "create" &&
               b.saveApi !== undefined &&
               (b.multiple === false || b.multiple === undefined)
           );
@@ -113,14 +115,19 @@ export default <T extends IdBean>({
 
       const btnPromises = filteredBtns.map(async (btn, index) => {
         //数据条件判断过滤
-        let tooltip = btnUsableMatch(btn);
-        if (tooltip instanceof Promise) {
-          tooltip = await tooltip;
+        let dataMatchTooltip = btnUsableMatch(btn);
+        if (dataMatchTooltip instanceof Promise) {
+          dataMatchTooltip = await dataMatchTooltip;
         }
-        let disabled = typeof tooltip === "boolean" ? !tooltip : true; //是否可用
-        return typeof tooltip === "string"
-          ? { ...btn, tooltip, disabled: disabled }
-          : { ...btn, disabled };
+        let dataMatch =
+          typeof dataMatchTooltip === "boolean" ? !dataMatchTooltip : true; //是否可用
+        return typeof dataMatchTooltip === "string"
+          ? {
+              ...btn,
+              tooltip: dataMatchTooltip,
+              disabled: btn.disabled || dataMatch,
+            }
+          : { ...btn, disabled: btn.disabled || dataMatch };
       });
       const results = await Promise.all(btnPromises);
       const filteredResults = results.filter((d) =>
@@ -139,11 +146,17 @@ export default <T extends IdBean>({
         : vfBtn.multiple
         ? saveApiObj
         : saveApiObj[0];
-      const save = (btn: VFBtn, saveApiFunc: any) => {
+      const save = (btn: VFBtn, saveApiFunc: any, _continueCreate: boolean) => {
         setLoadbtn(`${position}btn${index}`);
         return saveApiFunc(savaData).then(
           (d: Result<any>) => {
-            onDataChange && onDataChange([d.data]);
+            if (onDataChange) {
+              if (_continueCreate) {
+                onDataChange([]);
+              } else {
+                onDataChange([d.data]);
+              }
+            }
             setTimeout(() => {
               if (btn.submitClose) {
                 formModal.hide();
@@ -162,16 +175,20 @@ export default <T extends IdBean>({
         );
       };
       if (vfBtn.saveApi && saveApiObj) {
+        const _continueCreate =
+          vfBtn.actionType === "create" &&
+          ((vfBtn.continueCreate === true && continueCreate === undefined) ||
+            continueCreate === true);
         return vfBtn.onFormilySubmitCheck
           ? vfBtn.onFormilySubmitCheck().then((dLboolean) => {
-              return save(vfBtn, vfBtn.saveApi);
+              return save(vfBtn, vfBtn.saveApi, _continueCreate);
             })
-          : save(vfBtn, vfBtn.saveApi);
+          : save(vfBtn, vfBtn.saveApi, _continueCreate);
       } else if (vfBtn.onClick) {
         vfBtn.onClick(savaData);
       }
     },
-    [position]
+    [position, continueCreate]
   );
 
   //按钮点击
@@ -207,7 +224,7 @@ export default <T extends IdBean>({
         }
       }
     },
-    [btnDatas, btns, position]
+    [btnDatas, btns, position, continueCreate]
   );
 
   // 按钮名称计算
@@ -230,11 +247,11 @@ export default <T extends IdBean>({
           }
         }
       } else if (position === "tableLine") {
-        if (btn.actionType === "save") {
+        if (btn.actionType === "save" || btn.actionType === "edit") {
           if (isNull(btn.title) || btn.title === undefined) {
             return "修改";
-          } else if (!btn?.title?.startsWith("修改")) {
-            return "修改" + btn.title;
+          } else {
+            return btn.title;
           }
         }
       }
@@ -281,7 +298,7 @@ export default <T extends IdBean>({
     [btnDatas, btns, props]
   );
 
-  //1权限检查
+  //权限检查
   const permissionCheck = useCallback((btn: VFBtn) => {
     return (
       (btn.permissionCode && checkBtnPermission(btn.permissionCode)) ||
@@ -289,7 +306,7 @@ export default <T extends IdBean>({
     );
   }, []);
 
-  //可用性比对检查 false&&string不可用， true可用
+  // 根据表单数据来检查按钮的可用性 可用性比对检查 false&&string不可用， true可用
   const btnUsableMatch = useCallback(
     (btn: VFBtn): boolean | string | Promise<boolean | string> => {
       if (
@@ -345,7 +362,12 @@ export default <T extends IdBean>({
   );
 
   return dropdown === false ? (
-    <div className={` ${className} space-x-1`}>
+    <div
+      className={` flex items-center ${classNames({
+        "justify-center": position !== "formFooter",
+        "justify-end": position === "formFooter",
+      })}   ${className} space-x-1`}
+    >
       {currBtns.map((btn, index) => {
         if (
           position !== "formFooter" &&
@@ -394,20 +416,37 @@ export default <T extends IdBean>({
               icon={btnType === "link" ? undefined : btn.icon}
               disabled={btn.disabled}
             >
-              <span className=" space-x-2 items-center">
-                {/* {btn.icon} */}
+              <span className=" space-x-2 items-center justify-center">
                 {btnTitle(btn)}
               </span>
             </Btn>
           );
           return (
-            <span key={`${position}btn${index}`}>
-              {btn.tooltip ? (
+            <>
+              {btn.actionType === "create" && position === "formFooter" && (
+                <div className="flex items-center space-x-1">
+                  <span>连续新增</span>
+                  <Switch
+                    checked={
+                      continueCreate !== undefined
+                        ? continueCreate
+                        : btn.continueCreate
+                    }
+                    onChange={(t) => {
+                      setContinueCreate(t);
+                    }}
+                    checkedText="开"
+                    uncheckedText="关"
+                  />
+                </div>
+              )}
+
+              {btn.tooltip && btn.disabled === true ? (
                 <Tooltip content={btn.tooltip}>{BtnComp}</Tooltip>
               ) : (
                 BtnComp
               )}
-            </span>
+            </>
           );
         }
       })}

@@ -5,6 +5,7 @@ import { useAuth } from "@src/context/auth-context";
 import SelectIcon from "@src/components/SelectIcon";
 import {
   detailMenuResourcesDto,
+  listAll,
   MenuVo,
   remove,
   save,
@@ -65,14 +66,16 @@ export default () => {
   }, [userAllMenus, app]);
 
   useEffect(() => {
-    const menu = userAllMenus?.filter(
-      (m) =>
-        pathname.indexOf(
-          m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
-        ) !== -1
-    )?.[0];
-    if (menu) {
-      setApp(findTreeRoot(userAllMenus, menu));
+    if (app === undefined) {
+      const menu = userAllMenus?.filter(
+        (m) =>
+          pathname.indexOf(
+            m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
+          ) !== -1
+      )?.[0];
+      if (menu) {
+        setApp(findTreeRoot(userAllMenus, menu));
+      }
     }
   }, [userAllMenus, pathname]);
 
@@ -97,7 +100,8 @@ export default () => {
       return {
         title: title || "创建模块菜单",
         icon: <i className="  icon-task_add-02" />,
-        actionType: "save",
+        actionType: "create",
+        continueCreate: true,
         model: "sysMenu",
         fieldOutApiParams: { formId: { sysMenuId: app?.id } },
         reaction: [
@@ -124,14 +128,16 @@ export default () => {
         ],
         saveApi: save,
         onSubmitFinish: (...datas) => {
-          setAllMenus([
-            ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),
-            datas[0],
-          ]);
+          listAll().then((d) =>
+            setAllMenus([
+              ...(d.data?.filter((f) => f.id !== datas[0].id) || []),
+              datas[0],
+            ])
+          );
         },
       };
     },
-    [allMenus, app]
+    [allMenus?.length, allMenus, app]
   );
 
   /**
@@ -287,7 +293,7 @@ export default () => {
       return nav(app);
     }
     return [];
-  }, [appMenus, app, selectedKeys, pathname]);
+  }, [appMenus, app, selectedKeys, allMenus, pathname, createMenuBtn]);
 
   const onSelect = (data: any) => {
     if (data.selectedKeys[0]) {

@@ -94,6 +94,7 @@ const Index = () => {
                     title: "新增模块",
                     icon: <i className="  icon-task_add-02" />,
                     actionType: "create",
+                    continueCreate: true,
                     model: "sysMenu",
                     saveApi: save,
                     reaction: [

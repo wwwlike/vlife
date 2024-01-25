@@ -48,7 +48,7 @@ export const FormModal = createNiceModal(
 
     //form能使用的按钮过滤，并且对按钮添加提交之前的前置校验方式
     const modal = useNiceModal("formModal");
-    //modal里的表单数九
+    //modal里的表单数
     const [modifyData, setModifyData] = useState();
     // const [data, setData] = useState(formData);
     const [form, setForm] = useState<Form>(); // formliy的form
@@ -126,7 +126,7 @@ export const FormModal = createNiceModal(
             datas={[form?.values || formData]}
             readPretty={props.readPretty}
             onDataChange={(d) => {
-              setModifyData(d[0]);
+              setModifyData(d?.[0] || {});
             }}
           />
         );

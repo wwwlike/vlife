@@ -9,12 +9,12 @@ import {  ReactNode } from 'react';
 /**
  * 按钮动作类型
  * # 模型弹出层操作
- * create: 需要对模型进行操作  usableMatch有效
- * edit: 数据修改 有数据无saveApi就是预览
- * save: 数据新增和修改 是create/edit的合体 usableMatch对新增无效；
+ * create: 对模型进行操作,新增完后可修改，但是无直接修改权限；disable对其有效
+ * edit: 数据修改,没有传saveApi就是预览只读
+ * save: 数据新增和修改 是create/edit的合体,disable对新增和修改有效,usableMatch对新增无效；
  * 非模型操作
- * api ：无需模型，直接触发saveApi方法
- * click:自定义点击事件的按钮 触发的实际onCLick方法
+ * api ：无需模型，直接触发saveApi方法(异步按钮)
+ * click:自定义点击事件的按钮 触发的实际onCLick方法(同步按钮)
  */
 export type actionType= "create"|"save"|"edit"|"api"|"click";
 
@@ -22,11 +22,11 @@ export interface VFBtn{
   title?:string;//按钮名称(入口名称)
   icon?:ReactNode;//图标 
   onlyIcon?:string[]|true,//只显示图标的场景，true表示仅显示图标
-  tooltip?:string;// 不可用时候的提醒
-  disabled?:boolean;// 当前是否不可用
+  continueCreate?:boolean;//连续新增 create按钮会出现
   actionType:actionType // 动作类型
-  //1:boolean判断能否使用|2:属性对象完全匹配|3：函数校验(同步异步)string表示不能使用原因
-  usableMatch?:boolean|any|((...datas:any[])=>string|boolean|Promise<string|boolean>); // create新增是不支持有数据的any和函数模型
+  disabled?:boolean;// 当前是否不可用
+  usableMatch?:any|((...datas:any[])=>string|boolean|Promise<string|boolean>); //表单数据校验按钮可用性 any=>直接比对|函数=>复杂/异步校验 string表示不能使用原因 赋值给tooltip
+  tooltip?:string;// 不可用时候的提醒
   className?:string//按钮样式
   initData?:any;//初始化数据新增时使用的默认值
   permissionCode?:string;//权限编码,不传则根据->`实体名:方法名(动作:模型名)`组成 sysUser:save:sysUserDto对应后端sysUser的API下的saveSysUserDto方法
