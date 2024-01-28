@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FormVo, model } from "@src/api/Form";
+import { FormVo, list as model } from "@src/api/Form";
 import { useLocation } from "react-router-dom";
 import Content from "./content";
 import Empty from "../common/Empty";
@@ -25,11 +25,11 @@ export default () => {
   useEffect(() => {
     if (formType) {
       model({ type: formType }).then((edit) => {
-        model({ entityType: edit.data?.entityType, itemType: "req" }).then(
+        model({ entityType: edit.data?.[0].entityType, itemType: "req" }).then(
           (req) => {
-            setFormVo(edit.data);
+            setFormVo(edit.data?.[0]);
             if (req.data) {
-              setPageReqType(req.data.type);
+              setPageReqType(req.data?.[0].type);
             }
           }
         );

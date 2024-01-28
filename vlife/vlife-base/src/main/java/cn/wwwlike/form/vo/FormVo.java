@@ -104,8 +104,8 @@ public class FormVo implements VoBean<Form> {
   /**
    * 模型的接口类
    */
-  @VField(skip = true)
-  public List<String> parentsName;
+//  @VField(skip = true)
+//  public List<String> parentsName;
   /**
    * 上级表单
    * 作为子表单时（field表里的fieldType等于当前表单的name）

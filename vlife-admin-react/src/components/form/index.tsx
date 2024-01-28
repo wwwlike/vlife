@@ -21,7 +21,6 @@ import {
   GeneralField,
   onFormInit,
   onFormMount,
-  IFieldFeedback,
 } from "@formily/core";
 import { FormProvider, createSchemaField, Schema } from "@formily/react";
 import {
@@ -53,12 +52,7 @@ import { FormComponents } from "@src/resources/CompDatas";
 import useDelayedExecution from "@src/hooks/useDelayedExecution";
 import { useAuth } from "@src/context/auth-context";
 import { placeholderJoin } from "@src/util/func";
-// export interface validate {
-//   [key: string]: (
-//     val: any, //watchDataObj
-//     ...watch: string[] //监听的对象，watch里的字段有改变则触发validate的方法执行，如果没有则val就时key的值 watch里面
-//   ) => string | Promise<Result<string>> | void; //string返回的错误信息，void表示校验通过
-// }
+
 const mode = import.meta.env.VITE_APP_MODE;
 export interface FormProps<T> {
   key?: string;

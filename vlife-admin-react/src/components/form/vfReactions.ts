@@ -15,7 +15,6 @@ export const execVfAction = (actions: VfAction[], form: Form,parentData:any) => 
     fields.forEach((fieldName) => {
       const reactions:reaction[]=a.reations;
       reactions.forEach((r:reaction)=>{
-      
         const field = form.getFieldState(fieldName);  
         const prop: string = FS_STATE[r.state];
         if(field!==undefined){

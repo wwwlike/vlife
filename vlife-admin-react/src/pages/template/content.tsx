@@ -76,8 +76,26 @@ const Content = <T extends IdBean>({
   const navigate = useNavigate();
   const { user } = useAuth();
   const confirmModal = useNiceModal("vlifeModal");
+  const [filterFormVo, setFilterFormVo] = useState<FormVo>();
   const [formData, setFormData] = useState<any>({});
   const [tableModel, setTableModel] = useState<FormVo>();
+  //左侧列表根据查询维度隐藏指定字段(如查看本人数据，则不需要部门搜索条件)
+  const filterReaction = useMemo((): VfAction[] => {
+    if (filterFormVo) {
+      // 部门code
+      const deptCode = filterFormVo.fields.filter(
+        (f) => f.entityType === "sysDept" && f.fieldName === "code"
+      )?.[0];
+      return [
+        VF.result(
+          user?.groupFilterType === "sysUser_1" && deptCode !== undefined
+        )
+          .then("code")
+          .hide(),
+      ];
+    }
+    return [];
+  }, [filterFormVo]);
   const allTab: TableTab = { itemKey: "all", tab: "全部", active: true };
   //固定项页签 tab abList方式+tabDictField方式
   const [fixedTab, setFixedTab] = useState<TableTab[]>([]);
@@ -194,13 +212,17 @@ const Content = <T extends IdBean>({
             <FormPage
               key={`filter${filterType}`}
               reaction={
-                typeof filterType === "string" ? undefined : filterType.reaction
+                typeof filterType === "string"
+                  ? filterReaction
+                  : [...filterReaction, ...filterType.reaction]
               }
               formData={req}
-              // fontBold={true}
               onDataChange={(data) => {
                 setFormData({ ...data });
                 onReq?.(data);
+              }}
+              onVfForm={(v) => {
+                setFilterFormVo(v);
               }}
               type={
                 typeof filterType === "string" ? filterType : filterType.type

@@ -6,7 +6,7 @@ import {
   IconSave,
 } from "@douyinfe/semi-icons";
 import { Button, Empty } from "@douyinfe/semi-ui";
-import { FormVo, model, saveFormDto } from "@src/api/Form";
+import { FormVo, list as model, saveFormDto } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import VfButton from "@src/components/VfButton";
 import { Mode } from "@src/dsl/base";
@@ -95,13 +95,14 @@ export default () => {
     }
   }, [currField, currModel]);
   useEffect(() => {
-    model({ type }).then((data) => {
-      setCurrModel(data.data);
+    model({ type }).then((d) => {
+      const f = d.data?.[0];
+      setCurrModel(f);
       setFormInitData({
-        name: data.data?.name,
-        prefixNo: data.data?.prefixNo,
-        formDesc: data.data?.formDesc,
-        helpDoc: data.data?.helpDoc,
+        name: f?.name,
+        prefixNo: f?.prefixNo,
+        formDesc: f?.formDesc,
+        helpDoc: f?.helpDoc,
       });
     });
   }, [type]);
@@ -291,7 +292,7 @@ export default () => {
               type="form"
               formData={formInitData}
               reaction={[
-                VF.result(currModel.parentsName.includes("INo"))
+                VF.result(currModel.typeParentsStr?.split(",")?.includes("INo"))
                   .then("prefixNo")
                   .show(),
               ]}

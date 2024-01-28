@@ -95,7 +95,7 @@ export default ({
             field.fieldType !== "boolean"
           ) {
             return await getFormInfo({ type: field.fieldType }).then((d) => {
-              const matchs = d?.parentsName.filter((dd) => {
+              const matchs = d?.typeParentsStr?.split(",").filter((dd) => {
                 return (
                   dd.toLocaleLowerCase() ===
                   component?.dataModel?.toLocaleLowerCase()

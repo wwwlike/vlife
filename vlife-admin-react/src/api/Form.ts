@@ -1,5 +1,5 @@
 import apiClient from "@src/api/base/apiClient";
-import { DbEntity, ItemType,  Result, SaveBean, VoBean } from "@src/api/base";
+import { BatchModifyDto, DbEntity, ItemType,  Result, SaveBean, VoBean } from "@src/api/base";
 
 import {  FormFieldDto, FormFieldVo } from "@src/api/FormField";
 import { FormTabDto } from '@src/api/FormTab';
@@ -44,7 +44,7 @@ export interface FormDto extends SaveBean,Form{
  * 2. 关联表数据 FormDto
  */
 export interface FormVo extends VoBean,Omit<FormDto,"fields">  {
-  parentsName:string[];//继承和实现的类的名称
+  // parentsName:string[];//继承和实现的类的名称
   parentForm:FormVo;//当前form模型作为子表它所在的父表信息
   fields: FormFieldVo[]; //字段信息
 }
@@ -54,7 +54,7 @@ export interface formPageReq{
   entityType?:string, //关联实体类型
   type?:string,//模型标识
   id?:string,//模型id
-  design?:boolean //当前表单是否处于设计模式
+  // design?:boolean //当前表单是否处于设计模式
 }
 
 /**
@@ -64,12 +64,7 @@ export const tsCode = (entity: string): Promise<Result<string>> => {
   return apiClient.get(`/form/tsCode/${entity}`);
 };
 
-/**
- * 单个模型
- */
-export const model = (params:formPageReq): Promise<Result<FormVo>> => {
-  return apiClient.get(`/form/model`, { params });
-};
+
 
 /**
  * 模型列表
@@ -94,8 +89,20 @@ export const saveFormDto = (dto: Partial<FormDto>): Promise<Result<FormVo>> => {
   return apiClient.post(`/form/save/formDto`, dto);
 };
 
+/** 应用归集*/
+export const assignType=(dto:BatchModifyDto): Promise<Result<number>>=>{
+  return apiClient.post(`/form/assignType`,dto);
+};
 
-//---------------删除---------------------
+
+//---------------待删除---------------------
+
+/**
+ * 单个模型
+ */
+// export const model = (params:formPageReq): Promise<Result<FormVo>> => {
+//   return apiClient.get(`/form/model`, { params });
+// };
 
 /**
  * 指定模型及接口的TS代码
@@ -120,3 +127,5 @@ export const saveFormDto = (dto: Partial<FormDto>): Promise<Result<FormVo>> => {
 export const models = (uiType: string): Promise<Result<FormVo[]>> => {
   return apiClient.get(`/form/models/${uiType}`);
 };
+
+

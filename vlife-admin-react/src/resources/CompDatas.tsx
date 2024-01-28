@@ -13,7 +13,7 @@ import PageSelect from "@src/components/PageSelect";
 import MenuResourcesSelect from "@src/pages/sysManage/role/component/MenuResourcesSelect";
 import VfFormTable from "@src/components/form/component/FormTable";
 import VfListForm from "@src/components/form/component/VfListForm";
-import { FormVo, model } from "@src/api/Form";
+import { FormVo, list } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { connect, mapReadPretty } from "@formily/react";
 import { PreviewText, InputNumber } from "@formily/semi";
@@ -359,9 +359,9 @@ export const FormComponents: CompDatas = {
           form?: FormVo,
           field?: FormFieldVo
         ): Promise<Partial<selectObj>[]> => {
-          return model({ type: field?.fieldType }).then((d) => {
+          return list({ type: field?.fieldType }).then((d) => {
             if (d.data) {
-              return d.data.fields
+              return d.data[0].fields
                 .filter(
                   (f) =>
                     f.listHide === null ||

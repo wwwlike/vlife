@@ -3,10 +3,9 @@ import VlifeForm, { FormProps } from "@src/components/form";
 import { useAuth } from "@src/context/auth-context";
 import { FormVo } from "@src/api/Form";
 import { IdBean } from "@src/api/base";
-import { VF, VfAction } from "@src/dsl/VF";
+import { VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
-import { isNull } from "lodash";
 import { Tooltip } from "@douyinfe/semi-ui";
 const mode = import.meta.env.VITE_APP_MODE;
 /**
@@ -48,11 +47,6 @@ const FormPage = <T extends IdBean>({
   ...props
 }: FormPageProps<T>) => {
   const navigate = useNavigate();
-  //formily->form对象
-  // const [form, setForm] = useState<Form>();
-  //子表单信息
-  // const [subForm, setSubForm] = useState<{ [key: string]: Form | Form[] }>();
-  //context里的字典信息、模型信息提取
   const { getDict, getFormInfo, groups, user } = useAuth();
   //模型信息
   const [model, setModel] = useState<FormVo | undefined>(
@@ -61,13 +55,10 @@ const FormPage = <T extends IdBean>({
   //表单数据初始化
   const [formPageData, setFormPageData] = useState<any>(formData);
 
-  //外键字段(待删除)
-  // const [fkMap, setFkMap] = useState<any>({}); // 外键数据集合
-
   //模型信息提取，模型信息返回
   useEffect(() => {
     if (model === undefined) {
-      getFormInfo({ type, design }).then((data) => {
+      getFormInfo({ type }).then((data) => {
         if (data?.id) {
           setModel(data);
           if (onVfForm) {
@@ -110,18 +101,6 @@ const FormPage = <T extends IdBean>({
   //新增时隐藏修改时只读
   const formPageReaction = useMemo((): VfAction[] => {
     let pageReaction: VfAction[] = [];
-    model?.fields.forEach((f) => {
-      // if (design !== true) {
-      //   if (f.create_hide) {
-      //     pageReaction.push(VF.result(!initData.id).then(f.fieldName).hide());
-      //   }
-      //   if (f.modify_read) {
-      //     pageReaction.push(
-      //       VF.result(initData.id).then(f.fieldName).readPretty()
-      //     );
-      //   }
-      // }
-    });
     return reaction ? [...reaction, ...pageReaction] : pageReaction;
   }, [reaction, model, design, initData]);
 
@@ -143,9 +122,7 @@ const FormPage = <T extends IdBean>({
           className={className}
           modelInfo={model}
           design={design}
-          // dicts={formDicts}
           vf={props.vf || vfs}
-          // fkMap={fkMap}
           formData={initData}
           onDataChange={(data, field) => {
             if (onDataChange) {
@@ -170,9 +147,7 @@ const FormPage = <T extends IdBean>({
     getDict,
     props.vf,
   ]);
-
   //级联操作
-
   return (
     <>
       {vlife_form}

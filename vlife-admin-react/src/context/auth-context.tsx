@@ -1,15 +1,15 @@
-import { TranDict } from "@src/api/base";
+import { Result, TranDict } from "@src/api/base";
 import { list as resourcesList } from "@src/api/SysResources";
 import { useMount, useSize } from "ahooks";
 import React, { ReactNode, useCallback, useRef, useState } from "react";
 import { list as dictList, SysDict } from "@src/api/SysDict";
 import { currUser, ThirdAccountDto, UserDetailVo } from "@src/api/SysUser";
 import { login as userLogin } from "@src/api/login";
-import { FormVo, model, formPageReq } from "@src/api/Form";
+import { FormVo, formPageReq, list } from "@src/api/Form";
 import { SysResources } from "@src/api/SysResources";
 import { useEffect } from "react";
 import { listAll, SysGroup } from "@src/api/SysGroup";
-import { listAll as menuAll, MenuVo, SysMenu } from "@src/api/SysMenu";
+import { listAll as menuAll, MenuVo } from "@src/api/SysMenu";
 import { gitToken } from "@src/api/pro/gitee";
 export const localStorageKey = "__auth_provider_token__";
 const mode = import.meta.env.VITE_APP_MODE;
@@ -39,11 +39,10 @@ const AuthContext = React.createContext<
       //菜单展开状态
       menuState: MenuState;
       setMenuState: (state: MenuState) => void;
-      //所有模型
-      models: { [key: string]: FormVo | undefined };
       //所有菜单
       allMenus?: MenuVo[];
       setAllMenus: (allMenus: MenuVo[]) => void;
+
       app: MenuVo | undefined; //当前应用
       setApp: (app: MenuVo | undefined) => void; //当前应用
       //当前屏幕大小
@@ -54,10 +53,11 @@ const AuthContext = React.createContext<
       error: string | null | undefined;
       //所有权限组
       groups: { [id: string]: SysGroup };
-      /**2 funs */
-      //java模型信息
-      // getModelInfo: (modelName: string) => Promise<ModelInfo | undefined>;
-      //db模型信息
+      //待缓存的模型信息提取
+      findModels: (params: {
+        type?: string;
+        id?: string;
+      }) => Promise<Result<FormVo[]>>;
       getFormInfo: (params: formPageReq) => Promise<FormVo | undefined>;
       //模型缓存信息清除
       clearModelInfo: (modelName?: string) => void;
@@ -98,6 +98,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [models, setModels] = useState<{ [key: string]: FormVo | undefined }>(
     {}
   );
+  //所有的模型信息
+  const [allModels, setAllModels] = useState<FormVo[]>();
   /** 数据库结构的字典信息 */
   const [dbDicts, setDbDicts] = useState<SysDict[]>([]);
   /** 权限组集合 */
@@ -168,6 +170,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     //同步拉取全量资源信息
     resourcesList().then((d) => {
       setAllResources(d.data);
+    });
+    //所有模型信息拉取
+    list().then((f) => {
+      setAllModels(f.data);
+      const modelObj =
+        f.data?.reduce((acc: { [key: string]: FormVo }, obj) => {
+          acc[obj.type] = obj;
+          return acc;
+        }, {}) || {};
+      setModels(modelObj);
     });
     //角色组全量提取
     listAll().then((t) => {
@@ -243,29 +255,54 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (key) {
       if (models[key] === undefined) {
         //简写(promise形式返回数据出去)
-        let form = await (await model(params)).data;
+        let forms = await (await list(params)).data;
         setModels({
           ...models,
-          [key]: form,
+          [key]: forms?.[0],
         });
-        return form;
-        //组件设置json转对象
-        // const fields = form?.fields.map((f) => {
-        //   return {
-        //     ...f,
-        //     componentSetting: f.componentSettingJson
-        //       ? JSON.parse(f.componentSettingJson)
-        //       : {},
-        //   };
-        // });
-        // setModels({ ...models, [modelName + uiType]: { ...form, fields } });
-        // return { ...form, fields };
+        return forms?.[0];
       } else {
         return models[key];
       }
     }
     return undefined;
   }
+
+  const findModels = useCallback(
+    ({
+      type,
+      id,
+    }: {
+      type?: string;
+      id?: string;
+    }): Promise<Result<FormVo[]>> => {
+      if (allModels) {
+        return new Promise((resolve) =>
+          resolve({
+            code: "200",
+            msg: "success",
+            data: allModels
+              .filter((m) => {
+                if (id) {
+                  return m.id === id;
+                }
+                return true;
+              })
+              .filter((m) => {
+                if (type) {
+                  return m.type === type;
+                }
+                return true;
+              }),
+          })
+        );
+      }
+      return new Promise((resolve) =>
+        resolve({ code: "200", msg: "success", data: [] })
+      );
+    },
+    [allModels]
+  );
 
   /**
    * @param codes 多条字典信息
@@ -434,9 +471,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setMenuState,
           app,
           setApp,
-          models,
           allMenus,
           setAllMenus,
+          findModels,
           screenSize,
           dicts,
           error,

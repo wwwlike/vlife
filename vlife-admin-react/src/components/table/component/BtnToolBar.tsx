@@ -422,31 +422,36 @@ export default <T extends IdBean>({
             </Btn>
           );
           return (
-            <>
-              {btn.actionType === "create" && position === "formFooter" && (
-                <div className="flex items-center space-x-1">
-                  <span>连续新增</span>
-                  <Switch
-                    checked={
-                      continueCreate !== undefined
-                        ? continueCreate
-                        : btn.continueCreate
-                    }
-                    onChange={(t) => {
-                      setContinueCreate(t);
-                    }}
-                    checkedText="开"
-                    uncheckedText="关"
-                  />
-                </div>
-              )}
+            <div
+              className="flex items-center space-x-1"
+              key={`divTooltipcontinueCreate${index}`}
+            >
+              {btn.actionType === "create" &&
+                position === "formFooter" &&
+                btn.continueCreate !== false && (
+                  <>
+                    <span>连续新增</span>
+                    <Switch
+                      checked={
+                        continueCreate !== undefined
+                          ? continueCreate
+                          : btn.continueCreate
+                      }
+                      onChange={(t) => {
+                        setContinueCreate(t);
+                      }}
+                      checkedText="开"
+                      uncheckedText="关"
+                    />
+                  </>
+                )}
 
               {btn.tooltip && btn.disabled === true ? (
                 <Tooltip content={btn.tooltip}>{BtnComp}</Tooltip>
               ) : (
                 BtnComp
               )}
-            </>
+            </div>
           );
         }
       })}

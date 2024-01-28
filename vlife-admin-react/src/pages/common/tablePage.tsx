@@ -130,7 +130,6 @@ const TablePage = <T extends IdBean>({
     if (tableModel === undefined || tableModel === null) {
       getFormInfo({
         type: listType,
-        design: props.design,
       }).then((f: FormVo | undefined) => {
         setTableModel(f);
         if (onTableModel && f) {

@@ -42,8 +42,7 @@ public class SysGroup extends DbEntity {
    public String remark;
    /**
     * 数据维度
-    * 行级数据过滤层级选择
-    * 目前sysUser增加外键字段，需要把对应的实体也纳入到行级数据过滤，则在AuthDict里手工加入
+    * 行级数据过滤层级选择，在sysUser里的外键表都可以作为数据维度
     */
    @VField(dictCode = "GROUP_FILTER_TYPE")
    public String filterType;

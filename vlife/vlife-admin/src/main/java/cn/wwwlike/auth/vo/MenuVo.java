@@ -1,5 +1,6 @@
 package cn.wwwlike.auth.vo;
 import cn.wwwlike.auth.entity.SysMenu;
+import cn.wwwlike.auth.entity.SysRole;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.base.VoBean;
@@ -20,6 +21,7 @@ public class MenuVo implements VoBean<SysMenu> {
     public String sysRoleId;
     public String formId;
     public String placeholderUrl;
+    public List<SysRole> roleList;
     /**
      * 权限列表
      */

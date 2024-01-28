@@ -144,3 +144,9 @@ export enum ItemType{
   list="list",
 }
 
+//字段批量更新dto
+export interface BatchModifyDto{
+  ids:string[];
+  fieldName?:string;
+  value:any;
+}

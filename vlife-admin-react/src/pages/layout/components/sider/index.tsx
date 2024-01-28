@@ -17,6 +17,7 @@ import { IconDelete, IconEditStroked, IconRegExp } from "@douyinfe/semi-icons";
 import classNames from "classnames";
 import { VF } from "@src/dsl/VF";
 import { VFBtn } from "@src/components/table/types";
+import { isNull } from "lodash";
 import { findSubs, findTreeRoot } from "@src/util/func";
 
 const { Sider } = Layout;
@@ -227,7 +228,7 @@ export default () => {
                         },
                       },
                       {
-                        title: "权限关联",
+                        title: "权限导入",
                         actionType: "edit",
                         disabledHide: true,
                         usableMatch: (...datas: MenuVo[]) => {
@@ -240,7 +241,7 @@ export default () => {
                           VF.then("id").hide(),
                           VF.then("formId").hide(),
                         ],
-                        icon: <IconRegExp />,
+                        icon: <i className=" icon-gonext" />,
                         model: "menuResourcesDto",
                         loadApi: (d) => detailMenuResourcesDto({ id: d.id }),
                         saveApi: saveMenuResourcesDto,
@@ -258,7 +259,7 @@ export default () => {
                         onClick: () => {
                           navigate(`/sysConf/model?formId=${menu.formId}`);
                         },
-                        icon: <IconRegExp />,
+                        icon: <i className="  icon-setting" />,
                       },
                     ]}
                   />

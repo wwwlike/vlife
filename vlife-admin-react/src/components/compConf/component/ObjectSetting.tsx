@@ -79,29 +79,6 @@ export default ({
 }: ObjectSettingProps) => {
   const { getFormInfo } = useAuth();
 
-  const check = (
-    propInfo: { dataType?: DataType; dataModel: DataModel | string },
-    apiInfo: { dataType: DataType; dataModel: DataModel | string },
-    formVo?: FormVo
-  ): Promise<boolean> => {
-    //先判断formField是否由缺失的字段
-    const eq: boolean =
-      (propInfo?.dataModel || "basic").toLowerCase() ===
-        (apiInfo?.dataModel || "basic").toLowerCase() &&
-      propInfo.dataType === apiInfo.dataType;
-    if (eq) {
-      return new Promise((resolve) => {
-        resolve(true);
-      });
-    } else {
-      return getFormInfo({ type: apiInfo.dataModel }).then((d) => {
-        const num = d?.parentsName?.filter(
-          (name) => propInfo.dataModel === name
-        ).length;
-        return num && num > 0 ? true : false;
-      });
-    }
-  };
   // data api方式使用的单个data
   const [data, setData] = useState<Partial<PageComponentPropDto>>(
     value && value.length > 0

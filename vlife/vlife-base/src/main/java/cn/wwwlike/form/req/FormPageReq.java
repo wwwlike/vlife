@@ -23,16 +23,8 @@ public class FormPageReq  extends PageQuery<Form> {
      * 模型标识
      */
     public String type;
-
     /**
      * 所属应用
      */
     public String sysMenuId;
-    /**
-     * 当前查询模式
-     * design=true是设计模式
-     */
-    @VField(skip=true)
-    public boolean design;
-
 }

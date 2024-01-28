@@ -1,5 +1,6 @@
 package cn.wwwlike.form.service;
 
+import cn.wwwlike.common.BatchModifyDto;
 import cn.wwwlike.form.dao.FormDao;
 import cn.wwwlike.form.dto.FormDto;
 import cn.wwwlike.form.dto.FormFieldDto;
@@ -514,5 +515,21 @@ public class FormService extends VLifeService<Form, FormDao> {
         }
         List<FormVo> formVos= query(FormVo.class,QueryWrapper.of(Form.class).eq("itemType","entity").ne("id",form.getId()));
         return formVos.stream().filter(subForm->subForm.getFields().stream().filter(field-> field.getEntityType().equals(form.getType())).count()>0).collect(Collectors.toList());
+    }
+
+
+    public Integer assignType(BatchModifyDto dto){
+        List<Form> forms = find(QueryWrapper.of(Form.class).in("id", dto.getIds()));
+        forms.forEach(form->{
+            String menuId=dto.getValue().toString();
+            form.setSysMenuId(menuId);
+            save(form);
+            List<Form> relationForm = find(QueryWrapper.of(Form.class).eq("entityType", form.getType()).ne("itemType","entity"));
+            relationForm.forEach(f -> {
+                f.setSysMenuId(menuId);
+                save(f);
+            });
+        });
+        return forms.size();
     }
 }

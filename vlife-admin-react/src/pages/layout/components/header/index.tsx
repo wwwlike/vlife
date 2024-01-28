@@ -8,12 +8,7 @@ import {
   Dropdown,
   Empty,
 } from "@douyinfe/semi-ui";
-import {
-  IconDelete,
-  IconDesktop,
-  IconEditStroked,
-  IconGithubLogo,
-} from "@douyinfe/semi-icons";
+import { IconDesktop, IconGithubLogo } from "@douyinfe/semi-icons";
 import logo from "@src/logo.png";
 import "../../index.scss";
 import { useAuth } from "@src/context/auth-context";
@@ -29,6 +24,7 @@ import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
 import LinkMe from "./LinkMe";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
+import { saveRoleDto } from "@src/api/SysRole";
 const { Header } = Layout;
 
 const Index = () => {
@@ -101,18 +97,12 @@ const Index = () => {
                       VF.then("name").title("模块名称"),
                       VF.then("app").hide().value(false),
                       VF.then("pcode").value(m.code).readPretty(),
-                      VF.field("confPage")
-                        .eq(true)
-                        .then("url", "formId", "placeholderUrl")
-                        .hide()
-                        .clearValue(),
                       VF.field("url").isNotNull().then("formId").show(),
                       VF.result((sysMenu: any) => {
                         return sysMenu?.url && sysMenu.url.indexOf("*") !== -1;
                       })
                         .then("formId")
                         .required(),
-                      VF.field("confPage").eq(true).then("pageLayoutId").show(),
                       VF.field("url")
                         .endsWidth("*")
                         .then("placeholderUrl")
@@ -130,47 +120,30 @@ const Index = () => {
                       );
                     },
                   },
-
                   {
-                    title: "编辑应用",
-                    icon: <IconEditStroked size="small" className="z-20" />,
-                    actionType: "edit",
-                    model: "sysMenu",
-                    saveApi: save,
-                    onSubmitFinish: (...datas) => {
-                      setAllMenus([
-                        ...(allMenus?.filter((f) => f.id !== datas[0].id) ||
-                          []),
-                        datas[0],
-                      ]);
+                    title: "应用配置",
+                    icon: <i className="  icon-setting" />,
+                    actionType: "click",
+                    onClick: () => {
+                      navigate(`/sysConf/model?appCode=${m.code}`);
                     },
-                    reaction: [
-                      VF.then("app").value(true).hide(),
-                      VF.then(
-                        "url",
-                        "formId",
-                        "placeholderUrl",
-                        "pcode",
-                        "confPage"
-                      )
-                        .hide()
-                        .clearValue(),
-                      VF.then("name").title("应用名称"),
-                    ],
                   },
                   {
-                    title: "删除应用",
-                    icon: <IconDelete size="small" className="z-20" />,
-                    actionType: "api",
-                    saveApi: (...data: any[]) => {
-                      return remove([m.id]);
-                    },
-                    submitConfirm: true,
-                    onSubmitFinish: (...datas) => {
-                      setAllMenus([
-                        ...(allMenus?.filter((f) => f.id !== m.id) || []),
-                      ]);
-                    },
+                    title: "创建角色",
+                    icon: <i className=" icon-role-approval2" />,
+                    actionType: "create",
+                    model: "roleDto",
+                    continueCreate: false,
+                    reaction: [VF.then("sysMenuId").value(m.id).readPretty()],
+                    saveApi: saveRoleDto,
+                  },
+                  {
+                    title: "角色配置()",
+                    icon: <i className=" icon-role-approval2" />,
+                    actionType: "edit",
+                    model: "roleDto",
+                    reaction: [VF.then("sysMenuId").value(m.id).readPretty()],
+                    saveApi: saveRoleDto,
                   },
                 ]}
               />

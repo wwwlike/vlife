@@ -7,32 +7,26 @@ import {
   Tabs,
   Tooltip,
 } from "@douyinfe/semi-ui";
-import { FormVo, list, save } from "@src/api/Form";
+import { assignType, FormVo, list } from "@src/api/Form";
 import { renderIcon } from "@src/pages/layout/components/sider";
 import Scrollbars from "react-custom-scrollbars";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   IconClose,
   IconLive,
-  IconMenu,
   IconRegExp,
   IconTerminal,
 } from "@douyinfe/semi-icons";
 import {
   listAll,
-  save as menuSave,
   MenuVo,
   saveMenuResourcesDto,
   detailMenuResourcesDto,
 } from "@src/api/SysMenu";
 import classNames from "classnames";
 import BtnToolBar from "@src/components/table/component/BtnToolBar";
-import { VF } from "@src/dsl/VF";
-import VfTour from "@src/components/VfTour";
 import LinkMe from "@src/pages/layout/components/header/LinkMe";
 import RelationModel from "./component/RelationModel";
-import { useNiceModal } from "@src/store";
-import { useDetail } from "@src/api/base/baseService";
 import { VFBtn } from "@src/components/table/types";
 
 export type modelForm = FormVo & {
@@ -141,12 +135,15 @@ const Model = () => {
     const searchParams = new URLSearchParams(location.search);
     const paramEntityType = searchParams.get("type") || undefined;
     const paramFormId = searchParams.get("formId") || undefined;
+    const appCode = searchParams.get("appCode") || undefined;
     setBack(searchParams.get("goBack") ? true : false);
-    if (paramEntityType) {
+    if (paramEntityType && entityType === undefined) {
       setEntityType(paramEntityType);
+    } else if (appCode) {
+      setEntityType(undefined);
+      setTabKey(appCode);
     } else if (paramFormId && forms) {
       setVisible(true);
-      setEntityType(forms.filter((f) => f.id === paramFormId)?.[0]?.type);
     }
     if (
       tabKey === undefined &&
@@ -177,7 +174,10 @@ const Model = () => {
         >
           <div
             className="group-hover:font-bold cursor-pointer"
-            onClick={() => navigate(`/sysConf/model?type=${e.type}`)}
+            onClick={() => {
+              navigate(`/sysConf/model`);
+              setEntityType(e.type);
+            }}
           >
             <p>{e.title}</p>
             <p>{e.type}</p>
@@ -197,8 +197,9 @@ const Model = () => {
                 size="extra-extra-small"
                 alt="User"
                 onClick={() => {
+                  navigate(`/sysConf/model`);
+                  setEntityType(e.type);
                   setVisible(true);
-                  navigate(`/sysConf/model?type=${e.type}`);
                 }}
               >
                 {1 +
@@ -221,9 +222,9 @@ const Model = () => {
                     active={a.code === tabKey}
                     onClick={() => {
                       if (a.code !== tabKey) {
-                        setEntityType(undefined);
-                        save({ ...e, sysMenuId: a.id }).then((d) => {
+                        assignType({ ids: [e.id], value: a.id }).then((d) => {
                           entityLoad();
+                          setEntityType(undefined);
                         });
                       }
                     }}
@@ -289,34 +290,6 @@ const Model = () => {
             `/sysConf/model/codeView/${entityType}?fullTitle=TS代码查看和下载`
           );
         },
-      },
-      {
-        className: "createMenu",
-        title: "创建菜单",
-        disabledHide: true,
-        actionType: "create",
-        model: "sysMenu",
-        icon: <IconMenu></IconMenu>,
-        saveApi: menuSave,
-        onSubmitFinish: menuLoad,
-        reaction: [
-          VF.then("name").value(currEntity?.title),
-          VF.then("formId").value(currEntity?.id),
-          VF.then("app").value(false).hide(),
-          VF.field("confPage")
-            .eq(true)
-            .then("url", "formId", "placeholderUrl")
-            .hide()
-            .clearValue(),
-          VF.then("formId").readPretty(),
-          VF.field("confPage").eq(true).then("pageLayoutId").show(),
-          VF.field("url")
-            .endsWidth("*")
-            .then("placeholderUrl")
-            .show()
-            .then("placeholderUrl")
-            .required(),
-        ],
       },
     ];
     if (entityMenus && entityMenus.length > 0) {
@@ -407,7 +380,7 @@ const Model = () => {
           </div>
         )}
 
-        {tabKey && appEntity[tabKey].length === 0 && (
+        {tabKey && appEntity?.[tabKey]?.length === 0 && (
           <div className="inline-block font-bold   text-center  text-sm  m-2 bg-yellow-50 border  py-2 px-2  border-dashed rounded-md">
             {appEntity["app_empty"]?.length > 0
               ? "请从未分配Tab页面里选择和当前应用相关的实体模型"
@@ -415,7 +388,7 @@ const Model = () => {
           </div>
         )}
         {tabKey &&
-          appEntity[tabKey].length !== 0 &&
+          appEntity?.[tabKey]?.length !== 0 &&
           entityType === undefined &&
           tabKey !== "app_empty" && (
             <>
@@ -452,10 +425,10 @@ const Model = () => {
           >
             <div
               role="list "
-              className="  p-2  border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
+              className=" relative flex p-2  border-t mt-2 border-dashed grid   gap-4  sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10"
             >
               <div
-                className={`text-xl h-24 border  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500 hover:text-gray-500`}
+                className={`text-xl  h-24 border  flex items-center justify-center border-gray-300 hover:border-gray-400 hover:bg-blue-50  border-dashed rounded-lg font-bold text-blue-500 hover:text-gray-500`}
               >
                 未分配({appEntity["app_empty"]?.length})
               </div>
@@ -466,6 +439,40 @@ const Model = () => {
                   ?.map((e: any) => {
                     return card(e);
                   })}
+              <Dropdown
+                stopPropagation
+                showTick={true}
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Title>批量分配到应用</Dropdown.Title>
+                    {apps?.map((a) => (
+                      <Dropdown.Item
+                        active={a.code === tabKey}
+                        onClick={() => {
+                          if (a.code !== tabKey) {
+                            setEntityType(undefined);
+                            assignType({
+                              ids: appEntity["app_empty"].map((d) => d.id),
+                              value: a.id,
+                            }).then((d) => {
+                              entityLoad();
+                            });
+                          }
+                        }}
+                      >
+                        {a.name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                }
+              >
+                <i
+                  className={`${classNames({
+                    hidden: tabKey !== "app_empty",
+                    "group-hover:animate-bounce": tabKey === "app_empty",
+                  })} absolute  left-3 bottom-3 group-hover:block icon-out `}
+                />
+              </Dropdown>
             </div>
           </TabPane>
         )}
@@ -495,7 +502,6 @@ const Model = () => {
                       b.type.localeCompare(a.type)
                   )
                   ?.map((e) => {
-                    // @ts-ignore
                     return card(e);
                   })}
             </div>
@@ -515,7 +521,6 @@ const Model = () => {
           <RelationModel modelForm={currEntity} />
         </SideSheet>
       )}
-
       <div className=" p-4 font-sm  font-chinese space-y-2 top-2 w-full  bg-white">
         <p>配置中心：</p>
         <span className="block">

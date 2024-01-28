@@ -1,6 +1,6 @@
 import { IconSave } from "@douyinfe/semi-icons";
 import { Button, Divider } from "@douyinfe/semi-ui";
-import { FormVo, model, saveFormDto } from "@src/api/Form";
+import { FormVo, list as model, saveFormDto } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { VF } from "@src/dsl/VF";
 import VfButton from "@src/components/VfButton";
@@ -51,7 +51,7 @@ export default () => {
   }, [currField, currModel]);
   useEffect(() => {
     model({ type }).then((data) => {
-      setCurrModel(data.data);
+      setCurrModel(data.data?.[0]);
     });
   }, [type]);
 

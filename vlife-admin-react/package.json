@@ -46,7 +46,8 @@
     "redux": "^4.2.0",
     "styled-components": "^5.3.9",
     "tailwindcss": "^3.1.0",
-    "ts-migrate": "^0.1.35"
+    "ts-migrate": "^0.1.35",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@types/base-64": "^1.0.0",

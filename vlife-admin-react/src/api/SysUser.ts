@@ -51,7 +51,6 @@ export interface SysUserPageReq extends PageQuery{
 }
 // 用户详细信息
 export interface UserDetailVo extends VoBean{
-  groupName: string;  // 权限组名称
   name: string;  // 用户名
   avatar: string;  // 头像
   sysDeptId: string;  // 部门id
@@ -63,6 +62,8 @@ export interface UserDetailVo extends VoBean{
   username: string;  // 账号
   superUser: boolean;  // 超级用户
   state:string;//用户状态
+  groupName: string;  // 权限组名称
+  groupFilterType:string;//数据维度
 }
 // 用户列表信息
 export interface UserVo extends VoBean{

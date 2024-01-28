@@ -106,6 +106,12 @@ public class  UserDetailVo implements VoBean<SysUser> {
     public String groupName;
 
     /**
+     * 行级数据权限
+     */
+    @VField(pathName = "sysGroup_filterType")
+    public String groupFilterType;
+
+    /**
      * 权限组
      */
     public String sysGroupId;
