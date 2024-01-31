@@ -152,6 +152,9 @@ const Index = () => {
                     continueCreate: false,
                     reaction: [VF.then("sysMenuId").value(m.id).readPretty()],
                     saveApi: saveRoleDto,
+                    onSubmitFinish(...datas) {
+                      setRoles((roles) => [...roles, datas[0]]);
+                    },
                   },
                   ...roles
                     ?.filter((r) => r.sysMenuId === m.id)
@@ -168,6 +171,11 @@ const Index = () => {
                           return getDetail(req, "roleDto");
                         },
                         actionType: "edit",
+                        onSubmitFinish(...datas: any[]) {
+                          setRoles((roles) =>
+                            roles.map((r) => (r.id === m.id ? datas[0] : r))
+                          );
+                        },
                       };
                     }),
                 ]}

@@ -102,7 +102,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
     if (btn.disabled !== true) {
       if (
         (btn.actionType === "create" || btn.actionType === "save") &&
-        position === "tableToolbar"
+        position !== "formFooter"
       ) {
         return true;
       } else if (
@@ -157,12 +157,6 @@ export default ({ ...btn }: Partial<VFBtn>) => {
         terse: !saveApi ? true : false, //紧凑
         fontBold: !saveApi ? true : false, //加粗
         readPretty: actionType === "api" || !saveApi ? true : false,
-        //屏蔽掉(这个是该入口按钮数据)
-        // onDataChange(d: any) {
-        //   setBtnData((data: any) => {
-        //     return [d];
-        //   });
-        // },
         reaction: reaction,
       });
     };
@@ -299,6 +293,10 @@ export default ({ ...btn }: Partial<VFBtn>) => {
   const BtnComp = useMemo((): ReactNode => {
     const Btn: any =
       btnType === "link" && position !== "formFooter" ? Text : Button;
+    if (position === "dropdown" && _btn.disabled === true) {
+      return <></>;
+    }
+
     return btnType !== "icon" || position === "formFooter" ? (
       <Btn
         onClick={() => {
@@ -360,7 +358,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
         )}
       </div>
     );
-  }, [_btn, btnIcon, btnTitle, loading]);
+  }, [_btn, btnIcon, btnTitle, position, loading]);
   return authPass && !(btn.disabledHide && btn.disabled === true) ? (
     <>
       {_btn.tooltip && btn.disabled === true ? (
