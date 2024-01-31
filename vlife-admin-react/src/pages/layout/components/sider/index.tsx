@@ -276,7 +276,7 @@ export default () => {
                   />
                   {menu.pcode === app?.code && (
                     <BtnToolBar
-                      key={menu.id}
+                      key={menu.id + pathname}
                       btns={[
                         {
                           ...createMenuBtn(menu.code, "添加下级菜单"),

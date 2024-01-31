@@ -193,7 +193,7 @@ const Index = () => {
         text: (
           <div className=" h-full items-center flex">
             <VfButton
-              key={"createApp"}
+              key={`createApp_${pathname}`}
               title="新增应用"
               icon={<i className="  icon-task_add-02" />}
               actionType="save"
