@@ -324,8 +324,11 @@ export default ({
           ) : (
             <>
               {tabMenus.length === 0 && (
-                <div className=" flex justify-center text-red-500">
-                  当前应用还没有启用任何功能(菜单&&权限资源)
+                <div className=" flex justify-center">
+                  当前应用还没有启用任何功能
+                  <span className=" text-red-500">
+                    (请先创建菜单功能然后为菜单导入权限资源)
+                  </span>
                 </div>
               )}
             </>

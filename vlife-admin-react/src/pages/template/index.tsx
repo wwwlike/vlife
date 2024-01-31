@@ -11,7 +11,11 @@ export default () => {
   const location = useLocation();
   const [formVo, setFormVo] = useState<FormVo>();
   const [pageReqType, setPageReqType] = useState<string>();
-  useTitle(window.localStorage.getItem("currMenu") || formVo?.title + "管理");
+  useTitle(
+    window.localStorage.getItem("menuTitle") !== null
+      ? JSON.parse(window.localStorage.getItem("menuTitle") || "")?.title
+      : formVo?.title + "管理"
+  );
 
   //表单模型名称
   const formType = useMemo(() => {

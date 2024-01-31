@@ -76,6 +76,13 @@ export default () => {
       )?.[0];
       if (menu) {
         setApp(findTreeRoot(userAllMenus, menu));
+      } else {
+        const localApp: any = localStorage.getItem("currMenu");
+        if (localApp !== null) {
+          setApp(
+            userAllMenus.filter((m) => m.id === JSON.parse(localApp).app)[0]
+          );
+        }
       }
     }
   }, [userAllMenus, pathname]);
@@ -302,7 +309,12 @@ export default () => {
     if (data.selectedKeys[0]) {
       window.localStorage.setItem(
         "currMenu",
-        appMenus.filter((m) => m.id === data.selectedKeys[0])?.[0].name
+        JSON.stringify({
+          title: appMenus.filter((m) => m.id === data.selectedKeys[0])?.[0]
+            .name,
+          app: app?.id,
+          menu: data.selectedKeys[0],
+        })
       );
     }
     setSelectedKeys([...data.selectedKeys]);

@@ -104,7 +104,7 @@ const Index = () => {
                 btns={[
                   {
                     title: "新增模块",
-                    icon: <i className="  icon-task_add-02" />,
+                    icon: <i className="  icon-add_software" />,
                     actionType: "create",
                     continueCreate: true,
                     model: "sysMenu",
