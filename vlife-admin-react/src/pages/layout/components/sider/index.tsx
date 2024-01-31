@@ -12,13 +12,13 @@ import {
   saveMenuResourcesDto,
 } from "@src/api/SysMenu";
 import { MenuItem } from "../../types";
-import BtnToolBar from "@src/components/table/component/BtnToolBar";
-import { IconDelete, IconEditStroked, IconRegExp } from "@douyinfe/semi-icons";
+import BtnToolBar from "@src/components/button/BtnToolBar";
+import { IconDelete, IconEditStroked } from "@douyinfe/semi-icons";
 import classNames from "classnames";
 import { VF } from "@src/dsl/VF";
-import { VFBtn } from "@src/components/table/types";
-import { isNull } from "lodash";
 import { findSubs, findTreeRoot } from "@src/util/func";
+import { VFBtn } from "@src/components/button/types";
+import Button from "@src/components/button";
 
 const { Sider } = Layout;
 export function renderIcon(icon: any) {
@@ -100,6 +100,7 @@ export default () => {
     (pcode: string, title?: string): VFBtn => {
       return {
         title: title || "创建模块菜单",
+        btnType: "icon",
         icon: <i className="  icon-task_add-02" />,
         actionType: "create",
         continueCreate: true,
@@ -155,10 +156,13 @@ export default () => {
             id: menu.id,
             itemKey: menu.id,
             text: user?.superUser ? (
-              <div key={menu.id} className=" group z-10 flex relative w-28">
+              <div
+                key={menu.id}
+                className=" group z-10 flex items-center relative w-28"
+              >
                 <div className="z-10">{menu.name}</div>
                 <div
-                  className="flex absolute space-x-1 right-0 !z-20 "
+                  className="flex absolute items-center right-0 !z-20 "
                   onClick={(event) => {
                     event.cancelable = true; //阻止事件冒泡
                     event.stopPropagation();
@@ -170,7 +174,7 @@ export default () => {
                     datas={[menu]}
                     className={`${classNames({
                       hidden: !selectedKeys.includes(menu.id),
-                    })}   group-hover:block `}
+                    })} group-hover:block `}
                     btns={[
                       {
                         title: "编辑菜单",
@@ -266,11 +270,9 @@ export default () => {
                   {menu.pcode === app?.code && (
                     <BtnToolBar
                       key={menu.id}
-                      // datas={[menu]}
                       btns={[
                         {
                           ...createMenuBtn(menu.code, "添加下级菜单"),
-                          onlyIcon: true,
                         },
                       ]}
                     />
@@ -355,7 +357,7 @@ export default () => {
       >
         {appMenus.length === 0 && app?.code && (
           <div className=" w-full h-96 flex items-center justify-center">
-            <BtnToolBar btns={[createMenuBtn(app.code)]} />
+            <Button {...createMenuBtn(app.code)} btnType="button" />
           </div>
         )}
         <Nav.Footer className=" absolute bottom-0" collapseButton={true} />

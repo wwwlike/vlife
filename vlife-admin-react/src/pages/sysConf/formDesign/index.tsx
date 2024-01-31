@@ -8,7 +8,7 @@ import {
 import { Button, Empty } from "@douyinfe/semi-ui";
 import { FormVo, list as model, saveFormDto } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
-import VfButton from "@src/components/VfButton";
+import VfButton from "@src/components/button";
 import { Mode } from "@src/dsl/base";
 import FormPage from "@src/pages/common/formPage";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -141,7 +141,6 @@ export default () => {
         <div className=" w-64 flex-none font-sans text-md font-bold pl-6">
           {`${currModel.title}(${currModel?.type})`}
         </div>
-
         {/* 场景 */}
         <FormSetting
           className="items-center flex-none"
@@ -167,7 +166,7 @@ export default () => {
             }
           }}
           data={currModel}
-        ></FormSetting>
+        />
         {/* tab页签设置 */}
         <FormTab
           formVo={currModel}
@@ -178,12 +177,17 @@ export default () => {
         {/* 按钮组 */}
         <div className="  flex flex-1 justify-end space-x-1 pr-4">
           <VfButton
-            code="form:save:formDto"
-            icon={<IconSave />}
-            onClick={saveForm}
-          >
-            保存
-          </VfButton>
+            actionType="edit"
+            model="formDto"
+            position="formFooter"
+            datas={currModel}
+            saveApi={saveFormDto}
+            onSubmitFinish={(data) => {
+              setCurrModel(data);
+              //缓存清除
+              clearModelInfo(currModel.type);
+            }}
+          />
           <Button
             icon={<IconPlayCircle />}
             onClick={() => {

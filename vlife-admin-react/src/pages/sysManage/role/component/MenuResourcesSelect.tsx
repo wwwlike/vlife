@@ -243,11 +243,12 @@ export default ({
         {/* ------------ 没有子菜单的应用一级菜单 -------------------- */}
         {/* 1. 未关联资源的菜单 */}
         {appId ? (
-          (menus
+          menus
             .filter(
               //一级目录且没有子菜单
               (m) =>
                 m.pcode === appMenu?.code &&
+                (m.url || m.pageLayoutId) &&
                 findSubMenu(m.code, menus).length === 0
             )
             .filter(
@@ -263,17 +264,16 @@ export default ({
                 m.sysRoleId === undefined ||
                 (roleId && m.sysRoleId === roleId)
             ).length > 0 ||
-            menus
-              .filter(
-                (m) =>
-                  m.pcode === appMenu?.code &&
-                  findSubMenu(m.code, menus).length === 0
-              )
-              .filter(
-                (m) => m.sysResourcesList && m.sysResourcesList.length > 0
-              ) //有可用资源
-              .filter((m) => findMenuResources(m, roleId).length > 0).length >
-              0) && (
+          menus
+            .filter(
+              (m) =>
+                m.pcode === appMenu?.code &&
+                (m.url || m.pageLayoutId) &&
+                findSubMenu(m.code, menus).length === 0
+            )
+            .filter((m) => m.sysResourcesList && m.sysResourcesList.length > 0) //有可用资源
+            .filter((m) => findMenuResources(m, roleId).length > 0).length >
+            0 ? (
             <TabPane key={"100"} tab={"其他"} itemKey={"other"}>
               <ul role="list" className="grid p-2 gap-4 grid-cols-4">
                 {menus
@@ -281,6 +281,7 @@ export default ({
                     //一级目录且没有子菜单
                     (m) =>
                       m.pcode === appMenu?.code &&
+                      (m.url || m.pageLayoutId) &&
                       findSubMenu(m.code, menus).length === 0
                   )
                   .filter(
@@ -320,6 +321,14 @@ export default ({
                   return resourcesSelect(m, roleId);
                 })}
             </TabPane>
+          ) : (
+            <>
+              {tabMenus.length === 0 && (
+                <div className=" flex justify-center text-red-500">
+                  当前应用还没有启用任何功能(菜单&&权限资源)
+                </div>
+              )}
+            </>
           )
         ) : (
           <>{placeholder}</>

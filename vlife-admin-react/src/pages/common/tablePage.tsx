@@ -22,13 +22,13 @@ import TagFilter from "@src/components/table/component/TagFilter";
 import { Empty, Pagination, Tooltip } from "@douyinfe/semi-ui";
 import { orderObj } from "./orderPage";
 import { useSize } from "ahooks";
-import BtnToolBar from "@src/components/table/component/BtnToolBar";
+import BtnToolBar from "@src/components/button/BtnToolBar";
 import { IllustrationConstruction } from "@douyinfe/semi-illustrations";
 import classNames from "classnames";
 import VfSearch from "@src/components/VfSearch";
 import { useNavigate } from "react-router-dom";
-import { VFBtn } from "@src/components/table/types";
 import { Conditions, OptEnum, where } from "@src/dsl/base";
+import { VFBtn } from "@src/components/button/types";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 // 后端排序字符串格式创建
@@ -513,9 +513,6 @@ const TablePage = <T extends IdBean>({
           })}`}
           // model={tableModel.entityType}
           key={"tableBtn"}
-          onDataChange={(datas: any[]): void => {
-            //根据id更新行数据，则可以不强制刷新
-          }}
           btns={totalBtns}
           position="tableToolbar"
           datas={selected}

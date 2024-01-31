@@ -3,12 +3,11 @@ import FormPage from "@src/pages/common/formPage";
 import TablePage from "@src/pages/common/tablePage";
 import { useSize, useUpdateEffect } from "ahooks";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconPlusStroked, IconSetting } from "@douyinfe/semi-icons";
-import { FormVo } from "@src/api/Form";
+import { IconPlusStroked } from "@douyinfe/semi-icons";
 import { VfBaseProps } from "@src/dsl/component";
-import { VFBtn } from "../../table/types";
 import { useNavigate } from "react-router-dom";
 import { IFkItem } from "@src/api/base";
+import { VFBtn } from "@src/components/button/types";
 
 /**
  * 1对多，子表数据列表展示
@@ -138,18 +137,9 @@ export default ({
         width={width}
         btns={btns}
         ignores={ignores}
-        select_more={undefined} //无checkbox
+        select_more={undefined}
         read={read}
       />
-      {/* <div className=" absolute  top-4  right-2 font-bold text-blue-500 cursor-pointer">
-        <IconSetting
-          onClick={() => {
-            navigate(
-              `/sysConf/tableDesign/${type || fieldInfo.fieldType + ""}`
-            );
-          }}
-        />
-      </div> */}
     </div>
   );
 };

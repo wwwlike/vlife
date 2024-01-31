@@ -5,7 +5,7 @@
  */
 
 import React, { useCallback, useState } from "react";
-import { Badge, Divider, Tag } from "@douyinfe/semi-ui";
+import { Badge, Button, Divider, Tag } from "@douyinfe/semi-ui";
 import { FormFieldVo } from "@src/api/FormField";
 import { IconPlus, IconDeleteStroked } from "@douyinfe/semi-icons";
 import "react-grid-layout/css/styles.css";
@@ -15,7 +15,7 @@ import {
   Layout as LayoutDataType,
 } from "react-grid-layout";
 import { Mode } from "@src/dsl/base";
-import VfButton from "@src/components/VfButton";
+import VfButton from "@src/components/button";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 //字段拖拽排序，组件隐藏
 interface FieldSelectProps {
@@ -188,7 +188,7 @@ const FieldSelect = ({
                     {field.title || field.fieldName}
                   </Tag>
                   {!column2Flag && (
-                    <VfButton
+                    <Button
                       type="tertiary"
                       theme="borderless"
                       onClick={() => {
@@ -199,7 +199,7 @@ const FieldSelect = ({
                       className={` text-blue-500`}
                       icon={<IconDeleteStroked />}
                       style={{ margin: 8 }}
-                    ></VfButton>
+                    ></Button>
                   )}
                 </div>
               );
@@ -246,8 +246,7 @@ const FieldSelect = ({
                 >
                   {field.title || field.fieldName}
                 </Tag>
-                <VfButton
-                  tooltip="恢复可见"
+                <Button
                   className=" "
                   type="tertiary"
                   theme="borderless"
@@ -258,7 +257,7 @@ const FieldSelect = ({
                   }}
                   icon={<IconPlus />}
                   style={{ margin: 12 }}
-                ></VfButton>
+                ></Button>
               </div>
             );
           })}

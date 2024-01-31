@@ -3,13 +3,13 @@ import { Button, Divider } from "@douyinfe/semi-ui";
 import { FormVo, list as model, saveFormDto } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { VF } from "@src/dsl/VF";
-import VfButton from "@src/components/VfButton";
+import VfButton from "@src/components/button";
 import { useAuth } from "@src/context/auth-context";
 import { Mode, TsType } from "@src/dsl/base";
 import FormPage from "@src/pages/common/formPage";
 import TablePage from "@src/pages/common/tablePage";
 import { useSize } from "ahooks";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FieldSelect from "../formDesign/component/fieldSelect";
 import FormSetting from "../formDesign/component/formSetting";
@@ -55,24 +55,6 @@ export default () => {
     });
   }, [type]);
 
-  /**
-   * currModel保存
-   */
-  const saveForm = useCallback(() => {
-    if (currModel) {
-      saveFormDto({
-        ...currModel,
-      }).then((data) => {
-        //更新主键
-        if (currModel.id === undefined && data?.data?.id) {
-          setCurrModel(data.data);
-        }
-        //缓存清除
-        clearModelInfo(currModel.type);
-      });
-    }
-  }, [currModel]);
-
   return currModel ? (
     <div className=" h-full w-full  flex  flex-col ">
       <div className="flex w-full bg-white  h-12 p-2  items-center border-b border-gray-100 ">
@@ -109,9 +91,18 @@ export default () => {
         {/* 按钮组 */}
         <div className="  flex flex-1 justify-end space-x-1 pr-4">
           <VfButton
-            code="form:save:formDto"
+            permissionCode="form:save:formDto"
+            actionType="edit"
             icon={<IconSave />}
-            onClick={saveForm}
+            saveApi={saveFormDto}
+            datas={currModel}
+            onSubmitFinish={(data) => {
+              if (currModel.id === undefined && data?.id) {
+                setCurrModel(data);
+              }
+              //缓存清除
+              clearModelInfo(currModel.type);
+            }}
           >
             保存
           </VfButton>
@@ -133,8 +124,6 @@ export default () => {
           mode={Mode.list}
           outSelectedField={currField}
           onDataChange={(fields: FormFieldVo[]) => {
-            // alert(fields.map((f) => f.fieldName + f.listSort).toString());
-            // 在更新 obj 时同时包含 num 属性
             setCurrModel((model) => {
               const newModel: any = { ...model, fields: fields };
               return { ...newModel };

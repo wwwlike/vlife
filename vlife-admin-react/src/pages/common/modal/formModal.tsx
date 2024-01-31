@@ -1,12 +1,13 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import NiceModal, { createNiceModal, useNiceModal } from "@src/store";
 import { Form, IFormFeedback } from "@formily/core";
 import { IdBean } from "@src/api/base";
 import { FormVo } from "@src/api/Form";
 import FormPage, { FormPageProps } from "../formPage";
-import BtnToolBar from "@src/components/table/component/BtnToolBar";
-import { VFBtn } from "@src/components/table/types";
-import { Button } from "@douyinfe/semi-ui";
+import { VFBtn } from "@src/components/button/types";
+import VfButton from "@src/components/button";
+import { Button, Switch } from "@douyinfe/semi-ui";
+import classNames from "classnames";
 /**
  * 表单弹出层属性
  */
@@ -41,6 +42,12 @@ export const FormModal = createNiceModal(
       height: window.innerHeight,
     });
 
+    const [_continueCreate, setContinueCreate] = useState<
+      boolean | undefined
+    >();
+
+    const [formNumber, setFormNumber] = useState<number>(0);
+
     const [screenSize, setScreenSize] = useState({
       width: window.screen.width,
       height: window.screen.height,
@@ -50,18 +57,17 @@ export const FormModal = createNiceModal(
     const modal = useNiceModal("formModal");
     //modal里的表单数
     const [modifyData, setModifyData] = useState();
-    // const [data, setData] = useState(formData);
+    const [data, setData] = useState(formData);
     const [form, setForm] = useState<Form>(); // formliy的form
     const [errors, setErrors] = useState<IFormFeedback[]>([]);
     const [formVo, setFormVo] = useState<FormVo | undefined>(modelInfo);
     // const [reload, setReload] = useState<number>(0);
     const title = useMemo(() => {
-      const no = formData?.no || "";
+      const no = data?.no || "";
       if (props.title) return props.title;
       if (props.title === undefined && formVo === undefined) {
         return `“${props.type}”模型标识不存在`;
       }
-
       if (props.readPretty) {
         return formVo?.name + "详情" + no;
       } else {
@@ -71,8 +77,9 @@ export const FormModal = createNiceModal(
           return "新建(" + formVo?.name + ")";
         }
       }
-    }, [formData, form, formVo && formVo.name]);
+    }, [data, form, formVo && formVo.name]);
 
+    //非按钮型直接提交
     const handleSubmit = useCallback(() => {
       if (formVo) {
         //提交按钮触发的事件
@@ -83,52 +90,99 @@ export const FormModal = createNiceModal(
             .then((data) => {
               saveFun(form.values).then((data) => {
                 modal.resolve(data);
-                //  pageRefresh();
                 modal.hide();
               });
             })
             .catch((e) => {});
         }
       }
-    }, [formData, formVo, form]);
+    }, [data, formVo, form]);
 
+    //可用按钮过滤，以及提交检查函数封装
     const formBtns = useMemo(() => {
-      if (btns)
-        return btns
-          .filter((f) => true)
-          .map((f) => {
-            return {
-              ...f,
-              onFormilySubmitCheck: (): Promise<boolean> => {
-                return (
-                  form?.submit().then((d) => {
-                    return true;
-                  }) ||
-                  new Promise((resolve) => {
-                    resolve(false);
-                  })
-                );
-              },
-            };
-          });
+      if (btns && form) {
+        return btns.map((f) => {
+          return {
+            ...f,
+            onFormilySubmitCheck: (): Promise<boolean> => {
+              return (
+                form.submit().then((d) => {
+                  return true;
+                }) ||
+                new Promise((resolve) => {
+                  resolve(false);
+                })
+              );
+            },
+          };
+        });
+      }
       return [];
     }, [btns, form, formVo]);
 
     const footer = useMemo(() => {
       if (formBtns && formBtns.length > 0) {
         return (
-          <BtnToolBar
-            // entityName={modelInfo?.entityType || ""}
-            key={"modalBtn"}
-            btns={formBtns}
-            formModel={props.type}
-            position="formFooter"
-            datas={[form?.values || formData]}
-            readPretty={props.readPretty}
-            onDataChange={(d) => {
-              setModifyData(d?.[0] || {});
-            }}
-          />
+          <div className="flex w-full justify-end relative  space-x-1">
+            {formBtns.map((btn, index) => {
+              return (
+                <div key={`div_btn_${index}`}>
+                  {btn.actionType === "create" &&
+                    (_continueCreate !== undefined ||
+                      btn.continueCreate !== false) && (
+                      <div
+                        key={`continueDIv_${index}`}
+                        className=" absolute flex left-2  items-center"
+                      >
+                        <span
+                          className={`text-gray-400 ${classNames({
+                            " !text-gray-800":
+                              _continueCreate !== undefined
+                                ? _continueCreate
+                                : btn.continueCreate,
+                          })}`}
+                        >
+                          连续新增
+                        </span>
+                        <Switch
+                          checked={
+                            _continueCreate !== undefined
+                              ? _continueCreate
+                              : btn.continueCreate
+                          }
+                          onChange={(t) => {
+                            setContinueCreate(t);
+                          }}
+                          checkedText="开"
+                          uncheckedText="关"
+                        />
+                      </div>
+                    )}
+                  <VfButton
+                    key={`model_btn_${index}`}
+                    {...btn}
+                    datas={data} //formPage的数据通过它传
+                    position="formFooter"
+                    onSubmitFinish={(_data) => {
+                      if (
+                        _continueCreate === true ||
+                        (_continueCreate === undefined &&
+                          btn.continueCreate === true)
+                      ) {
+                        setData(undefined);
+                        setFormNumber((num) => num + 1);
+                      } else {
+                        setData(_data);
+                      }
+                      if (btn.onSubmitFinish) {
+                        btn.onSubmitFinish(_data);
+                      }
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
         );
       } else {
         return (
@@ -137,7 +191,7 @@ export const FormModal = createNiceModal(
           </div>
         );
       }
-    }, [formBtns, form]);
+    }, [formBtns, data, form, _continueCreate]);
 
     return (
       <NiceModal
@@ -164,17 +218,19 @@ export const FormModal = createNiceModal(
         {/* 弹出层不传表单给formPage,并且还从回调接收FormVo */}
         <FormPage
           // className=" h-96"
-          key={`modal${props.type + formData?.id}`}
+          key={`modal${props.type + data?.id + formNumber}`}
           onError={setErrors}
-          formData={formData}
+          formData={data}
           modelInfo={modelInfo}
           modifyData={modifyData}
           onDataChange={(data, field) => {
-            if (onDataChange) {
-              onDataChange(data, field);
-            }
+            setData((d: any) => {
+              return { ...data };
+            });
           }}
-          onForm={setForm} //formily表单信息
+          onForm={(f) => {
+            setForm(f);
+          }} //formily表单信息
           onVfForm={setFormVo} //vf模型信息
           {...props}
         />

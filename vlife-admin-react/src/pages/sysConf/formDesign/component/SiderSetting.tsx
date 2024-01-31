@@ -1,6 +1,7 @@
 import React, { ReactNode, useCallback, useMemo } from "react";
 import { IconInfoCircle } from "@douyinfe/semi-icons";
 import {
+  Button,
   ButtonGroup,
   Divider,
   Input,
@@ -17,7 +18,7 @@ import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
 import { Mode } from "@src/dsl/base";
-import VlifeButton from "@src/components/VfButton";
+import VlifeButton from "@src/components/button";
 import FieldSetting from "./FieldSetting";
 import { FormComponents } from "@src/resources/CompDatas";
 import schemaDef, { deps, SchemaClz, types } from "../fieldSettingSchema";
@@ -206,9 +207,8 @@ export default ({ field, form, onDataChange, mode }: SiderSettingProps) => {
             <ButtonGroup key={"ButtonGroup" + key} className=" flex items-end ">
               {items?.map((item, index) => {
                 return (
-                  <VlifeButton
+                  <Button
                     key={`subButton_${key + index}`}
-                    tooltip={item.tooltip}
                     type={
                       item.value + "" === field[key] + ""
                         ? "primary"
@@ -223,8 +223,7 @@ export default ({ field, form, onDataChange, mode }: SiderSettingProps) => {
                     }}
                   >
                     {item.label}
-                    {/* {item.value} {key} */}
-                  </VlifeButton>
+                  </Button>
                 );
               })}
             </ButtonGroup>

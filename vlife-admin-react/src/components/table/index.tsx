@@ -11,10 +11,11 @@ import SelectIcon from "@src/components/SelectIcon";
 import { IconStoryStroked } from "@douyinfe/semi-icons";
 import ColumnTitle from "./component/ColumnTitle";
 import { orderObj } from "@src/pages/common/orderPage";
-import BtnToolBar from "./component/BtnToolBar";
+import BtnToolBar from "../button/BtnToolBar";
 import { where } from "@src/dsl/base";
-import { VFBtn } from "./types";
 import classNames from "classnames";
+import { VFBtn } from "../button/types";
+
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
   currency: "CNY",
@@ -312,7 +313,6 @@ const TableIndex = <T extends IdBean>({
                   setListBtnMax((m) => (v > m ? v : m));
                 }}
                 key={"lineBtn"}
-                onDataChange={() => {}}
                 position="tableLine"
                 line={index}
                 btnType="link"

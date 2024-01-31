@@ -24,10 +24,10 @@ import {
   detailMenuResourcesDto,
 } from "@src/api/SysMenu";
 import classNames from "classnames";
-import BtnToolBar from "@src/components/table/component/BtnToolBar";
+import BtnToolBar from "@src/components/button/BtnToolBar";
 import LinkMe from "@src/pages/layout/components/header/LinkMe";
 import RelationModel from "./component/RelationModel";
-import { VFBtn } from "@src/components/table/types";
+import { VFBtn } from "@src/components/button/types";
 
 export type modelForm = FormVo & {
   list?: FormVo[];
@@ -371,7 +371,6 @@ const Model = () => {
               </div>
               <BtnToolBar
                 key={"tableBtn"}
-                onDataChange={(datas: any[]): void => {}}
                 btns={btns}
                 position="page"
                 datas={currEntity ? [currEntity] : []}

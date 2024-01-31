@@ -16,15 +16,20 @@ import {  ReactNode } from 'react';
  * api ：无需模型，直接触发saveApi方法(异步按钮)
  * click:自定义点击事件的按钮 触发的实际onCLick方法(同步按钮)
  */
-export type actionType= "create"|"save"|"edit"|"api"|"click";
+export type actionType= "create"|"save"|"edit"|"api"|"click"|string;
+//按钮显示类型
+export type btnType= "button" | "icon" | "link";
+//场景
+export type BtnToolBarPosition = "tableToolbar" | "tableLine" | "formFooter" | "page" |"dropdown";
 
 export interface VFBtn{
   title?:string;//按钮名称(入口名称)
   icon?:ReactNode;//图标 
-  onlyIcon?:string[]|true,//只显示图标的场景，true表示仅显示图标
+  // onlyIcon?:string[]|true,//只显示图标的场景，true表示仅显示图标
+  btnType?:btnType;
   continueCreate?:boolean;//连续新增 create按钮会出现
   actionType:actionType // 动作类型
-  disabled?:boolean;// 当前是否不可用
+  disabled?:boolean;// 布尔方式判断按钮是否不可用
   usableMatch?:any|((...datas:any[])=>string|boolean|Promise<string|boolean>); //表单数据校验按钮可用性 any=>直接比对|函数=>复杂/异步校验 string表示不能使用原因 赋值给tooltip
   tooltip?:string;// 不可用时候的提醒
   className?:string//按钮样式
@@ -37,6 +42,10 @@ export interface VFBtn{
   submitClose?:boolean,//model层面的接口调用完成后是否关闭页面
   reaction?:VfAction[],//表单内的级联关系
   fieldOutApiParams?: { [fieldName: string]: any }; //指定字段访问api取值的补充外部入参
+  children?: ReactNode;
+  position?: BtnToolBarPosition;
+  datas?: any | any[]; //按钮数据
+  onDataChange?: (data: any | any[]) => void;  //通知btnToolBar使用
   onSaveBefore?:(data:any)=>any;//提交之前进行数据处理，返回数据给saveData函数
   onSubmitFinish?:(...datas:any[])=>void; //提交完成后触发的函数
   onFormilySubmitCheck?:()=>Promise<boolean>;//内部方法不用关注，数据【提交】之前的校验，使用fomily的主动检查 在formModal里添加
@@ -45,6 +54,4 @@ export interface VFBtn{
   saveApi?:(...data:(any&{tableSort:number})[])=>Promise<Result<any>>//保存类型接口
   loadApi?:(data:any)=>Promise<Result<any>|any>,
   //  loadApi?<T extends IdBean,S extends IdBean>(data: T): undefined| Promise<Result<S>|S>//查看详情的接口，和列表模型不一致则需要传，否则根据模型名称计算得到(采用vlife里的通用查询)
-
-
 }

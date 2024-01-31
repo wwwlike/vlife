@@ -1,5 +1,5 @@
-import { ButtonGroup } from "@douyinfe/semi-ui";
-import VfButton from "@src/components/VfButton";
+import { Button, ButtonGroup } from "@douyinfe/semi-ui";
+import VfButton from "@src/components/button";
 import { Mode } from "@src/dsl/base";
 import React, { useCallback } from "react";
 import { deps, SchemaClz } from "../fieldSettingSchema";
@@ -72,9 +72,8 @@ const FormSetting = ({
                 <ButtonGroup className=" flex items-end">
                   {schema[key].items?.map((item, index) => {
                     return (
-                      <VfButton
+                      <Button
                         key={key + item.value + index}
-                        tooltip={item.tooltip}
                         type={
                           data &&
                           (item.value + "" === data[key] + "" ||
@@ -99,7 +98,7 @@ const FormSetting = ({
                         }}
                       >
                         {item.label}
-                      </VfButton>
+                      </Button>
                     );
                   })}
                 </ButtonGroup>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 import {
   Layout,
@@ -19,12 +19,15 @@ import {
   UserPasswordModifyDto,
 } from "@src/api/SysUser";
 import { useNavigate } from "react-router-dom";
-import { listAll, MenuVo, remove, save } from "@src/api/SysMenu";
+import { listAll, MenuVo, save } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
 import LinkMe from "./LinkMe";
-import BtnToolBar from "@src/components/table/component/BtnToolBar";
-import { saveRoleDto } from "@src/api/SysRole";
+import BtnToolBar from "@src/components/button/BtnToolBar";
+import VfButton from "@src/components/button";
+import { saveRoleDto, SysRole, listAll as roleList } from "@src/api/SysRole";
+import { Result } from "@src/api/base";
+import { useDetail } from "@src/api/base/baseService";
 const { Header } = Layout;
 
 const Index = () => {
@@ -40,10 +43,23 @@ const Index = () => {
     setAllMenus,
   } = useAuth();
   const pathname = window.location.href;
+
+  const { runAsync: getDetail } = useDetail({ entityType: "sysRole" });
+
+  const [roles, setRoles] = useState<SysRole[]>([]);
   //所有菜单
   const userMenus = useMemo(() => {
     return user?.superUser && allMenus ? allMenus : user?.menus || [];
   }, [user, allMenus]);
+
+  useEffect(() => {
+    if (user?.superUser) {
+      roleList().then((d) => {
+        setRoles(d.data || []);
+      });
+    }
+  }, []);
+
   //所有应用
   const apps = useMemo((): MenuVo[] => {
     return (
@@ -72,7 +88,7 @@ const Index = () => {
           setApp(m);
         },
         text: user?.superUser ? (
-          <div className=" z-10 flex items-center relative">
+          <div className=" z-10 flex !items-center relative">
             {m.name}
             <div
               className="!z-20"
@@ -129,7 +145,7 @@ const Index = () => {
                     },
                   },
                   {
-                    title: "创建角色",
+                    title: `添加角色`,
                     icon: <i className=" icon-role-approval2" />,
                     actionType: "create",
                     model: "roleDto",
@@ -137,14 +153,23 @@ const Index = () => {
                     reaction: [VF.then("sysMenuId").value(m.id).readPretty()],
                     saveApi: saveRoleDto,
                   },
-                  {
-                    title: "角色配置()",
-                    icon: <i className=" icon-role-approval2" />,
-                    actionType: "edit",
-                    model: "roleDto",
-                    reaction: [VF.then("sysMenuId").value(m.id).readPretty()],
-                    saveApi: saveRoleDto,
-                  },
+                  ...roles
+                    ?.filter((r) => r.sysMenuId === m.id)
+                    .map((m) => {
+                      return {
+                        title: `${m.name}(修改)`,
+                        icon: <i className=" icon-role-approval2" />,
+                        saveApi: saveRoleDto,
+                        model: "roleDto",
+                        datas: { id: m.id },
+                        loadApi: (req: {
+                          id: string;
+                        }): Promise<Result<any>> => {
+                          return getDetail(req, "roleDto");
+                        },
+                        actionType: "edit",
+                      };
+                    }),
                 ]}
               />
             </div>
@@ -158,39 +183,36 @@ const Index = () => {
       _apps.push({
         itemKey: "createApp",
         text: (
-          <BtnToolBar
-            key={"createApp"}
-            datas={[]}
-            btns={[
-              {
-                title: "新增应用",
-                icon: <i className="  icon-task_add-02" />,
-                actionType: "save",
-                model: "sysMenu",
-                saveApi: save,
-                onlyIcon: true,
-                reaction: [
-                  VF.then("app").value(true).hide(),
-                  VF.then("url", "formId", "placeholderUrl", "pcode")
-                    .hide()
-                    .clearValue(),
-                  VF.then("name").title("应用名称"),
-                ],
-                onSubmitFinish: (...datas) => {
-                  setAllMenus([
-                    ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),
-                    datas[0],
-                  ]);
-                  setApp(datas[0]);
-                },
-              },
-            ]}
-          />
+          <div className=" h-full items-center flex">
+            <VfButton
+              key={"createApp"}
+              title="新增应用"
+              icon={<i className="  icon-task_add-02" />}
+              actionType="save"
+              model="sysMenu"
+              btnType="icon"
+              saveApi={save}
+              reaction={[
+                VF.then("app").value(true).hide(),
+                VF.then("url", "formId", "placeholderUrl", "pcode")
+                  .hide()
+                  .clearValue(),
+                VF.then("name").title("应用名称"),
+              ]}
+              onSubmitFinish={(...datas) => {
+                setAllMenus([
+                  ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),
+                  datas[0],
+                ]);
+                setApp(datas[0]);
+              }}
+            />
+          </div>
         ),
       });
     }
     return _apps;
-  }, [apps, pathname]);
+  }, [apps, pathname, roles]);
 
   const editPassword = () => {
     formModal
@@ -214,7 +236,7 @@ const Index = () => {
           mode={"horizontal"}
           header={
             <div
-              className=" flex items-center cursor-pointer "
+              className=" flex !items-center cursor-pointer "
               onClick={() => {
                 navigate("/");
               }}
