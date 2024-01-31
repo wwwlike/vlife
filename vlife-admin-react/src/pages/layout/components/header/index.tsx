@@ -146,6 +146,7 @@ const Index = () => {
                   },
                   {
                     title: `添加角色`,
+                    divider: "应用角色",
                     icon: <i className=" icon-role-approval2" />,
                     actionType: "create",
                     model: "roleDto",

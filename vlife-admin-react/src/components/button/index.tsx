@@ -1,5 +1,11 @@
 import React, { ReactNode, useCallback, useMemo, useState } from "react";
-import { Button, Switch, Tooltip, Typography } from "@douyinfe/semi-ui";
+import {
+  Button,
+  Divider,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@douyinfe/semi-ui";
 import classNames from "classnames";
 import { BtnToolBarPosition, btnType, VFBtn } from "./types";
 import { Result } from "@src/api/base";
@@ -298,38 +304,53 @@ export default ({ ...btn }: Partial<VFBtn>) => {
     }
 
     return btnType !== "icon" || position === "formFooter" ? (
-      <Btn
-        onClick={() => {
-          if (!_btn.disabled) {
-            btnClick();
-          }
-        }}
-        loading={loading}
-        theme={`${
-          (_btn.actionType === "edit" ||
-            _btn.actionType === "create" ||
-            _btn.actionType === "save") &&
-          _btn.disabled !== true &&
-          position === "formFooter"
-            ? "solid"
-            : position === "dropdown"
-            ? "borderless"
-            : "light"
-        }`}
-        className={` ${className} hover:cursor-pointer  ${classNames({
-          "cursor-pointer hover:text-blue-600 hover:font-bold":
-            position === "tableLine",
-          " !text-gray-800 !font-thin text-xs": position === "dropdown",
-        })}`}
-        icon={btnType === "link" ? undefined : btnIcon}
-        disabled={_btn.disabled}
-      >
-        {/* {JSON.stringify(btnData?.id)} */}
-        <span className=" space-x-2 items-center justify-center">
-          {_btn.children ? _btn.children : btnTitle}
-        </span>
-      </Btn>
+      <>
+        {position === "dropdown" && btn.divider === true && (
+          <Divider>{btn.divider}</Divider>
+        )}
+        {position === "dropdown" &&
+          btn.divider &&
+          typeof btn.divider === "string" && (
+            <Divider>
+              <span className=" font-thin text-gray-800 text-xs">
+                {btn.divider}
+              </span>
+            </Divider>
+          )}
+        <Btn
+          onClick={() => {
+            if (!_btn.disabled) {
+              btnClick();
+            }
+          }}
+          loading={loading}
+          theme={`${
+            (_btn.actionType === "edit" ||
+              _btn.actionType === "create" ||
+              _btn.actionType === "save") &&
+            _btn.disabled !== true &&
+            position === "formFooter"
+              ? "solid"
+              : position === "dropdown"
+              ? "borderless"
+              : "light"
+          }`}
+          className={` ${className} hover:cursor-pointer  ${classNames({
+            "cursor-pointer hover:text-blue-600 hover:font-bold":
+              position === "tableLine",
+            " !text-gray-800 !font-thin text-xs": position === "dropdown",
+          })}`}
+          icon={btnType === "link" ? undefined : btnIcon}
+          disabled={_btn.disabled}
+        >
+          {/* {JSON.stringify(btnData?.id)} */}
+          <span className=" space-x-2 items-center justify-center">
+            {_btn.children ? _btn.children : btnTitle}
+          </span>
+        </Btn>
+      </>
     ) : (
+      //图标
       <div
         className="flex w-6 hover:cursor-pointer items-center justify-center rounded-md cursor-pointer px-2 "
         onClick={() => {

@@ -44,6 +44,7 @@ export interface VFBtn{
   fieldOutApiParams?: { [fieldName: string]: any }; //指定字段访问api取值的补充外部入参
   children?: ReactNode;
   position?: BtnToolBarPosition;
+  divider?:boolean|string; // dropdown的分割线
   datas?: any | any[]; //按钮数据
   onDataChange?: (data: any | any[]) => void;  //通知btnToolBar使用
   onSaveBefore?:(data:any)=>any;//提交之前进行数据处理，返回数据给saveData函数
