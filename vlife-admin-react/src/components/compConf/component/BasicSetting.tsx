@@ -50,13 +50,14 @@ export default ({
     if (propInfo.options) {
       if (
         !Array.isArray(propInfo.options) &&
-        typeof propInfo.options === "object"
+        typeof propInfo.options === "object" &&
+        propInfo.options.apiInfoKey
       ) {
         loadApi(propInfo.options).then((d) => {
           setSelectOptions(d);
         });
       } else {
-        setSelectOptions(propInfo.options);
+        setSelectOptions(propInfo.options as selectObj[]);
       }
     }
   }, [propInfo]);

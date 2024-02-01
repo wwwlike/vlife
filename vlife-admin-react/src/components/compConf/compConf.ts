@@ -17,10 +17,11 @@ export type optionObj={
   labelKey:string,
   valueKey:string
 }
-//通过下拉窗口取属性或者接口值的3种方式
-export type Options=
-  selectObj[]| //手写指定选项范围
-  loadApiParams //取值来自指定配置转换过滤的接口
+// 配置里2种方式取得值域
+// 1 手写指定选项范围
+// 2 取值来自指定配置转换过滤的接口
+export type Options=selectObj[]|loadApiParams 
+ 
 
 
 /**
