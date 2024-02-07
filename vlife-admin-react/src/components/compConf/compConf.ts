@@ -129,7 +129,7 @@ export type filterObj={
     func?:(datas:any[])=>any[]//|string// 方法过滤和字典字段过滤
   }
   
-} //过滤器
+} 
 //接口组成信息
 export interface ApiInfo{
   label:string,//接口名称
@@ -138,8 +138,5 @@ export interface ApiInfo{
   remark?:string;//解释说明,
   api:(params?:any)=>Promise<Result<any>>;//关联接口
   filters?:filterObj;//作为接口的可选过滤器，是无参数过滤器,如果必须过滤则在适配方法里完成即可
-  //接口取得的数据过滤执行顺序 api->filter->match; 可选过滤的选择单独定义在src\resources\filters.ts文件；
   match:MatchObj  //数据转换 让dataModel&dataType的出参数据类型能够转换成其他的模型实现一个接口多用
-  // params?:ParamsObj //参数配置/固定值
-  // filter?:(data:any,params?:any)=>any;  //强制过滤 待删除
 }
