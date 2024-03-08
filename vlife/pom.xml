@@ -45,6 +45,35 @@
         <project.release.version>0.1-SNAPSHOT</project.release.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.wwwlike</groupId>
+                <artifactId>vlife-spring-boot-starter</artifactId>
+                <version>1.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wwwlike</groupId>
+                <artifactId>vlife-boot-starter-web</artifactId>
+                <version>1.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wwwlike</groupId>
+                <artifactId>vlife-core</artifactId>
+                <version>1.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wwwlike</groupId>
+                <artifactId>vlife-base</artifactId>
+                <version>1.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wwwlike</groupId>
+                <artifactId>vlife-plugin</artifactId>
+                <version>1.0.7</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -73,7 +102,7 @@
     <profiles>
         <profile>
             <id>release</id>
-<!--            <id>snapshot</id>-->
+            <!--            <id>snapshot</id>-->
             <build>
                 <plugins>
                     <plugin>
@@ -113,19 +142,19 @@
                         </executions>
                     </plugin>
                     <!-- GPG 发布的签名屏蔽 -->
-<!--                    <plugin>-->
-<!--                        <groupId>org.apache.maven.plugins</groupId>-->
-<!--                        <artifactId>maven-gpg-plugin</artifactId>-->
-<!--                        <version>1.5</version>-->
-<!--                        <executions>-->
-<!--                            <execution>-->
-<!--                                <phase>verify</phase>-->
-<!--                                <goals>-->
-<!--                                    <goal>sign</goal>-->
-<!--                                </goals>-->
-<!--                            </execution>-->
-<!--                        </executions>-->
-<!--                    </plugin>-->
+                    <!--                    <plugin>-->
+                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+                    <!--                        <artifactId>maven-gpg-plugin</artifactId>-->
+                    <!--                        <version>1.5</version>-->
+                    <!--                        <executions>-->
+                    <!--                            <execution>-->
+                    <!--                                <phase>verify</phase>-->
+                    <!--                                <goals>-->
+                    <!--                                    <goal>sign</goal>-->
+                    <!--                                </goals>-->
+                    <!--                            </execution>-->
+                    <!--                        </executions>-->
+                    <!--                    </plugin>-->
                     <!-- 多模块版本插件 mvn versions:set -DnewVersion=1.1-SNAPSHOT-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>

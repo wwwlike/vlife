@@ -106,16 +106,22 @@ const load = async (
   ) {
     const pageComponentPropDtos: PageComponentPropDto[] =
       field.componentProps["pageComponentPropDtos"];
-    fetchPropObj(
-      //请求组件属性的值
-      pageComponentPropDtos, //组件设置的db设置信息(包涵参数设置)
-      FormComponents[field.componentProps["fieldInfo"].x_component], //组件信息
-      // field.componentProps.apiCommonParams, //下面设置进来的
-      field, //字段信息；其实只传这一个值，上面三个可以都取得到
-      parentFormData,
-      formVo,
-      fieldOutParams
-    ).then((field: Field) => {});
+    if (FormComponents[field.componentProps["fieldInfo"].x_component]) {
+      fetchPropObj(
+        //请求组件属性的值
+        pageComponentPropDtos, //组件设置的db设置信息(包涵参数设置)
+        FormComponents[field.componentProps["fieldInfo"].x_component], //组件信息
+        // field.componentProps.apiCommonParams, //下面设置进来的
+        field, //字段信息；其实只传这一个值，上面三个可以都取得到
+        parentFormData,
+        formVo,
+        fieldOutParams
+      ).then((field: Field) => {});
+    } else {
+      console.log(
+        `CompData里组件key[${field.componentProps["fieldInfo"].x_component}]不存在`
+      );
+    }
   }
 };
 export default <T extends IdBean>({

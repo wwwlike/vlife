@@ -47,7 +47,9 @@ public class SecurityUser implements UserDetails, IUser {
         ArrayList<GrantedAuthority> list=new ArrayList();
         if(this.getGroupId()!=null){
             list.add(new SimpleGrantedAuthority(this.getGroupId()));
+            list.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         }
+        //
         return list;
     }
 

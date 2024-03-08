@@ -27,6 +27,12 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     serialization:
       write-dates-as-timestamps: false
+  activiti:
+    check-process-definitions: false
+    # 历史记录级别使用完整版
+    history-level: full
+    # 启动项目检测表，不存在即创建
+    db-history-used: true
 security:
   basic:
     enable: true # 避免跳到security的登录界面

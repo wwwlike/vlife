@@ -14,6 +14,10 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>io.github.wwwlike</groupId>
+            <artifactId>vlife-core</artifactId>
+        </dependency>
         <!-- starter 需要的2个包 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -45,11 +49,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.wwwlike</groupId>
-            <artifactId>vlife-core</artifactId>
-            <version>1.0.7</version>
         </dependency>
     </dependencies>
 </project>
