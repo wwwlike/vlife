@@ -34,8 +34,8 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.querydsl.core.util.FileUtils;
 import lombok.Data;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +100,8 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                     jsonFile =ResourceUtils.getFile("./vlife-admin/src/main/resources/title.json");
                 }
                 if(jsonFile.isFile()){//插件使用
-                    json= FileUtils.readFileToString(jsonFile,"UTF-8");
+
+//                    json= org.aspectj.util.FileUtil.
                 }else{// jar包使用
                     InputStream is = ClassPathResource.class.getClassLoader().getResourceAsStream("/title.json");
                     if(is!=null){
@@ -282,9 +283,18 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         relation();
         /* 注释信息读取*/
         for(T beanInfo:readAll){
-            //用注释写title
-            commentRead(beanInfo);
-            //用实体类的注释
+            if(clzTags!=null) {
+                Optional<ClzTag> optional = clzTags.stream().filter(tag ->
+                        tag.getEntityName() != null &&
+                                tag.getEntityName().equalsIgnoreCase(beanInfo.getType())
+                ).findFirst();
+
+                if (optional.isPresent()) {
+                    //用json写title
+                    commentRead(beanInfo, optional.get());
+                }
+            }
+            //其他模型用实体类的注释写title
             if(beanInfo instanceof ModelDto ){
                 commentPerfect(beanInfo);
             }
@@ -308,6 +318,10 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         if(fieldDtos!=null ){
         fieldDtos.stream().forEach(modelField -> {
             infos.stream().forEach(entityDto -> {
+                if(modelField.getFieldName().equals("emptyPass")){
+                    System.out.println("111111");
+                }
+
                 if (modelField.getEntityClz() != null && entityDto.getClz() == modelField.getEntityClz()) {
                     if (modelField.getEntityFieldName() != null) {
                         //1：在对应实体类找字段
@@ -335,31 +349,48 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
      * 注释读取
      */
     @Override
-    public T commentRead(T beanInfo) {
-        if(clzTags!=null) {
-            Optional<ClzTag> optional = clzTags.stream().filter(tag ->
-                    tag.getEntityName()!=null&&
-                    tag.getEntityName().equalsIgnoreCase(beanInfo.getType())
-            ).findFirst();
-            if(optional.isPresent()){
-                ClzTag tag=optional.get();
-                if (tag.getTitle() != null) {
-                    beanInfo.setTitle(tag.getTitle());
-                }
-                if (tag.getTags().size() > 0) {
-                    List<FieldDto> fieldDtos = beanInfo.getFields();
-                    fieldDtos.stream().forEach(field -> {
-                        if (tag.getTags().get(field.getFieldName()) != null) {
-                            field.setTitle(tag.getTags().get(field.getFieldName()).getTitle());
-                            field.setPlaceholder(tag.getTags().get(field.getFieldName()).getPlaceholder());
-                        }
-                    });
-                }
-                beanInfo.setCommentRead(true);
-            }else{
-                beanInfo.setCommentRead(false);
-            }
+//    public T commentRead(T beanInfo ClzTag tag) {
+//        if(clzTags!=null) {
+//            Optional<ClzTag> optional = clzTags.stream().filter(tag ->
+//                    tag.getEntityName()!=null&&
+//                    tag.getEntityName().equalsIgnoreCase(beanInfo.getType())
+//            ).findFirst();
+//            if(optional.isPresent()){
+//                ClzTag tag=optional.get();
+//                if (tag.getTitle() != null) {
+//                    beanInfo.setTitle(tag.getTitle());
+//                }
+//                if (tag.getTags().size() > 0) {
+//                    List<FieldDto> fieldDtos = beanInfo.getFields();
+//                    fieldDtos.stream().forEach(field -> {
+//                        if (tag.getTags().get(field.getFieldName()) != null) {
+//                            field.setTitle(tag.getTags().get(field.getFieldName()).getTitle());
+//                            field.setPlaceholder(tag.getTags().get(field.getFieldName()).getPlaceholder());
+//                        }
+//                    });
+//                }
+//                beanInfo.setCommentRead(true);
+//            }else{
+//                beanInfo.setCommentRead(false);
+//            }
+//        }
+//        return beanInfo;
+//    }
+
+    public T commentRead(T beanInfo,ClzTag tag) {
+        if (tag.getTitle() != null) {
+            beanInfo.setTitle(tag.getTitle());
         }
+        if (tag.getTags().size() > 0) {
+            List<FieldDto> fieldDtos = beanInfo.getFields();
+            fieldDtos.stream().forEach(field -> {
+                if (tag.getTags().get(field.getFieldName()) != null) {
+                    field.setTitle(tag.getTags().get(field.getFieldName()).getTitle());
+                    field.setPlaceholder(tag.getTags().get(field.getFieldName()).getPlaceholder());
+                }
+            });
+        }
+        beanInfo.setCommentRead(true);
         return beanInfo;
     }
 

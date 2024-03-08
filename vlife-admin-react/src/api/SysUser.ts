@@ -76,10 +76,16 @@ export interface UserVo extends VoBean{
   usetype: string;  // 用户类型
   username: string;  // 账号
 }
-/** 用户查询*/
+/** 用户列表*/
 export const page=(req:SysUserPageReq): Promise<Result<PageVo<SysUser>>>=>{
   return apiClient.post(`/sysUser/page`,req);
 };
+
+/** 用户查询*/
+export const list=(req:Partial<SysUserPageReq>): Promise<Result<SysUser[]>>=>{
+  return apiClient.post(`/sysUser/list`,req||{});
+};
+
 /** 密码重置*/
 export const reset=(ids:String[]): Promise<Result<number>>=>{
   return apiClient.post(`/sysUser/reset`,ids);

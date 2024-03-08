@@ -46,19 +46,11 @@ export const types: { title: string; value: string,icon?:any }[] = [
   },
   initialValues: {
     name: "默认值",
-    // type: "form",
     type:"input",
     tag: "basic",
     deps: { field: "x_component", value: ["Input", "Input.TextArea"]  },
     mode:Mode.form
   },
-  // dictCode: {
-  //   name: "字典项目",
-  //   type: "select",
-  //   tag: "basic",
-  //   deps: { field: "x_component", value: ["Select", "DictSelectTag"] },
-  //   items: [],
-  // },
   x_hidden: {
     name: "隐藏",
     type: "switch",

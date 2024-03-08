@@ -1,7 +1,6 @@
 import React from "react";
 import { FormItem, IFormItemProps } from "@formily/semi";
 import classNames from "classnames";
-import { Empty } from "@douyinfe/semi-ui";
 
 interface DesignFormItemProps extends IFormItemProps {
   children: any;

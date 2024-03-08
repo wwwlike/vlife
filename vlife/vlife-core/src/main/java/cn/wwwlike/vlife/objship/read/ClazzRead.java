@@ -19,6 +19,7 @@
 package cn.wwwlike.vlife.objship.read;
 
 import cn.wwwlike.vlife.objship.dto.BeanDto;
+import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 
 /**
  * 类读取需要的通用方法
@@ -33,9 +34,9 @@ public interface ClazzRead<T extends BeanDto> extends Read {
     public T readInfo(Class item);
 
     /**
-     * 注释信息读取
+     * json里的注释信息读取
      */
-    public T commentRead(T t);
+    public T commentRead(T t, ClzTag clzTag);
 
     /**
      * 回调方法最后处理类之间的关系

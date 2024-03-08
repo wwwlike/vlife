@@ -3,7 +3,7 @@ import { DataModel, DataType } from '@src/dsl/base';
 import {  ITreeData } from '@src/dsl/component';
 import { ApiDatas, ApiInfo, ParamsObj } from '@src/components/compConf/compConf';
 import { FormVo,  } from '@src/api/Form';
-import { deptOpenApi, dictOpenApi, fieldOpenApi, formOpenApi, groupOpenApi, menuOpenApi, resourcesOpenApi, roleOpenApi, routeOpenApi } from './apis/Admin';
+import { deptOpenApi, dictOpenApi, fieldOpenApi, formOpenApi, groupOpenApi, menuOpenApi, resourcesOpenApi, roleOpenApi, routeOpenApi, userOpenApi } from './apis/Admin';
 import { dynamicParamsTran } from '@src/components/form/propload';
 import { orderSaleOpenApi, productOpenApi, stockItemOpenApi } from './apis/Erp';
 /**
@@ -129,6 +129,7 @@ export const allApis=(models:FormVo[]):API[] => {
   return apis;
 }
 export const apiDatas:ApiDatas={
+  userOpenApi,//用户
   dictOpenApi,//字典开放api
   resourcesOpenApi,//资源
   deptOpenApi, //科室

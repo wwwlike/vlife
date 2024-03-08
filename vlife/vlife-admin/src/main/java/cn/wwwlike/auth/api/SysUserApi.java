@@ -2,6 +2,7 @@ package cn.wwwlike.auth.api;
 
 import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.dto.UserPasswordModifyDto;
+import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysUserPageReq;
 import cn.wwwlike.auth.service.SysUserService;
@@ -11,6 +12,7 @@ import cn.wwwlike.vlife.annotation.PermissionEnum;
 import cn.wwwlike.vlife.annotation.VMethod;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
@@ -24,12 +26,19 @@ import java.util.*;
 @RequestMapping("/sysUser")
 public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
     /**
-     * 用户查询
+     * 用户列表
      */
     @PostMapping("/page")
     public PageVo<SysUser> page(@RequestBody SysUserPageReq req) {
         return service.findPage(req);
     }
+
+    //用户查询
+    @PostMapping("/list")
+    public List<SysUser> list(@RequestBody SysUserPageReq req) {
+        return service.find(req);
+    }
+
     /**
      * 密码重置
      */

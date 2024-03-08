@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
         "cn.wwwlike.auth",
         "cn.wwwlike.sys",
         "cn.wwwlike.form",
-        "cn.wwwlike.demo",
         "cn.vlife.erp",
 },nameGenerator =UniqueNameGenerator.class )
 @EntityScan(basePackages = {"cn.wwwlike", "cn.vlife"})

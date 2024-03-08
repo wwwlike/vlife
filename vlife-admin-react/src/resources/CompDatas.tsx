@@ -30,6 +30,9 @@ import QuickCreate from "@src/components/form/component/QuickCreate";
 import VfTreeInput from "@src/components/VfTreeInput";
 import RelationView from "@src/components/RelationView";
 import VfNestedSelector from "@src/components/VfNestedSelector";
+import WorkFlowEditor from "@src/example/component";
+import NodeUserSelect from "@src/workflow-editor/components/Select/NodeUserSelect";
+import VfUserSelect from "@src/pages/sysManage/user/VfUserSelect";
 
 //解决预览不正确问题
 const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
@@ -422,5 +425,41 @@ export const FormComponents: CompDatas = {
         dataModel: DataModel.string,
       },
     },
+  },
+  WorkFlowEditor: {
+    component: WorkFlowEditor,
+    label: "流程设计器",
+    icon: "IconOrderedList",
+    dataType: DataType.basic,
+    dataModel: DataModel.string,
+  },
+  VfUserSelect_basic: {
+    component: VfUserSelect,
+    label: "用户选择器",
+    icon: "IconOrderedList",
+    dataType: DataType.basic,
+    dataModel: DataModel.string,
+    props: {
+      //多选
+      multiple: false,
+    },
+  },
+  VfUserSelect_array: {
+    component: VfUserSelect,
+    label: "用户选择器",
+    icon: "IconOrderedList",
+    dataType: DataType.array,
+    dataModel: DataModel.string,
+    props: {
+      //多选
+      multiple: true,
+    },
+  },
+  NodeUserSelect: {
+    component: NodeUserSelect,
+    label: "常规审批对象选择",
+    icon: "IconOrderedList",
+    dataType: DataType.array,
+    dataModel: "nodeUserInfo",
   },
 };

@@ -143,7 +143,7 @@ export default ({
       {/* 1. 选择组件 */}
       <div className="flex items-center space-x-4 w-full mt-2">
         <div>
-          {compDatas[field.x_component].icon &&
+          {compDatas[field.x_component]?.icon &&
             (typeof compDatas[field.x_component].icon === "string" ? (
               <SelectIcon
                 size="large"

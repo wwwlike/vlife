@@ -72,12 +72,15 @@ export default <T extends IdBean>({
         toolBarBtns = btns.filter(
           (b) =>
             b.multiple === true ||
+            b.position === "tableToolbar" ||
             b.actionType === "create" ||
             b.actionType === "save"
         );
       } else if (position === "tableLine") {
         toolBarBtns = btns.filter(
-          (b) => b.actionType !== "create" && b.multiple !== true
+          (b) =>
+            (b.actionType !== "create" && b.multiple !== true) ||
+            b.position === "tableLine"
         );
       } else if (position === "formFooter") {
         if (btnDatas === undefined || btnDatas?.[0]?.id === undefined) {

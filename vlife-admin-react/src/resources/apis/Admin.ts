@@ -1,6 +1,7 @@
 import { FormVo, list } from '@src/api/Form';
 import { list as deptList,SysDept } from '@src/api/SysDept';
 import { list as dictList, SysDict } from '@src/api/SysDict';
+import { list as userList, SysUser } from '@src/api/SysUser';
 import { listAll as groupList } from '@src/api/SysGroup';
 import { listAll as roleList,SysRole } from '@src/api/SysRole';
 import { listAll as menuList, SysMenu } from '@src/api/SysMenu';
@@ -92,6 +93,103 @@ export const dictOpenApi:ApiInfo={
       }
   }
 }
+
+export const userOpenApi:ApiInfo={
+  label:'用户查询',
+  dataType:DataType.array,
+  dataModel:'SysUser',
+  api:userList,
+  match:{
+    ISelect_id:{
+      label:'id/name',
+      dataType: DataType.array,
+      dataModel:"ISelect",
+      params:{//参数配置
+        id:{
+          label:'用户id集合',
+          dataModel:DataModel.string,
+          dataType:DataType.array,
+        },
+        username:{
+          label:'用户username集合',
+          dataModel:DataModel.string,
+          dataType:DataType.array,
+        },
+        sysDept_code:{
+          label:'部门编码查询',
+          dataModel:DataModel.string,
+          dataType:DataType.basic,
+        },
+        name:{
+          label:'用户名/电话/邮箱',
+          dataModel:DataModel.string,
+          dataType:DataType.basic,
+        }
+      },
+      func:(datas:SysUser[]):ISelect[]=>{
+        return datas.map((d)=>{return {value:d.id,label:d.name}})
+      }
+    },
+    ISelect_username:{
+      label:'username/name',
+      dataType: DataType.array,
+      dataModel:"ISelect",
+      params:{//参数配置
+        id:{
+          label:'用户id集合',
+          dataModel:DataModel.string,
+          dataType:DataType.array,
+        },
+        username:{
+          label:'用户username集合',
+          dataModel:DataModel.string,
+          dataType:DataType.array,
+        },
+        sysDept_code:{
+          label:'部门编码查询',
+          dataModel:DataModel.string,
+          dataType:DataType.basic,
+        },
+        name:{
+          label:'用户名/电话/邮箱',
+          dataModel:DataModel.string,
+          dataType:DataType.basic,
+        }
+      },
+      func:(datas:SysUser[]):ISelect[]=>{
+        return datas.map((d)=>{return {value:d.username,label:d.name}})
+      }
+    },
+    ISelect_TYPE:{
+      label:'分类选择',
+      dataType: DataType.array,
+      dataModel:"ISelect",
+      filterKey:["field","vlife"],
+      func:(datas:SysDict[]):ISelect[]=>{
+        return datas.filter(d=>d.level===1).map((d)=>{return {value:d.code,label:d.title}})
+      }
+    },
+    dictItem:{
+      label:'字典项信息',
+      dataType: DataType.array,
+      dataModel:"SysDict",
+      params:{//参数配置
+        code:{
+          label:'字典编码',
+          required:true,
+          dynamicParams:true,
+          dataModel:DataModel.string,
+          dataType:DataType.basic,
+          options:{apiInfoKey:"dictOpenApi",match:"ISelect_TYPE"}
+        }
+      },
+      func:(datas:SysDict[]):SysDict[]=>{
+        return   datas.filter(d=>d.level===2)
+      }
+    }
+}
+}
+
 
 export const resourcesOpenApi:ApiInfo= {
   label: "权限资源",

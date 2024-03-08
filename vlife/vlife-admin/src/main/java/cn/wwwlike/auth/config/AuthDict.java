@@ -116,4 +116,47 @@ public class AuthDict {
 
     }
 
+
+    @Named("流程办理人类型")
+    public static final class FLOW_USER_TYPE{
+        @Named("指定人员")
+        public final static String DESIGNEE = "designee";
+        @Named("流程发起人")
+        public final static String STARTER = "starter";
+        @Named("发起人部门主管")
+        public final static String START_LEADER = "start_leader";
+        @Named("指定权限组")
+        public final static String GROUP = "group";
+        @Named("指定部门")
+        public final static String DEPT = "dept";
+    }
+
+    @Named("会签类型")
+    public static final class FLOW_JOIN_TYPE{
+        @Named("会签(按比例通过)")
+        public final static String ALL_ORDER_AUDIT = "all_order_audit";
+        @Named("会签(需全所有负责人通过)")
+        public final static String ALL_AUDIT = "all_audit";
+        @Named("或签(一名负责人同意/拒绝即可)")
+        public final static String ONE_AUDIT = "one_audit";
+    }
+
+    @Named("办理人为空策略")
+    public static final class FLOW_AUDIT_EMPTY{
+        @Named("自动通过")
+        public final static String PASS = "pass";
+        @Named("自动驳回")
+        public final static String BACK = "back";
+    }
+
+    @Named("办理人员类型")
+    public static final class FLOW_HANDLE_TYPE{
+        @Named("常规审批")
+        public final static String GENERAL= "general";
+        @Named("逐级审批")
+        public final static String MULTI_LEVEL = "multilevel";
+    }
+
+
+
 }

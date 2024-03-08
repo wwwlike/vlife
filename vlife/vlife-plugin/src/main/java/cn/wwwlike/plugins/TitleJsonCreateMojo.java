@@ -39,10 +39,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 读取entity里类及字段注释信息到resources里的title.json里
@@ -118,6 +116,28 @@ public class TitleJsonCreateMojo extends AbstractMojo {
                     tags.add(tag);
                 }
             }
+            //父类字段加入
+            for (ClzTag tag : tags) {
+                if(tag.getParentsName()!=null&& tag.getParentsName().size()>0){
+                    for(String p:tag.getParentsName()){
+                        Optional<ClzTag> optional=tags.stream().filter(t->p.equals(t.getEntityName())).findFirst();
+                        if(optional.isPresent()){
+                            for (Map.Entry<String,FieldTag> entry : optional.get().getTags().entrySet()) {
+                                tag.getTags().putIfAbsent(entry.getKey(), entry.getValue());
+                            }
+                        }
+                    }
+//                    Set<String> intersection = new HashSet<>(tag.getParentsName());
+//                    for(String p:intersection){
+//                        System.out.println(p);
+//                    }
+//                    intersection.retainAll(tags.stream().map(ClzTag::getTypeName).collect(Collectors.toList()));
+//                    if(intersection.size()>1){
+//                        System.out.println(intersection.stream().toArray());
+//                    }
+                }
+            }
+
             /* entity的继承的属性 加入*/
             for (ClzTag tag : tags) {
                 if ((tag.getParentsName()!=null&&tag.getParentsName().contains("DbEntity"))||

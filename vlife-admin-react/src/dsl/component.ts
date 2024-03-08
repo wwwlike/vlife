@@ -31,31 +31,31 @@ export type SelectInferface={
  */
  export interface VfBaseProps<T> {
   //字段初始值
-  value: T;
+  value?: T;
   //占位提示;
-  placeholder:string;
+  placeholder?:string;
   // 表态只读状态
-  read: boolean;
+  read?: boolean;
   //样式
-  className:string;
+  className?:string;
   //css样式
-  style:any;
+  style?:any;
   //组件渲染需要的数据
-  design:true|false|undefined,
+  design?:true|false|undefined,
   //当前表单名称取自Form的type字段
-  reaction:VfAction[];//响应
-  vf:VF[];//设置
+  reaction?:VfAction[];//响应
+  vf?:VF[];//设置
   //字体加粗
-  fontBold:boolean,
+  fontBold?:boolean,
   //紧凑布局
-  terse:boolean,
+  terse?:boolean,
   // form 表单会固定传入的值，可不在compData里配置以下属性
     //当前字段所在表单数据
-  formData:any;
+  formData?:any;
   //组件字段信息
-  fieldInfo: Partial< FormFieldVo>;
+  fieldInfo?: Partial< FormFieldVo>;
   //数据回传
-  onDataChange: (data: T|undefined) => void;
+  onDataChange?: (data: T|undefined) => void;
 }
 
 

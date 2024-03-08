@@ -39,6 +39,7 @@ import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -77,6 +78,7 @@ public class CommentParser {
         try {
             CompilationUnit cu = new JavaParser().parse(file).getResult().get();
             TypeDeclaration typeDeclaration = cu.getTypes().get(0);
+
             /* 设置父类 */
             if(typeDeclaration instanceof  ClassOrInterfaceDeclaration){
             if(((ClassOrInterfaceDeclaration) typeDeclaration).getExtendedTypes()!=null&&

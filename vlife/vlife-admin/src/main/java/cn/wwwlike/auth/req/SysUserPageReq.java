@@ -31,6 +31,11 @@ import java.util.List;
  */
 @Data
 public class SysUserPageReq extends PageQuery<SysUser> {
+
+    public List<String> id;
+
+    public List<String> username;
+
     /**
      * 姓名/手机/证件/用户名
      */

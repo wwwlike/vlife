@@ -219,7 +219,9 @@ export default ({ ...btn }: Partial<VFBtn>) => {
 
   //按钮点击
   const btnClick = useCallback(() => {
-    if (position !== "formFooter" && model) {
+    if (onClick) {
+      onClick(btnData);
+    } else if (position !== "formFooter" && model) {
       //1 页面(非modal)的按钮有模型信息打开页面
       show();
     } else if (saveApi && btnData) {
@@ -241,8 +243,6 @@ export default ({ ...btn }: Partial<VFBtn>) => {
       } else {
         submit(btnData)?.then((d: any) => {});
       }
-    } else if (onClick) {
-      onClick(btnData);
     }
   }, [btnData, position, continueCreate]);
 

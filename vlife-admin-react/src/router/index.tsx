@@ -32,7 +32,10 @@ const IconPage = lazy(() => import("@src/pages/common/IconContainer"));
 //业务系统
 const LoginPage = lazy(() => import("@src/pages/login"));
 const LayoutPage = lazy(() => import("@src/pages/layout"));
-
+//工作流
+const FlowIndexPage = lazy(() => import("@src/example"));
+const FlowDesignPage = lazy(() => import("@src/example/component"));
+const MyTasksPage = lazy(() => import("@src/example/MyTasks"));
 export const allRoute: any[] = [
   //CRUD页面模版，根据路由后缀确定访问哪个模型
   {
@@ -139,6 +142,45 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={<DeptPage />}
             titleId="部门维护"
+            auth
+          />
+        ),
+      },
+    ],
+  },
+
+  {
+    path: "/flow",
+    element: (
+      <WrapperRouteComponent element={<LayoutPage />} titleId="工作流" auth />
+    ),
+    children: [
+      {
+        path: "deployment",
+        element: (
+          <WrapperRouteComponent
+            element={<FlowIndexPage />}
+            titleId="流程管理"
+            auth
+          />
+        ),
+      },
+      {
+        path: "design",
+        element: (
+          <WrapperRouteComponent
+            element={<FlowDesignPage />}
+            titleId="流程设计"
+            auth
+          />
+        ),
+      },
+      {
+        path: "myTasks",
+        element: (
+          <WrapperRouteComponent
+            element={<MyTasksPage />}
+            titleId="流程待办"
             auth
           />
         ),

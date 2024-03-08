@@ -41,6 +41,7 @@ public class SysDictService extends VLifeService<SysDict, SysDictDao> {
      * 通过字段注解来创建和更新字典（@VField(dictCode="code")
      */
     public void createByField(String code,String name,String type){
+        try{
         SysDict levelDict=findLevel1ByCode(code);
             if(levelDict==null){
                 SysDict dict=new SysDict();
@@ -50,10 +51,14 @@ public class SysDictService extends VLifeService<SysDict, SysDictDao> {
                 dict.setLevel(1);
                 dict.setType(type);
                 save(dict);
-            }else if (type.equals(levelDict.getType())&&!name.equals(levelDict.getTitle())){
+            }
+            else if (type.equals(levelDict.getType())&&!name.equals(levelDict.getTitle())){
                 levelDict.setTitle(name);
                 save(levelDict);
             }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
     /**
