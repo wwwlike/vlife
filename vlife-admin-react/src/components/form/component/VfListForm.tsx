@@ -93,7 +93,7 @@ const VfListForm = ({
                 if (listFormModel === undefined) setListFormModel(formVo);
               }}
               parentFormData={formData} //父组件form数据
-              type={modelName || fieldInfo.fieldType || ""}
+              type={modelName || fieldInfo?.fieldType || ""}
               fontBold={props.fontBold} //加粗
               vf={props.vf}
               terse={true} //紧凑

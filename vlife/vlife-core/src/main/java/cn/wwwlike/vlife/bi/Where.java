@@ -66,6 +66,9 @@ public class Where {
      */
     public String fieldDto;
 
+    // fieldName opt value
+    public Object desc;
+
     public Class getClazz(){
         return
         StringUtils.isNotBlank(this.getEntityName())?

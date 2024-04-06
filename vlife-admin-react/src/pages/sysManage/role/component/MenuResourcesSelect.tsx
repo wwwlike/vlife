@@ -116,12 +116,12 @@ export default ({
             checked={value && value.includes(m.id)}
             onChange={(v) => {
               if (v.target.checked && (value === null || value === undefined)) {
-                onDataChange([m.id]);
+                onDataChange && onDataChange([m.id]);
               } else if (v.target.checked && !value?.includes(m.id)) {
-                onDataChange([...value, m.id]);
+                onDataChange && onDataChange([...(value || []), m.id]);
               }
               if (v.target.checked === false && value?.includes(m.id)) {
-                onDataChange(value?.filter((v) => v !== m.id));
+                onDataChange && onDataChange(value?.filter((v) => v !== m.id));
               }
             }}
           >
@@ -158,16 +158,17 @@ export default ({
                         v.target.checked &&
                         (value === null || value === undefined)
                       ) {
-                        onDataChange([dd.id]);
+                        onDataChange && onDataChange([dd.id]);
                       } else if (v.target.checked && !value?.includes(dd.id)) {
-                        onDataChange([...value, dd.id]);
+                        onDataChange && onDataChange([...(value || []), dd.id]);
                       }
 
                       if (
                         v.target.checked === false &&
                         value?.includes(dd.id)
                       ) {
-                        onDataChange(value?.filter((v) => v !== dd.id));
+                        onDataChange &&
+                          onDataChange(value?.filter((v) => v !== dd.id));
                       }
                     }}
                   >

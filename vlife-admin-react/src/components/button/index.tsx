@@ -2,30 +2,30 @@ import React, { ReactNode, useCallback, useMemo, useState } from "react";
 import {
   Button,
   Divider,
-  Switch,
+  Modal,
+  TextArea,
   Tooltip,
   Typography,
 } from "@douyinfe/semi-ui";
 import classNames from "classnames";
-import { BtnToolBarPosition, btnType, VFBtn } from "./types";
+import { VFBtn } from "./types";
 import { Result } from "@src/api/base";
 import { useNiceModal } from "@src/store";
 import { useAuth } from "@src/context/auth-context";
 import { isNull } from "lodash";
 import { objectIncludes } from "@src/util/func";
 import { useEffect } from "react";
+import { IconSend } from "@douyinfe/semi-icons";
+import IconContext from "@ant-design/icons/lib/components/Context";
 
 //封装的按钮组件
 export default ({ ...btn }: Partial<VFBtn>) => {
   const { Text } = Typography;
-
   const {
     datas,
     btnType = "button",
-    disabled,
     actionType,
     position = "page",
-    icon,
     continueCreate,
     title,
     multiple = false,
@@ -35,9 +35,9 @@ export default ({ ...btn }: Partial<VFBtn>) => {
     reaction,
     fieldOutApiParams,
     initData,
+    otherBtns,
     className,
     permissionCode,
-    children,
     onFormilySubmitCheck,
     saveApi,
     loadApi,
@@ -52,7 +52,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
   const { checkBtnPermission } = useAuth();
   const [_btn, setBtn] = useState(btn);
   const [btnData, setBtnData] = useState<any>();
-
+  const [comment, setComment] = useState<string>();
   //按钮数据
   useEffect((): any => {
     if (datas) {
@@ -90,6 +90,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
         });
       }
     };
+
     let dataMatchTooltip = btnUsableMatch();
     if (dataMatchTooltip instanceof Promise) {
       dataMatchTooltip.then((d) => {
@@ -108,9 +109,9 @@ export default ({ ...btn }: Partial<VFBtn>) => {
     if (btn.disabled !== true) {
       if (
         (btn.actionType === "create" || btn.actionType === "save") &&
-        position !== "formFooter"
+        (btnData === null || btnData === undefined || btnData.id === undefined)
       ) {
-        return true;
+        return true; //1. 新增可用
       } else if (
         //任何字段都没有值判断
         btnData === undefined ||
@@ -141,6 +142,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
           return result;
         } else {
           const match = btn.usableMatch(btnData);
+
           return match === undefined && btnData && btnData.length > 0
             ? true
             : match;
@@ -148,6 +150,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
       }
       return false;
     } else {
+      //按钮直接不可用
       return false;
     }
   }, [btnData, position]);
@@ -159,10 +162,10 @@ export default ({ ...btn }: Partial<VFBtn>) => {
         type: model,
         formData: formData,
         fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
-        btns: [btn], //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
+        btns: otherBtns ? [btn, ...otherBtns] : [btn], //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
         terse: !saveApi ? true : false, //紧凑
         fontBold: !saveApi ? true : false, //加粗
-        readPretty: actionType === "api" || !saveApi ? true : false,
+        readPretty: actionType === "api",
         reaction: reaction,
       });
     };
@@ -180,41 +183,77 @@ export default ({ ...btn }: Partial<VFBtn>) => {
     }
   }, [btnData]);
 
+  // 工作流审核框弹出
+  const flowCommentShow = useCallback(() => {
+    let commentTemp: string;
+    Modal.info({
+      title: `确认`,
+      content: (
+        <TextArea
+          onChange={(s) => {
+            commentTemp = s;
+          }}
+          rows={4}
+          placeholder="请输入审核意见"
+        />
+      ),
+      icon: <IconSend />,
+      hasCancel: true,
+      onOk: () => {
+        submit({ comment: commentTemp });
+      },
+    });
+  }, [btnData, comment]);
+
   //按钮提交
   const submit = useCallback(
-    (...datas: any) => {
+    (flowInfo?: any) => {
       const save = () => {
         setLoading(true);
-        return saveApi?.(onSaveBefore ? onSaveBefore(btnData) : btnData).then(
-          (d: Result<any>) => {
-            setTimeout(() => {
-              if (submitClose) {
-                formModal.hide();
-              }
-              if (onSubmitFinish) {
-                onSubmitFinish(d.data);
-              }
-              setLoading(undefined);
-            }, 500);
-          },
-          (error: any) => {
-            setTimeout(() => {
-              setLoading(undefined);
-            }, 500);
-          }
+
+        const saveResult = saveApi?.(
+          onSaveBefore
+            ? onSaveBefore({ ...btnData, ...flowInfo })
+            : { ...btnData, ...flowInfo }
         );
+        const submitAfter = (data: any) => {
+          setTimeout(() => {
+            if (submitClose) {
+              formModal.hide();
+            }
+            if (onSubmitFinish) {
+              onSubmitFinish(data);
+            }
+            setLoading(undefined);
+          }, 500);
+        };
+        if (saveResult instanceof Promise) {
+          return saveResult.then(
+            (d: Result<any>) => {
+              submitAfter(d.data);
+              return d.data;
+            },
+            (error: any) => {
+              setTimeout(() => {
+                setLoading(undefined);
+              }, 500);
+            }
+          );
+        } else {
+          submitAfter(saveResult);
+          return saveResult;
+        }
       };
+
       if (saveApi && btnData) {
         return onFormilySubmitCheck
           ? onFormilySubmitCheck().then((dLboolean) => {
               return save();
             })
           : save();
-      } else if (onClick) {
-        onClick(btnData);
       }
     },
-    [position, btnData]
+    [position, btnData, comment]
   );
 
   //按钮点击
@@ -222,8 +261,10 @@ export default ({ ...btn }: Partial<VFBtn>) => {
     if (onClick) {
       onClick(btnData);
     } else if (position !== "formFooter" && model) {
-      //1 页面(非modal)的按钮有模型信息打开页面
+      //1 页面(非modal)的按钮，model不为空,则触发model的弹出
       show();
+    } else if (btn.comment && position !== "comment") {
+      flowCommentShow();
     } else if (saveApi && btnData) {
       //2. 按钮触发接口调用
       if (submitConfirm) {
@@ -234,14 +275,16 @@ export default ({ ...btn }: Partial<VFBtn>) => {
               Array.isArray(btnData) ? btnData.length : "该"
             }条记录?`,
             saveFun: () => {
-              return submit(btnData)?.then((d: any) => {});
+              return submit();
             },
           })
           .then((data: any) => {
             confirmModal.hide();
           });
       } else {
-        submit(btnData)?.then((d: any) => {});
+        return submit()?.then((d: any) => {
+          return d;
+        });
       }
     }
   }, [btnData, position, continueCreate]);
@@ -299,7 +342,9 @@ export default ({ ...btn }: Partial<VFBtn>) => {
   const BtnComp = useMemo((): ReactNode => {
     const Btn: any =
       btnType === "link" && position !== "formFooter" ? Text : Button;
+
     if (position === "dropdown" && _btn.disabled === true) {
+      //dropdown场景不存在不可用但是可见的disable状态
       return <></>;
     }
 
@@ -380,14 +425,16 @@ export default ({ ...btn }: Partial<VFBtn>) => {
       </div>
     );
   }, [_btn, btnIcon, btnTitle, position, loading]);
-  return authPass && !(btn.disabledHide && btn.disabled === true) ? (
+  return authPass && !(_btn.disabledHide && _btn.disabled === true) ? (
     <>
-      {_btn.tooltip && btn.disabled === true ? (
-        <Tooltip content={btn.tooltip}>{BtnComp}</Tooltip>
+      {/* {btn.actionType === "flow" &&
+        btn.position === "formFooter" &&
+        JSON.stringify(btnData?.username)} */}
+      {_btn.tooltip && _btn.disabled === true ? (
+        <Tooltip content={_btn.tooltip}>{BtnComp}</Tooltip>
       ) : (
         BtnComp
       )}
-      {/* {JSON.stringify(btnData)} */}
     </>
   ) : (
     <>{/* 没有权限 */}</>

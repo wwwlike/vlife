@@ -111,7 +111,7 @@ const VfTreeSelect = ({
             <Tag
               className=" cursor-pointer"
               onClick={() => {
-                onDataChange(undefined);
+                onDataChange && onDataChange(undefined);
               }}
               size="small"
             >
@@ -135,7 +135,7 @@ const VfTreeSelect = ({
           selectedNode: TreeNodeData
         ) => {
           if (selected) {
-            onDataChange(selectedKeys);
+            onDataChange && onDataChange(selectedKeys);
           }
         }}
         // style={style}

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Table, Tag } from "@douyinfe/semi-ui";
 import { ColumnProps, RowSelection } from "@douyinfe/semi-ui/lib/es/table";
 import { useAuth } from "@src/context/auth-context";
-import { IdBean } from "@src/api/base";
+import { DbEntity } from "@src/api/base";
 import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { formatDate, safeStr } from "@src/util/func";
@@ -15,12 +15,13 @@ import BtnToolBar from "../button/BtnToolBar";
 import { where } from "@src/dsl/base";
 import classNames from "classnames";
 import { VFBtn } from "../button/types";
+import { RecordFlowInfo } from "@src/api/workflow/Flow";
 
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
   currency: "CNY",
 });
-export interface ListProps<T extends IdBean> {
+export interface ListProps<T extends TableBean> {
   className?: string;
   columnTitle?: "search" | "sort" | true | false; //列头展示形式
   width?: number; //列表宽度（通过外围屏幕宽度减去 搜索宽度）
@@ -42,10 +43,14 @@ export interface ListProps<T extends IdBean> {
   height?: number;
   pagination?: any;
   wheres?: Partial<where>[]; //按钮的过滤条件
+  flowFormType?: string; //是工作流table(和按钮相关)
   onColumnFilter?: (wheres: Partial<where>[]) => void;
 }
+export interface TableBean extends DbEntity {
+  flow?: RecordFlowInfo;
+}
 
-const TableIndex = <T extends IdBean>({
+const TableIndex = <T extends TableBean>({
   onLineClick,
   className,
   width,
@@ -66,6 +71,7 @@ const TableIndex = <T extends IdBean>({
   btns,
   height,
   pagination,
+  flowFormType,
   wheres = [],
   ...props
 }: ListProps<T>) => {
@@ -298,8 +304,32 @@ const TableIndex = <T extends IdBean>({
           };
         }
       });
-      //行按钮添加
-      if (read !== true && btns.length > 0) {
+      //行按钮添加,工作流不需要行级按钮
+
+      if (flowFormType) {
+        columnshow?.unshift({
+          title: "当前流程节点",
+          align: "center",
+          // fixed: "right",
+          fieldName: "operate",
+          render: (text, record, index) => {
+            return (
+              <span
+                className={` text-white  text-xs ${classNames({
+                  "bg-green-500": record?.flow?.nodeType === "endEvent",
+                  "bg-blue-500": record?.flow?.nodeType === "audit",
+                  "bg-red-500": record?.flow?.nodeType === "approver",
+                  "bg-yellow-500": record?.flow?.nodeType === "notifier",
+                  "bg-gray-500": record?.flow?.nodeType === "start",
+                  " bg-violet-500": record?.flow?.nodeType === null,
+                })} px-3 py-1 font-bold  rounded-lg`}
+              >
+                {record?.flow?.processStage}
+              </span>
+            );
+          },
+        });
+      } else if (read !== true && model.flowJson === null) {
         columnshow?.push({
           title: "操作",
           align: "center",
@@ -312,7 +342,7 @@ const TableIndex = <T extends IdBean>({
                 onBtnNum={(v) => {
                   setListBtnMax((m) => (v > m ? v : m));
                 }}
-                key={"lineBtn"}
+                key={`lineBtn_${index}`}
                 position="tableLine"
                 line={index}
                 btnType="link"
@@ -331,29 +361,14 @@ const TableIndex = <T extends IdBean>({
 
   const onRow = useMemo(
     () => (record: any, index: any) => {
-      // 给偶数行设置斑马纹
-      if (index % 2 === 1) {
-        return {
-          style: {
-            background: "#f9fafc",
-          },
-          onClick: (e: any) => {
-            if (onLineClick) {
-              onLineClick(record);
-            }
-          },
-        };
-      } else {
-        return {
-          onClick: (e: any) => {
-            if (onLineClick) {
-              onLineClick(record);
-            }
-          },
-        };
-      }
+      return {
+        style: index % 2 === 1 ? { background: "#f9fafc" } : {}, // 给偶数行设置斑马纹
+        onClick: (e: any) => {
+          onLineClick && onLineClick(record);
+        },
+      };
     },
-    []
+    [model]
   );
 
   /**
@@ -402,18 +417,6 @@ const TableIndex = <T extends IdBean>({
     };
   }, [selectedRow]);
 
-  const handleRow = (record: any, index: any) => {
-    // 给偶数行设置斑马纹
-    if (index % 2 === 0) {
-      return {
-        style: {
-          background: "var(--semi-color-fill-0)",
-        },
-      };
-    } else {
-      return {};
-    }
-  };
   return (
     <>
       <Table

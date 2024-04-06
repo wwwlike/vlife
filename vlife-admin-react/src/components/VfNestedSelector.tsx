@@ -16,9 +16,9 @@ export default ({
   emptyDesc = "没有提供可进行选取的数据",
   onDataChange,
 }: VfNestedSelectorProps) => {
-  const [selected, setSelected] = useState<string[]>(value);
+  const [selected, setSelected] = useState<string[]>(value || []);
   useEffect(() => {
-    setSelected(value);
+    setSelected(value || []);
   }, [value]);
 
   useUpdateEffect(() => {

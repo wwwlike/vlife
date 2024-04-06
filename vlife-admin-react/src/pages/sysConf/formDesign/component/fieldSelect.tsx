@@ -16,6 +16,7 @@ import {
 } from "react-grid-layout";
 import { Mode } from "@src/dsl/base";
 import VfButton from "@src/components/button";
+import { x64 } from "crypto-js";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 //字段拖拽排序，组件隐藏
 interface FieldSelectProps {
@@ -34,7 +35,9 @@ const FieldSelect = ({
   className,
   onDataChange,
 }: FieldSelectProps) => {
-  const column2Flag = fields.length > 20; //2行显示标识
+  const column2Flag =
+    fields.filter((f) => f.x_hidden === false || f.x_hidden === undefined)
+      .length > 14; //2行显示标识
   //布局改变 数量，大小，位置
   const onLayoutChange = useCallback(
     (divLayout: LayoutDataType[]) => {

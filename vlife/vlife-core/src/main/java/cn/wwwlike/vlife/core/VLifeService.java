@@ -68,6 +68,8 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         entityClz = GenericsUtils.getSuperClassGenricType(this.getClass());
     }
 
+
+
     //模型信息返回
     public BeanDto modelInfo(String modelName) {
         BeanDto<T> dto = null;
@@ -241,8 +243,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
 
-
-
     /**
      * 根据B端配置的查询条件来进行查询
      */
@@ -273,6 +273,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         request = addQueryFilter(request);
         return dao.queryPage(vo, request);
     }
+
 
 
     /**---------------------------- remove 逻辑删除，delete 物理删除（建议不使用）--------------------------*/

@@ -5,17 +5,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import Table, { ListProps } from "@src/components/table";
+import Table, { ListProps, TableBean } from "@src/components/table";
 import { useAuth } from "@src/context/auth-context";
 import { IdBean, PageQuery, PageVo, Result } from "@src/api/base";
 import { FormVo } from "@src/api/Form";
 import { find, useDetail, useRemove, useSave } from "@src/api/base/baseService";
 import { FormFieldVo } from "@src/api/FormField";
-import {
-  IconDeleteStroked,
-  IconSetting,
-  IconUserAdd,
-} from "@douyinfe/semi-icons";
+import { IconSetting } from "@douyinfe/semi-icons";
 import apiClient from "@src/api/base/apiClient";
 import { VfAction } from "@src/dsl/VF";
 import TagFilter from "@src/components/table/component/TagFilter";
@@ -29,6 +25,18 @@ import VfSearch from "@src/components/VfSearch";
 import { useNavigate } from "react-router-dom";
 import { Conditions, OptEnum, where } from "@src/dsl/base";
 import { VFBtn } from "@src/components/button/types";
+import {
+  backProcess,
+  cancelProcess,
+  completeTask,
+  findProcessDefinitions,
+  recall,
+  RecordFlowInfo,
+  startFlow,
+} from "@src/api/workflow/Flow";
+import { ConsoleSqlOutlined, TruckFilled } from "@ant-design/icons";
+import { fromPairs } from "lodash";
+import { useNiceModal } from "@src/store";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 // 后端排序字符串格式创建
@@ -59,8 +67,9 @@ type apiError = {
 };
 
 // T为列表listType的类型
-export interface TablePageProps<T extends IdBean> extends ListProps<T> {
+export interface TablePageProps<T extends TableBean> extends ListProps<T> {
   listType: string; //列表模型
+  activeKey: string; //当前激活的tab页签key
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req: any; //查询条件obj  //自定义tab页签条件，filter过滤条件
   conditionJson?: string; //db视图过滤的条件
@@ -70,12 +79,13 @@ export interface TablePageProps<T extends IdBean> extends ListProps<T> {
   mode: "view" | "hand" | "normal"; //列表的三个场景模式  预览(精简无按钮，有搜索分页)|input传值(不从数据库取值，无需系统内置按钮和分页)|一般场景
   loadApi: PageFuncType<T>; //异步加载数据的地址，
   onTableModel: (formVo: FormVo) => void; //列表模型信息传出
+  onFormModel: (formVo: FormVo) => void; //表单模型信息传出
   onGetData: (datas: T[]) => void; //请求的列表数据传出
   onHttpError: (error: apiError) => void; //异常信息传出，设计阶段时接口没有会用到
   otherBtns: VFBtn[]; // 按钮触发的增量功能
 }
 
-const TablePage = <T extends IdBean>({
+const TablePage = <T extends TableBean>({
   className,
   listType,
   editType,
@@ -83,6 +93,7 @@ const TablePage = <T extends IdBean>({
   model,
   conditionJson,
   dataSource,
+  activeKey,
   mode = "normal",
   width,
   btns,
@@ -91,23 +102,26 @@ const TablePage = <T extends IdBean>({
   loadApi,
   onGetData,
   onHttpError,
+  onFormModel,
   read,
   onTableModel,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
-  const { user } = useAuth();
-  const appMode = import.meta.env.VITE_APP_MODE;
   const navigate = useNavigate();
-  const { getFormInfo } = useAuth();
+  const { getFormInfo, user } = useAuth();
   const ref = useRef(null);
   const size = useSize(ref);
-  const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //模型信息
+  const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
+  const [formModel, setFormModel] = useState<FormVo | undefined>(model); //主要表单模型信息
+
+  const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo[]>(); //列表记录关联的流程信息
   const [apiError, setApiError] = useState<apiError>(); //接口异常信息
   const [pageNum, setPageNum] = useState(1); //分页
   const [pageSize, setPageSize] = useState<number>(); //每页条数
   const [selected, setSelected] = useState<T[]>(); //列表选中的数据
   const [pageData, setPageData] = useState<PageVo<T>>(); //请求到的分页数据
   const [order, setOrder] = useState<orderObj[]>(); //默认的排序内容
+  const [loadFlag, setLoadFlag] = useState(1); //刷新标志
   const [relationMap, setRealationMap] = useState<{
     fkObj: any; //外键数据
     parentObj: any; //code关联数据
@@ -120,7 +134,13 @@ const TablePage = <T extends IdBean>({
     orAnd: "or",
     where: [],
   });
-
+  const editModelType = useMemo(() => {
+    return editType
+      ? typeof editType === "string"
+        ? editType
+        : editType.type
+      : tableModel?.entityType;
+  }, [editType, tableModel]);
   useEffect(() => {
     if (model) setTableModel(model);
   }, [model]);
@@ -135,17 +155,52 @@ const TablePage = <T extends IdBean>({
         if (onTableModel && f) {
           onTableModel(f);
         }
+
+        if (listType !== editModelType) {
+          getFormInfo({
+            type: editModelType,
+          }).then((f: FormVo | undefined) => {
+            setFormModel(f);
+            onFormModel && f && onFormModel(f);
+          });
+        } else {
+          setFormModel(f);
+          onFormModel && f && onFormModel(f);
+        }
       });
     }
-  }, [listType]);
+  }, [listType, editModelType]);
 
-  const editModelType = useMemo(() => {
-    return editType
-      ? typeof editType === "string"
-        ? editType
-        : editType.type
-      : tableModel?.entityType;
-  }, [editType, tableModel]);
+  //列表数据(整合流程节点信息)
+  const tableData = useMemo(() => {
+    if (dataSource) {
+      return dataSource;
+    } else if (pageData && pageData.result) {
+      if (recordFlowInfo && recordFlowInfo.length > 0) {
+        return pageData.result.map((item) => {
+          const flowInfo = recordFlowInfo.filter(
+            (flow) => flow.businessKey === item.id
+          )?.[0];
+          if (flowInfo) {
+            return { ...item, flow: flowInfo };
+          }
+          return item;
+        });
+      }
+      return pageData.result;
+    }
+  }, [dataSource, pageData?.result, recordFlowInfo]);
+
+  useEffect(() => {
+    if (pageData?.result && formModel?.flowJson) {
+      findProcessDefinitions({
+        defineKey: formModel.type,
+        businessKeys: pageData.result.map((item) => item.id),
+      }).then((result) => {
+        setRecordFlowInfo(result.data);
+      });
+    }
+  }, [formModel, pageData?.result]);
 
   const tableHight = useMemo(() => {
     const hight = size?.height ? size?.height - 145 : undefined;
@@ -222,8 +277,9 @@ const TablePage = <T extends IdBean>({
     entityType: tableModel?.entityType || "",
   });
 
-  const query = useCallback(() => {
-    const reqParams = {
+  //数据请求参数
+  const reqParams = useMemo(() => {
+    const params = {
       ...req,
       conditionGroups: conditionJson
         ? JSON.parse(conditionJson)
@@ -234,6 +290,17 @@ const TablePage = <T extends IdBean>({
       order: { orders: orderStr(order) },
       pager: pager,
     };
+    return params;
+  }, [
+    order,
+    JSON.stringify(req),
+    conditionJson,
+    searchAndColumnCondition,
+    JSON.stringify(pager),
+  ]);
+
+  const query = useCallback(() => {
+    // console.log("reqParams", JSON.stringify(reqParams));
     if (pageLoad) {
       pageLoad(reqParams)
         .then((data: Result<PageVo<T>>) => {
@@ -257,10 +324,7 @@ const TablePage = <T extends IdBean>({
         });
     }
   }, [
-    JSON.stringify(req),
-    order,
-    conditionJson,
-    searchAndColumnCondition,
+    JSON.stringify(reqParams),
     JSON.stringify(tableModel),
     JSON.stringify(pageLoad),
     JSON.stringify(pager),
@@ -272,6 +336,7 @@ const TablePage = <T extends IdBean>({
     dataSource,
     JSON.stringify(req),
     order,
+    loadFlag,
     conditionJson,
     searchAndColumnCondition,
     JSON.stringify(tableModel),
@@ -305,6 +370,10 @@ const TablePage = <T extends IdBean>({
       if (b.model === undefined && b.saveApi === undefined) {
         b.model = listType;
       }
+
+      if (b.disabledHide === undefined) {
+        b.disabledHide = true;
+      }
       if (
         b.saveApi &&
         (b.permissionCode === undefined || b.permissionCode === null)
@@ -325,9 +394,9 @@ const TablePage = <T extends IdBean>({
         onSubmitFinish:
           b.onSubmitFinish ||
           (() => {
-            query();
-            setSelected([]);
-          }), //提交完成刷新列表
+            setLoadFlag((flag) => flag + 1);
+            setSelected([]); //清空选中
+          }),
         // submitClose: b.submitClose || true, //默认触发关闭
       };
     } else {
@@ -347,15 +416,10 @@ const TablePage = <T extends IdBean>({
           multiple: false,
           permissionCode: savePermissionCode,
           model: editModelType,
+          disabledHide: false,
           reaction:
             typeof editType === "object" ? editType.reaction : undefined,
-          saveApi: save(tableModel?.entityType || "", editModelType),
-          loadApi:
-            editModelType === listType
-              ? undefined
-              : (id: string): Promise<Result<any>> => {
-                  return getDetail(id, editModelType);
-                },
+          saveApi: save(tableModel?.entityType || "", editModelType), // save方法需要返回和model一致的数据
         },
         {
           title: "删除",
@@ -367,40 +431,255 @@ const TablePage = <T extends IdBean>({
           saveApi: (datas: IdBean[]): Promise<Result<any>> => {
             return rm(datas.map((d) => d.id));
           },
-          onSubmitFinish: () => {
-            query();
-            setSelected([]);
-          },
         },
       ];
-
-      if (otherBtns) {
-        otherBtns.forEach((b) => {
-          defaultBtns.push(
-            addMissingButtonAttributes(b, tableModel.entityType)
-          );
-        });
-      }
       return defaultBtns;
     }
     return [];
-  }, [tableModel, query, otherBtns]);
+  }, [tableModel, activeKey]);
 
-  /*页面所有按钮 */
-  const totalBtns = useMemo((): VFBtn[] => {
-    if (tableModel) {
-      if (btns) {
-        return btns.map((b) =>
-          addMissingButtonAttributes(b, tableModel?.entityType)
-        );
-      } else {
-        return defbtn.map((b) =>
-          addMissingButtonAttributes(b, tableModel?.entityType)
-        );
-      }
+  //工作流按钮
+  const flowBtns = useMemo(() => {
+    if (formModel?.flowJson) {
+      return [
+        {
+          //permissionCode: savePermissionCode,权限取消掉了
+          actionType: "save",
+          // title: "保存",
+          icon: <i className=" icon-add_circle_outline" />,
+          multiple: false,
+          model: editModelType,
+          // disabledHide: true,
+          usableMatch: (data: TableBean) => {
+            //不结束都能保存
+            return (
+              data === undefined ||
+              data.id === undefined ||
+              (data?.flow?.ended !== true &&
+                (data?.flow?.started === false || data?.flow?.currTask))
+            );
+          },
+          reaction:
+            typeof editType === "object" ? editType.reaction : undefined,
+          saveApi: save(formModel?.entityType || "", editModelType), // save方法需要返回和model一致的数据
+        },
+        {
+          title: "删除",
+          disabledHide: true,
+          actionType: "api",
+          disabled: activeKey !== "flow_byMe",
+          usableMatch: (datas: TableBean[]) => {
+            return datas.every((data) => {
+              return (
+                data.status === "1" &&
+                data?.flow?.started === false &&
+                data?.flow?.ended === false
+              );
+            });
+          },
+          icon: <i className="  icon-remove_circle_outline1" />,
+          multiple: true,
+          permissionCode: formModel?.entityType + ":remove",
+          saveApi: (datas: IdBean[]): Promise<Result<any>> => {
+            return rm(datas.map((d) => d.id));
+          },
+        },
+        {
+          actionType: "flow",
+          title: "通过",
+          icon: <i className=" text-base icon-ok" />,
+          multiple: false,
+          model: formModel?.type,
+          usableMatch: (d: T) => {
+            return d?.flow?.currTask && d.flow.nodeType === "approver";
+          },
+          comment: true,
+          disabledHide: true,
+          saveApi: (data: any) => {
+            completeTask({
+              comment: data.comment,
+              businessKey: data.id,
+              defineKey: formModel?.type,
+              formData: data,
+            });
+            return data;
+          },
+        },
+        {
+          actionType: "flow",
+          title: "提交", //保存数据并且当流程流转到下一个节点
+          disabled: !formModel?.flowJson,
+          icon: <i className="  icon-upload1" />,
+          multiple: false,
+          // comment: true,
+          model: formModel?.type,
+          usableMatch: (d: T) => {
+            return (
+              d?.flow?.started === false || //开始任务节点
+              (d?.flow?.currTask &&
+                d?.flow?.ended === false &&
+                (d.flow?.nodeType === "audit" || d.flow.nodeId === "start")) //办理节点
+            );
+          },
+          disabledHide: true,
+          saveApi: (data: any) => {
+            return save(formModel?.entityType || "")(data).then(
+              (d: Result<any>) => {
+                if (data?.flow?.started === false) {
+                  return startFlow({
+                    businessKey: d.data.id,
+                    defineKey: formModel?.type,
+                    formData: data,
+                    description: "发起流程",
+                  }).then((res) => {
+                    if (res.data === false) {
+                      alert("不能操作当前流程");
+                    }
+                    return d;
+                  });
+                } else {
+                  return completeTask({
+                    comment: data.comment,
+                    businessKey: data.id,
+                    defineKey: formModel?.type,
+                    formData: data,
+                    description: "提交处理",
+                  }).then((res) => {
+                    if (res.data === false) {
+                      alert("不能操作当前流程");
+                    }
+                    return d;
+                  });
+                }
+              }
+            );
+          },
+        },
+        {
+          actionType: "flow",
+          title: "回退",
+          icon: <i className=" text-base icon-reply" />,
+          model: formModel?.type,
+          usableMatch: (d: T) => {
+            return (
+              d?.flow?.auditInfo?.rollback === true &&
+              d?.flow?.started === true &&
+              d?.flow?.ended === false &&
+              d.flow.currTask
+            );
+          },
+          comment: true,
+          saveApi: (data: any) => {
+            backProcess({
+              comment: data.comment,
+              businessKey: data.id,
+              defineKey: formModel?.type,
+            }).then((res) => {
+              if (res.data === false) {
+                alert("不能操作当前流程");
+              }
+            });
+            return data;
+          },
+        },
+        {
+          actionType: "flow",
+          title: "转交",
+          icon: <i className=" text-base icon-reply" />,
+          model: formModel?.type,
+          usableMatch: (d: T) => {
+            return (
+              d?.flow?.auditInfo?.transfer === true &&
+              d?.flow?.started === true &&
+              d?.flow?.ended === false &&
+              d.flow.currTask
+            );
+          },
+          comment: true,
+          saveApi: (data: any) => {
+            return data;
+          },
+        },
+        {
+          actionType: "flow",
+          title: "撤回",
+          icon: <i className=" text-base icon-reply" />,
+          model: formModel?.type,
+          usableMatch: (d: T) => {
+            return d.flow?.recallable === true;
+          },
+          comment: true,
+          saveApi: (data: any) => {
+            recall({
+              comment: data.comment,
+              businessKey: data.id,
+              defineKey: formModel?.type,
+            }).then((res) => {
+              if (res.data) {
+                alert(res.data);
+              }
+            });
+            return data;
+          },
+        },
+        {
+          actionType: "flow",
+          title: "拒绝",
+          icon: <i className=" text-base icon-cancel" />,
+          model: formModel?.type,
+          comment: true,
+          usableMatch: (d: T) => {
+            return (
+              d?.flow?.auditInfo?.rejected === true &&
+              d?.flow?.started === true &&
+              d?.flow?.ended === false &&
+              d.flow.currTask
+            );
+          },
+          saveApi: (data: any) => {
+            cancelProcess({
+              comment: data.comment,
+              businessKey: data.id,
+              defineKey: formModel?.type,
+            }).then((res) => {
+              if (res.data === false) {
+                alert("不能操作当前流程");
+              }
+            });
+            return data;
+          },
+        },
+      ];
+    } else {
+      return [];
     }
-    return [];
-  }, [btns, defbtn, JSON.stringify(tableModel), query]);
+  }, [formModel, activeKey]);
+
+  /*页面所有按钮(查找工作流加入进来) */
+  const totalBtns = useMemo((): VFBtn[] => {
+    const buttons = formModel?.flowJson
+      ? [...flowBtns]
+      : btns
+      ? btns
+      : otherBtns
+      ? [...defbtn, ...otherBtns]
+      : [...defbtn];
+
+    return tableModel
+      ? buttons.map((b) =>
+          addMissingButtonAttributes(b, tableModel?.entityType)
+        )
+      : [];
+  }, [
+    btns,
+    defbtn,
+    tableModel,
+    JSON.stringify(formModel),
+    query,
+    JSON.stringify(reqParams),
+    flowBtns,
+    otherBtns,
+  ]);
 
   const getFkObj = async (tableData: T[], tableModel: FormVo): Promise<any> => {
     let fkObj: any = {};
@@ -481,6 +760,7 @@ const TablePage = <T extends IdBean>({
     return parentObj;
   };
 
+  const formModal = useNiceModal("formModal");
   /**
    * 设置外键，设置上级名称
    */
@@ -503,6 +783,7 @@ const TablePage = <T extends IdBean>({
       ref={ref}
       className={`${className} relative h-full flex flex-col text-sm  `}
     >
+      {/* {JSON.stringify(tableData?.[0])} */}
       <div
         className={`flex bg-white items-center p-2 border-gray-100  justify-start  `}
       >
@@ -557,17 +838,28 @@ const TablePage = <T extends IdBean>({
           }}
         />
       </div>
-
       <Table<T>
         className={"flex justify-center flex-grow"}
         key={tableModel.type + pageSize + pager?.page}
         model={tableModel} //设计模式时应用实时传入的formVo
-        dataSource={dataSource ? dataSource : pageData?.result}
+        dataSource={tableData}
         selected={selected}
         btns={mode === "view" ? [] : totalBtns}
         outSelectedColumn={outSelectedColumn}
         onSelected={(data: T[]) => {
           setSelected(data);
+        }}
+        flowFormType={formModel?.flowJson ? formModel.type : undefined}
+        // onLineClick={(data: T) => {
+        //   alert(JSON.stringify(data));
+        // }}
+        onLineClick={(record) => {
+          formModal.show({
+            modelInfo: formModel,
+            type: editModelType,
+            formData: record,
+            btns: mode === "view" ? [] : totalBtns,
+          });
         }}
         read={read}
         wheres={columnWheres}

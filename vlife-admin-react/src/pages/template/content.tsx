@@ -15,30 +15,40 @@ import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
 import { useSize } from "ahooks";
 import { VF, VfAction } from "@src/dsl/VF";
-import BtnToolBar from "@src/components/button/BtnToolBar";
+import {
+  list,
+  remove,
+  ReportCondition,
+  save,
+} from "@src/api/report/ReportCondition";
 import { Tabs } from "@douyinfe/semi-ui";
 import GroupLabel from "@src/components/form/component/GroupLabel";
-import { SysDict } from "@src/api/SysDict";
 import { OptEnum, where } from "@src/dsl/base";
 import { loadApi } from "@src/resources/ApiDatas";
+import { SysDict } from "@src/api/SysDict";
+import Button from "@src/components/button";
+import { TableBean } from "@src/components/table";
+import classNames from "classnames";
 
 //tab页签
 type TableTab = {
   itemKey: string; //视图编码(唯一)
   tab: string | ReactNode; //名称
   icon?: ReactNode; //图标
-  active?: boolean; //当前页
+  // active?: boolean; //当前页
   req?: object | { fieldName: string; opt: OptEnum; value?: Object }[]; //视图过滤条件(简单方式)
+  subs?: (TableTab & { singleReq?: boolean })[]; //子级过滤页签 singleReq:表示不联合上一级过滤条件
 };
 /**
  * 查询列表的布局page组件
  * 适用于弹出层
  */
-export interface ContentProps<T extends IdBean> extends TablePageProps<T> {
+export interface ContentProps<T extends TableBean> extends TablePageProps<T> {
   title: string; //页面标题
   filterType: string | { type: string; reaction: VfAction[] }; //左侧布局查询条件模型以及级联响应的低代码
-  tabList: TableTab[]; //tab条件对象或者根据字段dictcode字典分组
+  tabList: TableTab[]; //tab分组的条件对象
   tabDictField: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
+  customView: boolean; //是否支持自定义页签
   onReq?: (req: any) => void; //过滤条件回传
 }
 
@@ -58,10 +68,8 @@ const objToConditionWhere = (obj: any): Partial<where>[] => {
 
 /**
  * crud 左右布局模版
- * @param param0
- * @returns
  */
-const Content = <T extends IdBean>({
+const Content = <T extends TableBean>({
   title,
   listType,
   editType,
@@ -70,6 +78,7 @@ const Content = <T extends IdBean>({
   tabDictField,
   req,
   btns,
+  customView = true,
   onReq,
   ...props
 }: Partial<ContentProps<T>> & { listType: string }) => {
@@ -79,6 +88,8 @@ const Content = <T extends IdBean>({
   const [filterFormVo, setFilterFormVo] = useState<FormVo>();
   const [formData, setFormData] = useState<any>({});
   const [tableModel, setTableModel] = useState<FormVo>();
+  const [formModel, setFormModel] = useState<FormVo>();
+  const [conditions, setConditions] = useState<ReportCondition[]>([]); //数据库查询视图
   //左侧列表根据查询维度隐藏指定字段(如查看本人数据，则不需要部门搜索条件)
   const filterReaction = useMemo((): VfAction[] => {
     if (filterFormVo) {
@@ -96,21 +107,111 @@ const Content = <T extends IdBean>({
     }
     return [];
   }, [filterFormVo]);
-  const allTab: TableTab = { itemKey: "all", tab: "全部", active: true };
+  const allTab: TableTab = {
+    itemKey: "all",
+    icon: <i className=" icon-gallery_view " />,
+    tab: "全部",
+  };
+  const addTab: TableTab = {
+    tab: (
+      <Button
+        title={`视图创建`}
+        actionType="create"
+        btnType="icon"
+        icon={<i className="icon-task_add-02 font-bold" />}
+        model={"reportCondition"}
+        saveApi={save}
+        reaction={[
+          VF.then("formId").hide().value(tableModel?.id),
+          VF.then("sysMenuId").hide().value(tableModel?.sysMenuId),
+          VF.then("type").hide().value("table"),
+          VF.then("name").title("页签名称"),
+        ]}
+        onSubmitFinish={() => {
+          if (tableModel?.id) loadCondition(tableModel?.id);
+        }}
+      />
+    ),
+    itemKey: "add",
+  };
   //固定项页签 tab abList方式+tabDictField方式
   const [fixedTab, setFixedTab] = useState<TableTab[]>([]);
+  //查询视图页签
+  const [dbTab, setDbTab] = useState<TableTab[]>([]);
+  //工作流页签
+  const flowTab = useMemo((): TableTab[] => {
+    if (formModel?.flowJson) {
+      return [
+        {
+          itemKey: "flow_todo",
+          icon: <i className="icon-checkbox_01" />,
+          tab: "待办视图",
+          req: { flowTab: "todo" },
+        },
+        {
+          itemKey: "flow_byMe",
+          icon: <i className="  icon-workflow_new" />,
+          tab: `我发起的`,
+          req: { flowTab: "byMe" },
+          subs: [
+            {
+              itemKey: "flow_byMe_1",
+              icon: <i className="icon-checkbox_01" />,
+              tab: "流程中",
+              req: { flowTab: "todo" },
+            },
+            {
+              itemKey: "flow_byMe_4",
+              icon: <i className="icon-checkbox_01" />,
+              tab: "草稿",
+              req: { flowTab: "todo" },
+            },
+            {
+              itemKey: "flow_byMe_2",
+              icon: <i className="icon-checkbox_01" />,
+              tab: "待完善",
+              req: { flowTab: "todo" },
+            },
+            {
+              itemKey: "flow_byMe_3",
+              icon: <i className="icon-checkbox_01" />,
+              tab: "已通过",
+              req: { flowTab: "todo" },
+            },
+          ],
+        },
+        {
+          itemKey: "flow_done",
+          tab: "已办视图",
+          icon: <i className=" icon-workflow_ok" />,
+          req: { flowTab: "done" },
+        },
+        {
+          itemKey: "flow_notifier",
+          icon: <i className="  icon-resend" />,
+          tab: "抄送视图",
+          req: { flowTab: "notifier" },
+        },
+      ];
+    }
+    return [];
+  }, [tableModel]);
+  const [activeKey, setActiveKey] = useState<string[]>();
+  //计算后的页面页签
   //页签组装
   const contentTab = useMemo((): TableTab[] | undefined => {
-    if (fixedTab.length > 0) {
-      return [allTab, ...fixedTab];
-    }
-    return undefined;
-  }, [fixedTab]);
-  const [activeKey, setActiveKey] = useState<string>(
-    contentTab?.filter((tab) => tab.active === true)?.[0]?.itemKey ||
-      contentTab?.[0]?.itemKey ||
-      "all"
-  );
+    return [
+      ...flowTab,
+      ...dbTab,
+      ...(flowTab.length === 0 ? fixedTab : []),
+      ...(flowTab.length === 0 ? [allTab] : []),
+      ...(user?.superUser ? [addTab] : []),
+    ];
+  }, [dbTab, fixedTab, allTab, flowTab, tableModel, addTab]);
+
+  // useEffect(() => {
+  //   setActiveKey(contentTab?.[0]?.itemKey);
+  // }, [contentTab]);
 
   //固定页签组装
   useEffect(() => {
@@ -162,20 +263,57 @@ const Content = <T extends IdBean>({
     }
   }, [tabDictField, tableModel, tabList]);
 
+  //数据库查询视图加载
+  const loadCondition = useCallback((formId: string) => {
+    list({ formId, type: "table" }).then((result) =>
+      setConditions(result.data || [])
+    );
+  }, []);
+  useEffect(() => {
+    if (tableModel && tableModel.id) {
+      loadCondition(tableModel.id);
+    }
+  }, [tableModel]);
+
+  useEffect(() => {
+    if (customView === true) {
+      if (conditions && conditions.length > 0) {
+        setDbTab([
+          ...conditions.map((d) => {
+            return {
+              tab: d.name,
+              itemKey: d.id,
+              closable: user?.superUser === true,
+            };
+          }),
+        ]);
+      } else {
+        setDbTab([]);
+      }
+    }
+  }, [conditions, customView]);
+
   //查询条件组装
   const tableReq = useMemo(() => {
     let customViewReq: any = contentTab?.filter(
-      (item) => item.itemKey === activeKey
+      (item) => item.itemKey === activeKey?.[0]
     )?.[0]?.req;
+
     const where: Partial<where>[] = [];
+    let flowReq = {};
     if (customViewReq) {
-      where.push(...customViewReq);
+      if (activeKey?.[0]?.startsWith("flow")) {
+        flowReq = customViewReq;
+      } else {
+        where.push(...customViewReq);
+      }
     }
     if (req) {
       where.push(...objToConditionWhere(req));
     }
     return {
       ...formData,
+      ...flowReq,
       conditionGroups: [{ where }],
     };
   }, [req, formData, contentTab, activeKey]);
@@ -194,7 +332,6 @@ const Content = <T extends IdBean>({
     } else {
       width = width - 0;
     }
-    // width = menuState === "mini" ? width - 80 : width - 240;
     return width;
   }, [size, filterOpen]);
 
@@ -250,29 +387,67 @@ const Content = <T extends IdBean>({
             <Tabs
               style={{ height: "36px", paddingLeft: "10px" }}
               type="card"
-              activeKey={activeKey}
+              activeKey={activeKey?.[0] || contentTab[0].itemKey}
               tabList={contentTab}
               onChange={(key) => {
                 if (key !== "add") {
-                  setActiveKey(key);
+                  setActiveKey([key]);
                 }
+              }}
+              onTabClose={(targetKey) => {
+                remove([targetKey]).then(() => {
+                  if (tableModel?.id) loadCondition(tableModel.id);
+                });
               }}
             />
           </div>
         )}
+
+        {/* {JSON.stringify(tableModel)} */}
+        {/* 二级页签 */}
+        {contentTab?.filter((c) => c.itemKey === activeKey?.[0])?.[0]?.subs && (
+          <div className="flex  space-x-1 p-1 ">
+            {contentTab
+              ?.filter((c) => c.itemKey === activeKey?.[0])?.[0]
+              ?.subs?.map((s) => {
+                return (
+                  <div
+                    className={` text-sm  cursor-pointer    ${classNames({
+                      "bg-white border": activeKey?.[1] === s.itemKey,
+                    })} rounded-2xl  py-1 px-4`}
+                    key={s.itemKey}
+                    onClick={() => {
+                      if (activeKey && activeKey?.[0]) {
+                        setActiveKey([activeKey?.[0], s.itemKey]);
+                      }
+                    }}
+                  >
+                    {s.tab}
+                  </div>
+                );
+              })}
+          </div>
+        )}
+
         {/* 列表行 */}
         <TablePage<T>
           className="flex-grow"
           width={tableWidth}
           key={listType}
+          activeKey={activeKey?.[0] || contentTab?.[0].itemKey}
           listType={listType}
           editType={editType}
           req={tableReq}
           btns={btns}
+          //视图数据过滤
+          conditionJson={
+            conditions && activeKey
+              ? conditions.find((d) => d.id === activeKey?.[0])?.conditionJson
+              : undefined
+          }
           columnTitle={filterType !== undefined ? "sort" : true}
-          onTableModel={(formVo: FormVo) => {
-            setTableModel(formVo);
-          }}
+          onTableModel={setTableModel}
+          onFormModel={setFormModel}
           //错误信息回传
           onHttpError={(e) => {
             if (e.code === 4404) {

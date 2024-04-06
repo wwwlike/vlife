@@ -35,7 +35,6 @@ public class SysUserPageReq extends PageQuery<SysUser> {
     public List<String> id;
 
     public List<String> username;
-
     /**
      * 姓名/手机/证件/用户名
      */
@@ -45,5 +44,4 @@ public class SysUserPageReq extends PageQuery<SysUser> {
      * 部门
      */
     public String sysDept_code;
-
 }

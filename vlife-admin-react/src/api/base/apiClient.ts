@@ -123,6 +123,7 @@ instance.interceptors.request.use(
     return Promise.reject(err);
   }
 );
+let lastNotificationTime = 0;
 
 //  axios 定义拦截器预处理所有请求
 instance.interceptors.response.use(
@@ -152,10 +153,16 @@ instance.interceptors.response.use(
       &&url?.indexOf("list") === -1&&!url?.endsWith("page")&&url?.indexOf("/page/")===-1
       &&url?.indexOf("query") === -1 &&url?.indexOf("find") === -1
     ){
-      Notification.success({
-        content: `操作成功`,
-        position:'bottomRight'
-      });
+
+      const currentTime = Date.now();
+      const timeDiff = currentTime - lastNotificationTime;
+      if (timeDiff > 5000) { // 设定时间间隔为 5 秒
+        Notification.success({
+          content: `操作成功`,
+          position: 'bottomRight'
+        });
+        lastNotificationTime = currentTime;
+      }
     }
     if (res.data.code === 9999) {
       //超时删除token 系统异常也是9999（排查）
@@ -191,7 +198,7 @@ instance.interceptors.response.use(
         content: `没有权限`,
       });
       // window.localStorage.removeItem(localStorageKey);
-      // 统一处理未授权请求，跳转到登录界面
+      //统一处理未授权请求，进行403跳转(，勾超级用户，单无权限需要控制)
        document.location = "/403";
     }
     return Promise.reject(err);

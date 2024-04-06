@@ -47,6 +47,9 @@ import java.util.stream.Collectors;
  */
 @Data
 public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> implements BaseRequest<T> {
+
+    public CustomQuery() {
+    }
     /**
      * 自定义参数传入
      *
@@ -55,7 +58,11 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     @JsonIgnore
     protected Class<T> entityClz;
 
-//    @JsonIgnore post提交不需要该注解
+    public void setEntityClz(Class entityClz) {
+        this.entityClz = entityClz;
+    }
+
+    //    @JsonIgnore post提交不需要该注解
     protected OrderRequest order = new OrderRequest();
 
     @JsonIgnore
@@ -231,7 +238,6 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
         }
         return this;
     }
-
     /**
      * queryBuild的查询条件
      * 老的支持嵌套的复杂型，接收TagFilter
@@ -244,4 +250,28 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
      */
     @VField(skip = true)
     private List<ConditionGroup> conditionGroups;
+
+    //流程页签
+    @VField(skip = true,dictCode = "FLOW_TAB")
+    private  String flowTab;
+    //流程下一级过滤条件
+    @VField(skip = true)
+    private String flowNextTab;
+
+//    @VField(skip = true)
+//    private String busniessType;
+//
+//    @VField(skip = true)
+//    private boolean todo;
+//    //工作流已办
+//    @VField(skip = true)
+//    private boolean done;
+//    //我发起的
+//    @VField(skip = true)
+//    private boolean byMe;
+//    //抄送
+//    @VField(skip = true)
+//    private boolean notifier;
+
+
 }

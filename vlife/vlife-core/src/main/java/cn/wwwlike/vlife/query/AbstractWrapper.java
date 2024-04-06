@@ -22,11 +22,14 @@ import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.dict.Join;
 import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.utils.VlifeUtils;
+import lombok.Data;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -51,6 +54,8 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
      * 全量查询，开启后status=-1已删除的也查询
      */
     private boolean fullData=false;
+
+
 
     /**
      * 占位符
@@ -83,6 +88,32 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
      * 查询条件的子元素列表信息
      */
     protected List<Element> elements = new ArrayList<>();
+
+    /**
+     * 外键字段关联配置 手工配置，替代传统的通过约定命名进行表关联
+     * 如：sysUser 里的sysDeptId是外键，按照规则来说必须是该字符串，如果实际情况不是该字段除了在path里进行映射之外，还可以手工在这里传入
+     * 场景： 应该推荐是用path ,在这里使用多半是因为该字段可以对应多个表
+     */
+    protected Map<Class,String> fkRelation = new HashMap<Class,String>();
+
+    //添加外键关联的表
+    public Children addFkRelation(Class<? extends Item> fkClazz,String field) {
+        fkRelation.put(fkClazz,field);
+        return typedThis;
+    }
+
+//    /**
+//     * 子表关联配置
+//     * 手工配置，替代传统的通过约定命名进行表关联
+//     */
+//    protected Map<Class,String> subRelation = new HashMap<Class,String>();
+//    public Children addSubRelation(Class<? extends Item> subClazz,String field) {
+//        subRelation.put(subClazz,field);
+//        return typedThis;
+//    }
+
+
+
     /**
      * 包括的子查询列表
      */
@@ -421,5 +452,8 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
             return VlifeUtils.fullPath("", list, true);
         }
     }
+
+
+
 }
 

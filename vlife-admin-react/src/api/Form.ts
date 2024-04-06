@@ -27,6 +27,9 @@ export interface Form extends DbEntity {
   itemName:string;//主字段表达式
   helpDoc:string;//开发帮助文档
   typeParentsStr:string;//模型类接口
+  flowJson:string;//已发布流程脚本
+  unpublishJson:string;//未发布的流程脚本
+  // flowDefineKey:string;//流程定义key
 }
 
 /**

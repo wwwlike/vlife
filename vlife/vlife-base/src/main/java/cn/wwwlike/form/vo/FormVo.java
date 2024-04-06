@@ -123,4 +123,8 @@ public class FormVo implements VoBean<Form> {
   public String formDesc;
   //开发帮助文档
   public String helpDoc;
+  //流程脚本
+  public String flowJson;
+//  //流程定义key
+//  public String flowDefineKey;
 }

@@ -52,6 +52,7 @@ export enum DataModel{
   date="date",//复杂对象
   boolean="boolean",
   image="image",//图像类型
+  icon="icon",//图像类型
 }
 
 /**

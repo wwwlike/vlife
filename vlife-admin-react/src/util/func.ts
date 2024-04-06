@@ -133,6 +133,59 @@ export function removeNullProperties<T extends object>(obj: T): Partial<T> {
      }
    }
  
+
+ export const shotFormatDate1 = (dateString:Date) => {
+  const date = new Date(formatDate(dateString, 'yyyy-MM-dd HH:mm:ss'));
+  const today = new Date();
+  const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const dayBeforeYesterday = new Date(today);
+    dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+  
+    const diffTime = Math.abs(today.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+    if (date.toDateString() === today.toDateString()) {
+      return `今天 ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return `昨天 ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+    } else if (date.toDateString() === dayBeforeYesterday.toDateString()) {
+      return `前日 ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+    } else if (diffDays < 7) {
+      return `${['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()]} ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+    } else {
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+};
+  
+export const shotFormatDate = (dateString: Date) => {
+  const date = new Date(formatDate(dateString, 'yyyy-MM-dd HH:mm:ss'));
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const dayBeforeYesterday = new Date(today);
+  dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+
+  const diffTime = Math.abs(today.getTime() - date.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (date.toDateString() === today.toDateString()) {
+    let hours = date.getHours();
+    if (hours >= 24) {
+      hours -= 24;
+    }
+    const minutes = date.getMinutes();
+    return `今天 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return `昨天 ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+  } else if (date.toDateString() === dayBeforeYesterday.toDateString()) {
+    return `前日 ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+  } else if (diffDays < 7) {
+    return `${['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()]} ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+  } else {
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+};
  
   /**
    * @param rootCode itree数据转,datas数据

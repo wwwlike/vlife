@@ -772,6 +772,7 @@ export default <T extends IdBean>({
             // form: form, //formliy的表单信息传入到字段里；（子表单使用，把子form注入到父form里）
             entityType: modelInfo.entityType,
             componentSetting: f.componentSetting,
+            title: f.title,
             //组件设置信息
             pageComponentPropDtos: f.pageComponentPropDtos,
             placeholder:

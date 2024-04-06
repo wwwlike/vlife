@@ -175,8 +175,9 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
             }
             order.setOrders(sort.getOrders());
         }
-
-        query = order(model.getMain(), query, order.getOrderReqList());
+        if(!CustomItem.class.isAssignableFrom(entityClz)){
+            query = order(model.getMain(), query, order.getOrderReqList());
+        }
         return query;
     }
 
@@ -282,6 +283,7 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
         return new PageVo(mainResult, pageRequest.getPager().getSize(),
                 pageRequest.getPager().getPage(), queryResults.getTotal());
     }
+
 
     /**
      * 通过条件包装对象和VO的class类型进行VO和DO的查询

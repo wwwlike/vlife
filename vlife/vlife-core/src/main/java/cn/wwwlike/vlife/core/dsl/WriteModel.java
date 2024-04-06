@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static cn.wwwlike.vlife.core.dsl.QueryHelper.getItemEntityPath;
 
@@ -125,14 +126,18 @@ public class WriteModel<T extends Item> implements WModel<T> {
         Map<Path, Object> map = new HashMap<>();
         boolean isItem=bean instanceof Item?true:false;
         for (FieldDto fieldDto : basic) {
-            String entityName=isItem?fieldDto.getFieldName():fieldDto.getEntityFieldName();
-            Boolean isIgnore=fields==null?false:(Arrays.stream(fields).filter(str->{
-                return entityName.equals(str);
-            }).count()>0);
-            if (!entityName.equals("id")&&isIgnore==!fieldsIsIgnore) {
-                map.put(getPath(entityName),
-                        ReflectionUtils.getFieldValue(bean, fieldDto.getFieldName())
-                );
+            try{
+                String entityName=isItem?fieldDto.getFieldName():fieldDto.getEntityFieldName();
+                Boolean isIgnore=fields==null?false:(Arrays.stream(fields).filter(str->{
+                    return entityName.equals(str);
+                }).count()>0);
+                if (!entityName.equals("id")&&isIgnore==!fieldsIsIgnore) {
+                    map.put(getPath(entityName),
+                            ReflectionUtils.getFieldValue(bean, fieldDto.getFieldName())
+                    );
+                }
+            }catch (Exception ex){
+                ex.printStackTrace();
             }
         }
         if(bean.getId()!=null){

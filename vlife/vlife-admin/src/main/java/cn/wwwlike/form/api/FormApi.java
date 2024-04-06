@@ -53,7 +53,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
     }
     @Value("${vlife.packroot}")
     public String packroot;
-
     /**
      * 模型查询
      */
@@ -136,12 +135,18 @@ public class FormApi extends VLifeApi<Form, FormService> {
 //        }
 //        return form;
 //    }
-
     /**
      * 模型保存
+     * 和工作流有关的进行工作流发布
      */
     @PostMapping("/save/formDto")
     public FormVo saveFormDto(@RequestBody FormDto dto) {
+        //当前流程修改就会保存时发布
+        if(dto.getUnpublishJson()!=null&&!dto.getUnpublishJson().equals(dto.getFlowJson())){
+//            String defineId=  flowService.publish(dto.getType(),dto.getUnpublishJson(),dto.getName());
+            dto.setFlowJson(dto.getUnpublishJson());
+            dto.setUnpublishJson(null);
+        }
         dto=service.syncDictCode(dto); //字典修改后更新field
         String id = service.save(dto, true).getId();
         FormVo vo = service.queryOne(FormVo.class, id);

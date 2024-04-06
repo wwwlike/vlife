@@ -218,10 +218,10 @@ function NiceModal({
   return (
     <Modal
       width={width}
-      // height={200}
+      height={height}
       // className={`h-96`}
       // fullScreen={true}
-      bodyStyle={{ overflow: "auto", maxHeight: height || 560, padding: 2 }}
+      bodyStyle={{ overflow: "auto", padding: 2 }}
       onCancel={() => modal.hide()} // 默认点击 cancel 时关闭对话框
       // onOk={() => {
       //   modal.hide();

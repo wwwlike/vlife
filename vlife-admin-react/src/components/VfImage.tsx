@@ -17,7 +17,9 @@ const VfImage = ({
   size = "small",
   onDataChange,
   read,
+  disabled,
   className,
+  ...props
 }: VfImageProps) => {
   const action = `${apiUrl}/sysFile/uploadImg`;
   const [imageIds, setImageIds] = useState<string[]>();
@@ -70,7 +72,7 @@ const VfImage = ({
     return [];
   }, [value]);
 
-  return read ? (
+  return read || disabled ? (
     <>
       <Space>
         {typeof value === "string" ? (

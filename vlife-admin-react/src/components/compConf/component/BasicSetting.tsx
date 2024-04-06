@@ -10,6 +10,7 @@ import VfImage from "@src/components/VfImage";
 import { FormFieldVo } from "@src/api/FormField";
 import CompLabel from "./CompLabel";
 import { loadApi } from "@src/resources/ApiDatas";
+import SelectIcon from "@src/components/SelectIcon";
 
 /**
  * 基础数据设置
@@ -144,6 +145,14 @@ export default ({
                 )}
                 {propInfo.dataModel === DataModel.image && (
                   <VfImage
+                    value={data.propVal}
+                    onDataChange={(v) => {
+                      setData({ ...data, propVal: v });
+                    }}
+                  />
+                )}
+                {propInfo.dataModel === DataModel.icon && (
+                  <SelectIcon
                     value={data.propVal}
                     onDataChange={(v) => {
                       setData({ ...data, propVal: v });

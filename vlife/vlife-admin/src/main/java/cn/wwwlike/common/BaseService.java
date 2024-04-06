@@ -106,6 +106,12 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
      * 当前支持查询本部门下级部门，查询本人，查看同一权限组 （权限组非树形关系，不支持查看下级）
      */
     public <S extends AbstractWrapper> S addQueryFilter(S queryWrapper) {
+        //实体类并且开启了工作流则不启用行级数据过滤
+        if(Item.class.isAssignableFrom(queryWrapper.getEntityClz())){
+            if(getModelInfo(queryWrapper.getEntityClz().getSimpleName()).getFlowJson()!=null){
+                return queryWrapper;
+            }
+        }
         SecurityUser securityUser = SecurityConfig.getCurrUser();
         if (securityUser != null) {
             JSONObject user = (JSONObject) securityUser.getUseDetailVo();

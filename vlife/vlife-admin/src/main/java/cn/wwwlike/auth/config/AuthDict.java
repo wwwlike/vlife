@@ -80,6 +80,16 @@ public class AuthDict {
         public final static String CENTER="center";
     }
 
+    @Named("访问权限级别")
+    public static final class Access {
+        @Named("可编辑")
+        public final static String Writeable="Writeable";
+        @Named("仅可见")
+        public final static String Readable="Readable";
+        @Named("隐藏")
+        public final static String HIDE="hide";
+    }
+
 
 //'amber' | 'blue' | 'cyan' | 'green' | 'grey' | 'indigo' | 'light-blue' | 'light-green' | 'lime' | 'orange' | 'pink' | 'purple' | 'red' | 'teal' | 'violet' | 'yellow' | 'white'; //颜色代码
     @Named("颜色")
@@ -157,6 +167,29 @@ public class AuthDict {
         public final static String MULTI_LEVEL = "multilevel";
     }
 
+    @Named("节点审核状态")
+    public static final class FLOW_NODE_STATUS{
+        @Named("进行中")
+        public final static String  todo="todo";
+        @Named("已通过")
+        public final static String finish = "pass";
+        @Named("已退回")
+        public final static String back = "back";
+        @Named("已终止")
+        public final static String reject = "reject";
+    }
 
+
+    @Named("流程页签")
+    public static final class FLOW_TAB{
+        @Named("待办视图")
+        public final static String  todo="todo";
+        @Named("我发起的")
+        public final static String byMe = "byMe";
+        @Named("抄送视图")
+        public final static String notifier = "notifier";
+        @Named("已办视图")
+        public final static String done = "done";
+    }
 
 }

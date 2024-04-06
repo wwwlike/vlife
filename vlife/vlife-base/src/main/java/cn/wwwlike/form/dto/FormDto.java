@@ -20,6 +20,7 @@ package cn.wwwlike.form.dto;
 
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.sys.entity.SysResources;
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.SaveBean;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
@@ -99,4 +100,10 @@ public class FormDto implements SaveBean<Form> {
     public String helpDoc;
     public List<FormFieldDto> fields;
     public List<FormTabDto> formTabDtos;
+    //流程脚本
+    public String flowJson;
+
+    //最新未发布脚本
+    public String unpublishJson;
+
 }

@@ -10,7 +10,7 @@ import { FormPageProps } from "../formPage";
  */
 export interface ConfirmModalProps
   extends Omit<FormPageProps<any>, "setFormData" | "formData"> {
-  saveFun?: () => Promise<number>;
+  saveFun?: () => Promise<number>; //点ok触发的事件
   cancel?: () => void;
   title?: string; //默认删除的内容
 }
@@ -24,14 +24,21 @@ export const ConfirmModal = createNiceModal(
     const handleSubmit = useCallback(() => {
       //提交按钮触发的事件
       if (saveFun) {
+        const saveResult = saveFun();
         //通用保存
-        saveFun()
-          .then((data) => {
-            return modal.resolve(data);
-          })
-          .finally(() => {
-            modal.hide();
-          });
+        if (saveResult instanceof Promise) {
+          return saveResult
+            .then((data) => {
+              return modal.resolve(data);
+            })
+            .finally(() => {
+              modal.hide();
+            });
+        } else {
+          setTimeout(() => {
+            return modal.resolve(saveResult);
+          }, 500);
+        }
       }
     }, [saveFun]);
 

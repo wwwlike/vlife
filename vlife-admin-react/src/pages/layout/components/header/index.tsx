@@ -125,6 +125,7 @@ const Index = () => {
                         .show()
                         .then("placeholderUrl")
                         .required(),
+                      VF.field("confPage").eq(true).then("pageLayoutId").show(),
                     ],
                     onSubmitFinish: (...datas) => {
                       listAll().then((d) =>

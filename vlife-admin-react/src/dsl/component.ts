@@ -36,6 +36,8 @@ export type SelectInferface={
   placeholder?:string;
   // 表态只读状态
   read?: boolean;
+  //禁用状态
+  disabled?:boolean;
   //样式
   className?:string;
   //css样式
@@ -55,7 +57,7 @@ export type SelectInferface={
   //组件字段信息
   fieldInfo?: Partial< FormFieldVo>;
   //数据回传
-  onDataChange?: (data: T|undefined) => void;
+  onDataChange: (data?: T) => void;
 }
 
 

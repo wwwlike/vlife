@@ -58,10 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new MessageDigestPasswordEncoder("MD5");
     }
 
-
-    @Autowired()
-    EDefaultWebSecurityExpressionHandler ewebSecurityExpressionHandler;
-
     @Bean
     EDefaultWebSecurityExpressionHandler ewebSecurityExpressionHandler() {
         EDefaultWebSecurityExpressionHandler webSecurityExpressionHandler = new EDefaultWebSecurityExpressionHandler();

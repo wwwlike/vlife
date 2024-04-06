@@ -31,8 +31,9 @@ import VfTreeInput from "@src/components/VfTreeInput";
 import RelationView from "@src/components/RelationView";
 import VfNestedSelector from "@src/components/VfNestedSelector";
 import WorkFlowEditor from "@src/example/component";
-import NodeUserSelect from "@src/workflow-editor/components/Select/NodeUserSelect";
 import VfUserSelect from "@src/pages/sysManage/user/VfUserSelect";
+import TableRadioSelect from "@src/components/radio/TableRadioSelect";
+import SwitchCard from "@src/components/checkbox/SwitchCard";
 
 //解决预览不正确问题
 const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
@@ -455,11 +456,53 @@ export const FormComponents: CompDatas = {
       multiple: true,
     },
   },
-  NodeUserSelect: {
-    component: NodeUserSelect,
+  // NodeUserSelect: {
+  //   component: NodeUserSelect,
+  //   label: "常规审批对象选择",
+  //   icon: "IconOrderedList",
+  //   dataType: DataType.array,
+  //   dataModel: "nodeUserInfo",
+  // },
+  FlowSelect: {
+    component: VfUserSelect,
     label: "常规审批对象选择",
     icon: "IconOrderedList",
     dataType: DataType.array,
     dataModel: "nodeUserInfo",
+  },
+  TableRadioSelect: {
+    component: TableRadioSelect,
+    label: "字典项数据选择",
+    icon: "IconOrderedList",
+    dataType: DataType.array,
+    dataModel: "flowField",
+    props: {
+      //多选
+      dicts: {
+        label: "字典数据",
+        must: true,
+        dataType: DataType.array,
+        dataModel: "SysDict",
+      },
+    },
+  },
+  SwitchCard: {
+    component: SwitchCard,
+    label: "switch卡片样式开关",
+    icon: "IconOrderedList",
+    dataType: DataType.basic,
+    dataModel: DataModel.boolean,
+    props: {
+      divider: {
+        label: "分割线",
+        dataType: DataType.basic,
+        dataModel: DataModel.boolean,
+      },
+      icon: {
+        label: "图标",
+        dataType: DataType.basic,
+        dataModel: DataModel.icon,
+      },
+    },
   },
 };

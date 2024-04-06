@@ -32,10 +32,33 @@ const IconPage = lazy(() => import("@src/pages/common/IconContainer"));
 //业务系统
 const LoginPage = lazy(() => import("@src/pages/login"));
 const LayoutPage = lazy(() => import("@src/pages/layout"));
+
+//erp
+const LinkManPage = lazy(() => import("@src/pages/erp/linkman"));
+const SupplierPage = lazy(() => import("@src/pages/erp/supplier"));
+const CustomerPage = lazy(() => import("@src/pages/erp/customer"));
+const ProductPage = lazy(() => import("@src/pages/erp/product"));
+const OrderPurchasePage = lazy(() => import("@src/pages/erp/orderPurchase"));
+const OrderSalePage = lazy(() => import("@src/pages/erp/orderSale"));
+const WareHousePage = lazy(() => import("@src/pages/erp/wareHouse"));
+const ItemStockPage = lazy(() => import("@src/pages/erp/itemStock"));
+const OrderSendPage = lazy(() => import("@src/pages/erp/orderSend"));
+
+//pageDesign（plus）
+const PageDesignPage = lazy(() => import("@src/plus/page/design")); //页面设计列表页
+const PageDesignLayoutPage = lazy(
+  () => import("@src/plus/page/design/DesignLayout") //页面设置
+);
+//自定义页面
+const CustomPage = lazy(() => import("@src/plus/page/design/CustomPage"));
+//视图
+const ConditionPage = lazy(() => import("@src/plus/page/condition"));
+
 //工作流
 const FlowIndexPage = lazy(() => import("@src/example"));
 const FlowDesignPage = lazy(() => import("@src/example/component"));
-const MyTasksPage = lazy(() => import("@src/example/MyTasks"));
+//我的待办
+const MyTaskPage = lazy(() => import("@src/pages/dashboard/flow/MyTask"));
 export const allRoute: any[] = [
   //CRUD页面模版，根据路由后缀确定访问哪个模型
   {
@@ -73,6 +96,16 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={<DashboardPage />}
             titleId="工作台"
+            auth
+          />
+        ),
+      },
+      {
+        path: "dashboard/flow/MyTask",
+        element: (
+          <WrapperRouteComponent
+            element={<MyTaskPage />}
+            titleId="我的待办"
             auth
           />
         ),
@@ -156,31 +189,11 @@ export const allRoute: any[] = [
     ),
     children: [
       {
-        path: "deployment",
-        element: (
-          <WrapperRouteComponent
-            element={<FlowIndexPage />}
-            titleId="流程管理"
-            auth
-          />
-        ),
-      },
-      {
         path: "design",
         element: (
           <WrapperRouteComponent
             element={<FlowDesignPage />}
             titleId="流程设计"
-            auth
-          />
-        ),
-      },
-      {
-        path: "myTasks",
-        element: (
-          <WrapperRouteComponent
-            element={<MyTasksPage />}
-            titleId="流程待办"
             auth
           />
         ),
@@ -286,6 +299,175 @@ export const allRoute: any[] = [
         ),
       },
     ],
+  },
+  {
+    path: "/erp",
+    element: (
+      <WrapperRouteComponent element={<LayoutPage />} titleId="进销存" auth />
+    ),
+    children: [
+      {
+        path: "linkman/*",
+        element: (
+          <WrapperRouteComponent
+            element={<LinkManPage />}
+            titleId="联系人"
+            auth
+          />
+        ),
+      },
+      {
+        path: "supplier",
+        element: (
+          <WrapperRouteComponent
+            element={<SupplierPage />}
+            titleId="供应商"
+            auth
+          />
+        ),
+      },
+      {
+        path: "customer",
+        element: (
+          <WrapperRouteComponent
+            element={<CustomerPage />}
+            titleId="客户"
+            auth
+          />
+        ),
+      },
+      {
+        path: "product",
+        element: (
+          <WrapperRouteComponent
+            element={<ProductPage />}
+            titleId="产品"
+            auth
+          />
+        ),
+      },
+      {
+        path: "orderPurchase",
+        element: (
+          <WrapperRouteComponent
+            element={<OrderPurchasePage />}
+            titleId="采购单"
+            auth
+          />
+        ),
+      },
+      {
+        path: "orderSale",
+        element: (
+          <WrapperRouteComponent element={<OrderSalePage />} titleId="销售单" />
+        ),
+      },
+      {
+        path: "wareHouse",
+        element: (
+          <WrapperRouteComponent
+            element={<WareHousePage />}
+            titleId="仓库管理"
+          />
+        ),
+      },
+      {
+        path: "itemStock",
+        element: (
+          <WrapperRouteComponent
+            element={<ItemStockPage />}
+            titleId="商品库存"
+            auth
+          />
+        ),
+      },
+      {
+        path: "orderSend",
+        element: (
+          <WrapperRouteComponent
+            element={<OrderSendPage />}
+            titleId="发货单"
+            auth
+          />
+        ),
+      },
+    ],
+  },
+
+  // plus 高级版本
+  {
+    path: "/report",
+    element: (
+      <WrapperRouteComponent element={<LayoutPage />} titleId="报表设置" auth />
+    ),
+    children: [
+      {
+        path: "condition",
+        element: (
+          <WrapperRouteComponent
+            element={<ConditionPage />}
+            titleId="视图配置"
+            auth
+          />
+        ),
+      },
+    ],
+  },
+  {
+    path: "/page",
+    element: (
+      <WrapperRouteComponent
+        element={<LayoutPage />}
+        titleId="页面和模块"
+        auth
+      />
+    ),
+    children: [
+      {
+        path: "design",
+        element: (
+          <WrapperRouteComponent
+            element={<PageDesignPage />}
+            titleId="页面配置主页"
+            auth
+          />
+        ),
+      },
+      {
+        path: "layout/*",
+        element: (
+          <WrapperRouteComponent
+            element={<PageDesignLayoutPage />}
+            titleId="页面设计器"
+            auth
+          />
+        ),
+      },
+    ],
+  },
+  //独立访问的页面
+  {
+    path: "/page/admin",
+    element: (
+      <WrapperRouteComponent element={<LayoutPage />} titleId="组件演示" auth />
+    ),
+    children: [
+      {
+        path: "*",
+        element: (
+          <WrapperRouteComponent
+            element={<CustomPage />}
+            titleId="自定义页面"
+            auth
+          />
+        ),
+      },
+    ],
+  },
+  //独立访问的页面
+  {
+    path: "/page/*",
+    element: <CustomPage />,
   },
   {
     path: "/login",

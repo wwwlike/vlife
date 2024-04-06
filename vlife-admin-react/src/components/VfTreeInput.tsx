@@ -49,10 +49,11 @@ const VfTreeInput = ({
       ? findNode(treeData, value.toString())?.label + ""
       : undefined;
   }, [value, treeData]);
-  return read ? (
+  return read || props.disabled ? (
     <div className="formily-semi-text font-semibold">{treeName}</div>
   ) : (
     <>
+      {/* {JSON.stringify(Object.keys(props))} */}
       <TreeSelect
         value={value}
         className={className}
@@ -60,6 +61,7 @@ const VfTreeInput = ({
         onChange={(v) => {
           onDataChange(v + "");
         }}
+        disabled
         treeData={treeData}
         {...props}
       />

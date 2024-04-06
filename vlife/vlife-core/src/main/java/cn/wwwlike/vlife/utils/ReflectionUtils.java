@@ -76,6 +76,18 @@ public class ReflectionUtils {
         return field;
     }
 
+
+
+//    public static boolean hasPublicField(Class<?> clazz, String fieldName) {
+//        Field[] fields = clazz.getFields();
+//        for (Field field : fields) {
+//            if (field.getName().equals(fieldName)) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
     /**
      * 调用Getter方法.
      */

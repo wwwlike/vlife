@@ -19,6 +19,7 @@ import { VF } from "@src/dsl/VF";
 import { findSubs, findTreeRoot } from "@src/util/func";
 import { VFBtn } from "@src/components/button/types";
 import Button from "@src/components/button";
+import { isNull } from "lodash";
 
 const { Sider } = Layout;
 export function renderIcon(icon: any) {
@@ -67,23 +68,36 @@ export default () => {
   }, [userAllMenus, app]);
 
   useEffect(() => {
-    if (app === undefined) {
-      const menu = userAllMenus?.filter(
-        (m) =>
-          pathname.indexOf(
-            m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
-          ) !== -1
-      )?.[0];
-      if (menu) {
+    const menu = userAllMenus?.filter(
+      (m) =>
+        pathname.indexOf(
+          m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
+        ) !== -1 ||
+        (m.pageLayout && `/page/admin/${m.pageLayout.url}` === pathname)
+    )?.[0];
+
+    if (menu) {
+      if (app === undefined) {
         setApp(findTreeRoot(userAllMenus, menu));
-      } else {
-        const localApp: any = localStorage.getItem("currMenu");
-        if (localApp !== null) {
-          setApp(
-            userAllMenus.filter((m) => m.id === JSON.parse(localApp).app)[0]
-          );
-        }
       }
+    } else {
+      const localApp: any = localStorage.getItem("currMenu");
+      if (localApp !== null) {
+        const _currMenu = JSON.parse(localApp);
+        setApp(userAllMenus.filter((m) => m.id === _currMenu.app)[0]);
+        setSelectedKeys([_currMenu.menu]);
+        setOpenKeys(_currMenu.openKeys);
+      }
+    }
+
+    if (app === undefined) {
+      // const localApp: any = localStorage.getItem("currMenu");
+      // if (localApp !== null) {
+      //   const _currMenu = JSON.parse(localApp);
+      //   setApp(userAllMenus.filter((m) => m.id === _currMenu.app)[0]);
+      //   setSelectedKeys([_currMenu.menu]);
+      //   setOpenKeys(_currMenu.openKeys);
+      // }
     }
   }, [userAllMenus, pathname]);
 
@@ -272,6 +286,16 @@ export default () => {
                         },
                         icon: <i className="  icon-setting" />,
                       },
+                      {
+                        title: "页面配置",
+                        actionType: "click",
+                        disabledHide: true,
+                        usableMatch: !isNull(menu.pageLayoutId),
+                        onClick: () => {
+                          navigate(`/page/layout/${menu.pageLayoutId}`);
+                        },
+                        icon: <i className=" icon-hr_webpage" />,
+                      },
                     ]}
                   />
                   {menu.pcode === app?.code && (
@@ -291,10 +315,11 @@ export default () => {
             ),
             code: menu.code,
             icon: menu.icon ? renderIcon(menu.icon) : null,
-            path:
-              menu.url && menu.url.endsWith("*") //通配符页面
-                ? menu.url.replace("*", menu.placeholderUrl)
-                : menu.url, //路由配置页面
+            path: menu.pageLayout
+              ? `/page/admin/${menu.pageLayout.url}` //自定义界面
+              : menu.url && menu.url.endsWith("*") //通配符页面
+              ? menu.url.replace("*", menu.placeholderUrl)
+              : menu.url, //路由配置页面
             items: nav(menu),
           };
         });
@@ -314,6 +339,7 @@ export default () => {
             .name,
           app: app?.id,
           menu: data.selectedKeys[0],
+          openKeys: openKeys,
         })
       );
     }
@@ -372,6 +398,7 @@ export default () => {
             <Button {...createMenuBtn(app.code)} btnType="button" />
           </div>
         )}
+        {/* {localStorage.getItem("currMenu")}|{JSON.stringify(selectedKeys)} */}
         <Nav.Footer className=" absolute bottom-0" collapseButton={true} />
       </Nav>
     </Sider>

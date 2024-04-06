@@ -77,8 +77,6 @@ export default ({
   value,
   onDataChange,
 }: ObjectSettingProps) => {
-  const { getFormInfo } = useAuth();
-
   // data api方式使用的单个data
   const [data, setData] = useState<Partial<PageComponentPropDto>>(
     value && value.length > 0

@@ -78,7 +78,7 @@ export default ({
   const size = useSize(ref);
   const [width, setWidth] = useState(size?.width);
   useUpdateEffect(() => {
-    onDataChange([...tableData]);
+    onDataChange?.([...tableData]);
   }, [tableData]);
   return (
     <div ref={ref}>
@@ -123,17 +123,17 @@ export default ({
           parentFormData={formData}
           ignoredFields={ignores}
           onDataChange={setFormObj}
-          type={type || fieldInfo.entityType + ""}
+          type={type || fieldInfo?.entityType + ""}
           vf={vf}
         />
       </Modal>
       <TablePage<any>
         columnTitle={false}
         className="mt-1"
-        key={"table_sub" + fieldInfo.fieldName}
+        key={"table_sub" + fieldInfo?.fieldName}
         mode="hand"
         dataSource={tableData}
-        listType={type || fieldInfo.fieldType + ""}
+        listType={type || fieldInfo?.fieldType + ""}
         width={width}
         btns={btns}
         ignores={ignores}

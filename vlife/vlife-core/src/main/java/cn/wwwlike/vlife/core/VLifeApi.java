@@ -20,12 +20,14 @@ package cn.wwwlike.vlife.core;
 
 import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.ComponentParam;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -48,6 +50,16 @@ public class VLifeApi<T extends Item, S extends VLifeService> {
         entityClz = GenericsUtils.getSuperClassGenricType(this.getClass());
     }
 
+
+//    /**
+//     * 业务工作流查询
+//     * @param req
+//     * @return
+//     */
+//    @PostMapping("/flowPage")
+//    public PageVo<T> flowPage(@RequestBody Page req) {
+//        return service.findPage(req);
+//    }
 
     /**
      * 明细查询通用方法 支持saveBean数据查询

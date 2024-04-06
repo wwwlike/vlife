@@ -1,13 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import NiceModal, { createNiceModal, useNiceModal } from "@src/store";
+import NiceModal, { createNiceModal } from "@src/store";
 import { Form, IFormFeedback } from "@formily/core";
 import { IdBean } from "@src/api/base";
 import { FormVo } from "@src/api/Form";
 import FormPage, { FormPageProps } from "../formPage";
 import { VFBtn } from "@src/components/button/types";
-import VfButton from "@src/components/button";
-import { Button, Switch } from "@douyinfe/semi-ui";
+import { Switch } from "@douyinfe/semi-ui";
 import classNames from "classnames";
+import {
+  findProcessDefinitions,
+  FlowNode,
+  queryHistoricInfo,
+  RecordFlowInfo,
+} from "@src/api/workflow/Flow";
+import BtnToolBar from "@src/components/button/BtnToolBar";
 /**
  * 表单弹出层属性
  */
@@ -41,69 +47,85 @@ export const FormModal = createNiceModal(
       width: window.innerWidth,
       height: window.innerHeight,
     });
-
     const [_continueCreate, setContinueCreate] = useState<
       boolean | undefined
     >();
 
     const [formNumber, setFormNumber] = useState<number>(0);
-
-    const [screenSize, setScreenSize] = useState({
-      width: window.screen.width,
-      height: window.screen.height,
-    });
-
-    //form能使用的按钮过滤，并且对按钮添加提交之前的前置校验方式
-    const modal = useNiceModal("formModal");
-    //modal里的表单数
-    const [modifyData, setModifyData] = useState();
+    // const [modifyData, setModifyData] = useState(props.modifyData);
+    //按钮上的数据
     const [data, setData] = useState(formData);
+    const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo>(); //流程基本信息
+    const [historys, setHistorys] = useState<FlowNode[]>();
     const [form, setForm] = useState<Form>(); // formliy的form
     const [errors, setErrors] = useState<IFormFeedback[]>([]);
     const [formVo, setFormVo] = useState<FormVo | undefined>(modelInfo);
-    // const [reload, setReload] = useState<number>(0);
+
+    //请求该条记录的流程信息和历史审核信息
+    const getFlowInfo = useCallback(() => {
+      if (formVo && formVo.flowJson && data && data.id) {
+        findProcessDefinitions({
+          businessKeys: [data.id],
+          defineKey: formVo.type,
+        }).then((d) => {
+          setRecordFlowInfo(d?.data?.[0]);
+          //流程开始则查询各个历史节点信息
+          if (d?.data?.[0]?.started === true) {
+            queryHistoricInfo({
+              businessKey: data.id,
+              defineKey: formVo.type,
+            }).then((d) => {
+              setHistorys(d.data);
+            });
+          }
+        });
+      }
+    }, []);
+
+    useEffect(() => {
+      getFlowInfo();
+    }, []);
+
     const title = useMemo(() => {
       const no = data?.no || "";
       if (props.title) return props.title;
-      if (props.title === undefined && formVo === undefined) {
+      if (formVo === undefined) {
         return `“${props.type}”模型标识不存在`;
       }
-      if (props.readPretty) {
-        return formVo?.name + "详情" + no;
-      } else {
-        if (form?.values && form.values.id) {
-          return formVo?.name + "" + no;
-        } else {
-          return "新建(" + formVo?.name + ")";
-        }
-      }
-    }, [data, form, formVo && formVo.name]);
-
-    //非按钮型直接提交
-    const handleSubmit = useCallback(() => {
-      if (formVo) {
-        //提交按钮触发的事件
-        if (saveFun && form) {
-          //通用保存
-          form
-            .submit()
-            .then((data) => {
-              saveFun(form.values).then((data) => {
-                modal.resolve(data);
-                modal.hide();
-              });
-            })
-            .catch((e) => {});
-        }
-      }
-    }, [data, formVo, form]);
+      return props.readPretty
+        ? formVo?.name + "详情" + no
+        : form?.values?.id
+        ? formVo?.name + no
+        : "新建(" + formVo?.name + ")";
+    }, [data, form, formVo]);
 
     //可用按钮过滤，以及提交检查函数封装
-    const formBtns = useMemo(() => {
+    const formBtns = useMemo((): VFBtn[] => {
       if (btns && form) {
         return btns.map((f) => {
           return {
             ...f,
+            btnType: "button",
+            position: "formFooter",
+            datas: { ...data, flow: recordFlowInfo }, //formPage的数据通过它传
+            onSubmitFinish: (_data) => {
+              if (
+                _continueCreate === true ||
+                (_continueCreate === undefined && f.continueCreate === true)
+              ) {
+                setData(undefined);
+                setFormNumber((num) => num + 1);
+              } else {
+                setData(_data);
+              }
+              //流程类型按钮触发流程信息提取
+              if (f.actionType === "flow") {
+                getFlowInfo();
+              }
+              if (f.onSubmitFinish) {
+                f.onSubmitFinish(_data);
+              }
+            },
             onFormilySubmitCheck: (): Promise<boolean> => {
               return (
                 form.submit().then((d) => {
@@ -118,7 +140,7 @@ export const FormModal = createNiceModal(
         });
       }
       return [];
-    }, [btns, form, formVo]);
+    }, [btns, form, formVo, data, recordFlowInfo]);
 
     const footer = useMemo(() => {
       if (formBtns && formBtns.length > 0) {
@@ -126,7 +148,7 @@ export const FormModal = createNiceModal(
           <div className="flex w-full justify-end relative  space-x-1">
             {formBtns.map((btn, index) => {
               return (
-                <div key={`div_btn_${index}`}>
+                <>
                   {btn.actionType === "create" &&
                     (_continueCreate !== undefined ||
                       btn.continueCreate !== false) && (
@@ -158,40 +180,42 @@ export const FormModal = createNiceModal(
                         />
                       </div>
                     )}
-                  <VfButton
-                    key={`model_btn_${index}`}
-                    {...btn}
-                    datas={data} //formPage的数据通过它传
-                    position="formFooter"
-                    onSubmitFinish={(_data) => {
-                      if (
-                        _continueCreate === true ||
-                        (_continueCreate === undefined &&
-                          btn.continueCreate === true)
-                      ) {
-                        setData(undefined);
-                        setFormNumber((num) => num + 1);
-                      } else {
-                        setData(_data);
-                      }
-                      if (btn.onSubmitFinish) {
-                        btn.onSubmitFinish(_data);
-                      }
-                    }}
-                  />
-                </div>
+                </>
               );
             })}
+            <BtnToolBar
+              datas={[{ ...data, flow: recordFlowInfo }]}
+              btns={formBtns}
+              formModel={modelInfo?.type}
+              position="formFooter"
+              btnType="button"
+            />
           </div>
         );
       } else {
-        return (
-          <div>
-            <Button onClick={handleSubmit}>确定</Button>
-          </div>
-        );
+        return <div>{/* <Button onClick={handleSubmit}>确定</Button> */}</div>;
       }
-    }, [formBtns, data, form, _continueCreate]);
+    }, [formBtns, data, form, _continueCreate, recordFlowInfo]);
+
+    const modalWidth = useMemo(() => {
+      const formWidth = width
+        ? width
+        : formVo?.modelSize === 4
+        ? 1200
+        : formVo?.modelSize === 3
+        ? 1000
+        : formVo?.modelSize === 2
+        ? 800
+        : formVo?.modelSize === 1
+        ? 600
+        : 900; //默认900
+      //启动的流程表单扩展宽度300px
+      // if (formData?.flow && formData?.flow?.started) {
+      if (historys && historys.length > 0) {
+        return formWidth + 300;
+      }
+      return formWidth;
+    }, [width, historys, formVo]);
 
     return (
       <NiceModal
@@ -199,38 +223,27 @@ export const FormModal = createNiceModal(
         height={(windowSize.height / 3) * 2}
         footer={footer}
         title={title}
-        className=" max-h-96"
-        width={
-          width
-            ? width
-            : formVo?.modelSize === 4
-            ? 1200
-            : formVo?.modelSize === 3
-            ? 1000
-            : formVo?.modelSize === 2
-            ? 800
-            : formVo?.modelSize === 1
-            ? 600
-            : 900 //默认900
-        }
-        onOk={handleSubmit}
+        className="max-h-96"
+        width={modalWidth}
+        // onOk={handleSubmit}
       >
         {/* 弹出层不传表单给formPage,并且还从回调接收FormVo */}
         <FormPage
-          // className=" h-96"
-          key={`modal${props.type + data?.id + formNumber}`}
+          key={`modal${data?.id + formNumber}`}
           onError={setErrors}
           formData={data}
           modelInfo={modelInfo}
-          modifyData={modifyData}
-          onDataChange={(data, field) => {
-            setData((d: any) => {
-              return { ...data };
+          flowHistorys={historys} //流程历史记录
+          flowBasic={recordFlowInfo} //流程基本信息
+          modifyData={props.modifyData}
+          onDataChange={(d, field) => {
+            setData((old: any) => {
+              return { ...d };
             });
           }}
           onForm={(f) => {
             setForm(f);
-          }} //formily表单信息
+          }}
           onVfForm={setFormVo} //vf模型信息
           {...props}
         />

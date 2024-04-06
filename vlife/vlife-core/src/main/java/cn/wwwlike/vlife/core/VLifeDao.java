@@ -66,6 +66,7 @@ public interface VLifeDao<T extends Item> {
      */
     public <E extends VoBean<T>, N extends PageQuery<T>> PageVo<E> queryPage(Class<E> vo, N pageRequest);
 
+
     /**
      * 通过条件包装对象和VO的class类型进行VO和DO的查询
      *

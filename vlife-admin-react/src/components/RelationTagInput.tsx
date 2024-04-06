@@ -3,12 +3,13 @@ import { Modal, Space, TagInput } from "@douyinfe/semi-ui";
 import { IFkItem } from "@src/api/base";
 import { find } from "@src/api/base/baseService";
 import { DataType } from "@src/dsl/base";
-import { VfBaseProps } from "@src/dsl/component";
+import { ISelect, VfBaseProps } from "@src/dsl/component";
 import TablePage from "@src/pages/common/tablePage";
 import { useUpdateEffect } from "ahooks";
 interface RelationTagInputProps
   extends Partial<VfBaseProps<string | string[]>> {
   req: any; //列表过滤条件
+  onObjectlChange?: (obj: ISelect[]) => void;
 }
 function queryData(
   value: string[],
@@ -29,6 +30,7 @@ const RelationTagInput = ({
   placeholder,
   className,
   onDataChange,
+  onObjectlChange,
 }: RelationTagInputProps) => {
   // 当前选中数据
   const [tagData, setTagData] = useState<any[]>([]);
@@ -51,6 +53,15 @@ const RelationTagInput = ({
 
   useUpdateEffect(() => {
     onDataChange && onDataChange(tagData.map((d) => d.id));
+    onObjectlChange &&
+      onObjectlChange(
+        tagData.map((d) => {
+          return {
+            label: d.name || d.no || "没有name和no字段不合适使用该组件",
+            value: d.id,
+          };
+        })
+      );
   }, [tagData]);
 
   const [modalState, setModalState] = useState(false);
@@ -95,6 +106,7 @@ const RelationTagInput = ({
           }
         />
       </Modal>
+
       <TagInput
         className={className}
         // showClear
@@ -108,7 +120,6 @@ const RelationTagInput = ({
               return i !== index;
             }),
           ];
-          // alert(obj.length);
           setTagData([...obj]);
         }}
       />

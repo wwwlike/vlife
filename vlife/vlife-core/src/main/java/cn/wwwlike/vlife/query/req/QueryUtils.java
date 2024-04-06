@@ -89,7 +89,6 @@ public class QueryUtils {
 //        qw.and(ww ->
 //                ((T)ww).or(www->
 //                        groups.forEach(g->((T)ww).and(www->where((T) www,g.getWhere())))));
-
         return qw;
     }
 

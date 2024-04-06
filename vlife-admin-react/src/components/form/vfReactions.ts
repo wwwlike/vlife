@@ -92,9 +92,9 @@ export const  getObjElStr1=(depsIndex:number,condition:VfCondition|undefined,for
         results.push(leftVal<=rightFixedVal)
       }else if (condition.opt === FS_OPT.INCLUDES) {
         results.push(leftVal.includes(rightFixedVal))
-      }else if (condition.opt === FS_OPT.iSNOTNULL) {
+      }else if (condition.opt === FS_OPT.ISNOTNULL) {
         results.push(!isNull(leftVal))
-      }else if (condition.opt === FS_OPT.iSNULL) {
+      }else if (condition.opt === FS_OPT.ISNULL) {
         results.push(leftVal===undefined||  isNull(leftVal))
       }else if (condition.opt === FS_OPT.LIKE) {
       }else if (condition.opt === FS_OPT.START_WITH) {
@@ -141,9 +141,9 @@ export const  getObjElStr1=(depsIndex:number,condition:VfCondition|undefined,for
         }else if (condition.opt === FS_OPT.NE) {
           return `${val}!==${isNumber(condition.value)||isBoolean(condition.value)?condition.value:(`"`+condition.value+`"`)}`;
           // return `$deps[${sort}]!=="${condition.value}"`;
-        }else if (condition.opt === FS_OPT.iSNOTNULL) {
+        }else if (condition.opt === FS_OPT.ISNOTNULL) {
           return `($deps[${sort}]!==null&&$deps[${sort}]!==undefined&&$deps[${sort}]!=="")`;
-        }else if (condition.opt === FS_OPT.iSNULL) {
+        }else if (condition.opt === FS_OPT.ISNULL) {
           return `($deps[${sort}]===null||$deps[${sort}]===undefined||$deps[${sort}]==="")`;
         }else if (condition.opt === FS_OPT.CHANGE) {
           return `$deps[${sort}]||$deps[${sort}]===null||$deps[${sort}]===undefined||$deps[${sort}]===""`;

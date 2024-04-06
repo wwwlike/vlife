@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import VlifeForm, { FormProps } from "@src/components/form";
 import { useAuth } from "@src/context/auth-context";
 import { FormVo } from "@src/api/Form";
@@ -7,28 +7,19 @@ import { VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
 import { Tooltip } from "@douyinfe/semi-ui";
-const mode = import.meta.env.VITE_APP_MODE;
-/**
- * 入参：formData=> 表单初始化数据
- * 内部逻辑
- * 请求表单模型->提取字典模型
- * formData+表单模型->请求外键信息
- * 1. 表单数据提取
- * 2. 字典数据提取
- * 3. 外键数据提取
- * 4. 数据透传
- */
+import FormFlowContainer from "@src/example/FormFlowContainer";
+import { FlowNode, RecordFlowInfo } from "@src/api/workflow/Flow";
 
 export interface FormPageProps<T extends IdBean>
   extends Omit<FormProps<T>, "modelInfo"> {
   type: string; //模型标识
   title?: string; //表单名称
   modelInfo?: FormVo; //模型信息可选，设计表单时实时传
-  //字段级联配置
   onVfForm?: (formVo: FormVo) => void; //模型信息对外
-  // formData
   modifyData?: any; //其他场景修改得更新进来以该数据进行展示
-  reaction?: VfAction[];
+  reaction?: VfAction[]; //字段级联配置
+  flowHistorys?: FlowNode[]; //审批历史信息
+  flowBasic?: RecordFlowInfo; //流程基本信息
 }
 const FormPage = <T extends IdBean>({
   title,
@@ -40,6 +31,8 @@ const FormPage = <T extends IdBean>({
   onClickFieldComponent,
   onVfForm,
   onForm,
+  flowHistorys,
+  flowBasic,
   onSubForm,
   reaction,
   formData,
@@ -50,34 +43,47 @@ const FormPage = <T extends IdBean>({
   const { getDict, getFormInfo, groups, user } = useAuth();
   //模型信息
   const [model, setModel] = useState<FormVo | undefined>(
-    modelInfo ? { ...modelInfo } : undefined
+    modelInfo && { ...modelInfo }
   );
-  //表单数据初始化
+  //表单数据初始化(仅第一次有效)
   const [formPageData, setFormPageData] = useState<any>(formData);
+  const formDataRef = useRef(formData);
 
   //模型信息提取，模型信息返回
   useEffect(() => {
     if (model === undefined) {
       getFormInfo({ type }).then((data) => {
-        if (data?.id) {
-          setModel(data);
-          if (onVfForm) {
-            onVfForm(data);
-          }
-        }
+        setModel(data);
+        onVfForm && data && onVfForm(data);
       });
     }
   }, [type, design, groups]);
 
-  //模型信息提取，模型信息返回
+  useEffect(() => {
+    formDataRef.current = formData;
+  }, [formData]);
+  useEffect(() => {
+    setFormPageData(formDataRef.current);
+  }, [flowBasic]);
+  //实时模型信息
   useEffect(() => {
     if (modelInfo) {
       setModel({ ...modelInfo });
     }
   }, [JSON.stringify(modelInfo)]);
 
-  //form数据
+  //默认值初始化数据
   const initData = useMemo(() => {
+    let defaultData: any = {};
+    model?.fields.forEach((field) => {
+      if (field.initialValues && field.fieldName) {
+        defaultData[field.fieldName] = field.initialValues;
+      }
+    });
+    return defaultData;
+  }, [model]);
+
+  const initData1 = useMemo(() => {
     if (modifyData) {
       //二次传值使用
       return modifyData;
@@ -85,7 +91,7 @@ const FormPage = <T extends IdBean>({
       //初始值使用
       return formPageData;
     } else if (model) {
-      //没传值使用默认值
+      //使用配置的默认值
       let defaultData: any = {};
       model.fields.forEach((field) => {
         if (field.initialValues && field.fieldName) {
@@ -106,64 +112,77 @@ const FormPage = <T extends IdBean>({
 
   //级联响应设置信息
   const vfs = useMemo(() => {
-    return formPageReaction && formPageReaction.length > 0
-      ? [...formPageReaction.map((f) => f.getVF())]
-      : [];
-  }, [formPageReaction]);
+    return [
+      ...(props.vf ? props.vf : []),
+      ...(formPageReaction && formPageReaction.length > 0
+        ? formPageReaction.map((f) => f.getVF())
+        : []),
+    ];
+  }, [props.vf, formPageReaction]);
 
-  const vlife_form = useMemo(() => {
-    if (model) {
-      return (
-        <VlifeForm
-          {...props}
-          fontBold={props.fontBold}
-          key={initData?.id + "_" + props.key}
-          onClickFieldComponent={onClickFieldComponent}
-          className={className}
-          modelInfo={model}
-          design={design}
-          vf={props.vf || vfs}
-          formData={initData}
-          onDataChange={(data, field) => {
-            if (onDataChange) {
-              onDataChange(data, field);
-            }
-          }}
-          highlight={props.highlight}
-          onForm={onForm}
-          onSubForm={onSubForm}
-        />
-      );
-    } else {
-      return <>{type}模型无法解析，请检查名称是否准确</>;
+  //整合了流程的模型
+  const _model = useMemo((): FormVo | undefined => {
+    if (model && flowBasic?.auditInfo?.fields) {
+      return {
+        ...model,
+        fields: model.fields.map((f) => {
+          const access = flowBasic.auditInfo.fields.filter(
+            (ff) => f.fieldName === ff.fieldName
+          )?.[0]?.access;
+          if (access === undefined || access === null || access == "Readable") {
+            return { ...f, x_read_pretty: true };
+          } else if (access === "hide") {
+            return { ...f, x_hidden: true };
+          } else {
+            return f;
+          }
+        }),
+      };
     }
-  }, [
-    model,
-    initData,
-    reaction,
-    props.highlight,
-    title,
-    vfs,
-    getDict,
-    props.vf,
-  ]);
-  //级联操作
+    return model;
+  }, [flowBasic, model]);
+
   return (
-    <>
-      {vlife_form}
-      {modelInfo === undefined && user?.superUser === true && (
-        <div
-          onClick={() => {
-            navigate(`/sysConf/formDesign/${type}`);
-          }}
-          className=" absolute top-2 right-2 font-bold text-gray-500 hover:text-blue-500 cursor-pointer"
-        >
-          <Tooltip content="表单配置">
-            <IconSetting />
-          </Tooltip>
-        </div>
+    <FormFlowContainer className={className} historys={flowHistorys}>
+      {/* {JSON.stringify(flow?.auditInfo?.fields.length)} */}
+      {_model ? (
+        <>
+          {/* {JSON.stringify(modifyData || formPageData || initData)} */}
+          <VlifeForm
+            {...props}
+            fontBold={props.fontBold}
+            key={initData?.id + "_" + props.key}
+            onClickFieldComponent={onClickFieldComponent}
+            modelInfo={_model}
+            //流程结束只读状态
+            readPretty={flowBasic?.nodeId === "end"}
+            design={design}
+            vf={vfs}
+            formData={modifyData || formPageData || initData}
+            onDataChange={(d, f) => {
+              onDataChange?.(d, f);
+            }}
+            highlight={props.highlight}
+            onForm={onForm}
+            onSubForm={onSubForm}
+          />
+          {user?.superUser === true && (
+            <div
+              onClick={() => {
+                navigate(`/sysConf/formDesign/${type}`);
+              }}
+              className=" absolute top-2 right-2 font-bold text-gray-500 hover:text-blue-500 cursor-pointer"
+            >
+              <Tooltip content="表单配置">
+                <IconSetting />
+              </Tooltip>
+            </div>
+          )}
+        </>
+      ) : (
+        <>{type}模型无法解析，请检查名称是否准确</>
       )}
-    </>
+    </FormFlowContainer>
   );
 };
 // };

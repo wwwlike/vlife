@@ -7,8 +7,24 @@ export type whenResult=
   boolean;//同步判断
 
 //数据对比模式
-export enum FS_OPT{
-  CHANGE,EQ,NE,LIKE,START_WITH,END_WITH,GT,GE,LT,LE,iSNULL,iSNOTNULL,INCLUDES,REGEX,
+// export enum FS_OPT{
+//   CHANGE,EQ,NE,LIKE,START_WITH,END_WITH,GT,GE,LT,LE,iSNULL,iSNOTNULL,INCLUDES,REGEX,
+// }
+export enum FS_OPT {
+  CHANGE = '变更',
+  EQ = '等于',
+  NE = '不等于',
+  LIKE = '包含',
+  START_WITH = '以...开头',
+  END_WITH = '以...结尾',
+  GT = '大于',
+  GE = '大于等于',
+  LT = '小于',
+  LE = '小于等于',
+  ISNULL = '为空',
+  ISNOTNULL = '不为空',
+  INCLUDES = '包含其中',
+  REGEX = '正则匹配',
 }
 
 //比对类型
@@ -32,6 +48,7 @@ export enum FS_STATE{
   initialValue,//默认值
   display,//显示隐藏 visible hidden
   title,//标题
+  x_component_props$placeholder,//占位说明
   required,//是否必填
   disabled,//是否禁用
   readOnly,//是否只读
@@ -258,9 +275,18 @@ export interface reaction{
     }
     return this;
   }
+  //功能描述
   description(val:string){
     this.reations.push({
       state:FS_STATE.description,
+      value:val
+    })
+    return this;
+  }
+  //功能说明
+  placeholder(val:string){
+    this.reations.push({
+      state:FS_STATE.x_component_props$placeholder,
       value:val
     })
     return this;
@@ -356,11 +382,11 @@ export interface reaction{
     return this._vf;
   }
   isNotNull(): VF {
-    this.opt=FS_OPT.iSNOTNULL;
+    this.opt=FS_OPT.ISNOTNULL;
     return this._vf;
    }
    isNull(): VF {
-    this.opt=FS_OPT.iSNULL;
+    this.opt=FS_OPT.ISNULL;
     return this._vf;
    }
    includes(val:any[]):VF{

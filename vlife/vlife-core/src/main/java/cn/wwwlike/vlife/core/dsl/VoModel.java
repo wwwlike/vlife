@@ -46,6 +46,9 @@ import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Transient;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,6 +155,20 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
     }
 
 
+    //检查类里的status字段是否存在且可以访问
+    public boolean checkFieldExistAndAccessible(Class clz,String fieldName) {
+        String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        try{
+            Method getMethod = clz.getMethod(getMethodName);
+            Annotation transientAnnotation = getMethod.getAnnotation(Transient.class);
+            if(transientAnnotation!=null){
+                return false;
+            }
+            return true;
+        }catch(NoSuchMethodException e){
+            return false;
+        }
+    }
     /**
      * 子查询的过滤条件拼接
      *
@@ -161,8 +178,9 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      * @return
      */
     private BooleanExpression subQueryFilter(String prefix, StringPath mainId, AbstractWrapper wrapper) {
-        //子查询也需要查询状态有效的数据
-        wrapper.eq("status", CT.STATUS.NORMAL);
+        if(checkFieldExistAndAccessible(wrapper.getEntityClz(),"status")) {
+            wrapper.eq("status", CT.STATUS.NORMAL);
+        }
         List<Class<? extends Item>> ls = (List) wrapper.allLeftPath().get(0);
         JPAQuery subMainQuery = joinByVo(null, null, prefix + "_", ls);
         BooleanBuilder subBuilder = whereByWrapper(wrapper);
@@ -171,7 +189,16 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         String entityAlias = prefix + "__" + uncapitalize(subMain.getSimpleName());
         EntityPathBase subMainPath = getAlljoin().get(entityAlias);
         EntityDto subMainDto = GlobalData.entityDto(subMain);
-        StringPath subId = (StringPath) ReflectionUtils.getFieldValue(subMainPath, subMainDto.getFkMap().get(mainClz));
+        StringPath subId =null;
+        if(wrapper.getFkRelation().get(mainClz)!=null){
+            subId=  (StringPath) ReflectionUtils.getFieldValue(subMainPath,(String)wrapper.getFkRelation().get(mainClz));
+        }else{
+            subId=  (StringPath) ReflectionUtils.getFieldValue(subMainPath, subMainDto.getFkMap().get(mainClz));
+        }
+        if(subId==null){
+            System.out.println("没有外键关系");
+        }
+
         if (false) {
             if (subBuilder.hasValue()) {
                 subMainQuery.where(mainId.eq(subId).and(subBuilder));
@@ -217,7 +244,11 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             } else if (alljoin.get(entityAlias) == null) {
                 addJoin(rightPath);
                 String leftIdName = entityDto.getFkMap().get(mainClz);
+                if(alljoin.get(prefix)==null){
+                    System.out.println("111111111111");
+                }
                 StringPath leftId = (StringPath) ReflectionUtils.getFieldValue(alljoin.get(prefix), leftIdName);
+
                 StringPath rightId = (StringPath) ReflectionUtils.getFieldValue(rightPath, "id");
                 fromQuery.leftJoin(rightPath).on(leftId.eq(rightId));
             }
@@ -251,7 +282,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         List<SimpleExpression> paths = new ArrayList<>();
         List<FieldDto> list = voDto.getFields().stream().filter(fieldDto -> {
             String type = fieldDto.getFieldType();
-            return (VCT.ITEM_TYPE.BASIC.equals(type));
+            return (VCT.ITEM_TYPE.BASIC.equals(type)&& (fieldDto.getVField()==null||fieldDto.getVField().skip()!=true));
         }).collect(Collectors.toList());
         for (FieldDto fieldDto : list) {
             EntityPathBase fieldInPath = this.getAlljoin().get(fieldDto.leftJoinName());
@@ -375,7 +406,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      */
     public synchronized <R extends AbstractWrapper> JPAQuery fromWhere(R wrapper) {
         //主表需要有status
-        if(wrapper.isFullData()==false) {
+        if(wrapper.isFullData()==false&&checkFieldExistAndAccessible(wrapper.getEntityClz(),"status")) {
             wrapper.eq("status", CT.STATUS.NORMAL);
         }
         // step1 query init

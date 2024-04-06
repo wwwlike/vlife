@@ -8,7 +8,7 @@ import {
 } from "@src/components/button/types";
 
 import Button from "@src/components/button";
-import { Dropdown, SplitButtonGroup, Switch } from "@douyinfe/semi-ui";
+import { Dropdown } from "@douyinfe/semi-ui";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|(可新增和支持多数据操作型按钮)
@@ -121,6 +121,7 @@ export default <T extends IdBean>({
         currBtns.map((btn, index) => {
           return (
             <Button
+              key={`btn_${line}_${index}`}
               {...btn}
               btnType={
                 btnType !== undefined && btn.btnType === undefined
@@ -133,15 +134,30 @@ export default <T extends IdBean>({
                   : btn.position
               }
               datas={
-                btn.actionType === "create" ||
-                (btn.actionType === "save" && position === "tableToolbar")
-                  ? btn.initData //新增类型按钮使用initData
-                  : btn.datas || btnDatas
+                btn.datas || btnDatas
+                // btn.actionType === "create" ||
+                // (btn.actionType === "save" && position === "tableToolbar")
+                //   ? btn.initData //新增类型按钮使用initData
+                //   : btn.datas || btnDatas
               }
-              onDataChange={(d) => {
-                // setBtnDatas(d);
-              }}
-              key={`btn_${line}_${index}`}
+              otherBtns={
+                btn.actionType === "save" && btn.model
+                  ? currBtns.filter(
+                      (b) =>
+                        (b.actionType === "api" &&
+                          b.model === btn.model &&
+                          b.multiple !== true) ||
+                        b.actionType === "flow"
+                    )
+                  : btn.actionType === "flow"
+                  ? currBtns.filter(
+                      (b, index2) => b.actionType === "flow" && index !== index2
+                    )
+                  : []
+              }
+              // onDataChange={(d) => {
+              //   // setBtnDatas(d);
+              // }}
             />
           );
         })
@@ -158,17 +174,14 @@ export default <T extends IdBean>({
                     <Button
                       {...btn}
                       position={"dropdown"}
-                      datas={
-                        btn.actionType === "create" ||
-                        (btn.actionType === "save" &&
-                          position === "tableToolbar")
-                          ? []
-                          : btn.datas || btnDatas
+                      datas={btn.datas || btnDatas}
+                      otherBtns={
+                        btn.actionType === "save" && btn.model ? currBtns : []
                       }
                       key={`btn_${line}_${index}`}
-                      onDataChange={(d) => {
-                        // setBtnDatas(d);
-                      }}
+                      // onDataChange={(d) => {
+                      //   // setBtnDatas(d);
+                      // }}
                     />
                   </div>
                 );

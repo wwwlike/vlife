@@ -5,18 +5,23 @@ import cn.wwwlike.web.annotation.EnableRespWrap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author xiaoyu
  * @date 2022/6/17
  */
+//打开出参数据包装
 @EnableRespWrap
+@EnableScheduling
 @SpringBootApplication(scanBasePackages ={
         "cn.wwwlike.auth",
         "cn.wwwlike.sys",
         "cn.wwwlike.form",
-        "cn.wwwlike.workflow",
-        "cn.vlife.erp",
+        "cn.wwwlike.vlife.ts",
+        "cn.wwwlike.vlife.gitee",
+        "cn.wwwlike.plus",
+        "cn.vlife.erp"
 },nameGenerator =UniqueNameGenerator.class )
 @EntityScan(basePackages = {"cn.wwwlike", "cn.vlife"})
 public class AdminApplication {

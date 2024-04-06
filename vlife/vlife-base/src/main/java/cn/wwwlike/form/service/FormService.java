@@ -30,6 +30,16 @@ import static cn.wwwlike.vlife.dict.VCT.ITEM_TYPE.*;
 @Service
 public class FormService extends VLifeService<Form, FormDao> {
 
+    /*
+     * 权限组map
+     * */
+    public static Map<String, FormVo> models = new HashMap<>();
+
+    public FormVo getModelInfo(String type){
+        QueryWrapper<Form> req=QueryWrapper.of(Form.class).eq("type",type);
+        return query(FormVo.class,req).get(0);
+    }
+
     @Autowired
     public FormFieldService fieldService;
 
