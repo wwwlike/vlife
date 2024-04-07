@@ -15,12 +15,7 @@ import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
 import { useSize } from "ahooks";
 import { VF, VfAction } from "@src/dsl/VF";
-import {
-  list,
-  remove,
-  ReportCondition,
-  save,
-} from "@src/api/report/ReportCondition";
+import { list, remove, ReportCondition, save } from "@src/api/ReportCondition";
 import { Tabs } from "@douyinfe/semi-ui";
 import GroupLabel from "@src/components/form/component/GroupLabel";
 import { OptEnum, where } from "@src/dsl/base";
