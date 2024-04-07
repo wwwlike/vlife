@@ -30,7 +30,7 @@ import QuickCreate from "@src/components/form/component/QuickCreate";
 import VfTreeInput from "@src/components/VfTreeInput";
 import RelationView from "@src/components/RelationView";
 import VfMiniFormList from "@src/plus/components/form/MiniForm";
-import QueryBuilder from "@src/plus/components/queryBuilder";
+import QueryBuilder from "@src/components/queryBuilder";
 import VfNestedSelector from "@src/components/VfNestedSelector";
 import WorkFlowEditor from "@src/workflow/component";
 import VfUserSelect from "@src/pages/sysManage/user/VfUserSelect";

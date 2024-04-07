@@ -33,9 +33,7 @@ import {
   recall,
   RecordFlowInfo,
   startFlow,
-} from "@src/api/workflow/Flow";
-import { ConsoleSqlOutlined, TruckFilled } from "@ant-design/icons";
-import { fromPairs } from "lodash";
+} from "@src/api/Flow";
 import { useNiceModal } from "@src/store";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;

@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from "react";
-import QueryBuilder from "@src/plus/components/queryBuilder";
+import QueryBuilder from "@src/components/queryBuilder";
 import { FormVo } from "@src/api/Form";
 import { ConditionGroup } from "@src/dsl/base";
 

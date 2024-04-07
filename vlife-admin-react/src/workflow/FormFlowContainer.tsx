@@ -2,7 +2,7 @@
  * 支持流程节点信息展示的表单包裹容器
  */
 import React, { ReactNode } from "react";
-import { FlowNode } from "@src/api/workflow/Flow";
+import { FlowNode } from "@src/api/Flow";
 import FlowStep from "./component/FlowStep";
 import Scrollbars from "react-custom-scrollbars";
 export interface FormContainerProps {

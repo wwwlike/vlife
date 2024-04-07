@@ -2,7 +2,7 @@
  * 工作流分布内容展示组件
  */
 import { Tag } from "@douyinfe/semi-ui";
-import { FlowNode } from "@src/api/workflow/Flow";
+import { FlowNode } from "@src/api/Flow";
 import { shotFormatDate } from "@src/util/func";
 import classNames from "classnames";
 import { useMemo } from "react";

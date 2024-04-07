@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
 import { Tooltip } from "@douyinfe/semi-ui";
 import FormFlowContainer from "@src/workflow/FormFlowContainer";
-import { FlowNode, RecordFlowInfo } from "@src/api/workflow/Flow";
+import { FlowNode, RecordFlowInfo } from "@src/api/Flow";
 
 export interface FormPageProps<T extends IdBean>
   extends Omit<FormProps<T>, "modelInfo"> {

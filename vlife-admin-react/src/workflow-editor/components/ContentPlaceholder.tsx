@@ -2,7 +2,7 @@ import { memo } from "react";
 import className from "classnames";
 import { IWorkFlowNode } from "../interfaces";
 import VfUserSelect from "@src/pages/sysManage/user/VfUserSelect";
-import ConditionView from "@src/plus/components/queryBuilder/component/ConditionView";
+import ConditionView from "@src/components/queryBuilder/component/ConditionView";
 
 export interface ContentPlaceholderProps {
   text?: string; //未选择时的提示

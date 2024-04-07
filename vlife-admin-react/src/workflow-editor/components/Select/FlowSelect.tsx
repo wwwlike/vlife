@@ -26,7 +26,7 @@ export default (props: FlowSelectProps) => {
       userList({}).then((d) => {
         setUserSelectData(
           d.data?.map((r) => {
-            return { label: r.name, value: r.id };
+            return { label: r.name, value: r.username };
           }) || []
         );
       });

@@ -15,7 +15,7 @@ import BtnToolBar from "../button/BtnToolBar";
 import { where } from "@src/dsl/base";
 import classNames from "classnames";
 import { VFBtn } from "../button/types";
-import { RecordFlowInfo } from "@src/api/workflow/Flow";
+import { RecordFlowInfo } from "@src/api/Flow";
 
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
