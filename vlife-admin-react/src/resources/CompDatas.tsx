@@ -32,7 +32,7 @@ import RelationView from "@src/components/RelationView";
 import VfMiniFormList from "@src/plus/components/form/MiniForm";
 import QueryBuilder from "@src/plus/components/queryBuilder";
 import VfNestedSelector from "@src/components/VfNestedSelector";
-import WorkFlowEditor from "@src/example/component";
+import WorkFlowEditor from "@src/workflow/component";
 import VfUserSelect from "@src/pages/sysManage/user/VfUserSelect";
 import TableRadioSelect from "@src/components/radio/TableRadioSelect";
 import SwitchCard from "@src/components/checkbox/SwitchCard";

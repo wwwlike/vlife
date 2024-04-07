@@ -55,8 +55,8 @@ const CustomPage = lazy(() => import("@src/plus/page/design/CustomPage"));
 const ConditionPage = lazy(() => import("@src/plus/page/condition"));
 
 //工作流
-const FlowIndexPage = lazy(() => import("@src/example"));
-const FlowDesignPage = lazy(() => import("@src/example/component"));
+const FlowIndexPage = lazy(() => import("@src/workflow"));
+const FlowDesignPage = lazy(() => import("@src/workflow/component"));
 //我的待办
 const MyTaskPage = lazy(() => import("@src/pages/dashboard/flow/MyTask"));
 export const allRoute: any[] = [

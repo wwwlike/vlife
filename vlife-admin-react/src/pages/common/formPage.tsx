@@ -7,7 +7,7 @@ import { VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
 import { Tooltip } from "@douyinfe/semi-ui";
-import FormFlowContainer from "@src/example/FormFlowContainer";
+import FormFlowContainer from "@src/workflow/FormFlowContainer";
 import { FlowNode, RecordFlowInfo } from "@src/api/workflow/Flow";
 
 export interface FormPageProps<T extends IdBean>
