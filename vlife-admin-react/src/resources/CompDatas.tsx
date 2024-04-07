@@ -29,6 +29,8 @@ import DictInput from "@src/pages/sysConf/dict/component/DictInput";
 import QuickCreate from "@src/components/form/component/QuickCreate";
 import VfTreeInput from "@src/components/VfTreeInput";
 import RelationView from "@src/components/RelationView";
+import VfMiniFormList from "@src/plus/components/form/MiniForm";
+import QueryBuilder from "@src/plus/components/queryBuilder";
 import VfNestedSelector from "@src/components/VfNestedSelector";
 import WorkFlowEditor from "@src/example/component";
 import VfUserSelect from "@src/pages/sysManage/user/VfUserSelect";
@@ -54,6 +56,11 @@ const RelationTagInput = connect(
 const FormTable = connect(
   VfFormTable,
   mapReadPretty(({ ...props }) => <VfFormTable {...props} read={true} />)
+);
+
+const MiniFormList = connect(
+  VfMiniFormList,
+  mapReadPretty(({ ...props }) => <VfMiniFormList {...props} read={true} />)
 );
 
 // const TreeSelect = connect(SemiTreeSelect, mapReadPretty(VfText));
@@ -427,6 +434,59 @@ export const FormComponents: CompDatas = {
       },
     },
   },
+  MiniForm: {
+    component: MiniFormList,
+    label: "mini表单",
+    icon: "IconOrderedList",
+    dataType: DataType.array,
+    dataModel: "IModel",
+    props: {
+      options: {
+        label: "选项数据源",
+        must: true,
+        dataType: DataType.array,
+        dataModel: "ISelect",
+      },
+      labelFieldName: {
+        label: "核心显示字段",
+        remark: "选项label会赋值的当前字段所在表单的指定字段",
+        must: true,
+        dataType: DataType.basic,
+        dataModel: DataModel.string,
+        // fromField: true,无效，却要指定当前表单，这里指定的是父表单
+      },
+      valueFieldName: {
+        label: "核心意义字段",
+        remark: "选项value会赋值的当前字段所在表单的指定字段",
+        must: true,
+        dataType: DataType.basic,
+        dataModel: DataModel.string,
+        // fromField: true,
+      },
+    },
+  },
+  //高级组件
+  // QueryBuilder: {
+  //   component: QueryBuilder,
+  //   dataType: DataType.basic,
+  //   dataModel: DataModel.string,
+  //   label: "查询条件设计器",
+  //   icon: "IconOrderedList",
+  //   props: {
+  //     entityModel: {
+  //       label: "当前模型信息",
+  //       must: true,
+  //       dataType: DataType.object,
+  //       dataModel: "FormVo",
+  //     },
+  //     subForms: {
+  //       label: "关联模型集合",
+  //       must: true,
+  //       dataType: DataType.array,
+  //       dataModel: "FormVo",
+  //     },
+  //   },
+  // },
   WorkFlowEditor: {
     component: WorkFlowEditor,
     label: "流程设计器",
@@ -434,35 +494,6 @@ export const FormComponents: CompDatas = {
     dataType: DataType.basic,
     dataModel: DataModel.string,
   },
-  VfUserSelect_basic: {
-    component: VfUserSelect,
-    label: "用户选择器",
-    icon: "IconOrderedList",
-    dataType: DataType.basic,
-    dataModel: DataModel.string,
-    props: {
-      //多选
-      multiple: false,
-    },
-  },
-  VfUserSelect_array: {
-    component: VfUserSelect,
-    label: "用户选择器",
-    icon: "IconOrderedList",
-    dataType: DataType.array,
-    dataModel: DataModel.string,
-    props: {
-      //多选
-      multiple: true,
-    },
-  },
-  // NodeUserSelect: {
-  //   component: NodeUserSelect,
-  //   label: "常规审批对象选择",
-  //   icon: "IconOrderedList",
-  //   dataType: DataType.array,
-  //   dataModel: "nodeUserInfo",
-  // },
   FlowSelect: {
     component: VfUserSelect,
     label: "常规审批对象选择",
