@@ -127,14 +127,6 @@ public class TitleJsonCreateMojo extends AbstractMojo {
                             }
                         }
                     }
-//                    Set<String> intersection = new HashSet<>(tag.getParentsName());
-//                    for(String p:intersection){
-//                        System.out.println(p);
-//                    }
-//                    intersection.retainAll(tags.stream().map(ClzTag::getTypeName).collect(Collectors.toList()));
-//                    if(intersection.size()>1){
-//                        System.out.println(intersection.stream().toArray());
-//                    }
                 }
             }
 
