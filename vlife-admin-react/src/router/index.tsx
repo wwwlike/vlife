@@ -44,13 +44,6 @@ const WareHousePage = lazy(() => import("@src/pages/erp/wareHouse"));
 const ItemStockPage = lazy(() => import("@src/pages/erp/itemStock"));
 const OrderSendPage = lazy(() => import("@src/pages/erp/orderSend"));
 
-//pageDesign（plus）
-const PageDesignPage = lazy(() => import("@src/plus/page/design")); //页面设计列表页
-const PageDesignLayoutPage = lazy(
-  () => import("@src/plus/page/design/DesignLayout") //页面设置
-);
-//自定义页面
-const CustomPage = lazy(() => import("@src/plus/page/design/CustomPage"));
 //视图
 const ConditionPage = lazy(() => import("@src/pages/sysConf/condition"));
 
@@ -414,62 +407,6 @@ export const allRoute: any[] = [
     ],
   },
   {
-    path: "/page",
-    element: (
-      <WrapperRouteComponent
-        element={<LayoutPage />}
-        titleId="页面和模块"
-        auth
-      />
-    ),
-    children: [
-      {
-        path: "design",
-        element: (
-          <WrapperRouteComponent
-            element={<PageDesignPage />}
-            titleId="页面配置主页"
-            auth
-          />
-        ),
-      },
-      {
-        path: "layout/*",
-        element: (
-          <WrapperRouteComponent
-            element={<PageDesignLayoutPage />}
-            titleId="页面设计器"
-            auth
-          />
-        ),
-      },
-    ],
-  },
-  //独立访问的页面
-  {
-    path: "/page/admin",
-    element: (
-      <WrapperRouteComponent element={<LayoutPage />} titleId="组件演示" auth />
-    ),
-    children: [
-      {
-        path: "*",
-        element: (
-          <WrapperRouteComponent
-            element={<CustomPage />}
-            titleId="自定义页面"
-            auth
-          />
-        ),
-      },
-    ],
-  },
-  //独立访问的页面
-  {
-    path: "/page/*",
-    element: <CustomPage />,
-  },
-  {
     path: "/login",
     element: <LoginPage />,
   },
@@ -485,7 +422,6 @@ export const allRoute: any[] = [
     ),
   },
 ];
-
 const RenderRouter: FC = () => {
   const [routeList, setRouteList] = useState<RouteObject[]>(allRoute);
   const element = useRoutes([...routeList]);

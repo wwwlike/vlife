@@ -69,7 +69,7 @@ export default () => {
 
   useEffect(() => {
     const menu = userAllMenus?.filter(
-      (m) =>
+      (m: any) =>
         pathname.indexOf(
           m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
         ) !== -1 ||
@@ -172,7 +172,7 @@ export default () => {
       return appMenus
         .sort((a, b) => a.sort - b.sort)
         .filter((m) => m.pcode === root.code)
-        .map((menu) => {
+        .map((menu: any) => {
           return {
             id: menu.id,
             itemKey: menu.id,

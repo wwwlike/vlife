@@ -16,7 +16,6 @@ export const ContentPlaceholder = memo((props: ContentPlaceholderProps) => {
   const { text, secondary, node } = props;
   return (
     <span className={className("text", secondary ? " secondary" : "")}>
-      11
       {node?.approverSettings?.auditList && (
         <VfUserSelect
           onDataChange={() => {}}
