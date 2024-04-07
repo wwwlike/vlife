@@ -52,7 +52,7 @@ const PageDesignLayoutPage = lazy(
 //自定义页面
 const CustomPage = lazy(() => import("@src/plus/page/design/CustomPage"));
 //视图
-const ConditionPage = lazy(() => import("@src/plus/page/condition"));
+const ConditionPage = lazy(() => import("@src/pages/sysConf/condition"));
 
 //工作流
 const FlowIndexPage = lazy(() => import("@src/workflow"));

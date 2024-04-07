@@ -29,7 +29,7 @@ import DictInput from "@src/pages/sysConf/dict/component/DictInput";
 import QuickCreate from "@src/components/form/component/QuickCreate";
 import VfTreeInput from "@src/components/VfTreeInput";
 import RelationView from "@src/components/RelationView";
-import VfMiniFormList from "@src/plus/components/form/MiniForm";
+import VfMiniFormList from "@src/components/form/MiniForm";
 import QueryBuilder from "@src/components/queryBuilder";
 import VfNestedSelector from "@src/components/VfNestedSelector";
 import WorkFlowEditor from "@src/workflow/component";
@@ -466,27 +466,27 @@ export const FormComponents: CompDatas = {
     },
   },
   //高级组件
-  // QueryBuilder: {
-  //   component: QueryBuilder,
-  //   dataType: DataType.basic,
-  //   dataModel: DataModel.string,
-  //   label: "查询条件设计器",
-  //   icon: "IconOrderedList",
-  //   props: {
-  //     entityModel: {
-  //       label: "当前模型信息",
-  //       must: true,
-  //       dataType: DataType.object,
-  //       dataModel: "FormVo",
-  //     },
-  //     subForms: {
-  //       label: "关联模型集合",
-  //       must: true,
-  //       dataType: DataType.array,
-  //       dataModel: "FormVo",
-  //     },
-  //   },
-  // },
+  QueryBuilder: {
+    component: QueryBuilder,
+    dataType: DataType.basic,
+    dataModel: DataModel.string,
+    label: "查询条件设计器",
+    icon: "IconOrderedList",
+    props: {
+      entityModel: {
+        label: "当前模型信息",
+        must: true,
+        dataType: DataType.object,
+        dataModel: "FormVo",
+      },
+      subForms: {
+        label: "关联模型集合",
+        must: true,
+        dataType: DataType.array,
+        dataModel: "FormVo",
+      },
+    },
+  },
   WorkFlowEditor: {
     component: WorkFlowEditor,
     label: "流程设计器",
