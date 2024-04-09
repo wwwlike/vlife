@@ -46,7 +46,7 @@ export default memo((props: { flowNode?: IWorkFlowNode }) => {
   const [selectedTab, setSelectedTab] = useState<TabType>(TabType.formDesign);
 
   const optionsTitle = useMemo(() => {
-    return [
+    const tabTitle = [
       {
         key: TabType.baseSettings,
         label: "基础设置",
@@ -55,19 +55,24 @@ export default memo((props: { flowNode?: IWorkFlowNode }) => {
         key: TabType.formDesign,
         label: "表单设计",
       },
+    ];
+    //业务模块可以添加工作流
+    if (
       !currModel?.entityType.startsWith("sys") &&
       !currModel?.entityType.startsWith("form") &&
-      !currModel?.entityType.startsWith("page")
-        ? {
-            key: TabType.flowDesign,
-            label: "流程设计",
-          }
-        : null,
-      // {
-      //   key: TabType.addvancedSettings,
-      //   label: "高级设置",
-      // },
-    ].filter((f) => f !== null);
+      !currModel?.entityType.startsWith("page") &&
+      !currModel?.entityType.startsWith("report")
+    ) {
+      tabTitle.push({
+        key: TabType.flowDesign,
+        label: "流程设计",
+      });
+    }
+    // {
+    //   key: TabType.addvancedSettings,
+    //   label: "高级设置",
+    // },
+    return tabTitle;
   }, [currModel]);
 
   const handleNavChange = useCallback((key?: string) => {
