@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import { IThemeToken } from "../../theme";
-import { ConfigRoot } from "../ConfigRoot";
+// import { ConfigRoot } from "../ConfigRoot";
 import { ILocales, LocalesManager } from "@rxdrag/locales";
 import { LocalesContext } from "../../react-locales";
 import { defalutLocales } from "../../locales";
@@ -43,10 +43,10 @@ export const FlowEditorScope = memo(
         {/* Ant Design的ConfigProvider是一个全局配置的组件，它可以用来配置Ant Design的全局样式、国际化、主题等。通过ConfigProvider，可以统一管理Ant Design组件的全局样式和行为，使得整个应用的UI风格和交互行为更加统一 
           把这里是控制样式的，黑色，亮色等
         */}
-        <ConfigRoot themeMode={other.mode}>
-          {/* dlc 这个是核心工作流，上面都是样式和国际化的 */}
-          <FlowEditorScopeInner {...other}>{children}</FlowEditorScopeInner>
-        </ConfigRoot>
+        {/* <ConfigRoot themeMode={other.mode}> */}
+        {/* dlc 这个是核心工作流，上面都是样式和国际化的 */}
+        <FlowEditorScopeInner {...other}>{children}</FlowEditorScopeInner>
+        {/* </ConfigRoot> */}
       </LocalesContext.Provider>
     );
   }
