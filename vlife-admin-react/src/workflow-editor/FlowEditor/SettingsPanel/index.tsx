@@ -1,13 +1,14 @@
-import { CloseOutlined } from "@ant-design/icons";
-import { Button, Drawer } from "antd";
+// import { CloseOutlined } from "@ant-design/icons";
+// import { Drawer } from "antd";
+// import { Footer } from "./Footer";
 import { memo, useCallback } from "react";
 import { NodeTitle } from "./NodeTitle";
-import { Footer } from "./Footer";
 import { useSelectedNode } from "../../hooks/useSelectedNode";
 import { useEditorEngine } from "../../hooks";
 import { styled } from "styled-components";
 import { useMaterialUI } from "../../hooks/useMaterialUI";
 import { FormVo } from "@src/api/Form";
+import { SideSheet } from "@douyinfe/semi-ui";
 
 const Content = styled.div`
   display: flex;
@@ -49,7 +50,7 @@ export const SettingsPanel = memo((props: { formVo?: FormVo }) => {
     [selectedNode]
   );
   return (
-    <Drawer
+    <SideSheet
       title={
         selectedNode && (
           <NodeTitle node={selectedNode} onNameChange={handleNameChange} />
@@ -57,18 +58,13 @@ export const SettingsPanel = memo((props: { formVo?: FormVo }) => {
       }
       placement="right"
       width={656}
-      closable={false}
-      extra={
-        <Button
-          size="small"
-          type="text"
-          icon={<CloseOutlined />}
-          onClick={handelClose}
-        />
-      }
-      footer={<Footer onConfirm={handleConfirm} onCancel={handelClose} />}
-      onClose={handelClose}
-      open={!!selectedNode}
+      closable={true}
+      // footer={
+      //   <Button size="small" icon={<CloseOutlined />} onClick={handelClose} />
+      // }
+      onCancel={handelClose}
+      visible={!!selectedNode}
+      // open=
     >
       {/* 不同类型的节点右侧使用不同的面板，条件类型节点使用conditions数据 */}
       <Content className="settings-panel-content">
@@ -84,6 +80,6 @@ export const SettingsPanel = memo((props: { formVo?: FormVo }) => {
           />
         )}
       </Content>
-    </Drawer>
+    </SideSheet>
   );
 });

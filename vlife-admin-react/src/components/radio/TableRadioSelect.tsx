@@ -49,7 +49,6 @@ export default (props: TableRadioSelectProps) => {
 
   useUpdateEffect(() => {
     onDataChange && onDataChange(_data);
-    console.log("onDataChange", _data);
   }, [_data]);
 
   return (
@@ -58,10 +57,10 @@ export default (props: TableRadioSelectProps) => {
       {/* 第一行 */}
       <div className="flex w-full bg-gray-50 border">
         <div className=" w-32 border  p-2 text-center">{label}</div>
-        {_dicts?.map((dict) => (
+        {_dicts?.map((dict, index) => (
           <div
             className="flex-grow border-l  p-2 text-center hover:cursor-pointer"
-            key={`dict_${dict.id}`}
+            key={`dict_${dict.id}_${index}`}
             onClick={() => {
               set_data((prev) => {
                 return prev.map((f, line2) => {
@@ -76,12 +75,12 @@ export default (props: TableRadioSelectProps) => {
       </div>
       {_data?.map((f, line) => {
         return (
-          <div className="flex w-full  border">
+          <div key={`_${line}`} className="flex w-full  border">
             <div className=" w-32  p-1 font-thin !pl-4">{f[labelField]}</div>
-            {_dicts?.map((dict) => (
+            {_dicts?.map((dict, index) => (
               <div
                 className="flex-grow border-l  cursor-pointer  p-1 text-center"
-                key={`dict_${dict.id}_line`}
+                key={`dict_${dict.id}_line_${index}`}
                 onClick={() => {
                   set_data((prev) => {
                     return prev.map((f, line2) => {
@@ -94,6 +93,7 @@ export default (props: TableRadioSelectProps) => {
                 }}
               >
                 <input
+                  onChange={(e) => {}}
                   className=" text-2xl"
                   type="radio"
                   checked={f[dictField] === dict.val}

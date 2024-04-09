@@ -142,47 +142,41 @@ export const FormModal = createNiceModal(
       return [];
     }, [btns, form, formVo, data, recordFlowInfo]);
 
+    const createBtns = formBtns.filter(
+      (btn) => btn.actionType === "create" && btn.continueCreate !== undefined
+    );
+
     const footer = useMemo(() => {
       if (formBtns && formBtns.length > 0) {
         return (
           <div className="flex w-full justify-end relative  space-x-1">
-            {formBtns.map((btn, index) => {
-              return (
-                <>
-                  {btn.actionType === "create" &&
-                    (_continueCreate !== undefined ||
-                      btn.continueCreate !== false) && (
-                      <div
-                        key={`continueDIv_${index}`}
-                        className=" absolute flex left-2  items-center"
-                      >
-                        <span
-                          className={`text-gray-400 ${classNames({
-                            " !text-gray-800":
-                              _continueCreate !== undefined
-                                ? _continueCreate
-                                : btn.continueCreate,
-                          })}`}
-                        >
-                          连续新增
-                        </span>
-                        <Switch
-                          checked={
-                            _continueCreate !== undefined
-                              ? _continueCreate
-                              : btn.continueCreate
-                          }
-                          onChange={(t) => {
-                            setContinueCreate(t);
-                          }}
-                          checkedText="开"
-                          uncheckedText="关"
-                        />
-                      </div>
-                    )}
-                </>
-              );
-            })}
+            {createBtns.length > 0 && (
+              <div className="absolute flex left-2 items-center">
+                <span
+                  className={`text-gray-400 ${classNames({
+                    "!text-gray-800":
+                      _continueCreate !== undefined
+                        ? _continueCreate
+                        : createBtns[0].continueCreate,
+                  })}`}
+                >
+                  连续新增
+                </span>
+                <Switch
+                  checked={
+                    _continueCreate !== undefined
+                      ? _continueCreate
+                      : createBtns[0].continueCreate
+                  }
+                  onChange={(t) => {
+                    setContinueCreate(t);
+                  }}
+                  checkedText="开"
+                  uncheckedText="关"
+                />
+              </div>
+            )}
+
             <BtnToolBar
               datas={[{ ...data, flow: recordFlowInfo }]}
               btns={formBtns}

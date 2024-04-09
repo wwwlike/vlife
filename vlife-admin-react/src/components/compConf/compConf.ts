@@ -87,7 +87,7 @@ export interface AttrInfo{
 export interface ParamsInfo extends AttrInfo{
   dynamicParams?:boolean;//动态入参，采用condition来接收,默认eq
   dynamicParamsOpt?:OptEnum;//动态入参匹配方式
-  send?:boolean;//是否发送到后端,false说明该菜单用来做数据转换筛选逻辑
+  send?:boolean;//是否发送到后端,false说明该参数用来做数据转换筛选逻辑
 }
 
 

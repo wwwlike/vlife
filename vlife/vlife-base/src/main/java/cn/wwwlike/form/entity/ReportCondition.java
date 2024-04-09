@@ -5,6 +5,7 @@ import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -12,7 +13,6 @@ import javax.persistence.Table;
 /**
  * 视图配置
  */
-@Data
 @Entity
 @Table(name = "report_condition")
 public class ReportCondition extends DbEntity {
@@ -42,5 +42,54 @@ public class ReportCondition extends DbEntity {
      */
     @VField(dictCode = "CONDITION_TYPE")
     public String type;
+
+    @Column(columnDefinition = "text")
+    public String getConditionJson() {
+        return conditionJson;
+    }
+
+    public void setConditionJson(String conditionJson) {
+        this.conditionJson = conditionJson;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSysMenuId() {
+        return sysMenuId;
+    }
+
+    public void setSysMenuId(String sysMenuId) {
+        this.sysMenuId = sysMenuId;
+    }
+
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId;
+    }
+
+    public String getSysUserId() {
+        return sysUserId;
+    }
+
+    public void setSysUserId(String sysUserId) {
+        this.sysUserId = sysUserId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }
 

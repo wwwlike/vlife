@@ -3,12 +3,12 @@ import {PageVo,DbEntity,PageQuery,Result} from '@src/api/base'
 import apiClient from '@src/api/base/apiClient'
 // 视图配置
 export interface ReportCondition extends DbEntity{
-  formId: string;  // 数据集
   sysMenuId: string;  // 应用
+  formId: string;  // 数据集
   name: string;  // 查询名称
   conditionJson: string;  // 查询条件
   sysUserId: string;  // 视图创建用户
-  type:string;// 视图使用场景 table和report
+  type:string;// 视图使用场景 table/report
 }
 // 视图配置查询条件
 export interface ReportConditionPageReq extends PageQuery{

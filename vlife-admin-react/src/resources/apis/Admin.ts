@@ -371,13 +371,14 @@ export const formOpenApi:ApiInfo= {
           dataModel:DataModel.string,
           dataType:DataType.basic,
           fromField:true,
+          required:true,
           send:false,
         }
       },
       filterKey:[],
       func:(datas:FormVo[],{entityId}:{entityId:string}):FormVo[]=>{
         const model=datas.filter(d=>d.id===entityId)?.[0];
-        const fkEntityName:string[]=model.fields.filter(f=>f.entityType!==model.type).map(f=>f.entityType);
+        const fkEntityName:string[]=model?.fields?.filter(f=>f.entityType!==model?.type)?.map(f=>f.entityType)||[];
         return datas.filter(d=>fkEntityName.includes(d.type));
       }
     },

@@ -49,7 +49,7 @@ export const WorkFlowEditorInner = memo(
         className={classNames("workflow-editor", className || "")}
         {...other}
       >
-        <FlowEditorCanvas formVo={formVo} />
+        <FlowEditorCanvas form={formVo} />
       </Container>
     );
   }

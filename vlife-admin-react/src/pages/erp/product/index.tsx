@@ -24,7 +24,8 @@ export default () => {
               paramObj: { code: "project_brand" },
             }).then((selects: ISelect[]) => {
               return (
-                selects.filter((s) => s.value === formData.brand)?.[0].label +
+                (selects.filter((s) => s.value === formData.brand)?.[0]
+                  ?.label || "") +
                 (formData.name ? "-" + formData.name : "") +
                 (formData.xh ? "-" + formData.xh : "")
               );

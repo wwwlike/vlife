@@ -42,7 +42,7 @@ export interface IPosition {
 }
 //dlc 工作流编辑器画布
 export const FlowEditorCanvas = memo(
-  (props: { className?: string; style?: CSSProperties; formVo?: FormVo }) => {
+  (props: { className?: string; style?: CSSProperties; form?: FormVo }) => {
     const [zoom, setZoom] = useState(1);
     const [scrolled, setScrolled] = useState(false);
     const [mousePressedPoint, setMousePressedPoint] = useState<IPosition>();
@@ -137,7 +137,7 @@ export const FlowEditorCanvas = memo(
           onZoomOut={haneldZoomOut}
         />
         {/* 右侧配置面板 */}
-        <SettingsPanel formVo={props.formVo} />
+        <SettingsPanel formVo={props.form} />
       </CanvasContainer>
     );
   }

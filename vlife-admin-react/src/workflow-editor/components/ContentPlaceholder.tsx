@@ -1,8 +1,9 @@
 import { memo } from "react";
 import className from "classnames";
 import { IWorkFlowNode } from "../interfaces";
-import VfUserSelect from "@src/pages/sysManage/user/VfUserSelect";
+import VfUserSelect from "@src/pages/sysManage/user/UserSelect";
 import ConditionView from "@src/components/queryBuilder/component/ConditionView";
+import MemberSelect from "./MemberSelect";
 
 export interface ContentPlaceholderProps {
   text?: string; //未选择时的提示
@@ -17,8 +18,8 @@ export const ContentPlaceholder = memo((props: ContentPlaceholderProps) => {
   return (
     <span className={className("text", secondary ? " secondary" : "")}>
       {node?.approverSettings?.auditList && (
-        <VfUserSelect
-          onDataChange={() => {}}
+        <MemberSelect
+          onDataChange={(any) => {}}
           value={node?.approverSettings?.auditList}
           read={true}
         />

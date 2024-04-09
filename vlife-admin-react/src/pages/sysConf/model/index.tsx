@@ -446,6 +446,7 @@ const Model = () => {
                     <Dropdown.Title>批量分配到应用</Dropdown.Title>
                     {apps?.map((a) => (
                       <Dropdown.Item
+                        key={a.code}
                         active={a.code === tabKey}
                         onClick={() => {
                           if (a.code !== tabKey) {

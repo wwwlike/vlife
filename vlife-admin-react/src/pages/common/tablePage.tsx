@@ -369,9 +369,9 @@ const TablePage = <T extends TableBean>({
         b.model = listType;
       }
 
-      if (b.disabledHide === undefined) {
-        b.disabledHide = true;
-      }
+      // if (b.disabledHide === undefined) {
+      //   b.disabledHide = true;
+      // }
       if (
         b.saveApi &&
         (b.permissionCode === undefined || b.permissionCode === null)
@@ -852,12 +852,14 @@ const TablePage = <T extends TableBean>({
         //   alert(JSON.stringify(data));
         // }}
         onLineClick={(record) => {
-          formModal.show({
-            modelInfo: formModel,
-            type: editModelType,
-            formData: record,
-            btns: mode === "view" ? [] : totalBtns,
-          });
+          if (formModel?.flowJson) {
+            formModal.show({
+              modelInfo: formModel,
+              type: editModelType,
+              formData: record,
+              btns: mode === "view" ? [] : totalBtns,
+            });
+          }
         }}
         read={read}
         wheres={columnWheres}

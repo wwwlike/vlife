@@ -3,7 +3,7 @@ import { Avatar, Button, Space } from "antd";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Toolbar } from "./component/Toolbar";
-import { FlowEditorCanvas, IWorkFlowNode } from "@src/workflow-editor";
+import { IWorkFlowNode } from "@src/workflow-editor";
 import { NavTabs } from "./component/NavTabs";
 import FormDesign from "./FormDesign";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -44,6 +44,31 @@ export default memo((props: { flowNode?: IWorkFlowNode }) => {
 
   const { flowNode, ...other } = props;
   const [selectedTab, setSelectedTab] = useState<TabType>(TabType.formDesign);
+
+  const optionsTitle = useMemo(() => {
+    return [
+      {
+        key: TabType.baseSettings,
+        label: "基础设置",
+      },
+      {
+        key: TabType.formDesign,
+        label: "表单设计",
+      },
+      !currModel?.entityType.startsWith("sys") &&
+      !currModel?.entityType.startsWith("form") &&
+      !currModel?.entityType.startsWith("page")
+        ? {
+            key: TabType.flowDesign,
+            label: "流程设计",
+          }
+        : null,
+      // {
+      //   key: TabType.addvancedSettings,
+      //   label: "高级设置",
+      // },
+    ].filter((f) => f !== null);
+  }, [currModel]);
 
   const handleNavChange = useCallback((key?: string) => {
     setSelectedTab((key || TabType.flowDesign) as TabType);
@@ -91,24 +116,7 @@ export default memo((props: { flowNode?: IWorkFlowNode }) => {
       >
         {currModel?.itemType !== "req" && (
           <NavTabs
-            options={[
-              {
-                key: TabType.baseSettings,
-                label: "基础设置",
-              },
-              {
-                key: TabType.formDesign,
-                label: "表单设计",
-              },
-              {
-                key: TabType.flowDesign,
-                label: "流程设计",
-              },
-              // {
-              //   key: TabType.addvancedSettings,
-              //   label: "高级设置",
-              // },
-            ]}
+            options={optionsTitle}
             value={selectedTab}
             onChange={handleNavChange}
           />

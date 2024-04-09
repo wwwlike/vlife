@@ -1,56 +1,32 @@
 //和流程相关的人员选择模块
 import { TabPane, Tabs } from "@douyinfe/semi-ui";
-import { list } from "@src/api/SysDept";
-import { list as userList } from "@src/api/SysUser";
-import { listAll } from "@src/api/SysRole";
 import MultipleSelect from "@src/components/select/MultipleSelect";
 import { ISelect, VfBaseProps } from "@src/dsl/component";
 import { NodeUserInfo } from "@src/workflow-editor/classes/vlife";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import SwitchCard from "@src/components/checkbox/SwitchCard";
+import Scrollbars from "react-custom-scrollbars";
 import DynamicNodeSelect from "./DynamicNodeSelect";
 
-export interface FlowSelectProps extends VfBaseProps<Partial<NodeUserInfo>[]> {}
+export interface FlowSelectProps extends VfBaseProps<Partial<NodeUserInfo>[]> {
+  showUser?: boolean; //只前线用户
+  multiple?: boolean; //是否能多选
+  roleSelectData?: ISelect[];
+  deptSelectData?: ISelect[];
+  userSelectData?: ISelect[];
+}
 
 export default (props: FlowSelectProps) => {
-  const { onDataChange, value } = props;
+  const {
+    onDataChange,
+    value,
+    showUser = false,
+    multiple = true,
+    roleSelectData,
+    deptSelectData,
+    userSelectData,
+  } = props;
   const [search, setSearch] = useState<string>(); //搜索的数据
-  const [roleSelectData, setRoleSelectData] = useState<ISelect[]>(); //角色数据
-  const [deptSelectData, setDeptSelectData] = useState<ISelect[]>(); //部门数据
-  const [userSelectData, setUserSelectData] = useState<ISelect[]>(); //用户数据
-
   const [activeKey, setActiveKey] = useState<string>("assignee"); //当前页签
-
-  useEffect(() => {
-    if (activeKey === "assignee" && userSelectData === undefined) {
-      userList({}).then((d) => {
-        setUserSelectData(
-          d.data?.map((r) => {
-            return { label: r.name, value: r.username };
-          }) || []
-        );
-      });
-    }
-
-    if (activeKey === "role" && roleSelectData === undefined) {
-      listAll().then((d) => {
-        setRoleSelectData(
-          d.data?.map((r) => {
-            return { label: r.name, value: r.id };
-          }) || []
-        );
-      });
-    }
-    if (activeKey === "dept" && deptSelectData === undefined) {
-      list().then((d) => {
-        setDeptSelectData(
-          d.data?.map((r) => {
-            return { label: r.name, value: r.id };
-          }) || []
-        );
-      });
-    }
-  }, [search, activeKey]);
 
   //角色数据
   const roles = useMemo((): Partial<NodeUserInfo>[] => {
@@ -92,57 +68,66 @@ export default (props: FlowSelectProps) => {
   );
 
   return (
-    <div className=" flex w-full">
-      <Tabs
-        className=" w-3/5 mr-2"
-        activeKey={activeKey}
-        onTabClick={setActiveKey}
-      >
-        <TabPane tab="成员" itemKey="assignee">
-          {userSelectData && (
-            <MultipleSelect
-              selectData={userSelectData || []}
-              value={users.map((v) => v.objectId || "")}
-              onDataChange={(vals?: string[]) => {
-                selectNode(userSelectData, "assignee", ...(vals || []));
-              }}
-            />
+    <div className=" flex w-full h-full ">
+      <Scrollbars autoHide={true} className="h-full">
+        <Tabs
+          className=" w-3/5 mr-2 h-full "
+          activeKey={activeKey}
+          onTabClick={setActiveKey}
+        >
+          <TabPane tab="成员" itemKey="assignee">
+            {userSelectData && (
+              <MultipleSelect
+                selectData={userSelectData || []}
+                value={users.map((v) => v.objectId || "")}
+                onDataChange={(vals?: string[]) => {
+                  selectNode(userSelectData, "assignee", ...(vals || []));
+                }}
+              />
+            )}
+          </TabPane>
+
+          {showUser === false && (
+            <TabPane tab="部门" itemKey="dept">
+              {deptSelectData && (
+                <MultipleSelect
+                  selectData={deptSelectData || []}
+                  value={depts.map((v) => v.objectId || "")}
+                  onDataChange={(vals?: string[]) => {
+                    selectNode(deptSelectData, "dept", ...(vals || []));
+                  }}
+                />
+              )}
+            </TabPane>
           )}
-        </TabPane>
-        <TabPane tab="部门" itemKey="dept">
-          {deptSelectData && (
-            <MultipleSelect
-              selectData={deptSelectData || []}
-              value={depts.map((v) => v.objectId || "")}
-              onDataChange={(vals?: string[]) => {
-                selectNode(deptSelectData, "dept", ...(vals || []));
-              }}
-            />
+          {showUser === false && (
+            <TabPane tab="角色" itemKey="role">
+              {roleSelectData && (
+                <MultipleSelect
+                  selectData={roleSelectData || []}
+                  value={roles.map((v) => v.objectId || "")}
+                  onDataChange={(vals?: string[]) => {
+                    selectNode(roleSelectData, "role", ...(vals || []));
+                  }}
+                />
+              )}
+            </TabPane>
           )}
-        </TabPane>
-        <TabPane tab="角色" itemKey="role">
-          {roleSelectData && (
-            <MultipleSelect
-              selectData={roleSelectData || []}
-              value={roles.map((v) => v.objectId || "")}
-              onDataChange={(vals?: string[]) => {
-                selectNode(roleSelectData, "role", ...(vals || []));
-              }}
-            />
+          {showUser === false && (
+            <TabPane tab="动态" itemKey="dynamic">
+              <DynamicNodeSelect
+                value={dynamics}
+                onDataChange={(data?: Partial<NodeUserInfo>[]) => {
+                  onDataChange([
+                    ...(value?.filter((v) => v.userType !== "dynamic") || []),
+                    ...(data || []),
+                  ]);
+                }}
+              />
+            </TabPane>
           )}
-        </TabPane>
-        <TabPane tab="动态" itemKey="dynamic">
-          <DynamicNodeSelect
-            value={dynamics}
-            onDataChange={(data?: Partial<NodeUserInfo>[]) => {
-              onDataChange([
-                ...(value?.filter((v) => v.userType !== "dynamic") || []),
-                ...(data || []),
-              ]);
-            }}
-          />
-        </TabPane>
-      </Tabs>
+        </Tabs>
+      </Scrollbars>
       <div className=" border-l w-2/5">
         <div className=" flex justify-between">
           <div className=" item-start">
@@ -175,6 +160,13 @@ export default (props: FlowSelectProps) => {
                       className="  text-sm bg-slate-200 hover:bg-slate-300 p-1 rounded font-thin cursor-pointer "
                     >
                       {user.label}
+                      {(user.label === undefined || user.label === null) &&
+                        user.userType === "assignee" &&
+                        userSelectData &&
+                        userSelectData.filter(
+                          (data) => data.value === user.objectId
+                        )?.[0]?.label}
+
                       <i className=" ml-1 icon-clear" />
                     </div>
                   </div>
@@ -201,6 +193,13 @@ export default (props: FlowSelectProps) => {
                       className="  text-sm bg-slate-200 hover:bg-slate-300 p-1 rounded font-thin cursor-pointer "
                     >
                       {dept.label}
+                      {(dept.label === undefined || dept.label === null) &&
+                        dept.userType === "dept" &&
+                        deptSelectData &&
+                        deptSelectData.filter(
+                          (data) => data.value === dept.objectId
+                        )?.[0]?.label}
+
                       <i className=" ml-1 icon-clear" />
                     </div>
                   </div>
@@ -226,6 +225,12 @@ export default (props: FlowSelectProps) => {
                       className=" text-sm bg-slate-200 hover:bg-slate-300 p-1 rounded font-thin cursor-pointer "
                     >
                       {role.label}
+                      {(role.label === undefined || role.label === null) &&
+                        role.userType === "role" &&
+                        roleSelectData &&
+                        roleSelectData.filter(
+                          (data) => data.value === role.objectId
+                        )?.[0]?.label}
                       <i className=" ml-1 icon-clear" />
                     </div>
                   </div>

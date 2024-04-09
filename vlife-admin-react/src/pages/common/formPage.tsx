@@ -155,7 +155,7 @@ const FormPage = <T extends IdBean>({
             onClickFieldComponent={onClickFieldComponent}
             modelInfo={_model}
             //流程结束只读状态
-            readPretty={flowBasic?.nodeId === "end"}
+            readPretty={props.readPretty || flowBasic?.nodeId === "end"}
             design={design}
             vf={vfs}
             formData={modifyData || formPageData || initData}

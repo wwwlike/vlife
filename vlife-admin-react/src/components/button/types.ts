@@ -26,7 +26,7 @@ export interface VFBtn{
   title?:string;//按钮名
   icon?:ReactNode;//图标 
   btnType?:btnType;// 按钮类型 "button" | "icon" | "link";
-  continueCreate?:boolean;//连续新增 create按钮会出现
+  continueCreate?:boolean;//连续新增 create按钮会出现(undefined不可见 false可见不可用  true可见可用)
   actionType:actionType // 动作类型
   disabled?:boolean;// 布尔方式判断按钮是否不可用
   usableMatch?:any|((...datas:any[])=>string|boolean|Promise<string|boolean>); //表单数据校验按钮可用性 any=>直接比对|函数=>复杂/异步校验 string表示不能使用原因 赋值给tooltip

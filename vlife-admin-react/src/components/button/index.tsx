@@ -50,7 +50,15 @@ export default ({ ...btn }: Partial<VFBtn>) => {
   const formModal = useNiceModal("formModal");
   const confirmModal = useNiceModal("confirmModal");
   const { checkBtnPermission } = useAuth();
-  const [_btn, setBtn] = useState(btn);
+  const [_btn, setBtn] = useState({
+    ...btn,
+    disabledHide:
+      btn.disabledHide ||
+      btn.position === "tableLine" ||
+      btn.position === "formFooter" //这2个位置的按钮如果不可用则默认是隐藏不显示的
+        ? true
+        : false,
+  });
   const [btnData, setBtnData] = useState<any>();
   const [comment, setComment] = useState<string>();
   //按钮数据
@@ -181,7 +189,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
         modal(d.data);
       });
     }
-  }, [btnData]);
+  }, [btnData, reaction]);
 
   // 工作流审核框弹出
   const flowCommentShow = useCallback(() => {
@@ -205,16 +213,19 @@ export default ({ ...btn }: Partial<VFBtn>) => {
     });
   }, [btnData, comment]);
 
-  //按钮提交
+  //按钮提交 flowInfo审核的流程数据
   const submit = useCallback(
     (flowInfo?: any) => {
       const save = () => {
         setLoading(true);
-
         const saveResult = saveApi?.(
-          onSaveBefore
-            ? onSaveBefore({ ...btnData, ...flowInfo })
-            : { ...btnData, ...flowInfo }
+          flowInfo
+            ? onSaveBefore
+              ? onSaveBefore({ ...btnData, ...flowInfo })
+              : { ...btnData, ...flowInfo }
+            : onSaveBefore
+            ? onSaveBefore(btnData)
+            : btnData
         );
         const submitAfter = (data: any) => {
           setTimeout(() => {
@@ -287,7 +298,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
         });
       }
     }
-  }, [btnData, position, continueCreate]);
+  }, [btnData, position, continueCreate, reaction]);
 
   // 按钮名称计算
   const btnTitle = useMemo((): string | ReactNode => {
@@ -304,9 +315,16 @@ export default ({ ...btn }: Partial<VFBtn>) => {
         return "新增";
       } else if (btn.actionType === "edit") {
         return "修改";
-      } else if (btn.actionType === "save" && btnData) {
+      } else if (
+        btn.actionType === "save" &&
+        position !== "tableToolbar" &&
+        btnData
+      ) {
         return "修改";
-      } else if (btn.actionType === "save" && btnData === undefined) {
+      } else if (
+        btn.actionType === "save" &&
+        (btnData === undefined || position === "tableToolbar")
+      ) {
         return "新增";
       }
     } else if (position === "tableToolbar") {
@@ -424,7 +442,7 @@ export default ({ ...btn }: Partial<VFBtn>) => {
         )}
       </div>
     );
-  }, [_btn, btnIcon, btnTitle, position, loading]);
+  }, [_btn, btnIcon, btnTitle, position, loading, reaction]);
   return authPass && !(_btn.disabledHide && _btn.disabled === true) ? (
     <>
       {/* {btn.actionType === "flow" &&

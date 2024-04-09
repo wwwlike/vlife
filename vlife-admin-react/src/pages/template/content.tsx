@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { IdBean } from "@src/api/base";
 import FormPage from "@src/pages/common/formPage";
 import { useNavigate } from "react-router-dom";
 import TablePage, { TablePageProps } from "@src/pages/common/tablePage";
@@ -85,6 +84,8 @@ const Content = <T extends TableBean>({
   const [tableModel, setTableModel] = useState<FormVo>();
   const [formModel, setFormModel] = useState<FormVo>();
   const [conditions, setConditions] = useState<ReportCondition[]>([]); //数据库查询视图
+  const [activeKey, setActiveKey] = useState<string[]>(); //可存2级页签
+
   //左侧列表根据查询维度隐藏指定字段(如查看本人数据，则不需要部门搜索条件)
   const filterReaction = useMemo((): VfAction[] => {
     if (filterFormVo) {
@@ -92,13 +93,13 @@ const Content = <T extends TableBean>({
       const deptCode = filterFormVo.fields.filter(
         (f) => f.entityType === "sysDept" && f.fieldName === "code"
       )?.[0];
-      return [
-        VF.result(
-          user?.groupFilterType === "sysUser_1" && deptCode !== undefined
-        )
-          .then("code")
-          .hide(),
-      ];
+      if (deptCode !== undefined) {
+        return [
+          VF.result(user?.groupFilterType === "sysUser_1")
+            .then("code")
+            .hide(),
+        ];
+      }
     }
     return [];
   }, [filterFormVo]);
@@ -107,28 +108,31 @@ const Content = <T extends TableBean>({
     icon: <i className=" icon-gallery_view " />,
     tab: "全部",
   };
-  const addTab: TableTab = {
-    tab: (
-      <Button
-        title={`视图创建`}
-        actionType="create"
-        btnType="icon"
-        icon={<i className="icon-task_add-02 font-bold" />}
-        model={"reportCondition"}
-        saveApi={save}
-        reaction={[
-          VF.then("formId").hide().value(tableModel?.id),
-          VF.then("sysMenuId").hide().value(tableModel?.sysMenuId),
-          VF.then("type").hide().value("table"),
-          VF.then("name").title("页签名称"),
-        ]}
-        onSubmitFinish={() => {
-          if (tableModel?.id) loadCondition(tableModel?.id);
-        }}
-      />
-    ),
-    itemKey: "add",
-  };
+
+  const addTab: TableTab = useMemo(() => {
+    return {
+      tab: (
+        <Button
+          title={`视图创建`}
+          actionType="create"
+          btnType="icon"
+          icon={<i className="icon-task_add-02 font-bold" />}
+          model={"reportCondition"}
+          saveApi={save}
+          reaction={[
+            VF.then("sysMenuId").hide().value(tableModel?.sysMenuId),
+            VF.then("formId").hide().value(tableModel?.id),
+            VF.then("type").hide().value("table"),
+            VF.then("name").title("页签名称"),
+          ]}
+          onSubmitFinish={() => {
+            if (tableModel?.id) loadCondition(tableModel?.id);
+          }}
+        />
+      ),
+      itemKey: "add",
+    };
+  }, [tableModel]);
   //固定项页签 tab abList方式+tabDictField方式
   const [fixedTab, setFixedTab] = useState<TableTab[]>([]);
   //查询视图页签
@@ -191,22 +195,17 @@ const Content = <T extends TableBean>({
     }
     return [];
   }, [tableModel]);
-  const [activeKey, setActiveKey] = useState<string[]>();
   //计算后的页面页签
   //页签组装
   const contentTab = useMemo((): TableTab[] | undefined => {
     return [
       ...flowTab,
+      ...(flowTab.length === 0 ? [allTab] : []),
       ...dbTab,
       ...(flowTab.length === 0 ? fixedTab : []),
-      ...(flowTab.length === 0 ? [allTab] : []),
       ...(user?.superUser ? [addTab] : []),
     ];
   }, [dbTab, fixedTab, allTab, flowTab, tableModel, addTab]);
-
-  // useEffect(() => {
-  //   setActiveKey(contentTab?.[0]?.itemKey);
-  // }, [contentTab]);
 
   //固定页签组装
   useEffect(() => {
@@ -382,7 +381,7 @@ const Content = <T extends TableBean>({
             <Tabs
               style={{ height: "36px", paddingLeft: "10px" }}
               type="card"
-              activeKey={activeKey?.[0] || contentTab[0].itemKey}
+              activeKey={activeKey?.[0] || contentTab?.[0]?.itemKey} //没有则默认显示全部
               tabList={contentTab}
               onChange={(key) => {
                 if (key !== "add") {

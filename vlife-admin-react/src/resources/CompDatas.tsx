@@ -33,9 +33,10 @@ import VfMiniFormList from "@src/components/form/MiniForm";
 import QueryBuilder from "@src/components/queryBuilder";
 import VfNestedSelector from "@src/components/VfNestedSelector";
 import WorkFlowEditor from "@src/workflow/component";
-import VfUserSelect from "@src/pages/sysManage/user/VfUserSelect";
 import TableRadioSelect from "@src/components/radio/TableRadioSelect";
 import SwitchCard from "@src/components/checkbox/SwitchCard";
+import UserSelect from "@src/pages/sysManage/user/UserSelect";
+import MemberSelect from "@src/workflow-editor/components/MemberSelect";
 
 //解决预览不正确问题
 const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
@@ -487,6 +488,26 @@ export const FormComponents: CompDatas = {
       },
     },
   },
+  UserSelect: {
+    component: UserSelect,
+    label: "用户选择器",
+    icon: "IconOrderedList",
+    dataType: DataType.basic,
+    dataModel: DataModel.string,
+    props: {
+      multiple: false,
+    },
+  },
+  UserSelects: {
+    component: UserSelect,
+    label: "用户选择器",
+    icon: "IconOrderedList",
+    dataType: DataType.array,
+    dataModel: DataModel.string,
+    props: {
+      multiple: true,
+    },
+  },
   WorkFlowEditor: {
     component: WorkFlowEditor,
     label: "流程设计器",
@@ -494,9 +515,9 @@ export const FormComponents: CompDatas = {
     dataType: DataType.basic,
     dataModel: DataModel.string,
   },
-  FlowSelect: {
-    component: VfUserSelect,
-    label: "常规审批对象选择",
+  MemberSelect: {
+    component: MemberSelect,
+    label: "流程审批对象选择",
     icon: "IconOrderedList",
     dataType: DataType.array,
     dataModel: "nodeUserInfo",
