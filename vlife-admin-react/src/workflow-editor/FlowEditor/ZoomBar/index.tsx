@@ -50,6 +50,7 @@ export const ZoomBar = memo(
           <Button
             // type={"text"}
             size="small"
+            theme="borderless"
             icon={<i className=" text-base icon-remove_circle_outline1" />}
             disabled={zoom <= 0.1}
             onClick={onZoomOut}
@@ -58,6 +59,7 @@ export const ZoomBar = memo(
           <Button
             // type={"text"}
             size="small"
+            theme="borderless"
             icon={<i className=" text-base icon-add_circle_outline" />}
             disabled={zoom >= 3}
             onClick={onZoomIn}
