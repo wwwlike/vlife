@@ -1,5 +1,5 @@
 import { LeftOutlined, RocketOutlined } from "@ant-design/icons";
-import { Avatar, Button, Space } from "antd";
+// import { Avatar, Button, Space } from "antd";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Toolbar } from "./component/Toolbar";
@@ -12,6 +12,7 @@ import VfButton from "@src/components/button";
 import { useAuth } from "@src/context/auth-context";
 import BasicSetting from "./component/BasicSetting";
 import FlowDesign from "./FlowDesign";
+import { Avatar, Button, Space } from "@douyinfe/semi-ui";
 
 const Container = styled.div`
   flex: 1;
@@ -84,21 +85,26 @@ export default memo((props: { flowNode?: IWorkFlowNode }) => {
       <Toolbar
         title={
           <Space>
-            <Button
+            <i
+              className=" text-xl cursor-pointer icon-arrow-back"
+              onClick={() => {
+                navigate(-1);
+              }}
+            />
+            {/* <Button
               shape="circle"
               icon={<LeftOutlined />}
               onClick={() => {
                 navigate(-1);
               }}
-            />
-            <Avatar
+            /> */}
+            {/* <Avatar
               shape="square"
               style={{
                 backgroundColor: "rgba(44,121,245, 0.2)",
                 color: "#2c79f6",
               }}
-              icon={<RocketOutlined />}
-            />
+            /> */}
             {currModel?.name}
           </Space>
         }
