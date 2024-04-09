@@ -1,9 +1,10 @@
-import { message } from "antd";
+// import { message } from "antd";
 import { useCallback } from "react";
 import { getTheFiles } from "../utils/getFIles";
 import { IWorkFlowNode } from "../interfaces";
 import { useEditorEngine } from "./useEditorEngine";
 import { useTranslate } from "../react-locales";
+import { Notification } from "@douyinfe/semi-ui";
 
 export interface IFlowJson {
   startNode?: IWorkFlowNode
@@ -22,11 +23,17 @@ export function useImport() {
             if (flowJson.startNode) {
               edtorStore?.setStartNode(flowJson.startNode)
             } else {
-              message.error(t("fileIllegal"));
+              Notification.error({
+                content: t("fileIllegal"),
+              });
+              // message.error(t("fileIllegal"));
             }
           } catch (error: any) {
             console.error(error);
-            message.error(t("fileIllegal"));
+            Notification.error({
+              content: t("fileIllegal"),
+            });
+            // message.error(t("fileIllegal"));
           }
         });
       });
