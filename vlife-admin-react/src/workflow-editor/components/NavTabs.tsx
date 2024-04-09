@@ -1,7 +1,8 @@
-import { Button } from "antd";
+// import { Button } from "antd";
 import { memo, useCallback, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import classNames from "classnames";
+import { Button } from "@douyinfe/semi-ui";
 
 const Shell = styled.div`
   flex: 1;
@@ -61,7 +62,8 @@ export const NavTabs = memo(
           return (
             <Button
               key={option.key}
-              type={option.key === inputValue ? "link" : "text"}
+              // type={option.key === inputValue ? "link" : "text"}
+              theme="borderless"
               onClick={() => handleItemClick(option.key)}
             >
               <NavIcon
