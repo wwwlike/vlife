@@ -7,7 +7,6 @@ import {
 import { AppProviders } from "@src/context";
 import Empty from "@src/pages/common/Empty";
 import Visit403 from "@src/pages/common/Visit403";
-import FormModal from "@src/pages/common/modal/formModal";
 import { ISelect } from "@src/dsl/component";
 const DashboardPage = lazy(() => import("@src/pages/dashboard"));
 const TemplatePage = lazy(() => import("@src/pages/template"));
@@ -19,6 +18,7 @@ const RolePage = lazy(() => import("@src/pages/sysManage/role"));
 const GroupPage = lazy(() => import("@src/pages/sysManage/group"));
 //系统配置
 const FormDesignPage = lazy(() => import("@src/pages/sysConf/formDesign")); //表单设计页
+
 const TableDesignPage = lazy(() => import("@src/pages/sysConf/tableDesign")); //列表设计页
 const ModelIndelPage = lazy(() => import("@src/pages/sysConf/model")); //模型主页
 const ModelDetailPage = lazy(
@@ -48,8 +48,12 @@ const OrderSendPage = lazy(() => import("@src/pages/erp/orderSend"));
 const ConditionPage = lazy(() => import("@src/pages/sysConf/condition"));
 
 //工作流
-const FlowIndexPage = lazy(() => import("@src/workflow"));
-const FlowDesignPage = lazy(() => import("@src/workflow/component"));
+const FlowDesignPage = lazy(() => import("@src/pages/sysConf/formDesign"));
+//查询设计器引擎示例
+const QueryBuilderExamplePage = lazy(
+  () => import("@src/pages/example/QueryBuilderExample")
+);
+
 //我的待办
 const MyTaskPage = lazy(() => import("@src/pages/dashboard/flow/MyTask"));
 export const allRoute: any[] = [
@@ -175,25 +179,6 @@ export const allRoute: any[] = [
     ],
   },
 
-  {
-    path: "/flow",
-    element: (
-      <WrapperRouteComponent element={<LayoutPage />} titleId="工作流" auth />
-    ),
-    children: [
-      {
-        path: "design",
-        element: (
-          <WrapperRouteComponent
-            element={<FlowDesignPage />}
-            titleId="流程设计"
-            auth
-          />
-        ),
-      },
-    ],
-  },
-
   //系统配置
   {
     path: "/sysConf",
@@ -267,6 +252,16 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={<FormDesignPage />}
             titleId="模型设计"
+            auth
+          />
+        ),
+      },
+      {
+        path: "flowDesign/*",
+        element: (
+          <WrapperRouteComponent
+            element={<FlowDesignPage />}
+            titleId="流程设计"
             auth
           />
         ),
@@ -386,7 +381,24 @@ export const allRoute: any[] = [
       },
     ],
   },
-
+  {
+    path: "/example",
+    element: (
+      <WrapperRouteComponent element={<LayoutPage />} titleId="报表设置" auth />
+    ),
+    children: [
+      {
+        path: "queryBuilder",
+        element: (
+          <WrapperRouteComponent
+            element={<QueryBuilderExamplePage />}
+            titleId="查询设计器示例"
+            auth
+          />
+        ),
+      },
+    ],
+  },
   // plus 高级版本
   {
     path: "/report",
@@ -422,6 +434,7 @@ export const allRoute: any[] = [
     ),
   },
 ];
+
 const RenderRouter: FC = () => {
   const [routeList, setRouteList] = useState<RouteObject[]>(allRoute);
   const element = useRoutes([...routeList]);
