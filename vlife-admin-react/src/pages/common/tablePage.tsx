@@ -33,7 +33,7 @@ import {
   recall,
   RecordFlowInfo,
   startFlow,
-} from "@src/api/Flow";
+} from "@src/api/workflow/Flow";
 import { useNiceModal } from "@src/store";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
@@ -67,7 +67,7 @@ type apiError = {
 // T为列表listType的类型
 export interface TablePageProps<T extends TableBean> extends ListProps<T> {
   listType: string; //列表模型
-  activeKey: string; //当前激活的tab页签key
+  activeKey: string; //当前激活的tab的主页签key
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req: any; //查询条件obj  //自定义tab页签条件，filter过滤条件
   conditionJson?: string; //db视图过滤的条件
@@ -449,12 +449,14 @@ const TablePage = <T extends TableBean>({
           model: editModelType,
           // disabledHide: true,
           usableMatch: (data: TableBean) => {
-            //不结束都能保存
+            //在待办/未提交的可保存
             return (
               data === undefined ||
               data.id === undefined ||
+              (data?.flow?.started === false && activeKey === "flow_byMe") ||
               (data?.flow?.ended !== true &&
-                (data?.flow?.started === false || data?.flow?.currTask))
+                data?.flow?.currTask &&
+                activeKey === "flow_todo")
             );
           },
           reaction:
@@ -489,7 +491,11 @@ const TablePage = <T extends TableBean>({
           multiple: false,
           model: formModel?.type,
           usableMatch: (d: T) => {
-            return d?.flow?.currTask && d.flow.nodeType === "approver";
+            return (
+              d?.flow?.currTask &&
+              d.flow.nodeType === "approver" &&
+              activeKey === "flow_todo"
+            );
           },
           comment: true,
           disabledHide: true,
@@ -516,7 +522,8 @@ const TablePage = <T extends TableBean>({
               d?.flow?.started === false || //开始任务节点
               (d?.flow?.currTask &&
                 d?.flow?.ended === false &&
-                (d.flow?.nodeType === "audit" || d.flow.nodeId === "start")) //办理节点
+                (d.flow?.nodeType === "audit" || d.flow.nodeId === "start") &&
+                activeKey === "flow_todo") //办理节点
             );
           },
           disabledHide: true,
@@ -563,7 +570,8 @@ const TablePage = <T extends TableBean>({
               d?.flow?.auditInfo?.rollback === true &&
               d?.flow?.started === true &&
               d?.flow?.ended === false &&
-              d.flow.currTask
+              d.flow.currTask &&
+              activeKey === "flow_todo"
             );
           },
           comment: true,
@@ -590,7 +598,8 @@ const TablePage = <T extends TableBean>({
               d?.flow?.auditInfo?.transfer === true &&
               d?.flow?.started === true &&
               d?.flow?.ended === false &&
-              d.flow.currTask
+              d.flow.currTask &&
+              activeKey === "flow_todo"
             );
           },
           comment: true,
@@ -598,13 +607,14 @@ const TablePage = <T extends TableBean>({
             return data;
           },
         },
+        //当前视图是已办，且后端返回可以测回则显示
         {
           actionType: "flow",
           title: "撤回",
           icon: <i className=" text-base icon-reply" />,
           model: formModel?.type,
           usableMatch: (d: T) => {
-            return d.flow?.recallable === true;
+            return d.flow?.recallable === true && activeKey === "flow_done";
           },
           comment: true,
           saveApi: (data: any) => {
@@ -631,7 +641,8 @@ const TablePage = <T extends TableBean>({
               d?.flow?.auditInfo?.rejected === true &&
               d?.flow?.started === true &&
               d?.flow?.ended === false &&
-              d.flow.currTask
+              d.flow.currTask &&
+              activeKey === "flow_todo"
             );
           },
           saveApi: (data: any) => {
@@ -781,7 +792,7 @@ const TablePage = <T extends TableBean>({
       ref={ref}
       className={`${className} relative h-full flex flex-col text-sm  `}
     >
-      {/* {JSON.stringify(tableData?.[0])} */}
+      {/* {activeKey} */}
       <div
         className={`flex bg-white items-center p-2 border-gray-100  justify-start  `}
       >
@@ -838,7 +849,7 @@ const TablePage = <T extends TableBean>({
       </div>
       <Table<T>
         className={"flex justify-center flex-grow"}
-        key={tableModel.type + pageSize + pager?.page}
+        key={tableModel.type + pageSize + pager?.page + activeKey}
         model={tableModel} //设计模式时应用实时传入的formVo
         dataSource={tableData}
         selected={selected}
@@ -848,15 +859,13 @@ const TablePage = <T extends TableBean>({
           setSelected(data);
         }}
         flowFormType={formModel?.flowJson ? formModel.type : undefined}
-        // onLineClick={(data: T) => {
-        //   alert(JSON.stringify(data));
-        // }}
         onLineClick={(record) => {
           if (formModel?.flowJson) {
             formModal.show({
               modelInfo: formModel,
               type: editModelType,
               formData: record,
+              reaction: typeof editType !== "string" ? editType?.reaction : [],
               btns: mode === "view" ? [] : totalBtns,
             });
           }

@@ -69,9 +69,9 @@ export default (props: FlowSelectProps) => {
 
   return (
     <div className=" flex w-full h-full ">
-      <Scrollbars autoHide={true} className="h-full">
+      <Scrollbars autoHide={true} className="h-full w-full">
         <Tabs
-          className=" w-3/5 mr-2 h-full "
+          className="  mr-2 h-full "
           activeKey={activeKey}
           onTabClick={setActiveKey}
         >

@@ -28,7 +28,7 @@ export const materialUis: IMaterialUIs = {
     settersPanel: ApproverPanel,
     //校验，目前仅实现了空校验，其它校验过几天实现
     validate: (node: IWorkFlowNode<IApproverSettings>, { t }) => {
-      if (!node.config) {
+      if (!node.approverSettings?.auditList?.length) {
         return t("noSelectedApprover");
       }
       return true;
@@ -50,7 +50,7 @@ export const materialUis: IMaterialUIs = {
     settersPanel: AuditPanel,
     //校验函数
     validate: (node: IWorkFlowNode<IApproverSettings>, { t }) => {
-      if (!node.config) {
+      if (!node.approverSettings?.auditList?.length) {
         return t("noSelectedDealer");
       }
       return true;
@@ -66,9 +66,9 @@ export const materialUis: IMaterialUIs = {
     settersPanel: ConditionPanel,
     //校验函数
     validate: (node: IWorkFlowNode<IApproverSettings>, { t }) => {
-      if (!node.config) {
-        return t("noSetCondition");
-      }
+      // if (!node.conditions?.length) {
+      //   return t("noSetCondition");
+      // }
       return true;
     },
   },
@@ -80,6 +80,12 @@ export const materialUis: IMaterialUIs = {
       );
     },
     settersPanel: NotifierPanel,
+    validate: (node: IWorkFlowNode<IApproverSettings>, { t }) => {
+      if (!node.approverSettings?.auditList?.length) {
+        return t("noSelectedNotifier");
+      }
+      return true;
+    },
   },
   //发起人节点
   [NodeType.start]: {

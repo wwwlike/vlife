@@ -267,6 +267,11 @@ export const menuOpenApi:ApiInfo= {
       func:(datas:SysMenu[])=>{
         return datas.filter((d)=>{return d.app});
       }
+    },level2:{
+      title:"业务引用",
+      func:(datas:SysMenu[])=>{
+        return datas.filter((d)=>{return d.app&&d.name!=='平台管理'});
+      }
     }
   },
   match:{//数据转换，匹配一直的prop属性

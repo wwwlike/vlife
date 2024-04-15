@@ -156,7 +156,7 @@ instance.interceptors.response.use(
 
       const currentTime = Date.now();
       const timeDiff = currentTime - lastNotificationTime;
-      if (timeDiff > 5000) { // 设定时间间隔为 5 秒
+      if (timeDiff > 3000) { // 设定时间间隔为 3 秒 只能弹出一次成功提示
         Notification.success({
           content: `操作成功`,
           position: 'bottomRight'

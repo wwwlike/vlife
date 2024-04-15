@@ -14,6 +14,10 @@
     </a>
 </p>
 
+demo地址
+<h4 align="left"><a target="_blank" href="http://vlife.cc">http://admin.vlife.cc/login</a>
+
+
 ## 行业痛点
 低代码平台众多，研发乐于使用的却很少，为什么？
 - 不适：改变了原有的开发流程,开发不适应。
@@ -50,6 +54,9 @@
 
 ## 功能概览
 
+### 流程引擎
+- 仿钉钉流程设计器(业务人员也能轻松设计一套中国式复杂的流程)
+![模型管理](https://wwwlike.gitee.io/vlife-img/flow.png)
 ### 模型管理
 - 将实体模型和其关联的其他类型的模型集中在此进行展示，为代码生成和模型设计的入口
 ![模型管理](https://wwwlike.gitee.io/vlife-img/vlifepage/abcd.png)

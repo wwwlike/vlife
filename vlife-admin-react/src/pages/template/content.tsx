@@ -84,7 +84,7 @@ const Content = <T extends TableBean>({
   const [tableModel, setTableModel] = useState<FormVo>();
   const [formModel, setFormModel] = useState<FormVo>();
   const [conditions, setConditions] = useState<ReportCondition[]>([]); //数据库查询视图
-  const [activeKey, setActiveKey] = useState<string[]>(); //可存2级页签
+  const [activeKey, setActiveKey] = useState<(string | undefined)[]>(); //可存2级页签
 
   //左侧列表根据查询维度隐藏指定字段(如查看本人数据，则不需要部门搜索条件)
   const filterReaction = useMemo((): VfAction[] => {
@@ -133,7 +133,7 @@ const Content = <T extends TableBean>({
       itemKey: "add",
     };
   }, [tableModel]);
-  //固定项页签 tab abList方式+tabDictField方式
+  //固定项页签 tab dbList方式+tabDictField方式
   const [fixedTab, setFixedTab] = useState<TableTab[]>([]);
   //查询视图页签
   const [dbTab, setDbTab] = useState<TableTab[]>([]);
@@ -157,25 +157,32 @@ const Content = <T extends TableBean>({
               itemKey: "flow_byMe_1",
               icon: <i className="icon-checkbox_01" />,
               tab: "流程中",
-              req: { flowTab: "todo" },
-            },
-            {
-              itemKey: "flow_byMe_4",
-              icon: <i className="icon-checkbox_01" />,
-              tab: "草稿",
-              req: { flowTab: "todo" },
+              req: { flowTab: "byMe_todo" },
             },
             {
               itemKey: "flow_byMe_2",
               icon: <i className="icon-checkbox_01" />,
               tab: "待完善",
-              req: { flowTab: "todo" },
+              req: { flowTab: "byMe_edit" },
             },
             {
               itemKey: "flow_byMe_3",
               icon: <i className="icon-checkbox_01" />,
               tab: "已通过",
-              req: { flowTab: "todo" },
+              req: { flowTab: "byMe_finish" },
+              singleReq: true,
+            },
+            {
+              itemKey: "flow_byMe_4",
+              icon: <i className="icon-checkbox_01" />,
+              tab: "已拒绝",
+              req: { flowTab: "byMe_refuse" },
+            },
+            {
+              itemKey: "flow_byMe_5",
+              icon: <i className="icon-checkbox_01" />,
+              tab: "草稿",
+              req: { flowTab: "byMe_draft" },
             },
           ],
         },
@@ -289,25 +296,39 @@ const Content = <T extends TableBean>({
 
   //查询条件组装
   const tableReq = useMemo(() => {
+    const where: Partial<where>[] = [];
+    // 固定页签条件
     let customViewReq: any = contentTab?.filter(
-      (item) => item.itemKey === activeKey?.[0]
+      (item) =>
+        item.itemKey === activeKey?.[0] && !item.itemKey.startsWith("flow")
     )?.[0]?.req;
 
-    const where: Partial<where>[] = [];
-    let flowReq = {};
     if (customViewReq) {
-      if (activeKey?.[0]?.startsWith("flow")) {
-        flowReq = customViewReq;
+      where.push(...customViewReq);
+    }
+
+    let flowReq: any = {}; //工作流req
+    if (activeKey?.[0]?.startsWith("flow")) {
+      if (activeKey?.[1]) {
+        //二级tab工作流
+        flowReq = contentTab
+          ?.filter((item) => item.itemKey === activeKey?.[0])?.[0]
+          .subs?.filter((item) => item.itemKey === activeKey?.[1])?.[0].req;
       } else {
-        where.push(...customViewReq);
+        // 一级tab工作流
+        flowReq = contentTab?.filter(
+          (item) => item.itemKey === activeKey?.[0]
+        )?.[0]?.req;
       }
     }
+
+    //页面传入req转换成where方式条件
     if (req) {
       where.push(...objToConditionWhere(req));
     }
     return {
-      ...formData,
-      ...flowReq,
+      ...formData, //表单object方式搜索
+      ...flowReq, //流程object方式条件
       conditionGroups: [{ where }],
     };
   }, [req, formData, contentTab, activeKey]);
@@ -385,7 +406,17 @@ const Content = <T extends TableBean>({
               tabList={contentTab}
               onChange={(key) => {
                 if (key !== "add") {
-                  setActiveKey([key]);
+                  if (
+                    contentTab.filter((tab) => tab.itemKey === key)?.[0].subs
+                  ) {
+                    setActiveKey([
+                      key,
+                      contentTab.filter((tab) => tab.itemKey === key)?.[0]
+                        .subs?.[0]?.itemKey,
+                    ]);
+                  } else {
+                    setActiveKey([key]);
+                  }
                 }
               }}
               onTabClose={(targetKey) => {
@@ -396,8 +427,6 @@ const Content = <T extends TableBean>({
             />
           </div>
         )}
-
-        {/* {JSON.stringify(tableModel)} */}
         {/* 二级页签 */}
         {contentTab?.filter((c) => c.itemKey === activeKey?.[0])?.[0]?.subs && (
           <div className="flex  space-x-1 p-1 ">
@@ -422,7 +451,6 @@ const Content = <T extends TableBean>({
               })}
           </div>
         )}
-
         {/* 列表行 */}
         <TablePage<T>
           className="flex-grow"

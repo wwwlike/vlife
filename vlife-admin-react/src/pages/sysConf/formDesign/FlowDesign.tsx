@@ -17,20 +17,15 @@ export default (props: FlowSettingProps) => {
   const [flowNode, setFlowNode] = useState<IWorkFlowNode>(
     JSON.parse(formVo.unpublishJson || formVo.flowJson)
   );
-  //
-
-  // useEffect(() => {
-  //   if (formVo.flowJson) {
-  //     setFlowNode();
-  //   }
-  // }, [formVo.flowJson]);
 
   return (
     <WorkflowEditor
       themeMode={themeMode}
       lang={lang}
       onDataChange={(node) => {
-        onDataChange(JSON.stringify(node));
+        if (flowNode !== node) {
+          onDataChange(JSON.stringify(node));
+        }
       }}
       //dlc 卡片，setting 和校验的配置信息
       materialUis={materialUis}

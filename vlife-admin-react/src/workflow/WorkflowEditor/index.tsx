@@ -1,52 +1,61 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { WorkFlowEditorInner } from "./WorkFlowEditorInner";
 import { ILocales } from "@rxdrag/locales";
 import { IThemeToken, IWorkFlowNode } from "../../workflow-editor";
 import { IMaterialUIs, FlowEditorScope } from "../../workflow-editor";
 import { FormVo } from "@src/api/Form";
+import { PublishButton } from "./PublishButton";
 
 export type WorkflowEditorProps = {
-  //皮肤
-  themeMode?: "dark" | "light";
-  //暂时不知
-  themeToken?: IThemeToken;
-  //语言
-  lang?: string;
-  locales?: ILocales;
-
-  //物料UI的一个map，用于组件间通过props传递物料UI，key是节点类型
-  // export interface IMaterialUIs {
-  //   [nodeType: string]: IMaterialUI<any> | undefined
-  // }
+  themeMode?: "dark" | "light"; //皮肤
+  themeToken?: IThemeToken; //样式变量
+  lang?: string; //语言
+  locales?: ILocales; //国际化
   materialUis?: IMaterialUIs;
-  //表单模型信息
-  // formVo?: FormVo;
-  flowNode?: IWorkFlowNode;
-  formVo?: FormVo;
+  flowNode?: IWorkFlowNode; //已配置节点信息
+  formVo?: FormVo; //在面板配置时需要的模型信息
+  onDataChange?: (iWorkFlowNode?: IWorkFlowNode) => void;
 };
 //  => void
-export const WorkflowEditor = memo(
-  (
-    props: WorkflowEditorProps & {
-      onDataChange?: (iWorkFlowNode?: IWorkFlowNode) => void;
+export const WorkflowEditor = memo((props: WorkflowEditorProps) => {
+  const {
+    themeMode,
+    themeToken,
+    lang,
+    locales,
+    materialUis,
+    onDataChange,
+    formVo,
+    flowNode,
+  } = props;
+
+  const [iWorkFlowNode, setIWorkFlowNode] = useState<IWorkFlowNode>();
+  const [validate, setValidate] = useState(false); //节点校验通过标识
+  useEffect(() => {
+    if (validate && iWorkFlowNode && iWorkFlowNode.childNode) {
+      onDataChange?.(iWorkFlowNode);
+    } else {
+      onDataChange?.(undefined);
     }
-  ) => {
-    const { themeMode, themeToken, lang, locales, materialUis, ...other } =
-      props;
-
-    return (
-      // dlc scope 做数据配置使用
-
-      <FlowEditorScope
-        mode={themeMode}
-        themeToken={themeToken}
-        lang={lang}
-        locales={locales}
-        materialUis={materialUis}
-      >
-        {/* dlc 工作流核心配置 */}
-        <WorkFlowEditorInner {...other} />
-      </FlowEditorScope>
-    );
-  }
-);
+  }, [validate, iWorkFlowNode]);
+  return (
+    <FlowEditorScope
+      mode={themeMode}
+      themeToken={themeToken}
+      lang={lang}
+      locales={locales}
+      materialUis={materialUis}
+    >
+      {/* 流程校验 */}
+      <PublishButton onValidate={setValidate} iWorkFlowNode={iWorkFlowNode} />
+      {/*  工作流核心配置 */}
+      <WorkFlowEditorInner
+        flowNode={flowNode}
+        formVo={formVo}
+        onDataChange={(_iWorkFlowNode?: IWorkFlowNode) => {
+          setIWorkFlowNode(_iWorkFlowNode);
+        }}
+      />
+    </FlowEditorScope>
+  );
+});

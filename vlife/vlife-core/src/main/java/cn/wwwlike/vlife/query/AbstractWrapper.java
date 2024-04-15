@@ -96,21 +96,21 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
      */
     protected Map<Class,String> fkRelation = new HashMap<Class,String>();
 
-    //添加外键关联的表
+    //添加外键关联的表(添加主表)
     public Children addFkRelation(Class<? extends Item> fkClazz,String field) {
         fkRelation.put(fkClazz,field);
         return typedThis;
     }
 
-//    /**
-//     * 子表关联配置
-//     * 手工配置，替代传统的通过约定命名进行表关联
-//     */
-//    protected Map<Class,String> subRelation = new HashMap<Class,String>();
-//    public Children addSubRelation(Class<? extends Item> subClazz,String field) {
-//        subRelation.put(subClazz,field);
-//        return typedThis;
-//    }
+    /**
+     * 子表关联配置
+     * 手工配置，替代传统的通过约定命名进行表关联
+     */
+    protected Map<Class,String> subRelation = new HashMap<Class,String>();
+    public Children addSubRelation(Class<? extends Item> subClazz,String field) {
+        subRelation.put(subClazz,field);
+        return typedThis;
+    }
 
 
 

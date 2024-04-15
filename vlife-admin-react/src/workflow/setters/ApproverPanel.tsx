@@ -35,12 +35,6 @@ export const ApproverPanel = memo(
                 };
               })
           ),
-          // .componentProps((d, props) => {
-          //   return {
-          //     ...props,
-          //     defaultVal: "Readable",
-          //   };
-          // }),
         ]}
       />
     );

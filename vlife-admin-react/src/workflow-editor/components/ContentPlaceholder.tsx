@@ -1,6 +1,6 @@
 import { memo } from "react";
 import className from "classnames";
-import { IWorkFlowNode } from "../interfaces";
+import { IWorkFlowNode, NodeType } from "../interfaces";
 import VfUserSelect from "@src/pages/sysManage/user/UserSelect";
 import ConditionView from "@src/components/queryBuilder/component/ConditionView";
 import MemberSelect from "./MemberSelect";
@@ -24,9 +24,20 @@ export const ContentPlaceholder = memo((props: ContentPlaceholderProps) => {
           read={true}
         />
       )}
+
       {node?.conditions && <ConditionView condition={node.conditions} />}
-      {node?.approverSettings?.auditList === undefined &&
-        node.conditions === undefined && <>{text}</>}
+      {/* {node.nodeType} */}
+      <span className=" font-bold ">
+        {node?.approverSettings?.auditList === undefined &&
+          (node.conditions === undefined || node.conditions.length === 0) && (
+            <>{text}</>
+          )}
+      </span>
+      {node.nodeType === "condition" && (
+        <div className=" mt-2 pt-2 border-t font-bold text-orange-400">
+          筛选数据
+        </div>
+      )}
     </span>
   );
 });

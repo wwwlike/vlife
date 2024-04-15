@@ -36,9 +36,8 @@ export const WorkFlowEditorInner = memo(
     const edtorStore = useEditorEngine();
 
     useEffect(() => {
-      if (flowNode) {
-        edtorStore?.setStartNode(flowNode);
-      }
+      //初始流程节点
+      flowNode && edtorStore?.setStartNode(flowNode);
     }, [flowNode]);
     const startNode = useStartNode();
     useUpdateEffect(() => {

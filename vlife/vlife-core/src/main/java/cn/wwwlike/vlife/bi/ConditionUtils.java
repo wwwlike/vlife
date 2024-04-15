@@ -3,6 +3,7 @@ package cn.wwwlike.vlife.bi;
 import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -41,7 +42,7 @@ public class ConditionUtils {
                     return false;
                 }
             } else if(obj instanceof ObjectNode){
-                if(!match(((ObjectNode)obj).get(where.getFieldName()), where)){
+                if(!match(((TextNode)((ObjectNode)obj).get(where.getFieldName())).asText(), where)){
                     return false;
                 }
             } else {

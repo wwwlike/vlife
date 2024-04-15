@@ -11,6 +11,13 @@ export default () => {
     <Content<SysUser>
       listType="sysUser"
       tabDictField="state"
+      // tabList={[
+      //   {
+      //     itemKey: "sysTab_1",
+      //     tab: "用户tab页签名称",
+      //     req: { username: "vlife" },
+      //   },
+      // ]}
       editType={{
         type: "sysUser",
         reaction: [

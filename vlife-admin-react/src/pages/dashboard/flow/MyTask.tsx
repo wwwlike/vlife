@@ -1,4 +1,4 @@
-import { page } from "@src/api/Flow";
+import { page } from "@src/api/workflow/Flow";
 import React, { useEffect, useState } from "react";
 
 export default () => {

@@ -1,19 +1,16 @@
-import { LeftOutlined, RocketOutlined } from "@ant-design/icons";
-// import { Avatar, Button, Space } from "antd";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Toolbar } from "./component/Toolbar";
-import { IWorkFlowNode } from "@src/workflow-editor";
 import { NavTabs } from "./component/NavTabs";
 import FormDesign from "./FormDesign";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FormVo, list, saveFormDto } from "@src/api/Form";
-import VfButton from "@src/components/button";
 import { useAuth } from "@src/context/auth-context";
 import BasicSetting from "./component/BasicSetting";
 import FlowDesign from "./FlowDesign";
-import { Avatar, Button, Space } from "@douyinfe/semi-ui";
-
+import { Space } from "@douyinfe/semi-ui";
+import BtnToolBar from "@src/components/button/BtnToolBar";
+import { publish } from "@src/api/workflow/Flow";
 const Container = styled.div`
   flex: 1;
   display: flex;
@@ -27,24 +24,27 @@ export enum TabType {
   addvancedSettings = "addvancedSettings",
 }
 
-export default memo((props: { flowNode?: IWorkFlowNode }) => {
+export default memo(() => {
   const local = useLocation();
   const navigate = useNavigate();
   const { clearModelInfo } = useAuth();
+  const [currModel, setCurrModel] = useState<FormVo>();
+
   const type = useMemo<string>(() => {
     return local.pathname.split("/")[local.pathname.split("/").length - 1];
   }, [local.pathname]);
-
-  const [currModel, setCurrModel] = useState<FormVo>();
+  const designType = useMemo<string>(() => {
+    return local.pathname.split("/")[local.pathname.split("/").length - 2];
+  }, [local.pathname]);
+  const [selectedTab, setSelectedTab] = useState<TabType>(
+    designType as TabType
+  );
   useEffect(() => {
     list({ type }).then((d) => {
       const f = d.data?.[0];
       setCurrModel(f);
     });
   }, [type]);
-
-  const { flowNode, ...other } = props;
-  const [selectedTab, setSelectedTab] = useState<TabType>(TabType.formDesign);
 
   const optionsTitle = useMemo(() => {
     const tabTitle = [
@@ -81,7 +81,8 @@ export default memo((props: { flowNode?: IWorkFlowNode }) => {
   }, []);
 
   return (
-    <Container className={"  bg-white"} {...other}>
+    <Container className={"  bg-white"}>
+      {/* {currModel?.unpublishJson} */}
       <Toolbar
         title={
           <Space>
@@ -109,20 +110,39 @@ export default memo((props: { flowNode?: IWorkFlowNode }) => {
           </Space>
         }
         actions={
-          <Space>
-            <VfButton
-              position="formFooter"
-              actionType="edit"
-              title="保存"
-              datas={currModel}
-              saveApi={saveFormDto}
-              onSubmitFinish={(data) => {
-                setCurrModel(data);
-                //缓存清除
-                clearModelInfo(currModel?.type);
-              }}
-            />
-          </Space>
+          <BtnToolBar
+            btns={[
+              {
+                actionType: "edit",
+                title: "保存",
+                disabled: (selectedTab as string) === "flowDesign",
+                datas: currModel,
+                disabledHide: true,
+                saveApi: saveFormDto,
+                onSubmitFinish: (data) => {
+                  setCurrModel(data);
+                  //缓存清除
+                  clearModelInfo(currModel?.type);
+                },
+              },
+              {
+                actionType: "edit",
+                title: "发布",
+                disabledHide: (selectedTab as string) !== "flowDesign",
+                tooltip: "请配置正确的流程节点信息",
+                disabled:
+                  (selectedTab as string) !== "flowDesign" ||
+                  currModel?.unpublishJson === undefined ||
+                  currModel?.unpublishJson === null,
+                datas: currModel,
+                saveApi: publish,
+                onSubmitFinish: (data) => {
+                  setCurrModel(data);
+                  clearModelInfo(currModel?.type);
+                },
+              },
+            ]}
+          ></BtnToolBar>
         }
       >
         {currModel?.itemType !== "req" && (

@@ -7,8 +7,8 @@ import { VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
 import { Tooltip } from "@douyinfe/semi-ui";
-import FormFlowContainer from "@src/workflow/FormFlowContainer";
-import { FlowNode, RecordFlowInfo } from "@src/api/Flow";
+import FormFlowContainer from "@src/pages/common/FormFlowContainer";
+import { FlowNode, RecordFlowInfo } from "@src/api/workflow/Flow";
 
 export interface FormPageProps<T extends IdBean>
   extends Omit<FormProps<T>, "modelInfo"> {
@@ -144,10 +144,8 @@ const FormPage = <T extends IdBean>({
 
   return (
     <FormFlowContainer className={className} historys={flowHistorys}>
-      {/* {JSON.stringify(flow?.auditInfo?.fields.length)} */}
       {_model ? (
         <>
-          {/* {JSON.stringify(modifyData || formPageData || initData)} */}
           <VlifeForm
             {...props}
             fontBold={props.fontBold}

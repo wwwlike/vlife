@@ -12,7 +12,7 @@ import {
   FlowNode,
   queryHistoricInfo,
   RecordFlowInfo,
-} from "@src/api/Flow";
+} from "@src/api/workflow/Flow";
 import BtnToolBar from "@src/components/button/BtnToolBar";
 /**
  * 表单弹出层属性
@@ -47,9 +47,9 @@ export const FormModal = createNiceModal(
       width: window.innerWidth,
       height: window.innerHeight,
     });
-    const [_continueCreate, setContinueCreate] = useState<
-      boolean | undefined
-    >();
+    const [_continueCreate, setContinueCreate] = useState<boolean | undefined>(
+      btns?.[0]?.continueCreate
+    );
 
     const [formNumber, setFormNumber] = useState<number>(0);
     // const [modifyData, setModifyData] = useState(props.modifyData);
@@ -140,7 +140,7 @@ export const FormModal = createNiceModal(
         });
       }
       return [];
-    }, [btns, form, formVo, data, recordFlowInfo]);
+    }, [btns, form, formVo, data, recordFlowInfo, _continueCreate]);
 
     const createBtns = formBtns.filter(
       (btn) => btn.actionType === "create" && btn.continueCreate !== undefined
@@ -223,7 +223,7 @@ export const FormModal = createNiceModal(
       >
         {/* 弹出层不传表单给formPage,并且还从回调接收FormVo */}
         <FormPage
-          key={`modal${data?.id + formNumber}`}
+          key={`${formNumber}`}
           onError={setErrors}
           formData={data}
           modelInfo={modelInfo}
