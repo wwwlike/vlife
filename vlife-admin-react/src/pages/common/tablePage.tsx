@@ -29,7 +29,7 @@ import {
   backProcess,
   cancelProcess,
   completeTask,
-  findProcessDefinitions,
+  findTableBasicColumns,
   recall,
   RecordFlowInfo,
   startFlow,
@@ -67,10 +67,14 @@ type apiError = {
 // T为列表listType的类型
 export interface TablePageProps<T extends TableBean> extends ListProps<T> {
   listType: string; //列表模型
-  activeKey: string; //当前激活的tab的主页签key
+  activeKey: {
+    level1: string;
+    level2?: string;
+  }; //当前激活的tab的主页签key
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req: any; //查询条件obj  //自定义tab页签条件，filter过滤条件
   conditionJson?: string; //db视图过滤的条件
+  tabCountConditionJson?: { tabKey: string; tabConditionJson: string }; //tab页签数量条件
   design: true | undefined; //true则是设计器模式
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
@@ -78,7 +82,8 @@ export interface TablePageProps<T extends TableBean> extends ListProps<T> {
   loadApi: PageFuncType<T>; //异步加载数据的地址，
   onTableModel: (formVo: FormVo) => void; //列表模型信息传出
   onFormModel: (formVo: FormVo) => void; //表单模型信息传出
-  onGetData: (datas: T[]) => void; //请求的列表数据传出
+  onGetData: (pageData: PageVo<T>) => void; //请求的列表数据传出
+  onTabCount: (tabCount: { tabKey: string; count: number }) => void; //tab页签数量传出
   onHttpError: (error: apiError) => void; //异常信息传出，设计阶段时接口没有会用到
   otherBtns: VFBtn[]; // 按钮触发的增量功能
 }
@@ -191,7 +196,7 @@ const TablePage = <T extends TableBean>({
 
   useEffect(() => {
     if (pageData?.result && formModel?.flowJson) {
-      findProcessDefinitions({
+      findTableBasicColumns({
         defineKey: formModel.type,
         businessKeys: pageData.result.map((item) => item.id),
       }).then((result) => {
@@ -308,7 +313,7 @@ const TablePage = <T extends TableBean>({
             }
             setPageData(data.data);
             if (onGetData) {
-              onGetData(data.data.result || []);
+              onGetData(data.data);
             }
           }
         })
@@ -453,10 +458,12 @@ const TablePage = <T extends TableBean>({
             return (
               data === undefined ||
               data.id === undefined ||
-              (data?.flow?.started === false && activeKey === "flow_byMe") ||
               (data?.flow?.ended !== true &&
                 data?.flow?.currTask &&
-                activeKey === "flow_todo")
+                activeKey?.level1 === "flow_todo") ||
+              (data?.flow?.started !== true &&
+                (activeKey?.level2 === "flow_byMe_edit" || // 待完善
+                  activeKey?.level2 === "flow_byMe_draft"))
             );
           },
           reaction:
@@ -467,7 +474,7 @@ const TablePage = <T extends TableBean>({
           title: "删除",
           disabledHide: true,
           actionType: "api",
-          disabled: activeKey !== "flow_byMe",
+          disabled: activeKey?.level1 !== "flow_byMe",
           usableMatch: (datas: TableBean[]) => {
             return datas.every((data) => {
               return (
@@ -494,7 +501,7 @@ const TablePage = <T extends TableBean>({
             return (
               d?.flow?.currTask &&
               d.flow.nodeType === "approver" &&
-              activeKey === "flow_todo"
+              activeKey?.level1 === "flow_todo"
             );
           },
           comment: true,
@@ -519,11 +526,12 @@ const TablePage = <T extends TableBean>({
           model: formModel?.type,
           usableMatch: (d: T) => {
             return (
-              d?.flow?.started === false || //开始任务节点
+              d?.flow?.started === false || //任务没开始可以提交
               (d?.flow?.currTask &&
-                d?.flow?.ended === false &&
+                d?.flow?.ended === false && //是你的任务并且任务没有结束
                 (d.flow?.nodeType === "audit" || d.flow.nodeId === "start") &&
-                activeKey === "flow_todo") //办理节点
+                (activeKey?.level1 === "flow_todo" ||
+                  activeKey?.level2 === "flow_byMe_edit")) //办理节点
             );
           },
           disabledHide: true,
@@ -571,7 +579,7 @@ const TablePage = <T extends TableBean>({
               d?.flow?.started === true &&
               d?.flow?.ended === false &&
               d.flow.currTask &&
-              activeKey === "flow_todo"
+              activeKey?.level1 === "flow_todo"
             );
           },
           comment: true,
@@ -599,7 +607,7 @@ const TablePage = <T extends TableBean>({
               d?.flow?.started === true &&
               d?.flow?.ended === false &&
               d.flow.currTask &&
-              activeKey === "flow_todo"
+              activeKey?.level1 === "flow_todo"
             );
           },
           comment: true,
@@ -614,7 +622,9 @@ const TablePage = <T extends TableBean>({
           icon: <i className=" text-base icon-reply" />,
           model: formModel?.type,
           usableMatch: (d: T) => {
-            return d.flow?.recallable === true && activeKey === "flow_done";
+            return (
+              d.flow?.recallable === true && activeKey?.level1 === "flow_done"
+            );
           },
           comment: true,
           saveApi: (data: any) => {
@@ -642,7 +652,7 @@ const TablePage = <T extends TableBean>({
               d?.flow?.started === true &&
               d?.flow?.ended === false &&
               d.flow.currTask &&
-              activeKey === "flow_todo"
+              activeKey?.level1 === "flow_todo"
             );
           },
           saveApi: (data: any) => {
@@ -849,7 +859,13 @@ const TablePage = <T extends TableBean>({
       </div>
       <Table<T>
         className={"flex justify-center flex-grow"}
-        key={tableModel.type + pageSize + pager?.page + activeKey}
+        key={
+          tableModel.type +
+          pageSize +
+          pager?.page +
+          activeKey?.level1 +
+          activeKey?.level2
+        }
         model={tableModel} //设计模式时应用实时传入的formVo
         dataSource={tableData}
         selected={selected}
@@ -864,7 +880,12 @@ const TablePage = <T extends TableBean>({
             formModal.show({
               modelInfo: formModel,
               type: editModelType,
+              readPretty:
+                activeKey?.level1 === "flow_done" || //已办只读
+                activeKey?.level1 === "flow_notifier" || //抄送只读
+                activeKey?.level2 === "flow_byMe_todo", //我发起的待办只读
               formData: record,
+              activeKey: activeKey?.level2 || activeKey?.level1,
               reaction: typeof editType !== "string" ? editType?.reaction : [],
               btns: mode === "view" ? [] : totalBtns,
             });

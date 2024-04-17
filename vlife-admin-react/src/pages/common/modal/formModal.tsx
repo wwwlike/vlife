@@ -20,7 +20,8 @@ import BtnToolBar from "@src/components/button/BtnToolBar";
 export interface FormModalProps extends FormPageProps<any> {
   width?: number; //modal宽度
   btns: VFBtn[]; //
-  saveFun?: <T extends IdBean>(dto: Partial<T>) => Promise<T>; //表单保存触发的方法(已经废弃当前采用BtnToolBar里的保存)
+  activeKey?: string; //当前激活的tab的key
+  // saveFun?: <T extends IdBean>(dto: Partial<T>) => Promise<T>; //表单保存触发的方法(已经废弃当前采用BtnToolBar里的保存)
 }
 
 /**
@@ -37,7 +38,8 @@ export const FormModal = createNiceModal(
     modelInfo, //模型信息
     formData, //表单数据
     width,
-    saveFun,
+    activeKey,
+    // saveFun,
     onError,
     onDataChange,
     btns,
@@ -67,6 +69,7 @@ export const FormModal = createNiceModal(
         findProcessDefinitions({
           businessKeys: [data.id],
           defineKey: formVo.type,
+          activeKey: activeKey,
         }).then((d) => {
           setRecordFlowInfo(d?.data?.[0]);
           //流程开始则查询各个历史节点信息
@@ -80,7 +83,7 @@ export const FormModal = createNiceModal(
           }
         });
       }
-    }, []);
+    }, [activeKey, formVo, data]);
 
     useEffect(() => {
       getFlowInfo();
@@ -221,7 +224,7 @@ export const FormModal = createNiceModal(
         width={modalWidth}
         // onOk={handleSubmit}
       >
-        {/* 弹出层不传表单给formPage,并且还从回调接收FormVo */}
+        {/* {JSON.stringify(activeKey)} */}
         <FormPage
           key={`${formNumber}`}
           onError={setErrors}

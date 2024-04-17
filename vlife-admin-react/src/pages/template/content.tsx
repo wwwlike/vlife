@@ -29,7 +29,7 @@ type TableTab = {
   itemKey: string; //视图编码(唯一)
   tab: string | ReactNode; //名称
   icon?: ReactNode; //图标
-  // active?: boolean; //当前页
+  showCount?: boolean; //是否显示统计数量
   req?: object | { fieldName: string; opt: OptEnum; value?: Object }[]; //视图过滤条件(简单方式)
   subs?: (TableTab & { singleReq?: boolean })[]; //子级过滤页签 singleReq:表示不联合上一级过滤条件
 };
@@ -84,7 +84,11 @@ const Content = <T extends TableBean>({
   const [tableModel, setTableModel] = useState<FormVo>();
   const [formModel, setFormModel] = useState<FormVo>();
   const [conditions, setConditions] = useState<ReportCondition[]>([]); //数据库查询视图
-  const [activeKey, setActiveKey] = useState<(string | undefined)[]>(); //可存2级页签
+  const [tableCount, setTableCount] = useState<any>({});
+  const [activeKey, setActiveKey] = useState<{
+    level1: string;
+    level2?: string;
+  }>(); //可存2级页签
 
   //左侧列表根据查询维度隐藏指定字段(如查看本人数据，则不需要部门搜索条件)
   const filterReaction = useMemo((): VfAction[] => {
@@ -154,34 +158,35 @@ const Content = <T extends TableBean>({
           req: { flowTab: "byMe" },
           subs: [
             {
-              itemKey: "flow_byMe_1",
-              icon: <i className="icon-checkbox_01" />,
+              itemKey: "flow_byMe_todo",
               tab: "流程中",
+              showCount: true,
               req: { flowTab: "byMe_todo" },
             },
             {
-              itemKey: "flow_byMe_2",
-              icon: <i className="icon-checkbox_01" />,
+              //待办
+              itemKey: "flow_byMe_edit",
               tab: "待完善",
+              showCount: true,
               req: { flowTab: "byMe_edit" },
             },
             {
-              itemKey: "flow_byMe_3",
-              icon: <i className="icon-checkbox_01" />,
+              //
+              itemKey: "flow_byMe_finish",
               tab: "已通过",
+              showCount: true,
               req: { flowTab: "byMe_finish" },
               singleReq: true,
             },
             {
-              itemKey: "flow_byMe_4",
-              icon: <i className="icon-checkbox_01" />,
+              itemKey: "flow_byMe_refuse",
               tab: "已拒绝",
               req: { flowTab: "byMe_refuse" },
             },
             {
-              itemKey: "flow_byMe_5",
-              icon: <i className="icon-checkbox_01" />,
+              itemKey: "flow_byMe_draft",
               tab: "草稿",
+              showCount: true,
               req: { flowTab: "byMe_draft" },
             },
           ],
@@ -300,7 +305,7 @@ const Content = <T extends TableBean>({
     // 固定页签条件
     let customViewReq: any = contentTab?.filter(
       (item) =>
-        item.itemKey === activeKey?.[0] && !item.itemKey.startsWith("flow")
+        item.itemKey === activeKey?.level1 && !item.itemKey.startsWith("flow")
     )?.[0]?.req;
 
     if (customViewReq) {
@@ -308,16 +313,16 @@ const Content = <T extends TableBean>({
     }
 
     let flowReq: any = {}; //工作流req
-    if (activeKey?.[0]?.startsWith("flow")) {
-      if (activeKey?.[1]) {
+    if (activeKey?.level1?.startsWith("flow")) {
+      if (activeKey?.level2) {
         //二级tab工作流
         flowReq = contentTab
-          ?.filter((item) => item.itemKey === activeKey?.[0])?.[0]
-          .subs?.filter((item) => item.itemKey === activeKey?.[1])?.[0].req;
+          ?.filter((item) => item.itemKey === activeKey?.level1)?.[0]
+          .subs?.filter((item) => item.itemKey === activeKey?.level2)?.[0].req;
       } else {
         // 一级tab工作流
         flowReq = contentTab?.filter(
-          (item) => item.itemKey === activeKey?.[0]
+          (item) => item.itemKey === activeKey?.level1
         )?.[0]?.req;
       }
     }
@@ -402,20 +407,22 @@ const Content = <T extends TableBean>({
             <Tabs
               style={{ height: "36px", paddingLeft: "10px" }}
               type="card"
-              activeKey={activeKey?.[0] || contentTab?.[0]?.itemKey} //没有则默认显示全部
+              activeKey={activeKey?.level1 || contentTab?.[0]?.itemKey} //没有则默认显示全部
               tabList={contentTab}
+              // contentStyle={{ padding: "10px" }}
               onChange={(key) => {
                 if (key !== "add") {
                   if (
                     contentTab.filter((tab) => tab.itemKey === key)?.[0].subs
                   ) {
-                    setActiveKey([
-                      key,
-                      contentTab.filter((tab) => tab.itemKey === key)?.[0]
-                        .subs?.[0]?.itemKey,
-                    ]);
+                    setActiveKey({
+                      level1: key,
+                      level2: contentTab.filter(
+                        (tab) => tab.itemKey === key
+                      )?.[0].subs?.[0]?.itemKey,
+                    });
                   } else {
-                    setActiveKey([key]);
+                    setActiveKey({ level1: key });
                   }
                 }
               }}
@@ -428,24 +435,29 @@ const Content = <T extends TableBean>({
           </div>
         )}
         {/* 二级页签 */}
-        {contentTab?.filter((c) => c.itemKey === activeKey?.[0])?.[0]?.subs && (
+        {contentTab?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
+          ?.subs && (
           <div className="flex  space-x-1 p-1 ">
             {contentTab
-              ?.filter((c) => c.itemKey === activeKey?.[0])?.[0]
+              ?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
               ?.subs?.map((s) => {
                 return (
                   <div
                     className={` text-sm  cursor-pointer    ${classNames({
-                      "bg-white border": activeKey?.[1] === s.itemKey,
+                      "bg-white border font-bold":
+                        activeKey?.level2 === s.itemKey,
                     })} rounded-2xl  py-1 px-4`}
                     key={s.itemKey}
                     onClick={() => {
-                      if (activeKey && activeKey?.[0]) {
-                        setActiveKey([activeKey?.[0], s.itemKey]);
+                      if (activeKey && activeKey?.level1) {
+                        setActiveKey({
+                          level1: activeKey.level1,
+                          level2: s.itemKey,
+                        });
                       }
                     }}
                   >
-                    {s.tab}
+                    {s.tab}&nbsp;·&nbsp;{tableCount?.[s.itemKey]}
                   </div>
                 );
               })}
@@ -456,15 +468,21 @@ const Content = <T extends TableBean>({
           className="flex-grow"
           width={tableWidth}
           key={listType}
-          activeKey={activeKey?.[0] || contentTab?.[0].itemKey}
+          activeKey={activeKey || { level1: contentTab?.[0].itemKey || "" }}
           listType={listType}
           editType={editType}
           req={tableReq}
           btns={btns}
+          onGetData={(data) => {
+            setTableCount((t: any) => {
+              if (activeKey?.level2)
+                return { ...t, [activeKey?.level2]: data.total };
+            });
+          }}
           //视图数据过滤
           conditionJson={
             conditions && activeKey
-              ? conditions.find((d) => d.id === activeKey?.[0])?.conditionJson
+              ? conditions.find((d) => d.id === activeKey.level1)?.conditionJson
               : undefined
           }
           columnTitle={filterType !== undefined ? "sort" : true}
