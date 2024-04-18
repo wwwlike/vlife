@@ -26,6 +26,7 @@ import VfSearch from "@src/components/VfSearch";
 import { useNavigate } from "react-router-dom";
 import { Conditions, OptEnum, where } from "@src/dsl/base";
 import { VFBtn } from "@src/components/button/types";
+const version = import.meta.env.VITE_APP_VERSION;
 import {
   backProcess,
   cancelProcess,
@@ -218,7 +219,11 @@ const TablePage = <T extends TableBean>({
   }, [dataSource, pageData?.result, recordFlowInfo]);
 
   useEffect(() => {
-    if (pageData?.result && formModel?.flowJson) {
+    if (
+      pageData?.result &&
+      formModel?.flowJson &&
+      !version.toString().startsWith("v_base")
+    ) {
       findTableBasicColumns({
         defineKey: formModel.type,
         businessKeys: pageData.result.map((item) => item.id),
@@ -869,6 +874,11 @@ const TablePage = <T extends TableBean>({
         onTabReq={setTabReq}
         onCountReq={setTabReqCount}
       />
+      {version.toString().startsWith("v_base") && (
+        <div className=" text-red-500 absolute top-2 right-20 ">
+          需要专业版开放工作流全部功能
+        </div>
+      )}
       <div
         className={`flex bg-white items-center p-2 border-gray-100  justify-start  `}
       >

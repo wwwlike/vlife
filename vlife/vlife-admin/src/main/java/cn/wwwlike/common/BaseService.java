@@ -67,7 +67,13 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
     public FormVo getModelInfo(String type){
         if(models.get(type)==null){
             QueryWrapper<Form> req=QueryWrapper.of(Form.class).eq("type",type);
-            models.put(type,formService.query(FormVo.class,req).get(0));
+            List<FormVo> vos=formService.query(FormVo.class,req);
+            if(vos.size()>0){
+                 models.put(type,vos.get(0));
+            }else{
+                //模型查询不到（数据未初始化）
+                return null;
+            }
         }
        return models.get(type);
     }
@@ -108,7 +114,8 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
     public <S extends AbstractWrapper> S addQueryFilter(S queryWrapper) {
         //实体类并且开启了工作流则不启用行级数据过滤
         if(Item.class.isAssignableFrom(queryWrapper.getEntityClz())){
-            if(getModelInfo(queryWrapper.getEntityClz().getSimpleName()).getFlowJson()!=null){
+            FormVo vo=getModelInfo(queryWrapper.getEntityClz().getSimpleName());
+            if(vo!=null&& vo.getFlowJson()!=null){
                 return queryWrapper;
             }
         }

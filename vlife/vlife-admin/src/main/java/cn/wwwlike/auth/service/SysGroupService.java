@@ -32,7 +32,7 @@ public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
         //所有参与权限控制的资源资源
         List<SysResources> apiResources=allResources.stream().filter(res->res.getSysMenuId()!=null).collect(Collectors.toList());
         //所有权限组
-        List<GroupVo> groups= sysGroupService.query(GroupVo.class,new VlifeQuery<SysGroup>());
+        List<GroupVo> groups= sysGroupService.queryAll(GroupVo.class);
         apiResources.forEach(res->{
             //该资源关联到的全部角色
             Set<String> roleIds=new HashSet<>();

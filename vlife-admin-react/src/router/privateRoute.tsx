@@ -11,7 +11,8 @@ const PrivateRoute = ({ ...props }) => {
   return logged ? (
     pathname === "/" ? (
       // <Navigate to={{ pathname: `/dashboard/workbeach` }} replace />
-      <Navigate to={{ pathname: `/sysConf/model` }} replace />
+      ///sysConf/model
+      <Navigate to={{ pathname: `/sysConf/flowDesign/product` }} replace />
     ) : (
       props.element
     )

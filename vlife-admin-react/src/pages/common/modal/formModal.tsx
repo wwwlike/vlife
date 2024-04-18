@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import NiceModal, { createNiceModal } from "@src/store";
 import { Form, IFormFeedback } from "@formily/core";
-import { IdBean } from "@src/api/base";
 import { FormVo } from "@src/api/Form";
 import FormPage, { FormPageProps } from "../formPage";
 import { VFBtn } from "@src/components/button/types";
 import { Switch } from "@douyinfe/semi-ui";
 import classNames from "classnames";
+const version = import.meta.env.VITE_APP_VERSION;
 import {
   findProcessDefinitions,
   FlowNode,
@@ -86,7 +86,9 @@ export const FormModal = createNiceModal(
     }, [activeKey, formVo, data]);
 
     useEffect(() => {
-      getFlowInfo();
+      if (!version.toString().startsWith("v_base")) {
+        getFlowInfo();
+      }
     }, []);
 
     const title = useMemo(() => {
