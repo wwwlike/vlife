@@ -259,11 +259,11 @@ public class Form extends DbEntity {
         this.helpDoc = helpDoc;
     }
 
+    @Column(columnDefinition = "text")
     public String getFlowJson() {
         return flowJson;
     }
 
-    @Column(columnDefinition = "text")
     public void setFlowJson(String flowJson) {
         this.flowJson = flowJson;
     }

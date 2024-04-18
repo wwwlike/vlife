@@ -227,7 +227,7 @@ const TableIndex = <T extends TableBean>({
                 label: string;
                 sys?: boolean;
                 color: string;
-              } = dicts[dictCode || "vlife"].data?.filter(
+              } = dicts[dictCode || "vlife"]?.data?.filter(
                 (d) => d.value + "" === text + ""
               )?.[0];
               if (dict && dict.color) {

@@ -872,7 +872,7 @@ const TablePage = <T extends TableBean>({
       />
       {version === "v_base" && formModel?.flowJson && (
         <div className=" text-red-500 absolute top-2 right-20 ">
-          需要专业版开放工作流全部功能 1{formModel?.flowJson}1
+          需要专业版开放工作流全部功能
         </div>
       )}
       <div
@@ -946,9 +946,13 @@ const TablePage = <T extends TableBean>({
         onSelected={(data: T[]) => {
           setSelected(data);
         }}
-        flowFormType={formModel?.flowJson ? formModel.type : undefined}
+        flowFormType={
+          formModel?.flowJson && version !== "v_base"
+            ? formModel.type
+            : undefined
+        }
         onLineClick={(record) => {
-          if (formModel?.flowJson) {
+          if (formModel?.flowJson && version !== "v_base") {
             formModal.show({
               modelInfo: formModel,
               type: editModelType,
