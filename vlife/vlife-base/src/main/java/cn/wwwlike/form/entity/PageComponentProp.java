@@ -15,10 +15,6 @@ import javax.persistence.Table;
 @Data
 @Table(name="page_component_prop")
 public class PageComponentProp extends DbEntity {
-    /***
-     * 所属组件
-     */
-//    public String pageComponentId;
     /**
      * 关联字段
      * FormField里选择x_component后，其属性信息在本表里存储
@@ -63,4 +59,10 @@ public class PageComponentProp extends DbEntity {
      */
     public String filterConnectionType;
 
+    // plus
+
+    /***
+     * 所属组件
+     */
+    public String pageComponentId;
 }
