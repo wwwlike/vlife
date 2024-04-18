@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from "react";
+import React, { FC, ReactNode, useEffect, useMemo } from "react";
 import { Empty, Button, Image } from "@douyinfe/semi-ui";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,7 +7,7 @@ import {
 } from "@douyinfe/semi-illustrations";
 interface Iprops {
   title?: string;
-  description?: string;
+  description?: ReactNode;
   imgSize?: "small" | "large" | "default";
   type?: "404" | "403" | "405";
 }
@@ -68,28 +68,30 @@ const Result: FC<Iprops> = ({
         alignItems: "center",
       }}
     >
-      {type && (
-        <Button
-          style={{ padding: "6px 24px", width: " 180px" }}
-          theme="solid"
-          type="primary"
-          onClick={
-            type === "403"
-              ? () => {
-                  const gotoLogin = `/login${
-                    location.pathname && location.pathname.length > 1
-                      ? "?from=" + encodeURIComponent(location.pathname)
-                      : ""
-                  }`;
-                  // navigate(gotoLogin);
-                  window.location.href = gotoLogin;
-                }
-              : () => navigate(`/dashboard/workbeach`, { replace: true })
-          }
-        >
-          {type === "403" ? "去登录" : "回到首页"}
-        </Button>
-      )}
+      <div className=" w-full flex  justify-center ">
+        {type && (
+          <Button
+            style={{ padding: "6px 24px", width: " 180px" }}
+            theme="solid"
+            type="primary"
+            onClick={
+              type === "403"
+                ? () => {
+                    const gotoLogin = `/login${
+                      location.pathname && location.pathname.length > 1
+                        ? "?from=" + encodeURIComponent(location.pathname)
+                        : ""
+                    }`;
+                    // navigate(gotoLogin);
+                    window.location.href = gotoLogin;
+                  }
+                : () => navigate(`/dashboard/workbeach`, { replace: true })
+            }
+          >
+            {type === "403" ? "去登录" : "回到首页"}
+          </Button>
+        )}
+      </div>
     </Empty>
   );
 };

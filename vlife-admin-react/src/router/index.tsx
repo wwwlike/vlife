@@ -117,8 +117,20 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={
               <Empty
-                title="高级功能需要授权"
-                description="添加微信`vlifeboot`申请开通"
+                title="微信号vlifeboot"
+                description={
+                  <div>
+                    很抱歉，<span className=" font-bold">社区版</span>
+                    不包含该模块。若需要使用该功能，请升级至
+                    <a
+                      className=" underline text-red-500"
+                      href="http://vlife.cc/price"
+                      target={"_blank"}
+                    >
+                      高级版
+                    </a>
+                  </div>
+                }
                 type="405"
               />
             }

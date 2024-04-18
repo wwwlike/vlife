@@ -6,10 +6,11 @@ import { IdBean } from "@src/api/base";
 import { VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
-import { Tooltip } from "@douyinfe/semi-ui";
+import { Empty, Tooltip, Image } from "@douyinfe/semi-ui";
 import FormFlowContainer from "@src/pages/common/FormFlowContainer";
 import { FlowNode, RecordFlowInfo } from "@src/api/workflow/Flow";
-
+import wxImage from "@src/assets/wx.jpg";
+const version = import.meta.env.VITE_APP_VERSION;
 export interface FormPageProps<T extends IdBean>
   extends Omit<FormProps<T>, "modelInfo"> {
   type: string; //模型标识
@@ -178,7 +179,35 @@ const FormPage = <T extends IdBean>({
           )}
         </>
       ) : (
-        <>{type}模型无法解析，请检查名称是否准确</>
+        <div className=" w-full h-96 flex  flex-col justify-center items-center  bg-slate-100">
+          {version === "v_base" ? (
+            <Empty
+              image={<Image src={wxImage} />}
+              title={"微信vlifeboot"}
+              description={
+                <div>
+                  很抱歉，<span className=" font-bold">社区版</span>
+                  不包含该模型。若需要使用该功能，请升级至
+                  <a
+                    className=" underline text-red-500"
+                    href="http://vlife.cc/price"
+                    target={"_blank"}
+                  >
+                    高级版
+                  </a>
+                </div>
+              }
+              style={{
+                width: 200,
+                margin: "0 auto",
+                display: "flex",
+                padding: 5,
+              }}
+            />
+          ) : (
+            `${type}模型无法解析，请检查名称是否准确`
+          )}
+        </div>
       )}
     </FormFlowContainer>
   );

@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 80027
  Source Host           : localhost:3306
- Source Schema         : basic2
+ Source Schema         : basic
 
  Target Server Type    : MySQL
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 18/04/2024 22:59:57
+ Date: 18/04/2024 23:09:51
 */
 
 SET NAMES utf8mb4;
@@ -2008,12 +2008,6 @@ INSERT INTO `page_component_prop` (`id`, `create_date`, `create_id`, `modify_dat
 INSERT INTO `page_component_prop` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `filter_connection_type`, `filter_func`, `form_field_id`, `list_no`, `page_component_id`, `prop_name`, `prop_val`, `relate_val`, `source_type`, `sub_name`) VALUES ('4028b8818ec01490018ec06ba0fc0000', '2024-04-09 09:14:22.828000', NULL, '2024-04-18 16:43:56.710000', NULL, '1', 'or', 'level1', '4028b8818d06d054018d06d0749b0054', 0, NULL, 'optionList', 'menuOpenApi', 'ISelect', 'api', NULL);
 
 -- ----------------------------
--- Records of page_layout
--- ----------------------------
-INSERT INTO `page_layout` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `border`, `component_over`, `h`, `img`, `module`, `name`, `url`) VALUES ('4028b8818d085a44018d085d31430001', '2024-01-14 22:25:41.699000', NULL, '2024-01-21 22:17:28.588000', NULL, '1', b'1', NULL, 325, '4028b8818d085a44018d085d290e0000', b'0', '采购看板', 'purchaseKanBan');
-INSERT INTO `page_layout` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `border`, `component_over`, `h`, `img`, `module`, `name`, `url`) VALUES ('4028b8818d2bd97f018d2c17744c0005', '2024-01-21 20:55:51.116000', NULL, '2024-04-10 12:26:47.599000', NULL, '1', b'1', b'0', 326, '4028b8818d2bd97f018d2c1749720004', b'0', '销售看板', 'orderSaleKanban');
-
--- ----------------------------
 -- Records of report_condition
 -- ----------------------------
 INSERT INTO `report_condition` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `condition_json`, `form_id`, `name`, `sys_menu_id`, `sys_user_id`, `type`) VALUES ('4028b8818d0b20e6018d0b65ab890004', '2024-01-15 12:33:48.937000', NULL, NULL, NULL, '0', '[{\"where\":[{\"fieldName\":\"idno\",\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"123\"]}]}]', '4028b8818aea03bb018aea03ca85020b', '123', '4028b881882cb61301882cc8004a0000', '40288a8182a656740182a659f4d10001', NULL);
@@ -2058,10 +2052,6 @@ INSERT INTO `report_condition` (`id`, `create_date`, `create_id`, `modify_date`,
 INSERT INTO `report_condition` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `condition_json`, `form_id`, `name`, `sys_menu_id`, `sys_user_id`, `type`) VALUES ('4028b8818eec2e2e018eec844c810005', '2024-04-17 22:44:37.120000', NULL, NULL, NULL, '0', '[{\"where\":[{\"fieldName\":\"username\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"用户名\",\"opt\":\"等于\"},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"vlife\"]}]}]', '4028b8818aea03bb018aea03ca85020b', 'vlife', '4028b881882cb61301882cc8004a0000', NULL, 'table');
 INSERT INTO `report_condition` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `condition_json`, `form_id`, `name`, `sys_menu_id`, `sys_user_id`, `type`) VALUES ('4028b8818eec2e2e018eec8a2d2c0006', '2024-04-17 22:51:02.316000', NULL, NULL, NULL, '0', '[{\"where\":[{\"fieldName\":\"sysDeptId\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"部门\",\"opt\":\"等于\",\"value\":[\"武汉交通分行\"]},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"4028b8818cf1e225018cf25c0182000b\"]},{\"fieldName\":\"username\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"用户名\",\"opt\":\"等于\"},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"vlife\"]}]}]', '4028b8818aea03bb018aea03ca85020b', 'vlife2', '4028b881882cb61301882cc8004a0000', NULL, 'table');
 INSERT INTO `report_condition` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `condition_json`, `form_id`, `name`, `sys_menu_id`, `sys_user_id`, `type`) VALUES ('4028b8818eec2e2e018eec8aa12f0007', '2024-04-17 22:51:32.015000', NULL, NULL, NULL, '0', '[{\"where\":[{\"fieldName\":\"username\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"用户名\",\"opt\":\"等于\"},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"vlife\"]}]},{\"where\":[{\"fieldName\":\"username\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"用户名\",\"opt\":\"等于\"},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"manage\"]}]}]', '4028b8818aea03bb018aea03ca85020b', '222', '4028b881882cb61301882cc8004a0000', NULL, 'table');
-
--- ----------------------------
--- Records of sys_area
--- ----------------------------
 
 -- ----------------------------
 -- Records of sys_dept
@@ -2129,10 +2119,6 @@ INSERT INTO `sys_menu` (`id`, `create_date`, `create_id`, `modify_date`, `modify
 INSERT INTO `sys_menu` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `app`, `code`, `conf_page`, `form_id`, `icon`, `name`, `page_layout_id`, `pcode`, `placeholder_url`, `sort`, `sys_role_id`, `url`) VALUES ('4028b8818ec53531018ec5bd33890001', '2024-04-10 10:01:34.857000', '40288a8182a656740182a659f4d10001', NULL, NULL, '1', b'0', '009_007_003', NULL, NULL, 'IconBookStroked', '看板配置', NULL, '009_007', NULL, 2, NULL, '/page/layout/4028b8818d2bd97f018d2c17744c0005');
 INSERT INTO `sys_menu` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `app`, `code`, `conf_page`, `form_id`, `icon`, `name`, `page_layout_id`, `pcode`, `placeholder_url`, `sort`, `sys_role_id`, `url`) VALUES ('4028b8818ec53531018ec5c01f6f0003', '2024-04-10 10:04:46.319000', '40288a8182a656740182a659f4d10001', NULL, NULL, '1', b'0', '009_007_004', NULL, NULL, 'IconCalendar', '列表配置', NULL, '009_007', NULL, 3, NULL, '/sysConf/tableDesign/product');
 INSERT INTO `sys_menu` (`id`, `create_date`, `create_id`, `modify_date`, `modify_id`, `status`, `app`, `code`, `conf_page`, `form_id`, `icon`, `name`, `page_layout_id`, `pcode`, `placeholder_url`, `sort`, `sys_role_id`, `url`) VALUES ('4028b8818ec53531018ec5c0fa900004', '2024-04-10 10:05:42.415000', '40288a8182a656740182a659f4d10001', NULL, NULL, '1', b'0', '009_007_005', NULL, NULL, 'IconFilter', '过滤器引擎', NULL, '009_007', NULL, 4, NULL, '/example/queryBuilder');
-
--- ----------------------------
--- Records of sys_org
--- ----------------------------
 
 -- ----------------------------
 -- Records of sys_resources

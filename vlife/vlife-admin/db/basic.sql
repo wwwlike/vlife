@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 80027
  Source Host           : localhost:3306
- Source Schema         : basic2
+ Source Schema         : basic
 
  Target Server Type    : MySQL
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 18/04/2024 22:58:34
+ Date: 18/04/2024 23:08:31
 */
 
 SET NAMES utf8mb4;
@@ -2474,33 +2474,6 @@ INSERT INTO `page_component_prop` VALUES ('4028b8818d7c59dc018d7c5a122e0001', '2
 INSERT INTO `page_component_prop` VALUES ('4028b8818ec01490018ec06ba0fc0000', '2024-04-09 09:14:22.828000', NULL, '2024-04-18 16:43:56.710000', NULL, '1', 'or', 'level1', '4028b8818d06d054018d06d0749b0054', 0, NULL, 'optionList', 'menuOpenApi', 'ISelect', 'api', NULL);
 
 -- ----------------------------
--- Table structure for page_layout
--- ----------------------------
-DROP TABLE IF EXISTS `page_layout`;
-CREATE TABLE `page_layout`  (
-  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `create_date` datetime(6) NULL DEFAULT NULL,
-  `create_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `modify_date` datetime(6) NULL DEFAULT NULL,
-  `modify_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `status` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `border` bit(1) NULL DEFAULT NULL,
-  `component_over` bit(1) NULL DEFAULT NULL,
-  `h` int NULL DEFAULT NULL,
-  `img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `module` bit(1) NULL DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of page_layout
--- ----------------------------
-INSERT INTO `page_layout` VALUES ('4028b8818d085a44018d085d31430001', '2024-01-14 22:25:41.699000', NULL, '2024-01-21 22:17:28.588000', NULL, '1', b'1', NULL, 325, '4028b8818d085a44018d085d290e0000', b'0', '采购看板', 'purchaseKanBan');
-INSERT INTO `page_layout` VALUES ('4028b8818d2bd97f018d2c17744c0005', '2024-01-21 20:55:51.116000', NULL, '2024-04-10 12:26:47.599000', NULL, '1', b'1', b'0', 326, '4028b8818d2bd97f018d2c1749720004', b'0', '销售看板', 'orderSaleKanban');
-
--- ----------------------------
 -- Table structure for report_condition
 -- ----------------------------
 DROP TABLE IF EXISTS `report_condition`;
@@ -2565,29 +2538,6 @@ INSERT INTO `report_condition` VALUES ('4028b8818eec2e2e018eec62f06a0004', '2024
 INSERT INTO `report_condition` VALUES ('4028b8818eec2e2e018eec844c810005', '2024-04-17 22:44:37.120000', NULL, NULL, NULL, '0', '[{\"where\":[{\"fieldName\":\"username\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"用户名\",\"opt\":\"等于\"},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"vlife\"]}]}]', '4028b8818aea03bb018aea03ca85020b', 'vlife', '4028b881882cb61301882cc8004a0000', NULL, 'table');
 INSERT INTO `report_condition` VALUES ('4028b8818eec2e2e018eec8a2d2c0006', '2024-04-17 22:51:02.316000', NULL, NULL, NULL, '0', '[{\"where\":[{\"fieldName\":\"sysDeptId\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"部门\",\"opt\":\"等于\",\"value\":[\"武汉交通分行\"]},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"4028b8818cf1e225018cf25c0182000b\"]},{\"fieldName\":\"username\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"用户名\",\"opt\":\"等于\"},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"vlife\"]}]}]', '4028b8818aea03bb018aea03ca85020b', 'vlife2', '4028b881882cb61301882cc8004a0000', NULL, 'table');
 INSERT INTO `report_condition` VALUES ('4028b8818eec2e2e018eec8aa12f0007', '2024-04-17 22:51:32.015000', NULL, NULL, NULL, '0', '[{\"where\":[{\"fieldName\":\"username\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"用户名\",\"opt\":\"等于\"},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"vlife\"]}]},{\"where\":[{\"fieldName\":\"username\",\"entityName\":\"sysUser\",\"desc\":{\"fieldName\":\"用户名\",\"opt\":\"等于\"},\"fieldType\":\"string\",\"opt\":\"eq\",\"value\":[\"manage\"]}]}]', '4028b8818aea03bb018aea03ca85020b', '222', '4028b881882cb61301882cc8004a0000', NULL, 'table');
-
--- ----------------------------
--- Table structure for sys_area
--- ----------------------------
-DROP TABLE IF EXISTS `sys_area`;
-CREATE TABLE `sys_area`  (
-  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `create_date` datetime(6) NULL DEFAULT NULL,
-  `create_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `modify_date` datetime(6) NULL DEFAULT NULL,
-  `modify_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `status` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `area_level` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `areacode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `pcode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of sys_area
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -2758,31 +2708,6 @@ INSERT INTO `sys_menu` VALUES ('4028b8818ec53531018ec59d09ed0000', '2024-04-10 0
 INSERT INTO `sys_menu` VALUES ('4028b8818ec53531018ec5bd33890001', '2024-04-10 10:01:34.857000', '40288a8182a656740182a659f4d10001', NULL, NULL, '1', b'0', '009_007_003', NULL, NULL, 'IconBookStroked', '看板配置', NULL, '009_007', NULL, 2, NULL, '/page/layout/4028b8818d2bd97f018d2c17744c0005');
 INSERT INTO `sys_menu` VALUES ('4028b8818ec53531018ec5c01f6f0003', '2024-04-10 10:04:46.319000', '40288a8182a656740182a659f4d10001', NULL, NULL, '1', b'0', '009_007_004', NULL, NULL, 'IconCalendar', '列表配置', NULL, '009_007', NULL, 3, NULL, '/sysConf/tableDesign/product');
 INSERT INTO `sys_menu` VALUES ('4028b8818ec53531018ec5c0fa900004', '2024-04-10 10:05:42.415000', '40288a8182a656740182a659f4d10001', NULL, NULL, '1', b'0', '009_007_005', NULL, NULL, 'IconFilter', '过滤器引擎', NULL, '009_007', NULL, 4, NULL, '/example/queryBuilder');
-
--- ----------------------------
--- Table structure for sys_org
--- ----------------------------
-DROP TABLE IF EXISTS `sys_org`;
-CREATE TABLE `sys_org`  (
-  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `create_date` datetime(6) NULL DEFAULT NULL,
-  `create_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `modify_date` datetime(6) NULL DEFAULT NULL,
-  `modify_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `status` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `enable_date` datetime(6) NULL DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `orgcode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `pcode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `sys_area_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of sys_org
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_resources
@@ -3057,44 +2982,5 @@ INSERT INTO `sys_user` VALUES ('4028b8818d2f2135018d2f5f9e420005', '2024-01-22 1
 INSERT INTO `sys_user` VALUES ('4028b8818e922c98018e92c183430000', '2024-03-31 12:25:39.390000', '4028b8818a4e9c4a018a4ea2c44e0002', '2024-04-02 15:14:08.679000', '4028b8818a4e9c4a018a4ea2c44e0002', '1', 13, NULL, NULL, NULL, NULL, 'abcde', '{yifpGQVlm/QOWOiBQ0GujZYWYIpn8Q8H0cFIOqsrRmk=}57e25248df485d592165011fb2577a61', NULL, '1', NULL, '4028b8818cf1e225018cf25bc1b7000a', '4028b8818b22da68018b22db80850000', NULL, NULL, NULL, '333333', NULL);
 INSERT INTO `sys_user` VALUES ('4028b8818ebbc626018ebc8cf4350000', '2024-04-08 15:12:17.966000', '4028b8818a4e9c4a018a4ea2c44e0002', '2024-04-08 22:00:53.914000', '4028b8818a4e9c4a018a4ea2c44e0002', '1', 12, NULL, '12345@qq.com', '', NULL, 'abcc', '{uZjqC712OzgvYUQKktvA4UzduEjorFqL50XIShMatb4=}a0d6422307e47925a33cb82711f67d9d', NULL, '1', NULL, '4028b8818cf1e225018cf25bc1b7000a', '4028b8818b22da68018b22db80850000', '13871501923', NULL, NULL, 'starter', '1');
 INSERT INTO `sys_user` VALUES ('4028b8818ebbc626018ebd58f45d0001', '2024-04-08 18:55:07.357000', '4028b8818a4e9c4a018a4ea2c44e0002', '2024-04-08 18:55:23.851000', '4028b8818a4e9c4a018a4ea2c44e0002', '1', NULL, NULL, NULL, NULL, NULL, '43244', '{HYVmIO/Zd3QAZhSXd+POhf5F/16nwG+GdZBUo7tix1g=}a3f19057591c46f3535e0dd7e3a140dc', NULL, '1', NULL, '4028b8818cf1e225018cf25bc1b7000a', '4028b8818b22da68018b22db80850000', NULL, NULL, NULL, '321312312', NULL);
-
--- ----------------------------
--- Procedure structure for delete_status_zero
--- ----------------------------
-DROP PROCEDURE IF EXISTS `delete_status_zero`;
-delimiter ;;
-CREATE PROCEDURE `delete_status_zero`()
-BEGIN
--- 全部删除
-    delete from sys_file;
-		delete from sys_dict;
--- 物理删除已经逻辑删除得数据
-    delete from form where status='0';
-    delete from form_field where status='0';
-    delete from form_tab where status='0';
-		delete from form_event where status='0';
-    delete from form_reaction where status='0';
-    delete from page_api_param where status='0';
-    delete from page_component_prop where status='0';
-    delete from sys_resources where status='0';
-		delete from sys_menu where status='0';
-    delete from sys_user where status='0';
-    delete from sys_dept where status='0';
-    delete from sys_group where status='0';
-    delete from sys_role where status='0';
-    delete from sys_role_group where status='0';
-
---  主表删除子表没删除的（手工删除后续操作）
-		delete from form_field where form_id not in (select id from form);
-		delete from form_TAB where form_id not in (select id from form);
-		delete from form_EVENT where form_id not in (select id from form);
-		delete from form_reaction where form_field_id not in (select id from form_field);
-		delete from sys_role_group where sys_role_id not in (select id from sys_role);
-		delete from sys_role_group where sys_group_id not in (select id from sys_group);
--- 更新
-		UPDATE form a set a.sys_menu_id =null where a.sys_menu_id not in (select id from sys_menu);
-end
-;;
-delimiter ;
 
 SET FOREIGN_KEY_CHECKS = 1;

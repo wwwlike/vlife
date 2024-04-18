@@ -22,8 +22,8 @@ export default ({ className }: { className?: string }) => {
       <Popover
         content={
           <Empty
-            title={"微信vlifeboot"}
             image={<Image src={wxImage} />}
+            title={"微信vlifeboot"}
             description={"技术支持/商务合作"}
             style={{
               width: 200,
