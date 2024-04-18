@@ -107,236 +107,19 @@ const Content = <T extends TableBean>({
     }
     return [];
   }, [filterFormVo]);
-  const allTab: TableTab = {
-    itemKey: "all",
-    icon: <i className=" icon-gallery_view " />,
-    tab: "全部",
-  };
-
-  const addTab: TableTab = useMemo(() => {
-    return {
-      tab: (
-        <Button
-          title={`视图创建`}
-          actionType="create"
-          btnType="icon"
-          icon={<i className="icon-task_add-02 font-bold" />}
-          model={"reportCondition"}
-          saveApi={save}
-          reaction={[
-            VF.then("sysMenuId").hide().value(tableModel?.sysMenuId),
-            VF.then("formId").hide().value(tableModel?.id),
-            VF.then("type").hide().value("table"),
-            VF.then("name").title("页签名称"),
-          ]}
-          onSubmitFinish={() => {
-            if (tableModel?.id) loadCondition(tableModel?.id);
-          }}
-        />
-      ),
-      itemKey: "add",
-    };
-  }, [tableModel]);
-  //固定项页签 tab dbList方式+tabDictField方式
-  const [fixedTab, setFixedTab] = useState<TableTab[]>([]);
-  //查询视图页签
-  const [dbTab, setDbTab] = useState<TableTab[]>([]);
-  //工作流页签
-  const flowTab = useMemo((): TableTab[] => {
-    if (formModel?.flowJson) {
-      return [
-        {
-          itemKey: "flow_todo",
-          icon: <i className="icon-checkbox_01" />,
-          tab: "待办视图",
-          req: { flowTab: "todo" },
-        },
-        {
-          itemKey: "flow_byMe",
-          icon: <i className="  icon-workflow_new" />,
-          tab: `我发起的`,
-          req: { flowTab: "byMe" },
-          subs: [
-            {
-              itemKey: "flow_byMe_todo",
-              tab: "流程中",
-              showCount: true,
-              req: { flowTab: "byMe_todo" },
-            },
-            {
-              //待办
-              itemKey: "flow_byMe_edit",
-              tab: "待完善",
-              showCount: true,
-              req: { flowTab: "byMe_edit" },
-            },
-            {
-              //
-              itemKey: "flow_byMe_finish",
-              tab: "已通过",
-              showCount: true,
-              req: { flowTab: "byMe_finish" },
-              singleReq: true,
-            },
-            {
-              itemKey: "flow_byMe_refuse",
-              tab: "已拒绝",
-              req: { flowTab: "byMe_refuse" },
-            },
-            {
-              itemKey: "flow_byMe_draft",
-              tab: "草稿",
-              showCount: true,
-              req: { flowTab: "byMe_draft" },
-            },
-          ],
-        },
-        {
-          itemKey: "flow_done",
-          tab: "已办视图",
-          icon: <i className=" icon-workflow_ok" />,
-          req: { flowTab: "done" },
-        },
-        {
-          itemKey: "flow_notifier",
-          icon: <i className="  icon-resend" />,
-          tab: "抄送视图",
-          req: { flowTab: "notifier" },
-        },
-      ];
-    }
-    return [];
-  }, [tableModel]);
-  //计算后的页面页签
-  //页签组装
-  const contentTab = useMemo((): TableTab[] | undefined => {
-    return [
-      ...flowTab,
-      ...(flowTab.length === 0 ? [allTab] : []),
-      ...dbTab,
-      ...(flowTab.length === 0 ? fixedTab : []),
-      ...(user?.superUser ? [addTab] : []),
-    ];
-  }, [dbTab, fixedTab, allTab, flowTab, tableModel, addTab]);
-
-  //固定页签组装
-  useEffect(() => {
-    const tabs: TableTab[] = [];
-    if (tabList) {
-      tabs.push(
-        ...tabList.map((tab: TableTab) => {
-          if (Array.isArray(tab.req) || tab.req === undefined) {
-            return tab;
-          } else {
-            return {
-              ...tab,
-              req: objToConditionWhere(tab.req),
-            };
-          }
-        })
-      );
-    }
-    const dictcode = tableModel?.fields?.filter(
-      (f) => f.fieldName === tabDictField
-    )?.[0]?.dictCode;
-
-    if (tabDictField && dictcode) {
-      loadApi({
-        apiInfoKey: "dictOpenApi",
-        match: "dictItem",
-        paramObj: { code: dictcode },
-      }).then((d) => {
-        const dicts: SysDict[] = d;
-        tabs.push(
-          ...dicts.map((d) => {
-            return {
-              itemKey: d.id, //视图编码(唯一)
-              tab: d.title,
-              req: [
-                {
-                  fieldName: tabDictField,
-                  opt: OptEnum.eq,
-                  value: [d.val],
-                },
-              ], //视图过滤条件(简单方式)
-            };
-          })
-        );
-        setFixedTab(tabs);
-      });
-    } else if (tabList) {
-      setFixedTab(tabs);
-    }
-  }, [tabDictField, tableModel, tabList]);
-
-  //数据库查询视图加载
-  const loadCondition = useCallback((formId: string) => {
-    list({ formId, type: "table" }).then((result) =>
-      setConditions(result.data || [])
-    );
-  }, []);
-  useEffect(() => {
-    if (tableModel && tableModel.id) {
-      loadCondition(tableModel.id);
-    }
-  }, [tableModel]);
-
-  useEffect(() => {
-    if (customView === true) {
-      if (conditions && conditions.length > 0) {
-        setDbTab([
-          ...conditions.map((d) => {
-            return {
-              tab: d.name,
-              itemKey: d.id,
-              closable: user?.superUser === true,
-            };
-          }),
-        ]);
-      } else {
-        setDbTab([]);
-      }
-    }
-  }, [conditions, customView]);
 
   //查询条件组装
   const tableReq = useMemo(() => {
     const where: Partial<where>[] = [];
-    // 固定页签条件
-    let customViewReq: any = contentTab?.filter(
-      (item) =>
-        item.itemKey === activeKey?.level1 && !item.itemKey.startsWith("flow")
-    )?.[0]?.req;
-
-    if (customViewReq) {
-      where.push(...customViewReq);
-    }
-
-    let flowReq: any = {}; //工作流req
-    if (activeKey?.level1?.startsWith("flow")) {
-      if (activeKey?.level2) {
-        //二级tab工作流
-        flowReq = contentTab
-          ?.filter((item) => item.itemKey === activeKey?.level1)?.[0]
-          .subs?.filter((item) => item.itemKey === activeKey?.level2)?.[0].req;
-      } else {
-        // 一级tab工作流
-        flowReq = contentTab?.filter(
-          (item) => item.itemKey === activeKey?.level1
-        )?.[0]?.req;
-      }
-    }
-
     //页面传入req转换成where方式条件
     if (req) {
       where.push(...objToConditionWhere(req));
     }
     return {
       ...formData, //表单object方式搜索
-      ...flowReq, //流程object方式条件
       conditionGroups: [{ where }],
     };
-  }, [req, formData, contentTab, activeKey]);
+  }, [req, formData]);
 
   // const windowWidth = useSize(document.querySelector("body"))?.width;
 
@@ -397,114 +180,48 @@ const Content = <T extends TableBean>({
           />
         </>
       )}
-      <div
-        className={` flex flex-1 flex-col relative rounded-md ${
-          filterOpen ? "pl-1" : ""
-        } `}
-      >
-        {contentTab !== undefined && (
-          <div className=" bg-white  pt-1">
-            <Tabs
-              style={{ height: "36px", paddingLeft: "10px" }}
-              type="card"
-              activeKey={activeKey?.level1 || contentTab?.[0]?.itemKey} //没有则默认显示全部
-              tabList={contentTab}
-              // contentStyle={{ padding: "10px" }}
-              onChange={(key) => {
-                if (key !== "add") {
-                  if (
-                    contentTab.filter((tab) => tab.itemKey === key)?.[0].subs
-                  ) {
-                    setActiveKey({
-                      level1: key,
-                      level2: contentTab.filter(
-                        (tab) => tab.itemKey === key
-                      )?.[0].subs?.[0]?.itemKey,
-                    });
-                  } else {
-                    setActiveKey({ level1: key });
-                  }
-                }
-              }}
-              onTabClose={(targetKey) => {
-                remove([targetKey]).then(() => {
-                  if (tableModel?.id) loadCondition(tableModel.id);
-                });
-              }}
-            />
-          </div>
-        )}
-        {/* 二级页签 */}
-        {contentTab?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
-          ?.subs && (
-          <div className="flex  space-x-1 p-1 ">
-            {contentTab
-              ?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
-              ?.subs?.map((s) => {
-                return (
-                  <div
-                    className={` text-sm  cursor-pointer    ${classNames({
-                      "bg-white border font-bold":
-                        activeKey?.level2 === s.itemKey,
-                    })} rounded-2xl  py-1 px-4`}
-                    key={s.itemKey}
-                    onClick={() => {
-                      if (activeKey && activeKey?.level1) {
-                        setActiveKey({
-                          level1: activeKey.level1,
-                          level2: s.itemKey,
-                        });
-                      }
-                    }}
-                  >
-                    {s.tab}&nbsp;·&nbsp;{tableCount?.[s.itemKey]}
-                  </div>
-                );
-              })}
-          </div>
-        )}
-        {/* 列表行 */}
-        <TablePage<T>
-          className="flex-grow"
-          width={tableWidth}
-          key={listType}
-          activeKey={activeKey || { level1: contentTab?.[0].itemKey || "" }}
-          listType={listType}
-          editType={editType}
-          req={tableReq}
-          btns={btns}
-          onGetData={(data) => {
-            setTableCount((t: any) => {
-              if (activeKey?.level2)
-                return { ...t, [activeKey?.level2]: data.total };
+      {/* 列表行 */}
+      <TablePage<T>
+        className="flex-grow"
+        width={tableWidth}
+        tabDictField={tabDictField}
+        tabList={tabList}
+        key={listType}
+        listType={listType}
+        editType={editType}
+        req={tableReq}
+        btns={btns}
+        onGetData={(data) => {
+          setTableCount((t: any) => {
+            if (activeKey?.level2)
+              return { ...t, [activeKey?.level2]: data.total };
+          });
+        }}
+        //视图数据过滤
+        conditionJson={
+          conditions && activeKey
+            ? conditions.find((d) => d.id === activeKey.level1)?.conditionJson
+            : undefined
+        }
+        columnTitle={filterType !== undefined ? "sort" : true}
+        onTableModel={setTableModel}
+        onFormModel={setFormModel}
+        //错误信息回传
+        onHttpError={(e) => {
+          if (e.code === 4404) {
+            confirmModal.show({
+              title: `接口错误`,
+              children: (
+                <>{`${e.code}无法访问，请配置或者在模块页面手工传入loadData的prop`}</>
+              ),
+              okFun: () => {
+                navigate(`/conf/design/${listType}/list`);
+              },
             });
-          }}
-          //视图数据过滤
-          conditionJson={
-            conditions && activeKey
-              ? conditions.find((d) => d.id === activeKey.level1)?.conditionJson
-              : undefined
           }
-          columnTitle={filterType !== undefined ? "sort" : true}
-          onTableModel={setTableModel}
-          onFormModel={setFormModel}
-          //错误信息回传
-          onHttpError={(e) => {
-            if (e.code === 4404) {
-              confirmModal.show({
-                title: `接口错误`,
-                children: (
-                  <>{`${e.code}无法访问，请配置或者在模块页面手工传入loadData的prop`}</>
-                ),
-                okFun: () => {
-                  navigate(`/conf/design/${listType}/list`);
-                },
-              });
-            }
-          }}
-          {...props}
-        />
-      </div>
+        }}
+        {...props}
+      />
     </div>
   );
 };

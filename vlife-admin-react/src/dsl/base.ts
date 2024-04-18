@@ -98,3 +98,17 @@ export interface Conditions {
   where: Partial<where>[];
   conditions: Partial<Conditions>[];
 }
+
+/**
+ * 对象转condition的where查询语法
+ */
+ export const objToConditionWhere = (obj: any): Partial<where>[] => {
+  const fieldNames: string[] = Object.keys(obj);
+  return fieldNames.map((f) => {
+    return {
+      fieldName: f,
+      opt: OptEnum.eq,
+      value: Array.isArray(obj[f]) ? obj[f] : [obj[f]],
+    };
+  });
+};

@@ -1,4 +1,5 @@
 import React, {
+  ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -35,6 +36,7 @@ import {
   startFlow,
 } from "@src/api/workflow/Flow";
 import { useNiceModal } from "@src/store";
+import TableTab from "./tableTab";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 // 后端排序字符串格式创建
@@ -64,17 +66,29 @@ type apiError = {
   method: string;
 };
 
+//tab页签
+export type TableTab = {
+  itemKey: string; //视图编码(唯一)
+  tab: string | ReactNode; //名称
+  icon?: ReactNode; //图标
+  showCount?: boolean; //是否显示统计数量
+  req?: object | { fieldName: string; opt: OptEnum; value?: Object }[]; //视图过滤条件(简单方式)
+  subs?: (TableTab & { singleReq?: boolean })[]; //子级过滤页签 singleReq:表示不联合上一级过滤条件
+};
+
 // T为列表listType的类型
 export interface TablePageProps<T extends TableBean> extends ListProps<T> {
+  tabList?: TableTab[]; //tab分组的条件对象
+  tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
   listType: string; //列表模型
-  activeKey: {
-    level1: string;
-    level2?: string;
-  }; //当前激活的tab的主页签key
+  // activeKey: {
+  //   level1: string;
+  //   level2?: string;
+  // }; //当前激活的tab的主页签key
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req: any; //查询条件obj  //自定义tab页签条件，filter过滤条件
   conditionJson?: string; //db视图过滤的条件
-  tabCountConditionJson?: { tabKey: string; tabConditionJson: string }; //tab页签数量条件
+  // tabCountConditionJson?: { tabKey: string; tabConditionJson: string }; //tab页签数量条件
   design: true | undefined; //true则是设计器模式
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
@@ -96,7 +110,7 @@ const TablePage = <T extends TableBean>({
   model,
   conditionJson,
   dataSource,
-  activeKey,
+  // activeKey,
   mode = "normal",
   width,
   btns,
@@ -108,6 +122,8 @@ const TablePage = <T extends TableBean>({
   onFormModel,
   read,
   onTableModel,
+  tabList,
+  tabDictField,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const navigate = useNavigate();
@@ -116,7 +132,10 @@ const TablePage = <T extends TableBean>({
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
   const [formModel, setFormModel] = useState<FormVo | undefined>(model); //主要表单模型信息
-
+  const [activeKey, setActiveKey] = useState<{
+    level1: string;
+    level2?: string;
+  }>(); //当前激活的tab的主页签key}>();
   const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo[]>(); //列表记录关联的流程信息
   const [apiError, setApiError] = useState<apiError>(); //接口异常信息
   const [pageNum, setPageNum] = useState(1); //分页
@@ -125,6 +144,10 @@ const TablePage = <T extends TableBean>({
   const [pageData, setPageData] = useState<PageVo<T>>(); //请求到的分页数据
   const [order, setOrder] = useState<orderObj[]>(); //默认的排序内容
   const [loadFlag, setLoadFlag] = useState(1); //刷新标志
+  const [tabReq, setTabReq] = useState({}); //当前tab页签的查询条件
+  const [tabCount, setTabCount] = useState<{ [tabKey: string]: number }>(); //tab页签数量
+  const [tabReqCount, setTabReqCount] = useState<{ [tabKey: string]: any }>({}); //查询数量页签条件
+
   const [relationMap, setRealationMap] = useState<{
     fkObj: any; //外键数据
     parentObj: any; //code关联数据
@@ -269,6 +292,7 @@ const TablePage = <T extends TableBean>({
       };
     }
   }, [loadApi, JSON.stringify(tableModel)]);
+
   const { runAsync: rm } = useRemove({
     entityType: tableModel?.entityType || "",
   }); //数据删除方法
@@ -280,24 +304,29 @@ const TablePage = <T extends TableBean>({
     entityType: tableModel?.entityType || "",
   });
 
+  const _params = useCallback(
+    (_tabReq: any) => {
+      const params = {
+        ...req,
+        ..._tabReq,
+        conditions: searchAndColumnCondition, //列表上的组件过滤(待合并到groups里)
+      };
+      return params;
+    },
+    [req, searchAndColumnCondition]
+  );
+
   //数据请求参数
   const reqParams = useMemo(() => {
-    const params = {
-      ...req,
-      conditionGroups: conditionJson
-        ? JSON.parse(conditionJson)
-        : req && req.conditionGroups && req.conditionGroups.length > 0
-        ? req.conditionGroups
-        : undefined,
-      conditions: searchAndColumnCondition, //列表上的组件过滤(待合并到groups里)
+    return {
+      ..._params(tabReq),
       order: { orders: orderStr(order) },
       pager: pager,
     };
-    return params;
   }, [
     order,
     JSON.stringify(req),
-    conditionJson,
+    JSON.stringify(tabReq),
     searchAndColumnCondition,
     JSON.stringify(pager),
   ]);
@@ -307,6 +336,16 @@ const TablePage = <T extends TableBean>({
     if (pageLoad) {
       pageLoad(reqParams)
         .then((data: Result<PageVo<T>>) => {
+          if (activeKey) {
+            //当前页签数量
+            setTabCount((d: any) => {
+              return {
+                ...d,
+                [activeKey?.level2 || activeKey?.level1]: data.data?.total,
+              };
+            });
+          }
+
           if (data.data) {
             if (data.data.totalPage !== 0 && data.data.totalPage < pager.page) {
               setPageNum(data.data.totalPage);
@@ -331,17 +370,16 @@ const TablePage = <T extends TableBean>({
     JSON.stringify(tableModel),
     JSON.stringify(pageLoad),
     JSON.stringify(pager),
+    activeKey,
   ]);
 
   useEffect(() => {
     if (dataSource === undefined) query();
   }, [
     dataSource,
-    JSON.stringify(req),
+    reqParams,
     order,
     loadFlag,
-    conditionJson,
-    searchAndColumnCondition,
     JSON.stringify(tableModel),
     JSON.stringify(pager),
     JSON.stringify(pageLoad),
@@ -797,12 +835,40 @@ const TablePage = <T extends TableBean>({
     }
   }, [pageData, tableModel, dataSource]);
 
+  //各个tab页签列表数量查询
+  useEffect(() => {
+    if (pageLoad) {
+      Object.keys(tabReqCount).forEach((key) => {
+        if (tabReqCount[key] !== undefined) {
+          pageLoad(_params(tabReqCount[key])).then(
+            (data: Result<PageVo<T>>) => {
+              setTabCount((tabCount) => {
+                return { ...tabCount, [key]: data.data?.total || 0 };
+              });
+            }
+          );
+        }
+      });
+    }
+  }, [JSON.stringify(tabReqCount), pageLoad, req, searchAndColumnCondition]);
+
   return tableModel && apiError === undefined ? (
     <div
       ref={ref}
       className={`${className} relative h-full flex flex-col text-sm  `}
     >
-      {/* {activeKey} */}
+      {/* 页签 */}
+      <TableTab
+        tabCount={tabCount}
+        tabDictField={tabDictField}
+        tabList={tabList}
+        formModel={formModel}
+        tableModel={tableModel}
+        createAble={user?.superUser}
+        onActiveChange={setActiveKey}
+        onTabReq={setTabReq}
+        onCountReq={setTabReqCount}
+      />
       <div
         className={`flex bg-white items-center p-2 border-gray-100  justify-start  `}
       >

@@ -1,11 +1,11 @@
 /**
  * 工作流分布内容展示组件
  */
-import { Avatar, Modal, Tag, Timeline } from "@douyinfe/semi-ui";
+import React, { useMemo } from "react";
+import { Modal, Tag } from "@douyinfe/semi-ui";
 import { FlowNode } from "@src/api/workflow/Flow";
 import { shotFormatDate } from "@src/util/func";
 import classNames from "classnames";
-import { useMemo } from "react";
 
 export interface FlowStepProps extends FlowNode {}
 
@@ -122,8 +122,7 @@ export default (prop: FlowStepProps) => {
               className="cursor-pointer  border-t"
             >
               <div className=" p-1 m-1 rounded-2xl   bg-orange-100 ">
-                {/* <i className=" text-base icon-role-approval2 mx-2 " /> */}
-                <i className=" text-base icon-workflow_delayed" mx-2 />
+                <i className=" text-base icon-workflow_delayed" />
                 <span className="font-bold text-orange-400">
                   {`${auditing.length}名成员处理中...`}
                 </span>
