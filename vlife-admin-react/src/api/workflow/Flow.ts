@@ -12,7 +12,7 @@ export interface FlowReq{
   defineKey:string; //流程定义key
   businessKeys:string[]; //业务keys
   businessKey:string; //业务key
-  remark:string; //备注
+  activeKey:string;//当前激活的页签key
 }
 export interface FlowDto{
   defineKey:string; //流程定义key
@@ -33,6 +33,7 @@ export interface RecordFlowInfo{
   currTask:boolean ; // 是否用户的当前任务
   recallable:boolean; // 用户是否能够从当前节点撤回；
 }
+
 // 流转信息
 export interface FlowNode {
   nodeName: string; // 节点名称
@@ -44,6 +45,7 @@ export interface FlowNode {
   target:NodeUserInfo[];// 节点目标处理人
   activityKey:string // 节点key
 }
+
 //流程任务实例信息解析
 export interface FlowTask {
   assignee: string; //任务执行人id
@@ -54,38 +56,44 @@ export interface FlowTask {
   description:string;//流转描述
 }
 
-
-//----------------------------接口------------------------------------------
-
 /** 任务分页*/
 export const page=(req:PageQuery): Promise<Result<any[]>>=>{
   return apiClient.post(`/flow/page`,req);
 };
+
+
 /** 流程相关 */
 /** 工作流实例查询*/
 export const findProcessDefinitions=(req:Partial<FlowReq>): Promise<Result<RecordFlowInfo[]>>=>{
   return apiClient.post(`/flow/findProcessDefinitions`,req);
 };
+
 /** 任务开始 */
 export const startFlow=(req:Partial<FlowDto>): Promise<Result<boolean>>=>{
   return apiClient.post(`/flow/startFlow`,req);
 };
+
 /** 完成任务 */
 export const completeTask=(req:Partial<FlowDto>): Promise<Result<boolean>>=>{
   return apiClient.post(`/flow/completeTask`,req);
 };
+
+
 /** 流程撤回 */
 export const recall=(req:Partial<FlowDto>): Promise<Result<string>>=>{
   return apiClient.post(`/flow/recall`,req);
 };
+
 /** 流程回退 */
 export const backProcess=(req:Partial<FlowDto>): Promise<Result<boolean>>=>{
   return apiClient.post(`/flow/backProcess`,req);
 };
+
 /** 流程终止 */
 export const cancelProcess=(req:Partial<FlowDto>): Promise<Result<boolean>>=>{
   return apiClient.post(`/flow/cancelProcess`,req);
 };
+
 /** 业务历史审核信息 */
 export const queryHistoricInfo=(req:Partial<FlowReq>): Promise<Result<FlowNode[]>>=>{
   return apiClient.post(`/flow/queryHistoricInfo`,req);
@@ -94,4 +102,9 @@ export const queryHistoricInfo=(req:Partial<FlowReq>): Promise<Result<FlowNode[]
 /** 业务历史审核信息 */
 export const publish=(req:Partial<FormDto>): Promise<Result<string[]>>=>{
   return apiClient.post(`/flow/publish`,req);
+};
+
+/** 工作流实例查询*/
+export const findTableBasicColumns=(req:Partial<FlowReq>): Promise<Result<RecordFlowInfo[]>>=>{
+  return apiClient.post(`/flow/findTableBasicColumns`,req);
 };
