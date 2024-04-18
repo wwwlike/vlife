@@ -10,18 +10,66 @@ vlife 的愿景是实现前后端同样极简开发的目标，倡导让前端�
 
 ### 项目初始化
 
-> 推荐使用 cnpm 进行 npm 包下载；
+#### 下载项目
 
 ```shell
   git clone https://gitee.com/wwwlike/vlife-admin-react
   cd  vlife-admin-react
-  cnpm install
+```
+
+#### 安装依赖
+
+```
+要安装本项目依赖的npm包，您可以使用cnpm来代替npm进行安装。cnpm是一个npm的镜像，可以加快npm包的下载速度。
+
+首先，您需要安装cnpm。您可以通过以下命令来安装cnpm：
+
+```
+
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+
+```
+
+安装完成后，您可以使用cnpm来安装项目依赖的npm包。您可以通过以下命令来安装项目依赖：
+
+```
+
+cnpm install
+
+```
+
+如果您在使用cnpm安装依赖时仍然遇到问题，您可以尝试使用yarn来安装。以下是使用yarn安装项目依赖的步骤：
+
+1. 首先，您需要安装yarn。您可以通过以下命令来安装yarn：
+
+```
+
+npm install -g yarn
+
+```
+
+2. 安装完成后，您可以使用yarn来安装项目依赖。在项目根目录下运行以下命令：
+
+```
+
+yarn install
+
+```
+
+通过以上步骤，您可以使用cnpm或yarn来安装本项目依赖的npm包。希望以上信息对您有帮助！
+```
+
+#### 项目运行
+
+```
   cnpm run dev
 ```
 
-> 访问 Http://localhost:3000 进入项目
+#### 访问项目
 
-### 创建一个 CRUD 页面
+> 访问 http://localhost:3000 进入项目
+
+### 快速上手一个 Crud 页面
 
 vlife 使用 ts4 进行开发，完成单模块 CRUD 功能，仅需要使用 `Content`组件即可。
 
@@ -31,7 +79,7 @@ export default () => {
 };
 ```
 
-> 表示用 `sysUserPageReq` 模型渲染进行数据查询，用`sysUser`实体模型渲染列表和编辑页面；
+> 这里用 `sysUserPageReq` 模型渲染进行数据查询，用`sysUser`实体模型渲染列表和编辑页面；
 
 ### 效果预览
 

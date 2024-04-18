@@ -118,7 +118,7 @@ const FieldSelect = ({
           )}
           ){" "}
           <span className=" absolute right-0 text-xs font-thin text-blue-300">
-            <i className="  icon-h5_sort" /> 拖拽排序
+            <i className="  icon-h5_sort" /> 上下拖拽
           </span>
         </div>
       </div>
