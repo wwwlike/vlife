@@ -495,17 +495,11 @@ export const FormComponents: CompDatas = {
     dataType: DataType.basic,
     dataModel: DataModel.string,
     props: {
-      multiple: false,
-    },
-  },
-  UserSelects: {
-    component: UserSelect,
-    label: "用户选择器",
-    icon: "IconOrderedList",
-    dataType: DataType.array,
-    dataModel: DataModel.string,
-    props: {
-      multiple: true,
+      defCurrUser: {
+        label: "当前用户默认选中",
+        dataType: DataType.basic,
+        dataModel: DataModel.boolean,
+      },
     },
   },
   WorkFlowEditor: {

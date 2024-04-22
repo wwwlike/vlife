@@ -5,7 +5,7 @@ import MemberSelect from "@src/workflow-editor/components/MemberSelect";
 import { useAuth } from "@src/context/auth-context";
 import { useUpdateEffect } from "ahooks";
 interface UserSelectProps extends VfBaseProps<string> {
-  initCurrUser?: boolean; //是否初始化用户为当前用户
+  defCurrUser?: boolean; //是否初始化用户为当前用户
 }
 /**
  * 用户选择器
@@ -13,18 +13,14 @@ interface UserSelectProps extends VfBaseProps<string> {
  */
 export default ({
   value,
-  initCurrUser = true,
+  defCurrUser = false,
   read,
   onDataChange,
 }: UserSelectProps) => {
   const { user } = useAuth();
   const [initValue, setInitValue] = React.useState<string | undefined>(
-    initCurrUser && value === undefined ? user?.id : value
+    defCurrUser && value === undefined ? user?.id : value
   );
-
-  // useEffectEff(() => {
-  //   setInitValue(value);
-  // }, [value]);
 
   return (
     <MemberSelect
