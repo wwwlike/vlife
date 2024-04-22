@@ -8,7 +8,7 @@ import Scrollbars from "react-custom-scrollbars";
 import DynamicNodeSelect from "./DynamicNodeSelect";
 
 export interface FlowSelectProps extends VfBaseProps<Partial<NodeUserInfo>[]> {
-  showUser?: boolean; //只前线用户
+  showUser?: boolean; //仅使用用户
   multiple?: boolean; //是否能多选
   roleSelectData?: ISelect[];
   deptSelectData?: ISelect[];
@@ -79,6 +79,7 @@ export default (props: FlowSelectProps) => {
             {userSelectData && (
               <MultipleSelect
                 selectData={userSelectData || []}
+                multiple={multiple}
                 value={users.map((v) => v.objectId || "")}
                 onDataChange={(vals?: string[]) => {
                   selectNode(userSelectData, "assignee", ...(vals || []));
@@ -239,7 +240,6 @@ export default (props: FlowSelectProps) => {
             </div>
           </>
         )}
-
         {dynamics && dynamics.length > 0 && (
           <>
             <div className="pl-2 text-gray-400 font-bold">动态</div>

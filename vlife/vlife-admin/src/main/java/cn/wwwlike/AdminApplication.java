@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @author xiaoyu
  * @date 2022/6/17
  */
-//打开出参数据包装
 @EnableRespWrap
 @EnableScheduling
 @SpringBootApplication(scanBasePackages ={
@@ -26,10 +25,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EntityScan(basePackages = {"cn.wwwlike", "cn.vlife"})
 public class AdminApplication {
     public static void main(String[] args) {
-        //请注意，使用本项目需要安装Java环境并使用JDK8。
-        // 在启动项目之前，需要运行`Maven install`命令初始化项目所需的文件。
-        // 如果数据库实体模型发生变化，也需要再次运行`Maven install` 命令，以产生QueryDSL相关文件。
-        // 此外，如果Java中的其他模型（如VO、DTO和Req）发生变化并需要立即更新到前端，请同样运行`Maven install`命令进行同步。
+        System.out.println("╔════════════════════════════════════════════════════════════════╗");
+        System.out.println("               注意！！注意！！(AadminApplication)                ");
+        System.out.println("               检查本项目是否配置了JDK8以上的运行环境。            ");
+        System.out.println("       首次请务必整个项目运行`Maven package`初始化项目所需的文件。  ");
+        System.out.println("  研发过程中(do/vo/dto)有变化改动请在vlife-admin上运行maven package ");
+        System.out.println("╚════════════════════════════════════════════════════════════════╝");
         SpringApplication.run(AdminApplication.class);
     }
 }

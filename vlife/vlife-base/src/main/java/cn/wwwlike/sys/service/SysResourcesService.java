@@ -181,14 +181,15 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
     }
     /**
      * 同步最新接口信息到DB里
-     * 1. 失效的删除掉；
+     * 失效的删除掉|资源关联模型|资源上下级关系塑造；
      * @return
      * @throws IOException
      */
     public void sync() throws IOException {
         List<String> currResourceIds=new ArrayList<>();
-        List<ClzTag> apitTags= AdminUtils.readApiFile();//
-        apitTags.forEach(clzTag -> { currResourceIds.addAll(syncOne(clzTag));});
+        List<ClzTag> apitTags= AdminUtils.readApiFile();
+        List dbResources=findAll();
+        apitTags.forEach(clzTag -> { currResourceIds.addAll(syncOne(clzTag,dbResources));});
         removeExpiredResources(currResourceIds);
         assignFormToResource();
         createRelationship();
@@ -208,38 +209,63 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
      * 单个接口资源同步
      * @param action
      */
-    public List<String> syncOne(ClzTag action)   {
+    public List<String> syncOne(ClzTag action,List<SysResources> dbResources)   {
         List<String> resourceIds=new ArrayList<>();
         List<ApiTag> apis=action.getApiTagList();
         //资源更新或者新增
         for(ApiTag api:apis){
             String apiPath=api.getPath();
             String url=getApiUrl(action.getPath()+apiPath);
-            List<SysResources> list=find("url",url);
+            List<SysResources> list=dbResources.stream().filter(db->url.equals(db.getUrl())).collect(Collectors.toList());
             SysResources bean=list.size()>0?list.get(0):new SysResources();
-//            资源里包含或者等于以下路径开头的为系统类型的接口，所有以它开头的都划归与它，避免用户选择接口太多
-            String menthodName=api.getMethodName();
-            Optional<ResourcesType> optional=
-            ResourcesType.resourcesTypeList()
-                    .stream()
-                    .filter(r->apiPath.startsWith("/"+r.pathPrefix)).findAny();
-            if(optional.isPresent()){
-                bean.setResourceType(optional.get().getPathPrefix());
-                bean.setIcon(optional.get().getIcon());
+            //以下三个变化则跟新资源
+            if(bean.getId()!=null){
+                String  currPermission=api.getPermission()!=null?api.getPermission().name(): PermissionEnum.extend.name();
+                String currName=api.getTitle();
+                String currRemark=api.getRemark();
+                int i=0;
+                if(currPermission!=null&&!currPermission.equals(bean.getPermission())){
+                   bean.setPermission(currPermission);
+                   i++;
+                }
+                if(currName!=null&&!currName.equals(bean.getName())){
+                    bean.setName(currName);
+                    bean.setJavaName(currName);
+                    i++;
+                }
+                if(currRemark!=null&&!currRemark.equals(bean.getRemark())){
+                    bean.setRemark(currRemark);
+                    i++;
+                }
+                if(i>0){
+                    save(bean);
+                }
             }else{
-                bean.setResourceType("other");
-                bean.setIcon("IconBytedanceLogo");
+                // 资源里包含或者等于以下路径开头的为系统类型的接口，所有以它开头的都划归给它，避免用户选择接口太多
+                // 意思就是 /sysUser/list /sysUser/listAge  只纳入一个接口进行管理
+                Optional<ResourcesType> optional=
+                        ResourcesType.resourcesTypeList()
+                                .stream()
+                                .filter(r->apiPath.startsWith("/"+r.pathPrefix)).findAny();
+                if(optional.isPresent()){
+                    bean.setResourceType(optional.get().getPathPrefix());
+                    bean.setIcon(optional.get().getIcon());
+                }else{
+                    bean.setResourceType("other");
+                    bean.setIcon("IconBytedanceLogo");
+                }
+                bean.setName(api.getTitle());
+                bean.setJavaName(api.getTitle());
+                bean.setRemark(api.getRemark());
+                bean.setUrl(url);
+                bean.setCode(url.substring(1).replaceAll("/",":"));
+                bean.setPermission(api.getPermission()!=null?api.getPermission().name(): PermissionEnum.extend.name());
+                bean.setActionType(action.getEntityName());
+                bean.setMethedType(api.getMethodType());
+                bean.setEntityType(action.getTypeName());
+                save(bean);
             }
-            bean.setName(api.getTitle());
-            bean.setJavaName(api.getTitle());
-            bean.setRemark(api.getRemark());
-            bean.setUrl(url);
-            bean.setCode(url.substring(1).replaceAll("/",":"));
-            bean.setPermission(api.getPermission()!=null?api.getPermission().name(): PermissionEnum.extend.name());
-            bean.setActionType(action.getEntityName());
-            bean.setMethedType(api.getMethodType());
-            bean.setEntityType(action.getTypeName());
-            save(bean);
+
             resourceIds.add(bean.getId());
         }
         return resourceIds;

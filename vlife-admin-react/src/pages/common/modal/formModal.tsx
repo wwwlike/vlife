@@ -38,11 +38,11 @@ export const FormModal = createNiceModal(
     modelInfo, //模型信息
     formData, //表单数据
     width,
-    activeKey,
-    // saveFun,
+    activeKey, //当前页签
     onError,
-    onDataChange,
+    onDataChange, //已废弃(model的btn如何影响?)
     btns,
+    modifyData,
     ...props
   }: FormModalProps) => {
     const [windowSize, setWindowSize] = useState({
@@ -52,11 +52,18 @@ export const FormModal = createNiceModal(
     const [_continueCreate, setContinueCreate] = useState<boolean | undefined>(
       btns?.[0]?.continueCreate
     );
-
-    const [formNumber, setFormNumber] = useState<number>(0);
-    // const [modifyData, setModifyData] = useState(props.modifyData);
-    //按钮上的数据
     const [data, setData] = useState(formData);
+    const [formNumber, setFormNumber] = useState<number>(0);
+    const [_modifyData, setModifyData] = useState(); //提交保存后返回的数据，外部修订后的数据
+
+    useEffect(() => {
+      setModifyData(modifyData);
+    }, [modifyData]);
+    //外部表单数据，可以多次变化影响表单的数据变化
+    //从表单接回的数据，不能返回给表单
+    //这里提交的数据，返回回来要给到表单
+    //formModal的数据如何传输出去，印象列表的数据和按钮组数据？
+
     const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo>(); //流程基本信息
     const [historys, setHistorys] = useState<FlowNode[]>();
     const [form, setForm] = useState<Form>(); // formliy的form
@@ -66,6 +73,7 @@ export const FormModal = createNiceModal(
     //请求该条记录的流程信息和历史审核信息
     const getFlowInfo = useCallback(() => {
       if (formVo && formVo.flowJson && data && data.id) {
+        // alert(activeKey);
         findProcessDefinitions({
           businessKeys: [data.id],
           defineKey: formVo.type,
@@ -86,10 +94,10 @@ export const FormModal = createNiceModal(
     }, [activeKey, formVo, data]);
 
     useEffect(() => {
-      if (!version.toString().startsWith("v_base")) {
+      if (data?.id && !version.toString().startsWith("v_base")) {
         getFlowInfo();
       }
-    }, []);
+    }, [data]);
 
     const title = useMemo(() => {
       const no = data?.no || "";
@@ -97,11 +105,12 @@ export const FormModal = createNiceModal(
       if (formVo === undefined) {
         return `“${props.type}”模型标识不存在`;
       }
+      const title = formVo?.name || formVo.type;
       return props.readPretty
-        ? formVo?.name + "详情" + no
+        ? title + "详情" + no
         : form?.values?.id
-        ? formVo?.name + no
-        : "新建(" + formVo?.name + ")";
+        ? title + no
+        : "新建(" + title + ")";
     }, [data, form, formVo]);
 
     //可用按钮过滤，以及提交检查函数封装
@@ -122,6 +131,7 @@ export const FormModal = createNiceModal(
                 setFormNumber((num) => num + 1);
               } else {
                 setData(_data);
+                setModifyData(_data);
               }
               //流程类型按钮触发流程信息提取
               if (f.actionType === "flow") {
@@ -226,7 +236,7 @@ export const FormModal = createNiceModal(
         width={modalWidth}
         // onOk={handleSubmit}
       >
-        {/* {JSON.stringify(activeKey)} */}
+        {/* 外部formModal {data?.id} */}
         <FormPage
           key={`${formNumber}`}
           onError={setErrors}
@@ -234,7 +244,7 @@ export const FormModal = createNiceModal(
           modelInfo={modelInfo}
           flowHistorys={historys} //流程历史记录
           flowBasic={recordFlowInfo} //流程基本信息
-          modifyData={props.modifyData}
+          modifyData={_modifyData}
           onDataChange={(d, field) => {
             setData((old: any) => {
               return { ...d };

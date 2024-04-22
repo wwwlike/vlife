@@ -37,7 +37,7 @@ import {
   startFlow,
 } from "@src/api/workflow/Flow";
 import { useNiceModal } from "@src/store";
-import TableTab from "./tableTab";
+import TableTab, { ActiveTab } from "./tableTab";
 
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 // 后端排序字符串格式创建
@@ -133,10 +133,7 @@ const TablePage = <T extends TableBean>({
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
   const [formModel, setFormModel] = useState<FormVo | undefined>(model); //主要表单模型信息
-  const [activeKey, setActiveKey] = useState<{
-    level1: string;
-    level2?: string;
-  }>(); //当前激活的tab的主页签key}>();
+  const [activeKey, setActiveKey] = useState<ActiveTab>(); //当前激活的tab的主页签key}>();
   const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo[]>(); //列表记录关联的流程信息
   const [apiError, setApiError] = useState<apiError>(); //接口异常信息
   const [pageNum, setPageNum] = useState(1); //分页
@@ -436,10 +433,9 @@ const TablePage = <T extends TableBean>({
         onSubmitFinish:
           b.onSubmitFinish ||
           (() => {
-            setLoadFlag((flag) => flag + 1);
+            setLoadFlag((flag) => flag + 1); //列表重新加载
             setSelected([]); //清空选中
           }),
-        // submitClose: b.submitClose || true, //默认触发关闭
       };
     } else {
       return b;
@@ -487,16 +483,17 @@ const TablePage = <T extends TableBean>({
         {
           //permissionCode: savePermissionCode,权限取消掉了
           actionType: "save",
-          // title: "保存",
+          title: "新增",
           icon: <i className=" icon-add_circle_outline" />,
           multiple: false,
+          allowEmpty: true,
           model: editModelType,
           // disabledHide: true,
           usableMatch: (data: TableBean) => {
-            //在待办/未提交的可保存
             return (
               data === undefined ||
               data.id === undefined ||
+              data?.flow == undefined ||
               (data?.flow?.ended !== true &&
                 data?.flow?.currTask &&
                 activeKey?.level1 === "flow_todo") ||
@@ -511,9 +508,9 @@ const TablePage = <T extends TableBean>({
         },
         {
           title: "删除",
-          disabledHide: true,
+          disabledHide: activeKey?.level2 !== "flow_byMe_draft",
           actionType: "api",
-          disabled: activeKey?.level1 !== "flow_byMe",
+          disabled: activeKey?.level2 !== "flow_byMe_draft",
           usableMatch: (datas: TableBean[]) => {
             return datas.every((data) => {
               return (
@@ -557,6 +554,7 @@ const TablePage = <T extends TableBean>({
         },
         {
           actionType: "flow",
+          allowEmpty: true,
           title: "提交", //保存数据并且当流程流转到下一个节点
           disabled: !formModel?.flowJson,
           icon: <i className="  icon-upload1" />,
@@ -573,13 +571,20 @@ const TablePage = <T extends TableBean>({
                   activeKey?.level2 === "flow_byMe_edit")) //办理节点
             );
           },
+          onSubmitFinish: () => {
+            setActiveKey({ level1: "flow_byMe", level2: "flow_byMe_todo" });
+          },
           disabledHide: true,
           saveApi: (data: any) => {
+            // alert(JSON.stringify(data));
             return save(formModel?.entityType || "")(data).then(
-              (d: Result<any>) => {
-                if (data?.flow?.started === false) {
+              (_data: Result<any>) => {
+                if (
+                  _data?.data?.flow === undefined ||
+                  _data?.data?.started !== true
+                ) {
                   return startFlow({
-                    businessKey: d.data.id,
+                    businessKey: _data.data.id,
                     defineKey: formModel?.type,
                     formData: data,
                     description: "发起流程",
@@ -587,20 +592,20 @@ const TablePage = <T extends TableBean>({
                     if (res.data === false) {
                       alert("不能操作当前流程");
                     }
-                    return d;
+                    return _data;
                   });
                 } else {
                   return completeTask({
-                    comment: data.comment,
-                    businessKey: data.id,
+                    comment: _data.data.comment,
+                    businessKey: _data.data.id,
                     defineKey: formModel?.type,
-                    formData: data,
+                    formData: _data.data,
                     description: "提交处理",
                   }).then((res) => {
                     if (res.data === false) {
                       alert("不能操作当前流程");
                     }
-                    return d;
+                    return _data;
                   });
                 }
               }
@@ -860,6 +865,7 @@ const TablePage = <T extends TableBean>({
     >
       {/* 页签 */}
       <TableTab
+        activeKey={activeKey}
         tabCount={tabCount}
         tabDictField={tabDictField}
         tabList={tabList}
@@ -883,6 +889,7 @@ const TablePage = <T extends TableBean>({
           className={` ${classNames({
             hidden: mode !== "normal",
           })}`}
+          activeKey={activeKey?.level2 || activeKey?.level1}
           // model={tableModel.entityType}
           key={"tableBtn"}
           btns={totalBtns}

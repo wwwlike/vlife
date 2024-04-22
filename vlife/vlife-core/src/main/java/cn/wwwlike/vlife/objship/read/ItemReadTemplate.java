@@ -48,6 +48,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -100,8 +101,7 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
                     jsonFile =ResourceUtils.getFile("./vlife-admin/src/main/resources/title.json");
                 }
                 if(jsonFile.isFile()){//插件使用
-
-//                    json= org.aspectj.util.FileUtil.
+                    json= new String(Files.readAllBytes(jsonFile.toPath()));
                 }else{// jar包使用
                     InputStream is = ClassPathResource.class.getClassLoader().getResourceAsStream("/title.json");
                     if(is!=null){

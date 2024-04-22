@@ -147,6 +147,7 @@ const FormPage = <T extends IdBean>({
     <FormFlowContainer className={className} historys={flowHistorys}>
       {_model ? (
         <>
+          {/* 内部formPage的id:{(modifyData || formPageData || initData)?.id} */}
           <VlifeForm
             {...props}
             fontBold={props.fontBold}

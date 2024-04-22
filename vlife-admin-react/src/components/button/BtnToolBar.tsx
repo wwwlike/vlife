@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import { IdBean } from "@src/api/base";
 import {
@@ -29,16 +29,14 @@ export interface BtnToolBarProps<T extends IdBean> {
   position?: BtnToolBarPosition; //显示场景(过滤出满足条件的按钮)
   line?: number; //行号 tableLine模式下使用 临时数据可用行号当索引进行操作
   readPretty?: boolean; //当前页面模式(过滤按钮使用)
+  activeKey?: string; //当前所在页签的key
   // onDataChange?: (datas: any[]) => void; //数据修订好传输出去
   onBtnNum?: (num: number) => void; //当前按钮数量
 }
-
 /**
  * 按钮栏组件
  * --------------------------
  * 1. 根据场景筛选按钮
- * 2. 判断按钮可用性(权限、数据规则)
- * 3. 按钮触发动作执行
  */
 export default <T extends IdBean>({
   datas,
@@ -49,67 +47,65 @@ export default <T extends IdBean>({
   readPretty,
   line,
   dropdown = false,
+  activeKey,
   // onDataChange,
   position = "page", //默认场景
   onBtnNum,
   ...props
 }: BtnToolBarProps<T>) => {
   const [btnDatas, setBtnDatas] = useState<T[] | undefined>(datas); //当前操作的数据
-  const [currBtns, setCurrBtns] = useState<VFBtn[]>([]); //当前页面应该显示的按钮
+  // const [currBtns, setCurrBtns] = useState<VFBtn[]>([]); //当前页面应该显示的按钮
   useEffect(() => {
     setBtnDatas(datas);
   }, [datas]);
+
+  //筛选出应该在当前场景下可以使用的按钮
+  const currBtns = useMemo(() => {
+    let toolBarBtns: VFBtn[] = [];
+    if (position === "tableToolbar") {
+      toolBarBtns = btns.filter(
+        (b) =>
+          b.multiple === true ||
+          b.position === "tableToolbar" ||
+          b.actionType === "create" ||
+          b.actionType === "save"
+      );
+    } else if (position === "tableLine") {
+      toolBarBtns = btns.filter(
+        (b) =>
+          (b.actionType !== "create" && b.multiple !== true) ||
+          b.position === "tableLine"
+      );
+    } else if (position === "formFooter") {
+      if (btnDatas === undefined || btnDatas?.[0]?.id === undefined) {
+        //模型数据为空
+        toolBarBtns = btns.filter(
+          (b) =>
+            (b.actionType === "create" ||
+              b.actionType === "save" ||
+              b.actionType === "flow") &&
+            (formModel ? b.model === formModel : true)
+        );
+      } else {
+        toolBarBtns = btns.filter(
+          (b) =>
+            b.saveApi !== undefined &&
+            (b.multiple === false || b.multiple === undefined)
+        );
+      }
+    } else {
+      //position=page
+      toolBarBtns = btns;
+    }
+    return toolBarBtns
+      .filter((btn) => (formModel ? btn.model === formModel : true)) //模型过滤
+      .filter((btn) => (readPretty ? btn.actionType === "api" : true)); //只读过滤
+  }, [position, btns, btnDatas, formModel, readPretty]);
+
   //返回按钮数量
   useEffect(() => {
     onBtnNum && onBtnNum(currBtns.length);
   }, [currBtns]);
-
-  //筛选出应该在当前场景下可以使用的按钮
-  useEffect(() => {
-    const btnFilter = async () => {
-      let toolBarBtns: VFBtn[] = [];
-      if (position === "tableToolbar") {
-        toolBarBtns = btns.filter(
-          (b) =>
-            b.multiple === true ||
-            b.position === "tableToolbar" ||
-            b.actionType === "create" ||
-            b.actionType === "save"
-        );
-      } else if (position === "tableLine") {
-        toolBarBtns = btns.filter(
-          (b) =>
-            (b.actionType !== "create" && b.multiple !== true) ||
-            b.position === "tableLine"
-        );
-      } else if (position === "formFooter") {
-        if (btnDatas === undefined || btnDatas?.[0]?.id === undefined) {
-          //模型数据为空
-          toolBarBtns = btns.filter(
-            (b) =>
-              (b.actionType === "create" || b.actionType === "save") &&
-              (formModel ? b.model === formModel : true)
-          );
-        } else {
-          toolBarBtns = btns.filter(
-            (b) =>
-              b.saveApi !== undefined &&
-              (b.multiple === false || b.multiple === undefined)
-          );
-        }
-      } else {
-        //position=page
-        toolBarBtns = btns;
-      }
-      const filteredBtns = toolBarBtns
-        .filter((btn) => (formModel ? btn.model === formModel : true)) //模型过滤
-        .filter((btn) => (readPretty ? btn.actionType === "api" : true)); //只读过滤
-
-      setCurrBtns((d) => filteredBtns);
-    };
-    btnFilter();
-  }, [position, btns, btnDatas, formModel, readPretty]);
-
   return (
     <div
       className={`flex ${className} !items-center ${classNames({
@@ -117,12 +113,14 @@ export default <T extends IdBean>({
         "justify-end": position === "formFooter",
       })} space-x-1`}
     >
+      {/* {btns.length} */}
       {dropdown !== true ? (
         currBtns.map((btn, index) => {
           return (
             <Button
               key={`btn_${line}_${index}`}
               {...btn}
+              activeKey={activeKey}
               btnType={
                 btnType !== undefined && btn.btnType === undefined
                   ? btnType
@@ -141,19 +139,27 @@ export default <T extends IdBean>({
                 //   : btn.datas || btnDatas
               }
               otherBtns={
-                btn.actionType === "save" && btn.model
-                  ? currBtns.filter(
-                      (b) =>
-                        (b.actionType === "api" &&
-                          b.model === btn.model &&
-                          b.multiple !== true) ||
-                        b.actionType === "flow"
+                btns.filter(
+                  (b) =>
+                    !(
+                      b.title === btn.title &&
+                      b.actionType === btn.actionType &&
+                      b.btnType === btn.btnType
                     )
-                  : btn.actionType === "flow"
-                  ? currBtns.filter(
-                      (b, index2) => b.actionType === "flow" && index !== index2
-                    )
-                  : []
+                )
+                // btn.actionType === "save" && btn.model
+                //   ? currBtns.filter(
+                //       (b) =>
+                //         (b.actionType === "api" &&
+                //           b.model === btn.model &&
+                //           b.multiple !== true) ||
+                //         b.actionType === "flow"
+                //     )
+                //   : btn.actionType === "flow"
+                //   ? currBtns.filter(
+                //       (b, index2) => b.actionType === "flow" && index !== index2
+                //     )
+                //   : []
               }
               // onDataChange={(d) => {
               //   // setBtnDatas(d);

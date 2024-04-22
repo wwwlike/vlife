@@ -24,7 +24,9 @@ export type BtnToolBarPosition = "tableToolbar" | "tableLine" | "formFooter" | "
 
 export interface VFBtn{
   title?:string;//按钮名
-  icon?:ReactNode;//图标 
+  icon?:ReactNode;//图标
+  allowEmpty?:boolean;//是否允许空值(且是对单挑数据操作则可显示在tableToolbar上，因为是对单体数据操作所以列表选择的数据它不使用)
+  activeKey?:string; // 当前所在激活页签key
   btnType?:btnType;// 按钮类型 "button" | "icon" | "link";
   continueCreate?:boolean;//连续新增 create按钮会出现(undefined不可见 false可见不可用  true可见可用)
   actionType:actionType // 动作类型

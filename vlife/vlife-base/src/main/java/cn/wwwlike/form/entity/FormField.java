@@ -32,7 +32,6 @@ public class FormField extends DbEntity {
      * 字段名
      */
     public String fieldName;
-
     /**
      * 前端数据类型
      * basic,array,object
@@ -42,33 +41,24 @@ public class FormField extends DbEntity {
      * 字段类型
      */
     public String fieldType;
-//    /**
-//     * 元素类型
-//     */
-//    public String type;
-
     /**
      * 所属表单
      */
     public String formId;
-
     /**
      *  唯一不重复
      * validate是内置远程校验规则，触发form内部远程数据校验
      */
     public boolean  validate_unique;
-
     /**
      * 新增时隐藏
      */
     public boolean  create_hide;
-
     /**
      * 修改时只读
      * 不可修改
      */
     public boolean  modify_read;
-
     /**
      * 分组
      */
@@ -77,28 +67,23 @@ public class FormField extends DbEntity {
      * 分组名称
      */
     public String dividerLabel;
-
     /**
      * 所在分组
      * 不存id原因，设计器阶段还没有产生id
      */
     public String formGroupCode;
-
     /**
      * 所在页签编码
      */
     public String formTabCode;
-
     /**
      * 标签隐藏
      */
     public boolean hideLabel;
-
     /**
      * 产生来源所在实体名称
      */
     public String entityType;
-
     /**
      * 字段来源实体对应字段名
      */
@@ -111,12 +96,10 @@ public class FormField extends DbEntity {
      * 全路径
      */
     public String pathName;
-
     /**
      * 字典的code
      */
     public String dictCode;
-
 
     //-----------formily 场景字段配置的信息
 

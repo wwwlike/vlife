@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { VfBaseProps } from "@src/dsl/component";
 import { NodeUserInfo } from "@src/workflow-editor/classes/vlife";
 import MemberSelect from "@src/workflow-editor/components/MemberSelect";
+import { useAuth } from "@src/context/auth-context";
+import { useUpdateEffect } from "ahooks";
 interface UserSelectProps extends VfBaseProps<string> {
-  multiple?: boolean; //能否多选
+  initCurrUser?: boolean; //是否初始化用户为当前用户
 }
 /**
  * 用户选择器
@@ -11,25 +13,38 @@ interface UserSelectProps extends VfBaseProps<string> {
  */
 export default ({
   value,
-  multiple = true,
+  initCurrUser = true,
   read,
   onDataChange,
 }: UserSelectProps) => {
+  const { user } = useAuth();
+  const [initValue, setInitValue] = React.useState<string | undefined>(
+    initCurrUser && value === undefined ? user?.id : value
+  );
+
+  // useEffectEff(() => {
+  //   setInitValue(value);
+  // }, [value]);
+
   return (
-    <>
-      <MemberSelect
-        read={read}
-        multiple={false}
-        value={(value && [{ objectId: value, userType: "assignee" }]) || []}
-        onDataChange={(datas?: Partial<NodeUserInfo>[]) => {
-          onDataChange(
-            datas
-              ?.filter((i) => i.objectId)
-              .map((i) => i.objectId as string)?.[0]
-          );
-        }}
-        showUser={true}
-      />
-    </>
+    <MemberSelect
+      read={read}
+      multiple={false}
+      value={
+        initValue
+          ? [{ objectId: value || initValue, userType: "assignee" }]
+          : []
+      }
+      onDataChange={(datas?: Partial<NodeUserInfo>[]) => {
+        setInitValue(
+          datas?.filter((i) => i.objectId).map((i) => i.objectId as string)?.[0]
+        );
+        //仅需要id即可
+        onDataChange(
+          datas?.filter((i) => i.objectId).map((i) => i.objectId as string)?.[0]
+        );
+      }}
+      showUser={true}
+    />
   );
 };

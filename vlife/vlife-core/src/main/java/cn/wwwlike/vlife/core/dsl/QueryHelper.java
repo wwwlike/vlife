@@ -39,6 +39,8 @@ import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
 import java.lang.reflect.Constructor;
@@ -57,6 +59,15 @@ import java.util.stream.Collectors;
  * @date 2022/5/25
  */
 public class QueryHelper {
+
+    private static void printErrorMessage() {
+        System.out.println("╔════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                                                                ║");
+        System.out.println("║                please run 'mvn package' command.               ║");
+        System.out.println("║                                                                ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════╝");
+    }
+
     /**
      * 根据查询对象clz创建querydsl的对应的实体对象
      *
@@ -66,7 +77,12 @@ public class QueryHelper {
     public static EntityPathBase<? extends Item> getItemEntityPath(Class<? extends IdBean> clazz) {
         EntityPathBase entityPathBase = null;
         if (Item.class.isAssignableFrom(clazz)) {
-            entityPathBase = (EntityPathBase) SimpleEntityPathResolver.INSTANCE.createPath(clazz);
+            try{
+                entityPathBase = (EntityPathBase) SimpleEntityPathResolver.INSTANCE.createPath(clazz);
+            }catch (IllegalArgumentException e){
+                printErrorMessage();
+                e.printStackTrace();
+            }
         } else {
             Class entityClz = GenericsUtils.getGenericType(clazz);
             entityPathBase = (EntityPathBase) SimpleEntityPathResolver.INSTANCE.createPath(entityClz);

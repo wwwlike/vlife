@@ -149,7 +149,7 @@ export default ({ onModelChange, useButton = false }: FormDesignProps) => {
       <div className="flex w-full bg-white  h-12 p-2  items-center border-b border-gray-100 ">
         {/* 标题 */}
         <div className=" w-64 flex-none font-sans text-md font-bold pl-6">
-          {`${currModel.title}(${currModel?.type})`}
+          {`${currModel.name || ""}(${currModel?.type})`}
         </div>
         {/* 场景 */}
         <FormSetting

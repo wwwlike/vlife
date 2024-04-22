@@ -11,7 +11,14 @@ import { loadApi } from "@src/resources/ApiDatas";
 import { SysDict } from "@src/api/SysDict";
 import { AlertFilled } from "@ant-design/icons";
 import { t } from "@wangeditor/editor";
+
+//激活页签
+export interface ActiveTab {
+  level1: string; //首层
+  level2?: string; //第二层
+}
 export interface TableTabProps {
+  activeKey?: ActiveTab;
   tabList?: TableTab[]; //tab分组的条件对象
   tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
   formModel?: FormVo; //表单模型
@@ -35,15 +42,12 @@ export default (props: TableTabProps) => {
     createAble,
     formModel,
     tableModel,
+    activeKey,
     onActiveChange,
     onCountReq,
     tabCount,
     onTabReq,
   } = props;
-  const [activeKey, setActiveKey] = useState<{
-    level1: string;
-    level2?: string;
-  }>(); //可存2级
   const [dbTab, setDbTab] = useState<TableTab[]>([]);
   const [fixedTab, setFixedTab] = useState<TableTab[]>([]); //固定项页签 tab dbList方式+tabDictField方式
   const [conditions, setConditions] = useState<ReportCondition[]>([]); //数据库查询视图
@@ -53,17 +57,6 @@ export default (props: TableTabProps) => {
       setConditions(result.data || [])
     );
   }, []);
-
-  // //db页签参数
-  // const dbTabWhere = useCallback(
-  //   (_activeKey: { level1: string; level2?: string }) => {
-  //     const json = conditions.find(
-  //       (d) => d.id === _activeKey?.level1
-  //     )?.conditionJson;
-  //     return json ? JSON.parse(json) : [];
-  //   },
-  //   [conditions]
-  // );
 
   const flowTab = useMemo((): TableTab[] => {
     if (formModel?.flowJson || tableModel?.flowJson) {
@@ -295,11 +288,6 @@ export default (props: TableTabProps) => {
     },
     [contentTab]
   );
-  //当前选中
-  useEffect(() => {
-    onActiveChange && activeKey && onActiveChange(activeKey);
-  }, [activeKey, onActiveChange]);
-
   //数据查询回传
   useEffect(() => {
     if (onTabReq !== undefined && activeKey) {
@@ -323,48 +311,6 @@ export default (props: TableTabProps) => {
       loadCondition(tableModel.id);
     }
   }, [tableModel]);
-
-  // useEffect(() => {
-  //   if (onCountReq) {
-  //     let countReq: any = {};
-  //     //统计数量页签参数封装(2级页签各自封装)
-  //     contentTab?.forEach((tab) => {
-  //       if (
-  //         tab.showCount &&
-  //         !(
-  //           tab.itemKey === activeKey?.level1 && activeKey?.level2 === undefined
-  //         )
-  //       ) {
-  //         countReq = {
-  //           // Level1封装
-  //           ...countReq,
-  //           [tab.itemKey]: {
-  //             ...reqFunc({ level1: tab.itemKey }),
-  //           },
-  //         };
-  //       }
-  //       tab?.subs
-  //         ?.filter(
-  //           (sub) =>
-  //             sub.showCount &&
-  //             !(
-  //               tab.itemKey === activeKey?.level1 && //排除当前节点
-  //               sub.itemKey === activeKey?.level2
-  //             )
-  //         )
-  //         .forEach((sub) => {
-  //           countReq = {
-  //             // Level2封装
-  //             ...countReq,
-  //             [sub.itemKey]: {
-  //               ...reqFunc({ level1: tab.itemKey, level2: sub.itemKey }),
-  //             },
-  //           };
-  //         });
-  //     });
-  //     onCountReq(countReq);
-  //   }
-  // }, [contentTab, activeKey]);
 
   useEffect(() => {
     if (onCountReq) {
@@ -408,13 +354,13 @@ export default (props: TableTabProps) => {
             onChange={(key) => {
               if (key !== "add") {
                 if (contentTab.filter((tab) => tab.itemKey === key)?.[0].subs) {
-                  setActiveKey({
+                  onActiveChange({
                     level1: key,
                     level2: contentTab.filter((tab) => tab.itemKey === key)?.[0]
                       .subs?.[0]?.itemKey,
                   });
                 } else {
-                  setActiveKey({ level1: key });
+                  onActiveChange({ level1: key });
                 }
               }
             }}
@@ -440,7 +386,7 @@ export default (props: TableTabProps) => {
                       key={s.itemKey}
                       onClick={() => {
                         if (activeKey && activeKey?.level1) {
-                          setActiveKey({
+                          onActiveChange({
                             level1: activeKey.level1,
                             level2: s.itemKey,
                           });

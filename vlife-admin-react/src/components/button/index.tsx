@@ -43,6 +43,7 @@ export default (props: Partial<VFBtn>) => {
     otherBtns,
     className,
     permissionCode,
+    activeKey,
     onFormilySubmitCheck,
     saveApi,
     loadApi,
@@ -120,7 +121,9 @@ export default (props: Partial<VFBtn>) => {
     | Promise<boolean | string> => {
     if (props.disabled !== true) {
       if (
-        (props.actionType === "create" || props.actionType === "save") &&
+        (props.actionType === "create" ||
+          props.actionType === "save" ||
+          props.allowEmpty === true) &&
         (btnData === null || btnData === undefined || btnData.id === undefined)
       ) {
         return true; //1. 新增可用
@@ -173,6 +176,7 @@ export default (props: Partial<VFBtn>) => {
       formModal.show({
         type: model,
         formData: formData,
+        activeKey: activeKey,
         fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
         btns: otherBtns ? [props, ...otherBtns] : [props], //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
         terse: !saveApi ? true : false, //紧凑
@@ -193,7 +197,7 @@ export default (props: Partial<VFBtn>) => {
         modal(d.data);
       });
     }
-  }, [btnData, props, reaction]);
+  }, [btnData, props, reaction, activeKey]);
 
   // 工作流审核框弹出
   const flowCommentShow = useCallback(() => {
@@ -457,14 +461,10 @@ export default (props: Partial<VFBtn>) => {
   ]);
   return authPass && !(disabledHide && disabled === true) ? (
     <>
-      {/* {JSON.stringify(btnData)} */}
-      {/* {btn.actionType === "flow" &&
-        btn.position === "formFooter" &&
-        JSON.stringify(btnData?.username)} */}
       {tooltip && disabled === true ? (
         <Tooltip content={tooltip}>{BtnComp}</Tooltip>
       ) : (
-        BtnComp
+        <>{BtnComp}</>
       )}
     </>
   ) : (

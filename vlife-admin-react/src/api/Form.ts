@@ -13,7 +13,7 @@ export interface Form extends DbEntity {
   type: string; //标识
   itemType: ItemType// 类型
   entityType: string;
-  name: string;
+  name: string; //前端命名的名称
   sort:number; //排序号
   icon:string;//图标
   modelSize:number;//模块大小 12网格里的占比大小

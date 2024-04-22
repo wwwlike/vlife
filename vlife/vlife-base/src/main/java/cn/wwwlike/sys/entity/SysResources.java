@@ -38,7 +38,6 @@ public class SysResources extends DbEntity{
      * 6字以内简单为好
      */
     public String name;
-
     /**
      * 接口注释
      */
@@ -48,7 +47,6 @@ public class SysResources extends DbEntity{
      * 请简洁描述接口的使用场景
      */
     public String remark;
-
     /**
      * 接口地址
      * 全局唯一
@@ -102,12 +100,10 @@ public class SysResources extends DbEntity{
      * 当前地址包涵的地址对应的接口及上级资源 /sysUser/save/userDto的上级资源是 /save/sysUser
      */
     public String pcode;
-
     /**
      * 请求方式
      */
     public String methedType;
-
     /**
      * 接口分类
      * add/edit/delete/query/import/export

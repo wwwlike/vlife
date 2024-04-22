@@ -100,6 +100,7 @@ const VfSearch = ({
         )
       ) : (
         <Button
+          theme="borderless"
           className={classNames({ hidden: !showInput })}
           onClick={handleSearchClick}
           icon={<IconSearch />}

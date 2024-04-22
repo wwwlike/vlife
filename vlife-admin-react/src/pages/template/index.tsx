@@ -14,7 +14,7 @@ export default () => {
   useTitle(
     window.localStorage.getItem("menuTitle") !== null
       ? JSON.parse(window.localStorage.getItem("menuTitle") || "")?.title
-      : formVo?.title + "管理"
+      : formVo?.name + "管理"
   );
 
   //表单模型名称

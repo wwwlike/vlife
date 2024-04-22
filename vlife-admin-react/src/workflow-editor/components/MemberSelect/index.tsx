@@ -8,9 +8,8 @@ import FlowSelect, {
 import { list } from "@src/api/SysDept";
 import { list as userList } from "@src/api/SysUser";
 import { listAll } from "@src/api/SysRole";
-
 import { useEffect, useState } from "react";
-import Scrollbars from "react-custom-scrollbars";
+
 interface MemberSelectProps extends FlowSelectProps {
   label?: string;
 }
@@ -49,6 +48,7 @@ export default ({
     height: window.innerHeight,
   });
   const [modalState, setModalState] = useState(false); //模态窗口状态
+
   const [modalSelected, setModalSelected] = useState<Partial<NodeUserInfo>[]>(
     value || []
   );
@@ -60,7 +60,7 @@ export default ({
     userList({}).then((d) => {
       setUserSelectData(
         d.data?.map((r) => {
-          return { label: r.name, value: r.username };
+          return { label: r.name, value: showUser ? r.id : r.username };
         }) || []
       );
     });
@@ -79,6 +79,7 @@ export default ({
       );
     });
   }, []);
+
   useEffect(() => {
     setModalSelected(value || []);
   }, [value]);
@@ -116,7 +117,7 @@ export default ({
         />
       </Modal>
       <div className=" flex items-center">
-        {read !== true && (
+        {read !== true && (multiple || modalSelected.length === 0) && (
           <i
             onClick={() => setModalState(true)}
             className=" cursor-pointer hover:text-orange-400 text-2xl icon-task-add-member-circle"
@@ -125,7 +126,15 @@ export default ({
         {value?.map((d, index) => {
           return (
             <div key={`${index}_selected`} className="relative group">
-              <Tooltip content={d.label} position="bottom">
+              <Tooltip
+                content={
+                  d.label ||
+                  (d.userType === "assignee" &&
+                    userSelectData?.filter((u) => u.value === d.objectId)?.[0]
+                      .label)
+                }
+                position="bottom"
+              >
                 <Avatar
                   color={color[index] as AvatarColor}
                   className=" relative"
