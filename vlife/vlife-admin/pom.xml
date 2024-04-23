@@ -58,6 +58,11 @@
             <version>1.18.22</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>8.4.1.jre8</version>
+        </dependency>
         <!--jdk11兼容jaxb问题-->
         <dependency>
             <groupId>javax.xml.bind</groupId>

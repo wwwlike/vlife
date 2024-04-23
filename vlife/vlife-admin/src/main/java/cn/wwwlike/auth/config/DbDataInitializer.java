@@ -17,6 +17,7 @@
  */
 
 package cn.wwwlike.auth.config;
+import cn.wwwlike.auth.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -54,6 +55,8 @@ public class DbDataInitializer implements ApplicationRunner {
     private final JdbcTemplate jdbcTemplate;
     private final ResourceLoader resourceLoader;
     private final DataSource dataSource;
+    @Autowired
+    private SysUserService userService;
     @Autowired
     private Environment env;
 
@@ -95,20 +98,22 @@ public class DbDataInitializer implements ApplicationRunner {
             jdbcTemplate.execute("delete from "+tableName+"");
         }
     }
+
     //是否空库
     public boolean isDatabaseEmpty() {
-        List<Map<String, Object>> tables =getAllTable();
-        if(tables.size()==0){
-            return false;
-        }
-        for (Map<String, Object> table : tables) {
-            String tableName = table.values().iterator().next().toString();
-            Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM " + tableName, Integer.class);
-            if (count != null && count > 0) {
-                return false; // 只要有一个表不为空，就返回false
-            }
-        }
-        return true; // 所有表都为空，返回true
+        return userService.findAll().size()==0;
+//        List<Map<String, Object>> tables =getAllTable();
+//        if(tables.size()==0){
+//            return false;
+//        }
+//        for (Map<String, Object> table : tables) {
+//            String tableName = table.values().iterator().next().toString();
+//            Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM " + tableName, Integer.class);
+//            if (count != null && count > 0) {
+//                return false; // 只要有一个表不为空，就返回false
+//            }
+//        }
+//        return true; // 所有表都为空，返回true
     }
 
 
@@ -138,6 +143,16 @@ public class DbDataInitializer implements ApplicationRunner {
         return oracleInsert.substring(0,oracleInsert.length()-1);
     }
 
+
+    //转成oracle的insert语句
+    public static String convertToSqlServerInsert(String mysqlInsert) {
+        mysqlInsert = mysqlInsert.replace("\\\"", "\"");
+        // 替换布尔类型
+        mysqlInsert = mysqlInsert.replace("b'0'", "0");
+        mysqlInsert = mysqlInsert.replace("b'1'", "1");
+        return mysqlInsert.replaceAll("`","");
+    }
+
     public void dataRestore()  throws IOException {
         Set<String> table=new HashSet<String>();
         ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
@@ -162,6 +177,8 @@ public class DbDataInitializer implements ApplicationRunner {
                             }
                             if("Oracle".equals(dbType)){
                                 line=convertToOracleInsert(line);
+                            }else if("Microsoft SQL Server".equals(dbType)){
+                                line=convertToSqlServerInsert(line);
                             }
                             try{
                                 jdbcTemplate.execute(line);
@@ -177,11 +194,10 @@ public class DbDataInitializer implements ApplicationRunner {
         }
     }
 
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        //启动时判断是否是空库
-        if(!getActiveProfile().equals("pro")&&isDatabaseEmpty()){
+        //启动时判断是否是空库 !getActiveProfile().equals("pro")&&
+        if(isDatabaseEmpty()){
             dataRestore();
         }
     }
