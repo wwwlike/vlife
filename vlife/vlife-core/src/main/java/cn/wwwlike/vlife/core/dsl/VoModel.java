@@ -151,7 +151,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
 
 
     public JPAQuery joinByVo(List<List<Class<? extends Item>>> lefts) {
-        return joinByVo(null, null, getPrefix(), lefts.toArray(new List[lefts.size()]));
+        return joinByVo(null, null, getPrefix(), null,lefts.toArray(new List[lefts.size()]));
     }
 
 
@@ -182,7 +182,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             wrapper.eq("status", CT.STATUS.NORMAL);
         }
         List<Class<? extends Item>> ls = (List) wrapper.allLeftPath().get(0);
-        JPAQuery subMainQuery = joinByVo(null, null, prefix + "_", ls);
+        JPAQuery subMainQuery = joinByVo(null, null, prefix + "_",wrapper, ls);
         BooleanBuilder subBuilder = whereByWrapper(wrapper);
         Class<? extends Item> mainClz = (Class<? extends Item>) wrapper.getMainClzPath().get(wrapper.getMainClzPath().size() - 1);
         Class subMain = wrapper.getEntityClz();
@@ -227,7 +227,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
      * @param prefix    别名前缀，传入时以下划线结尾，说明本次是子查询
      * @return
      */
-    public JPAQuery joinByVo(JPAQuery fromQuery, EntityDto entityDto, String prefix, List<Class<? extends Item>>... lefts) {
+    public  <R extends AbstractWrapper> JPAQuery joinByVo(JPAQuery fromQuery, EntityDto entityDto, String prefix, R request,List<Class<? extends Item>>... lefts) {
         EntityPathBase rightPath = null;
         String entityAlias = "";
         Class mainClz = null;
@@ -244,12 +244,19 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             } else if (alljoin.get(entityAlias) == null) {
                 addJoin(rightPath);
                 String leftIdName = entityDto.getFkMap().get(mainClz);
-                if(alljoin.get(prefix)==null){
-                    System.out.println("111111111111");
+                if(leftIdName==null&&request.getFkRelation().get(mainClz)!=null){
+                    leftIdName=request.getFkRelation().get(mainClz).toString();
                 }
-                StringPath leftId = (StringPath) ReflectionUtils.getFieldValue(alljoin.get(prefix), leftIdName);
-
-                StringPath rightId = (StringPath) ReflectionUtils.getFieldValue(rightPath, "id");
+                StringPath leftId =null;
+                StringPath rightId=null;
+                if(leftIdName!=null){
+                    leftId =(StringPath) ReflectionUtils.getFieldValue(alljoin.get(prefix), leftIdName);
+                    rightId = (StringPath) ReflectionUtils.getFieldValue(rightPath, "id");
+                }else {
+                    String rightIdName =request.getSubRelation().get(mainClz).toString();
+                    leftId =(StringPath) ReflectionUtils.getFieldValue(alljoin.get(prefix), "id");
+                    rightId = (StringPath) ReflectionUtils.getFieldValue(rightPath, rightIdName);
+                }
                 fromQuery.leftJoin(rightPath).on(leftId.eq(rightId));
             }
             //给VO查询结果需要左关联的表含本表都加上status过滤,
@@ -258,7 +265,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
 //            BooleanExpression expression=statusPath.eq(CT.STATUS.NORMAL);
 //            fromQuery.where(expression);
             if (left.size() > 1) {
-                fromQuery = joinByVo(fromQuery, GlobalData.entityDto(mainClz), entityAlias, left.subList(1, left.size()));
+                fromQuery = joinByVo(fromQuery, GlobalData.entityDto(mainClz), entityAlias, request,left.subList(1, left.size()));
             }
         }
         return fromQuery;
@@ -377,7 +384,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
                 Object o = reqFieldDto.getQueryPath().get(0);
                 if (o instanceof Class) {
                     Class item = (Class) reqFieldDto.leftJoinPath().get(0);
-                    joinByVo(jpaQuery, GlobalData.entityDto(item), getPrefix(), reqFieldDto.leftJoinPath());
+                    joinByVo(jpaQuery, GlobalData.entityDto(item), getPrefix(), null,reqFieldDto.leftJoinPath());
                 }
             }
         }
@@ -395,7 +402,7 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         List<List<Class<? extends Item>>> allReqLeftPath = request.allLeftPath();
         for (List<Class<? extends Item>> path : allReqLeftPath) {
             Class item = path.get(0);
-            joinByVo(jpaQuery, GlobalData.entityDto(item), getPrefix(), path);
+            joinByVo(jpaQuery, GlobalData.entityDto(item), getPrefix(), request,path);
         }
         return jpaQuery;
     }
