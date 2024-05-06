@@ -144,73 +144,76 @@ const FormPage = <T extends IdBean>({
   }, [flowBasic, model]);
 
   return (
-    <FormFlowContainer className={className} historys={flowHistorys}>
-      {_model ? (
-        <>
-          {/* 内部formPage的id:{(modifyData || formPageData || initData)?.id} */}
-          <VlifeForm
-            {...props}
-            fontBold={props.fontBold}
-            key={initData?.id + "_" + props.key}
-            onClickFieldComponent={onClickFieldComponent}
-            modelInfo={_model}
-            //流程结束只读状态
-            readPretty={props.readPretty || flowBasic?.nodeId === "end"}
-            design={design}
-            vf={vfs}
-            formData={modifyData || formPageData || initData}
-            onDataChange={(d, f) => {
-              onDataChange?.(d, f);
-            }}
-            highlight={props.highlight}
-            onForm={onForm}
-            onSubForm={onSubForm}
-          />
-          {user?.superUser === true && (
-            <div
-              onClick={() => {
-                navigate(`/sysConf/formDesign/${type}`);
+    <>
+      {/* {JSON.stringify(modifyData?.name)} */}
+      <FormFlowContainer className={className} historys={flowHistorys}>
+        {_model ? (
+          <>
+            {/* 内部formPage的id:{(modifyData || formPageData || initData)?.id} */}
+            <VlifeForm
+              {...props}
+              fontBold={props.fontBold}
+              key={initData?.id + "_" + props.key}
+              onClickFieldComponent={onClickFieldComponent}
+              modelInfo={_model}
+              //流程结束只读状态
+              readPretty={props.readPretty || flowBasic?.nodeId === "end"}
+              design={design}
+              vf={vfs}
+              formData={modifyData || formPageData || initData}
+              onDataChange={(d, f) => {
+                onDataChange?.(d, f);
               }}
-              className=" absolute top-2 right-2 font-bold text-gray-500 hover:text-blue-500 cursor-pointer"
-            >
-              <Tooltip content="表单配置">
-                <IconSetting />
-              </Tooltip>
-            </div>
-          )}
-        </>
-      ) : (
-        <div className=" w-full h-96 flex  flex-col justify-center items-center  bg-slate-100">
-          {version === "v_base" ? (
-            <Empty
-              image={<Image src={wxImage} />}
-              title={"微信vlifeboot"}
-              description={
-                <div>
-                  很抱歉，<span className=" font-bold">社区版</span>
-                  不包含该模型。若需要使用该功能，请升级至
-                  <a
-                    className=" underline text-red-500"
-                    href="http://vlife.cc/price"
-                    target={"_blank"}
-                  >
-                    高级版
-                  </a>
-                </div>
-              }
-              style={{
-                width: 200,
-                margin: "0 auto",
-                display: "flex",
-                padding: 5,
-              }}
+              highlight={props.highlight}
+              onForm={onForm}
+              onSubForm={onSubForm}
             />
-          ) : (
-            `${type}模型无法解析，请检查名称是否准确`
-          )}
-        </div>
-      )}
-    </FormFlowContainer>
+            {user?.superUser === true && (
+              <div
+                onClick={() => {
+                  navigate(`/sysConf/formDesign/${type}`);
+                }}
+                className=" absolute top-2 right-2 font-bold text-gray-500 hover:text-blue-500 cursor-pointer"
+              >
+                <Tooltip content="表单配置">
+                  <IconSetting />
+                </Tooltip>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className=" w-full h-96 flex  flex-col justify-center items-center  bg-slate-100">
+            {version === "v_base" ? (
+              <Empty
+                image={<Image src={wxImage} />}
+                title={"微信vlifeboot"}
+                description={
+                  <div>
+                    很抱歉，<span className=" font-bold">社区版</span>
+                    不包含该模型。若需要使用该功能，请升级至
+                    <a
+                      className=" underline text-red-500"
+                      href="http://vlife.cc/price"
+                      target={"_blank"}
+                    >
+                      高级版
+                    </a>
+                  </div>
+                }
+                style={{
+                  width: 200,
+                  margin: "0 auto",
+                  display: "flex",
+                  padding: 5,
+                }}
+              />
+            ) : (
+              `${type}模型无法解析，请检查名称是否准确`
+            )}
+          </div>
+        )}
+      </FormFlowContainer>
+    </>
   );
 };
 // };

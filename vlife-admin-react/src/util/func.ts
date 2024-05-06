@@ -236,7 +236,10 @@ export const shotFormatDate = (dateString: Date) => {
     return subs;
   }
 
- 
+//首字母大写
+export const capitalize=(str: string): string =>{
+   return str.charAt(0).toUpperCase() + str.slice(1);
+}
   /**
  * 随机生成一个字符串
  * @param {number} length 长度

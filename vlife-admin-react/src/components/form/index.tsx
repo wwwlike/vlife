@@ -67,8 +67,8 @@ export interface FormProps<T> {
   readPretty?: boolean; //显示模式
   ignoredFields?: string[]; //排除不展示的字段
   vf?: VF[]; //字段配置
-  //单字段模式，只显示fieldMode里的一个字段
-  fieldMode?: string;
+  fieldMode?: string; //单字段模式，只显示fieldMode里的一个字段
+  phoneMode?: boolean; //手机模式(一竖行展示)
   componentProp?: { [fieldName: string]: object }; //为特定字段传入固定的入参属性
   fieldOutApiParams?: { [fieldName: string]: any }; //指定字段访问api取值的补充外部入参
   onDataChange?: (
@@ -142,6 +142,7 @@ export default <T extends IdBean>({
   onClickFieldComponent,
   onError,
   onDataChange,
+  phoneMode,
   onForm,
   onSubForm,
 }: FormProps<T>) => {
@@ -860,7 +861,9 @@ export default <T extends IdBean>({
       (f) => f.x_hidden === undefined || f.x_hidden === false
     ).length;
     const _modelSize =
-      modelInfo.modelSize > useableFieldLength
+      phoneMode === true
+        ? 1
+        : modelInfo.modelSize > useableFieldLength
         ? useableFieldLength
         : modelInfo.modelSize;
     const schemaObj: any = { type: "object", properties: {} };

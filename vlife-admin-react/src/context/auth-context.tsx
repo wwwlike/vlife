@@ -3,7 +3,13 @@ import { list as resourcesList } from "@src/api/SysResources";
 import { useMount, useSize } from "ahooks";
 import React, { ReactNode, useCallback, useRef, useState } from "react";
 import { list as dictList, SysDict } from "@src/api/SysDict";
-import { currUser, ThirdAccountDto, UserDetailVo } from "@src/api/SysUser";
+import {
+  currUser,
+  SysUser,
+  list as userList,
+  ThirdAccountDto,
+  UserDetailVo,
+} from "@src/api/SysUser";
 import { login as userLogin } from "@src/api/login";
 import { FormVo, formPageReq, list } from "@src/api/Form";
 import { SysResources } from "@src/api/SysResources";
@@ -59,6 +65,7 @@ const AuthContext = React.createContext<
         id?: string;
       }) => Promise<Result<FormVo[]>>;
       getFormInfo: (params: formPageReq) => Promise<FormVo | undefined>;
+      getUserInfo: (id: string) => Promise<SysUser | undefined>;
       //模型缓存信息清除
       clearModelInfo: (modelName?: string) => void;
 
@@ -96,6 +103,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   //存模型信息的对象，key是modelName, modelInfoProps
   // 与数据库一致的，有UI场景的模型信息
   const [models, setModels] = useState<{ [key: string]: FormVo | undefined }>(
+    {}
+  );
+
+  const [users, setUsers] = useState<{ [key: string]: SysUser | undefined }>(
     {}
   );
   //所有的模型信息
@@ -267,6 +278,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     return undefined;
   }
+  const getUserInfo = useCallback(
+    (userId: string): Promise<SysUser | undefined> => {
+      //简写(promise形式返回数据出去)
+      if (users[userId] === undefined) {
+        return userList({ id: [userId] }).then((res) => {
+          setUsers((u: any) => {
+            return { ...u, [userId]: res.data?.[0] };
+          });
+          return res.data?.[0];
+        });
+      } else {
+        return new Promise((resolve) => resolve(users[userId]));
+      }
+    },
+    [users]
+  );
 
   const findModels = useCallback(
     ({
@@ -478,8 +505,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           dicts,
           error,
           groups,
-          // getModelInfo,
           getFormInfo,
+          getUserInfo,
           clearModelInfo,
           login,
           giteeLogin,

@@ -68,7 +68,8 @@ export default <T extends IdBean>({
           b.multiple === true ||
           b.position === "tableToolbar" ||
           b.actionType === "create" ||
-          b.actionType === "save"
+          b.actionType === "save" ||
+          b.allowEmpty === true
       );
     } else if (position === "tableLine") {
       toolBarBtns = btns.filter(
@@ -100,20 +101,21 @@ export default <T extends IdBean>({
     return toolBarBtns
       .filter((btn) => (formModel ? btn.model === formModel : true)) //模型过滤
       .filter((btn) => (readPretty ? btn.actionType === "api" : true)); //只读过滤
-  }, [position, btns, btnDatas, formModel, readPretty]);
+  }, [position, btns, formModel, readPretty]);
 
   //返回按钮数量
   useEffect(() => {
     onBtnNum && onBtnNum(currBtns.length);
   }, [currBtns]);
+
+  // console.log("BtnToolBar");
   return (
     <div
       className={`flex ${className} !items-center ${classNames({
-        "justify-center": position !== "formFooter",
+        "justify-start": position !== "formFooter",
         "justify-end": position === "formFooter",
       })} space-x-1`}
     >
-      {/* {btns.length} */}
       {dropdown !== true ? (
         currBtns.map((btn, index) => {
           return (
@@ -140,6 +142,7 @@ export default <T extends IdBean>({
               }
               otherBtns={
                 btns.filter(
+                  //排除掉当前按钮
                   (b) =>
                     !(
                       b.title === btn.title &&

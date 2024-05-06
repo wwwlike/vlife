@@ -85,7 +85,7 @@ export interface PageQuery extends CustomQuery {
  * 一般分页
  */
 export interface CustomQuery {
-  conditions?:Conditions
+  conditions?:Partial<Conditions>
   conditionGroups?:ConditionGroup[];
 }
 

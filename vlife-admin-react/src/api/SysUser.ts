@@ -46,6 +46,7 @@ export interface UserPasswordModifyDto extends SaveBean{
 }
 // 用户列表查询
 export interface SysUserPageReq extends PageQuery{
+  id:string[]
   search: string;  // 姓名/手机/证件/用户名
   sysDept_code: string;  // 部门
 }
@@ -78,7 +79,7 @@ export interface UserVo extends VoBean{
 }
 
 /** 用户查询 */
-export const list=(req:PageQuery): Promise<Result<SysUser[]>>=>{
+export const list=(req: Partial<SysUserPageReq>): Promise<Result<SysUser[]>>=>{
   return apiClient.post(`/sysUser/list`,req);
 };
 /** 分页查询*/

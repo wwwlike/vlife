@@ -37,6 +37,7 @@ export interface ListProps<T extends TableBean> {
   outSelectedColumn?: string; //外部选中的列
   onSelected?: (selecteds: T[]) => void; //选中后的回调事件
   onLineClick?: (obj: T) => void; //行点击事件触发
+  onFieldClick?: { [fieldName: string]: (data: any) => void }; //列表指定key字段点击后触发的事件
   onColumnSort?: (orderObj: orderObj) => void;
   dataSource?: T[];
   btns: VFBtn[];
@@ -67,6 +68,7 @@ const TableIndex = <T extends TableBean>({
   selected,
   checkedBottomShow,
   onColumnSort,
+  onFieldClick,
   outSelectedColumn,
   btns,
   height,
@@ -216,7 +218,24 @@ const TableIndex = <T extends TableBean>({
         //   }
         // }
         m.ellipsis = true; //单元格缩略
-        if (m.dictCode) {
+        if (onFieldClick && m.dataIndex && onFieldClick[m?.dataIndex]) {
+          m["render"] = (text, record, index) => {
+            return (
+              <a
+                className="hover:underline text-blue-600 cursor-pointer"
+                onClick={() =>
+                  m.entityFieldName === "id" && fkMap
+                    ? onFieldClick[m.dataIndex || ""](fkMap[text])
+                    : onFieldClick[m.dataIndex || ""](record)
+                }
+              >
+                {m.entityFieldName === "id" && fkMap
+                  ? fkMap[text]?.name || fkMap[text]?.title || fkMap[text]?.no
+                  : text}
+              </a>
+            );
+          };
+        } else if (m.dictCode) {
           const dictCode = m.dictCode;
           m["render"] = (text, record, index) => {
             if (text === "" || text === null || text === undefined) {
@@ -258,7 +277,7 @@ const TableIndex = <T extends TableBean>({
           };
         } else if (m.entityFieldName === "id" && fkMap) {
           m["render"] = (text, record, index) => {
-            return fkMap[text];
+            return fkMap[text]?.name || fkMap[text]?.title || fkMap[text]?.no;
           };
         } else if (m.fieldName === "pcode" && parentMap) {
           m["render"] = (text, record, index) => {

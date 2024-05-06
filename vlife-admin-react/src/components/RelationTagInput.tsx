@@ -44,7 +44,7 @@ const RelationTagInput = ({
         if (d) setTagData(d);
       });
     }
-  }, []);
+  }, [value]);
 
   /**
    * 列表选中的数据
@@ -106,7 +106,6 @@ const RelationTagInput = ({
           }
         />
       </Modal>
-
       <TagInput
         className={className}
         // showClear

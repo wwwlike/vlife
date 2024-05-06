@@ -178,7 +178,9 @@ export default (props: Partial<VFBtn>) => {
         formData: formData,
         activeKey: activeKey,
         fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
-        btns: otherBtns ? [props, ...otherBtns] : [props], //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
+        btns: otherBtns
+          ? [props, ...otherBtns.filter((o) => o.model === props.model)]
+          : [props], //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
         terse: !saveApi ? true : false, //紧凑
         fontBold: !saveApi ? true : false, //加粗
         readPretty: actionType === "api",

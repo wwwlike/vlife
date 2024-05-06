@@ -82,13 +82,6 @@ const Content = <T extends TableBean>({
   const [filterFormVo, setFilterFormVo] = useState<FormVo>();
   const [formData, setFormData] = useState<any>({});
   const [tableModel, setTableModel] = useState<FormVo>();
-  const [formModel, setFormModel] = useState<FormVo>();
-  const [conditions, setConditions] = useState<ReportCondition[]>([]); //数据库查询视图
-  const [tableCount, setTableCount] = useState<any>({});
-  const [activeKey, setActiveKey] = useState<{
-    level1: string;
-    level2?: string;
-  }>(); //可存2级页签
 
   //左侧列表根据查询维度隐藏指定字段(如查看本人数据，则不需要部门搜索条件)
   const filterReaction = useMemo((): VfAction[] => {
@@ -117,15 +110,11 @@ const Content = <T extends TableBean>({
     }
     return {
       ...formData, //表单object方式搜索
-      conditionGroups: [{ where }],
+      conditionGroups: [{ where: where }],
     };
   }, [req, formData]);
-
-  // const windowWidth = useSize(document.querySelector("body"))?.width;
-
   const ref = useRef(null);
   const size = useSize(ref);
-
   const [filterOpen, setFilterOpen] = useState(filterType ? true : false);
   //动态计算table区块宽度
   const tableWidth = useMemo((): number => {
@@ -191,21 +180,10 @@ const Content = <T extends TableBean>({
         editType={editType}
         req={tableReq}
         btns={btns}
-        onGetData={(data) => {
-          setTableCount((t: any) => {
-            if (activeKey?.level2)
-              return { ...t, [activeKey?.level2]: data.total };
-          });
-        }}
+        onGetData={(data) => {}}
         //视图数据过滤
-        conditionJson={
-          conditions && activeKey
-            ? conditions.find((d) => d.id === activeKey.level1)?.conditionJson
-            : undefined
-        }
         columnTitle={filterType !== undefined ? "sort" : true}
         onTableModel={setTableModel}
-        onFormModel={setFormModel}
         //错误信息回传
         onHttpError={(e) => {
           if (e.code === 4404) {

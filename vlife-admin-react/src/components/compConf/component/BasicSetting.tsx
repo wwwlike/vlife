@@ -137,9 +137,13 @@ export default ({
                 )}
                 {propInfo.dataModel === DataModel.boolean && (
                   <Checkbox
+                    checked={data.propVal === "1"}
                     value={data.propVal}
                     onChange={(v) => {
-                      setData({ ...data, propVal: v.target.checked });
+                      setData({
+                        ...data,
+                        propVal: v.target.checked ? "1" : "0",
+                      });
                     }}
                   />
                 )}

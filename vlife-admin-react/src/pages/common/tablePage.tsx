@@ -16,7 +16,7 @@ import { IconSetting } from "@douyinfe/semi-icons";
 import apiClient from "@src/api/base/apiClient";
 import { VfAction } from "@src/dsl/VF";
 import TagFilter from "@src/components/table/component/TagFilter";
-import { Empty, Pagination, Tooltip } from "@douyinfe/semi-ui";
+import { Empty, Pagination, SideSheet, Tooltip } from "@douyinfe/semi-ui";
 import { orderObj } from "./orderPage";
 import { useSize } from "ahooks";
 import BtnToolBar from "@src/components/button/BtnToolBar";
@@ -27,6 +27,8 @@ import { useNavigate } from "react-router-dom";
 import { Conditions, OptEnum, where } from "@src/dsl/base";
 import { VFBtn } from "@src/components/button/types";
 const version = import.meta.env.VITE_APP_VERSION;
+const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
+const app_mode = import.meta.env.VITE_APP_MODE;
 import {
   backProcess,
   cancelProcess,
@@ -39,7 +41,6 @@ import {
 import { useNiceModal } from "@src/store";
 import TableTab, { ActiveTab } from "./tableTab";
 
-const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
   if (orderList === undefined) {
@@ -79,17 +80,14 @@ export type TableTab = {
 
 // T为列表listType的类型
 export interface TablePageProps<T extends TableBean> extends ListProps<T> {
+  tab?: boolean; // 是否启用页签
   tabList?: TableTab[]; //tab分组的条件对象
+  sider?: ReactNode; //侧滑
   tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
   listType: string; //列表模型
-  // activeKey: {
-  //   level1: string;
-  //   level2?: string;
-  // }; //当前激活的tab的主页签key
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req: any; //查询条件obj  //自定义tab页签条件，filter过滤条件
   conditionJson?: string; //db视图过滤的条件
-  // tabCountConditionJson?: { tabKey: string; tabConditionJson: string }; //tab页签数量条件
   design: true | undefined; //true则是设计器模式
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
@@ -104,6 +102,7 @@ export interface TablePageProps<T extends TableBean> extends ListProps<T> {
 }
 
 const TablePage = <T extends TableBean>({
+  tab = true,
   className,
   listType,
   editType,
@@ -123,8 +122,10 @@ const TablePage = <T extends TableBean>({
   onFormModel,
   read,
   onTableModel,
+  onFieldClick,
   tabList,
   tabDictField,
+  sider,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const navigate = useNavigate();
@@ -572,6 +573,7 @@ const TablePage = <T extends TableBean>({
             );
           },
           onSubmitFinish: () => {
+            //场景切换
             setActiveKey({ level1: "flow_byMe", level2: "flow_byMe_todo" });
           },
           disabledHide: true,
@@ -782,7 +784,7 @@ const TablePage = <T extends TableBean>({
                   });
                 } else {
                   data.data?.forEach((e: any) => {
-                    fkObj[e.id] = e.name || e.title || e.no;
+                    fkObj[e.id] = e;
                   });
                 }
               });
@@ -858,201 +860,281 @@ const TablePage = <T extends TableBean>({
     }
   }, [JSON.stringify(tabReqCount), pageLoad, req, searchAndColumnCondition]);
 
-  return tableModel && apiError === undefined ? (
-    <div
-      ref={ref}
-      className={`${className} relative h-full flex flex-col text-sm  `}
-    >
-      {/* 页签 */}
-      <TableTab
-        activeKey={activeKey}
-        tabCount={tabCount}
-        tabDictField={tabDictField}
-        tabList={tabList}
-        formModel={formModel}
-        tableModel={tableModel}
-        createAble={user?.superUser}
-        onActiveChange={setActiveKey}
-        onTabReq={setTabReq}
-        onCountReq={setTabReqCount}
-      />
-      {version === "v_base" && formModel?.flowJson && (
-        <div className=" text-red-500 absolute top-2 right-20 ">
-          需要专业版开放工作流全部功能
-        </div>
-      )}
-      <div
-        className={`flex bg-white items-center p-2 border-gray-100  justify-start  `}
-      >
-        {/* 1. tableToolBar列表工具栏 */}
-        <BtnToolBar<T>
-          className={` ${classNames({
-            hidden: mode !== "normal",
-          })}`}
-          activeKey={activeKey?.level2 || activeKey?.level1}
-          // model={tableModel.entityType}
-          key={"tableBtn"}
-          btns={totalBtns}
-          position="tableToolbar"
-          datas={selected}
-          {...props}
-        />
-        {/* 搜索 */}
-        {tableModel?.fields?.filter((f) => f.listSearch).length > 0 && (
-          <VfSearch
-            className=" flex ml-2"
-            tooltip={`根据${tableModel.fields
-              .filter((f) => f.listSearch)
-              .map((f) => `[${f.title}]`)}进行查询`}
-            onDataChange={(v) => {
-              if (v && v !== "") {
-                const searchWhere = tableModel.fields
+  const [siderVisible, setSiderVisible] = useState(false);
+
+  //点击函数添加sider显示标志位植入
+  const _onFieldClick = useMemo(() => {
+    const processedObj: any = {};
+    for (const key in onFieldClick) {
+      if (typeof onFieldClick[key] === "function") {
+        processedObj[key] = (datas: any) => {
+          setSiderVisible(true);
+          onFieldClick?.[key](datas);
+        };
+      }
+    }
+    return processedObj;
+  }, [onFieldClick]);
+
+  const getContainer = (): any => {
+    return document.querySelector(".sidesheet-container");
+  };
+
+  const sideCallback = ({
+    close,
+    reload,
+    data,
+  }: {
+    close: boolean; //关闭
+    reload: boolean; //列表重新加载
+    data: any; //数据替换
+  }) => {
+    if (close) {
+      setSiderVisible(false);
+    }
+    if (reload) {
+      query();
+    }
+  };
+
+  return (
+    <>
+      {tableModel && apiError === undefined && (
+        <div
+          ref={ref}
+          className={`${className} relative h-full flex flex-col text-sm  `}
+        >
+          {/* 页签 */}
+          {tab && (
+            <TableTab
+              activeKey={activeKey} //主动切换页签
+              tabCount={tabCount} // 查询页签上数据的数量
+              tabDictField={tabDictField}
+              tabList={tabList}
+              formModel={formModel}
+              tableModel={tableModel}
+              createAble={user?.superUser}
+              onActiveChange={setActiveKey}
+              onTabReq={setTabReq}
+              onCountReq={setTabReqCount} //需要查询页签数量的条件
+            />
+          )}
+          {version === "v_base" && formModel?.flowJson && (
+            <div className=" text-red-500 absolute top-2 right-20 ">
+              需要专业版开放工作流全部功能
+            </div>
+          )}
+          <div
+            className={`flex bg-white items-center p-2 border-gray-100  justify-start  sidesheet-container `}
+          >
+            {/* 1. tableToolBar列表工具栏 */}
+            <BtnToolBar<T>
+              className={` ${classNames({
+                hidden: mode !== "normal",
+              })}`}
+              activeKey={activeKey?.level2 || activeKey?.level1}
+              // model={tableModel.entityType}
+              key={"tableBtn"}
+              btns={totalBtns}
+              position="tableToolbar"
+              datas={selected}
+              {...props}
+            />
+            {/* 搜索 */}
+            {tableModel?.fields?.filter((f) => f.listSearch).length > 0 && (
+              <VfSearch
+                className=" flex ml-2"
+                tooltip={`根据${tableModel.fields
                   .filter((f) => f.listSearch)
-                  .map((f) => {
-                    return {
-                      fieldName: f.fieldName,
-                      opt: OptEnum.like,
-                      value: [v],
-                    };
-                  });
-                setCondition({ orAnd: "or", where: searchWhere });
-              } else {
-                setCondition(undefined);
+                  .map((f) => `[${f.title}]`)}进行查询`}
+                onDataChange={(v) => {
+                  if (v && v !== "") {
+                    const searchWhere = tableModel.fields
+                      .filter((f) => f.listSearch)
+                      .map((f) => {
+                        return {
+                          fieldName: f.fieldName,
+                          opt: OptEnum.like,
+                          value: [v],
+                        };
+                      });
+                    setCondition({ orAnd: "or", where: searchWhere });
+                  } else {
+                    setCondition(undefined);
+                  }
+                }}
+              />
+            )}
+            {/* 已设置的查询排序tag*/}
+            <TagFilter
+              className=" flex items-center ml-2 mb-1"
+              formVo={tableModel}
+              onOrderRemove={(newOrder: orderObj[]) => {
+                setOrder(newOrder);
+              }}
+              order={order || []}
+              where={searchAndColumnCondition?.where || []}
+              onConditionRemove={(fieldId: string) => {
+                setColumnWheres(
+                  columnWheres.filter((c) => c.fieldId !== fieldId)
+                );
+              }}
+            />
+          </div>
+          <SideSheet
+            getPopupContainer={getContainer}
+            // mask={false}
+            style={{ boxShadow: "2px 2px 5px rgba(0,0,0,0.3)" }} // 滑块边框阴影
+            maskStyle={{ backgroundColor: "rgba(0, 0, 0, 0)" }} //遮罩层透明
+            headerStyle={{ height: "0px", padding: "10px" }}
+            bodyStyle={{ padding: "0px" }}
+            width={size ? size.width * 0.7 : undefined}
+            visible={siderVisible}
+            onCancel={() => {
+              setSiderVisible(false);
+            }}
+          >
+            {React.isValidElement(sider) &&
+              React.cloneElement(sider, {
+                sideCallback,
+              } as Partial<{
+                sideCallback: ({
+                  close,
+                }: {
+                  close: boolean; //关闭
+                  reload: boolean; //列表重新加载
+                  data: any; //数据替换
+                }) => void;
+              }>)}
+            {/* 传递关闭侧边栏的函数给sider */}
+            {/* {sider} */}
+          </SideSheet>
+          <Table<T>
+            className={"flex justify-center flex-grow"}
+            key={
+              tableModel.type +
+              pageSize +
+              pager?.page +
+              activeKey?.level1 +
+              activeKey?.level2
+            }
+            onFieldClick={_onFieldClick}
+            model={tableModel} //设计模式时应用实时传入的formVo
+            dataSource={tableData}
+            selected={selected}
+            btns={mode === "view" ? [] : totalBtns}
+            outSelectedColumn={outSelectedColumn}
+            onSelected={(data: T[]) => {
+              setSelected(data);
+            }}
+            flowFormType={
+              formModel?.flowJson && version !== "v_base"
+                ? formModel.type
+                : undefined
+            }
+            onLineClick={(record) => {
+              if (formModel?.flowJson && version !== "v_base") {
+                formModal.show({
+                  modelInfo: formModel,
+                  type: editModelType,
+                  readPretty:
+                    activeKey?.level1 === "flow_done" || //已办只读
+                    activeKey?.level1 === "flow_notifier" || //抄送只读
+                    activeKey?.level2 === "flow_byMe_todo", //我发起的待办只读
+                  formData: record,
+                  activeKey: activeKey?.level2 || activeKey?.level1,
+                  reaction:
+                    typeof editType !== "string" ? editType?.reaction : [],
+                  btns: mode === "view" ? [] : totalBtns,
+                });
               }
             }}
+            read={read}
+            wheres={columnWheres}
+            onColumnFilter={setColumnWheres}
+            pagination={mode === "view" ? pagination : false}
+            select_more={true}
+            fkMap={{ ...relationMap?.fkObj }}
+            parentMap={relationMap?.parentObj}
+            onColumnSort={(orderObj: orderObj) => {
+              let newOrder = order?.map((o) => {
+                if (o.fieldName === orderObj.fieldName) {
+                  return orderObj;
+                }
+                return o;
+              });
+              if (JSON.stringify(newOrder) === JSON.stringify(order)) {
+                newOrder = [...(order || []), orderObj];
+              }
+              setOrder(newOrder);
+            }}
+            width={width || size?.width}
+            height={tableHight}
+            {...props}
           />
-        )}
-        {/* 已设置的查询排序tag*/}
-        <TagFilter
-          className=" flex items-center ml-2 mb-1"
-          formVo={tableModel}
-          onOrderRemove={(newOrder: orderObj[]) => {
-            setOrder(newOrder);
-          }}
-          order={order || []}
-          where={searchAndColumnCondition?.where || []}
-          onConditionRemove={(fieldId: string) => {
-            setColumnWheres(columnWheres.filter((c) => c.fieldId !== fieldId));
-          }}
+          {/*6 分页器 */}
+          {mode === "normal" && (
+            <div className=" z-30  absolute bottom-0 w-full font-bold  flex h-12 bg-white  border-t justify-between border-gray-100">
+              <div className="flex items-center">
+                <div className=" text-gray-500 pl-4 ">
+                  共{pageData?.total}条
+                </div>
+                <Pagination {...pagination} />
+              </div>
+              <div className="text-gray-500 space-x-2 justify-end items-center pr-4 flex ">
+                每页
+                {[10, 15, 20].map((num) => {
+                  return (
+                    <span
+                      key={num}
+                      onClick={() => {
+                        setPageSize(num);
+                      }}
+                      className={` ml-1 border  rounded hover:bg-slate-200 hover:cursor-pointer p-1 ${classNames(
+                        {
+                          " bg-slate-100 text-blue-500 font-bold":
+                            num === pager.size,
+                          " font-normal": num !== pager.size,
+                        }
+                      )}`}
+                    >
+                      {num}
+                    </span>
+                  );
+                })}
+                &nbsp;条记录
+              </div>
+            </div>
+          )}
+          {model === undefined && user?.superUser === true && (
+            <div
+              onClick={() => {
+                navigate(`/sysConf/tableDesign/${listType}`);
+              }}
+              className="absolute z-50 top-4  right-2 font-bold text-gray-500 hover:text-blue-500 cursor-pointer"
+            >
+              <Tooltip content="列表配置">
+                <IconSetting />
+              </Tooltip>
+            </div>
+          )}
+        </div>
+      )}
+      {/* {app_mode === "pro" && (
+        <Empty
+          className="flex justify-center items-center"
+          image={
+            <IllustrationConstruction style={{ width: 150, height: 150 }} />
+          }
+          title={`${tableModel ? "接口地址不存在" : "模型名称错误"}`}
+          description={`${
+            tableModel
+              ? `没有为${listType}列表模型提供分页查询接口${apiError?.url}`
+              : `${listType}模型无法解析，请检查名称`
+          }`}
         />
-      </div>
-      <Table<T>
-        className={"flex justify-center flex-grow"}
-        key={
-          tableModel.type +
-          pageSize +
-          pager?.page +
-          activeKey?.level1 +
-          activeKey?.level2
-        }
-        model={tableModel} //设计模式时应用实时传入的formVo
-        dataSource={tableData}
-        selected={selected}
-        btns={mode === "view" ? [] : totalBtns}
-        outSelectedColumn={outSelectedColumn}
-        onSelected={(data: T[]) => {
-          setSelected(data);
-        }}
-        flowFormType={
-          formModel?.flowJson && version !== "v_base"
-            ? formModel.type
-            : undefined
-        }
-        onLineClick={(record) => {
-          if (formModel?.flowJson && version !== "v_base") {
-            formModal.show({
-              modelInfo: formModel,
-              type: editModelType,
-              readPretty:
-                activeKey?.level1 === "flow_done" || //已办只读
-                activeKey?.level1 === "flow_notifier" || //抄送只读
-                activeKey?.level2 === "flow_byMe_todo", //我发起的待办只读
-              formData: record,
-              activeKey: activeKey?.level2 || activeKey?.level1,
-              reaction: typeof editType !== "string" ? editType?.reaction : [],
-              btns: mode === "view" ? [] : totalBtns,
-            });
-          }
-        }}
-        read={read}
-        wheres={columnWheres}
-        onColumnFilter={setColumnWheres}
-        pagination={mode === "view" ? pagination : false}
-        select_more={true}
-        fkMap={{ ...relationMap?.fkObj }}
-        parentMap={relationMap?.parentObj}
-        onColumnSort={(orderObj: orderObj) => {
-          let newOrder = order?.map((o) => {
-            if (o.fieldName === orderObj.fieldName) {
-              return orderObj;
-            }
-            return o;
-          });
-          if (JSON.stringify(newOrder) === JSON.stringify(order)) {
-            newOrder = [...(order || []), orderObj];
-          }
-          setOrder(newOrder);
-        }}
-        width={width || size?.width}
-        height={tableHight}
-        {...props}
-      />
-      {/*6 分页器 */}
-      {mode === "normal" && (
-        <div className=" z-30  absolute bottom-0 w-full font-bold  flex h-12 bg-white  border-t justify-between border-gray-100">
-          <div className="flex items-center">
-            <div className=" text-gray-500 pl-4 ">共{pageData?.total}条</div>
-            <Pagination {...pagination} />
-          </div>
-          <div className="text-gray-500 space-x-2 justify-end items-center pr-4 flex ">
-            每页
-            {[10, 15, 20].map((num) => {
-              return (
-                <span
-                  key={num}
-                  onClick={() => {
-                    setPageSize(num);
-                  }}
-                  className={` ml-1 border  rounded hover:bg-slate-200 hover:cursor-pointer p-1 ${classNames(
-                    {
-                      " bg-slate-100 text-blue-500 font-bold":
-                        num === pager.size,
-                      " font-normal": num !== pager.size,
-                    }
-                  )}`}
-                >
-                  {num}
-                </span>
-              );
-            })}
-            &nbsp;条记录
-          </div>
-        </div>
-      )}
-      {model === undefined && user?.superUser === true && (
-        <div
-          onClick={() => {
-            navigate(`/sysConf/tableDesign/${listType}`);
-          }}
-          className="absolute z-50 top-4  right-2 font-bold text-gray-500 hover:text-blue-500 cursor-pointer"
-        >
-          <Tooltip content="列表配置">
-            <IconSetting />
-          </Tooltip>
-        </div>
-      )}
-    </div>
-  ) : (
-    <Empty
-      className="flex justify-center items-center"
-      image={<IllustrationConstruction style={{ width: 150, height: 150 }} />}
-      title={`${tableModel ? "接口地址不存在" : "模型名称错误"}`}
-      description={`${
-        tableModel
-          ? `没有为${listType}列表模型提供分页查询接口${apiError?.url}`
-          : `${listType}模型无法解析，请检查名称`
-      }`}
-    />
+      )} */}
+    </>
   );
 };
 export default TablePage;

@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { VfBaseProps } from "@src/dsl/component";
 import { NodeUserInfo } from "@src/workflow-editor/classes/vlife";
 import MemberSelect from "@src/workflow-editor/components/MemberSelect";
 import { useAuth } from "@src/context/auth-context";
-import { useUpdateEffect } from "ahooks";
 interface UserSelectProps extends VfBaseProps<string> {
   defCurrUser?: boolean; //是否初始化用户为当前用户
 }
@@ -18,9 +17,14 @@ export default ({
   onDataChange,
 }: UserSelectProps) => {
   const { user } = useAuth();
-  const [initValue, setInitValue] = React.useState<string | undefined>(
-    defCurrUser && value === undefined ? user?.id : value
-  );
+  const [initValue, setInitValue] = React.useState<string | undefined>();
+
+  useEffect(() => {
+    setInitValue(defCurrUser && value === undefined ? user?.id : value);
+    if (defCurrUser && value === undefined) {
+      onDataChange(user?.id);
+    }
+  }, [defCurrUser]);
 
   return (
     <MemberSelect

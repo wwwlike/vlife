@@ -98,7 +98,7 @@ export const fetchStaticPropObj = (
         valueAdd(p, propsObj, field.query(p.propVal).get("value"));
       }else if (p.sourceType === sourceType.fixed && p.propName && p.propVal) {
         if((compProps?.[p.propName] as CompPropInfo).dataModel==DataModel.boolean){
-          valueAdd(p, propsObj, JSON.parse(p.propVal));//boolean类型进行str->boolean
+          valueAdd(p, propsObj, p.propVal==="1"?true:false);//boolean类型进行str->boolean
         }else{
           valueAdd(p, propsObj, p.propVal);
         }
