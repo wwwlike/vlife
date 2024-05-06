@@ -15,7 +15,7 @@
 </p>
 
 demo地址
-<h4 align="left"><a target="_blank" href="http://vlife.cc">http://admin.vlife.cc/login</a>
+<h4 align="left"><a target="_blank" href="http://admin.vlife.cc/login">http://admin.vlife.cc</a>
 
 
 ## 行业痛点
