@@ -15,8 +15,7 @@ public class ConditionGroup {
      */
     public String entityName;
     /**
-     * 组内查询条件
-     * and,组与组是or
+     * 组内查询条件 and方式连接
      */
     public List<Where> where = new ArrayList<>();
 }

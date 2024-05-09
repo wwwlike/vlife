@@ -99,7 +99,7 @@ export const save=(sysUser:SysUser): Promise<Result<SysUser>>=>{
   return apiClient.post(`/sysUser/save`,sysUser);
 };
 /** 用户详情*/
-export const detail=(req:{id:string,name:string}): Promise<Result<SysUser>>=>{
+export const detail=(req:{id:string}): Promise<Result<SysUser>>=>{
   return apiClient.get(`/sysUser/detail/${req.id}`,{params:req});
 };
 /** 用户删除*/

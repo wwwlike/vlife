@@ -131,7 +131,7 @@ export default ({
                   d.label ||
                   (d.userType === "assignee" &&
                     userSelectData?.filter((u) => u.value === d.objectId)?.[0]
-                      .label)
+                      ?.label)
                 }
                 position="bottom"
               >

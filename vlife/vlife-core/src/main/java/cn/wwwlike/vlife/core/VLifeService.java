@@ -282,7 +282,7 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
      * 12 根据ID逻辑删除<T>类实体对象，以及能递归以<T>为外键的关联实体数据根据规则进行操作（逻辑删除，清除外键关系，不做操作）
      */
     public long remove(String ...ids) {
-        if (ids == null) {
+        if (ids == null||ids.length==0) {
             logger.error("remove-> id is null");
             return 0;
         }

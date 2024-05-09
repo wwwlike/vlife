@@ -9,6 +9,7 @@ import {
   list as userList,
   ThirdAccountDto,
   UserDetailVo,
+  detail,
 } from "@src/api/SysUser";
 import { login as userLogin } from "@src/api/login";
 import { FormVo, formPageReq, list } from "@src/api/Form";
@@ -282,11 +283,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     (userId: string): Promise<SysUser | undefined> => {
       //简写(promise形式返回数据出去)
       if (users[userId] === undefined) {
-        return userList({ id: [userId] }).then((res) => {
+        return detail({ id: userId }).then((res) => {
           setUsers((u: any) => {
-            return { ...u, [userId]: res.data?.[0] };
+            return { ...u, [userId]: res.data };
           });
-          return res.data?.[0];
+          return res.data;
         });
       } else {
         return new Promise((resolve) => resolve(users[userId]));

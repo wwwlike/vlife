@@ -28,7 +28,8 @@ export enum OptEnum{
     ne="ne",
     isNotNull="isNotNull",
     isNull="isNull",
-    notIn="notIn"
+    notIn="notIn",
+    dynamic="dynamic"//日期类型动态范围
 }
 
 export enum Mode{

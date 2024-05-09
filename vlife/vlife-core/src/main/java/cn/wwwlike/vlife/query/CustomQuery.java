@@ -245,8 +245,8 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     @VField(skip = true)
     private Conditions conditions;
     /**
-     * queryBuild的查询条件()
-     * 新的，不支持嵌套，只支持括号内and，括号外or查询(a and b and c) or (aa and cc and dd)
+     * 新的queryBuild的查询条件(简单方式) 不支持嵌套
+     * list条件组与与之间是or查询 (a and b and c) or (aa and cc and dd)
      */
     @VField(skip = true)
     private List<ConditionGroup> conditionGroups;

@@ -71,23 +71,24 @@ type apiError = {
 //tab页签
 export type TableTab = {
   itemKey: string; //视图编码(唯一)
+  filterLevel?: "all" | "sysDept_1" | "sysDept_2"; //过滤级别(有值和当前用户匹配则能显示该页签)
   tab: string | ReactNode; //名称
   icon?: ReactNode; //图标
   showCount?: boolean; //是否显示统计数量
-  req?: object | { fieldName: string; opt: OptEnum; value?: Object }[]; //视图过滤条件(简单方式)
+  req?: object | Partial<where>[]; //视图过滤条件(简单方式)
   subs?: (TableTab & { singleReq?: boolean })[]; //子级过滤页签 singleReq:表示不联合上一级过滤条件
 };
 
 // T为列表listType的类型
 export interface TablePageProps<T extends TableBean> extends ListProps<T> {
-  tab?: boolean; // 是否启用页签
+  tab?: false | "disableAll"; //false:不启用页签(tabList传值无效) |disableAll 不显示all页签
   tabList?: TableTab[]; //tab分组的条件对象
   sider?: ReactNode; //侧滑
   tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
   listType: string; //列表模型
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
-  req: any; //查询条件obj  //自定义tab页签条件，filter过滤条件
-  conditionJson?: string; //db视图过滤的条件
+  req?: any; //查询条件obj  //简单obj对象完全匹配的过滤条件
+  conditionReq?: Partial<where>[]; //单组组内and方式的复杂fixed固定的过滤条件
   design: true | undefined; //true则是设计器模式
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
@@ -102,13 +103,13 @@ export interface TablePageProps<T extends TableBean> extends ListProps<T> {
 }
 
 const TablePage = <T extends TableBean>({
-  tab = true,
+  tab,
   className,
   listType,
   editType,
   req,
   model,
-  conditionJson,
+  conditionReq,
   dataSource,
   // activeKey,
   mode = "normal",
@@ -154,7 +155,7 @@ const TablePage = <T extends TableBean>({
   // const [queryBuilderCondition, setQueryBuilderCondition] =
   //   useState<ConditionGroup[]>(); //builder查询条件
   const [columnWheres, setColumnWheres] = useState<Partial<where>[]>([]); //字段的查询条件
-  //支持嵌套的查询条件组装inputSearch和columnFilter
+  //列表字段上的过滤条件 支持嵌套的查询条件组装inputSearch和columnFilter
   const [condition, setCondition] = useState<Partial<Conditions> | undefined>({
     orAnd: "or",
     where: [],
@@ -252,6 +253,12 @@ const TablePage = <T extends TableBean>({
     return {};
   }, [pageData]);
 
+  /**
+   * 三个条件的查询组合
+   * 1. 搜索框
+   * 2. 列表字段的过滤条件
+   * 3. 带入到该列表的fiex的where(conditionReq)
+   */
   const searchAndColumnCondition = useMemo(():
     | Partial<Conditions>
     | undefined => {
@@ -263,19 +270,32 @@ const TablePage = <T extends TableBean>({
     ) {
       return {
         orAnd: "and",
-        where: columnWheres,
+        where: [...columnWheres, ...(conditionReq ? conditionReq : [])],
         conditions: [condition],
       };
     } else if (condition?.where && condition.where.length > 0) {
-      return condition;
+      if (conditionReq) {
+        return {
+          orAnd: "and",
+          where: conditionReq,
+          conditions: [condition],
+        };
+      } else {
+        return condition;
+      }
     } else if (columnWheres && columnWheres.length > 0) {
       return {
         orAnd: "and",
-        where: columnWheres,
+        where: [...columnWheres, ...(conditionReq ? conditionReq : [])],
+      };
+    } else if (conditionReq) {
+      return {
+        orAnd: "and",
+        where: conditionReq,
       };
     }
     return {};
-  }, [columnWheres, condition]);
+  }, [columnWheres, condition, conditionReq]);
 
   //数据请求
   const pageLoad = useMemo((): PageFuncType<T> | undefined => {
@@ -303,10 +323,11 @@ const TablePage = <T extends TableBean>({
     entityType: tableModel?.entityType || "",
   });
 
+  //req, conditionReq, searchAndColumnCondition 这3个为当前 页面预制的固定条件，tabReq为页签条件
   const _params = useCallback(
     (_tabReq: any) => {
       const params = {
-        ...req,
+        ...req, //简单对象过滤条件（oageQuery对象需要有对应的字段,待移到conditions里
         ..._tabReq,
         conditions: searchAndColumnCondition, //列表上的组件过滤(待合并到groups里)
       };
@@ -331,7 +352,6 @@ const TablePage = <T extends TableBean>({
   ]);
 
   const query = useCallback(() => {
-    // console.log("reqParams", JSON.stringify(reqParams));
     if (pageLoad) {
       pageLoad(reqParams)
         .then((data: Result<PageVo<T>>) => {
@@ -899,19 +919,21 @@ const TablePage = <T extends TableBean>({
 
   return (
     <>
+      {/* {JSON.stringify(searchAndColumnCondition)} */}
       {tableModel && apiError === undefined && (
         <div
           ref={ref}
           className={`${className} relative h-full flex flex-col text-sm  `}
         >
           {/* 页签 */}
-          {tab && (
+          {tab !== false && (
             <TableTab
               activeKey={activeKey} //主动切换页签
               tabCount={tabCount} // 查询页签上数据的数量
               tabDictField={tabDictField}
               tabList={tabList}
               formModel={formModel}
+              disableAll={tab === "disableAll" ? true : false} //不显示全部按钮
               tableModel={tableModel}
               createAble={user?.superUser}
               onActiveChange={setActiveKey}

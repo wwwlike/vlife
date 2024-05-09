@@ -9,6 +9,7 @@ import classNames from "classnames";
 import { objToConditionWhere, OptEnum, where } from "@src/dsl/base";
 import { loadApi } from "@src/resources/ApiDatas";
 import { SysDict } from "@src/api/SysDict";
+import { useAuth } from "@src/context/auth-context";
 
 //激活页签
 export interface ActiveTab {
@@ -16,6 +17,7 @@ export interface ActiveTab {
   level2?: string; //第二层
 }
 export interface TableTabProps {
+  disableAll?: boolean; //是否禁用全部
   activeKey?: ActiveTab; //场景页签
   tabList?: TableTab[]; //tab分组的条件对象
   tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
@@ -39,10 +41,12 @@ export default (props: TableTabProps) => {
     onActiveChange,
     onCountReq,
     tabCount,
+    disableAll = false,
     onTabReq,
   } = props;
 
   const [_activeKey, setActiveKey] = useState<ActiveTab | undefined>(activeKey);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (activeKey) setActiveKey(activeKey);
@@ -55,7 +59,7 @@ export default (props: TableTabProps) => {
   const allTab: TableTab = {
     itemKey: "all",
     icon: <i className=" icon-gallery_view " />,
-    tab: tableModel?.name || "全部",
+    tab: "全部",
   };
   const [fixedTab, setFixedTab] = useState<TableTab[]>([]); //固定项页签 tab dbList方式+tabDictField方式
   const [dbTab, setDbTab] = useState<TableTab[]>([]); //用户保存的自定义页签
@@ -231,33 +235,54 @@ export default (props: TableTabProps) => {
   const contentTab = useMemo((): TableTab[] | undefined => {
     const tabs = [
       ...flowTab,
-      ...(flowTab.length === 0 ? [allTab] : []),
+      ...(flowTab.length === 0 ? (disableAll ? [] : [allTab]) : []),
       ...dbTab,
       ...(flowTab.length === 0 ? fixedTab : []),
       ...(createAble ? [addTab] : []),
     ];
-    //一级节点绑定数量
-    return tabs.map((t) => {
-      return {
-        ...t,
-        tab:
-          t.itemKey !== "add"
-            ? t.tab +
-              `${
-                tabCount?.[t.itemKey] !== undefined
-                  ? " (" + tabCount?.[t.itemKey] + ")"
-                  : ""
-              }`
-            : t.tab,
-      };
-    });
-  }, [dbTab, fixedTab, allTab, flowTab, addTab, tabCount]);
 
-  useEffect(() => {
-    if (contentTab && activeKey === undefined) {
-      setActiveKey({ level1: contentTab[0].itemKey });
-    }
-  }, [contentTab]);
+    //一级节点绑定数量
+    return tabs
+      .filter((t) => {
+        //tab页签和行级数据权限有关(t.filterLevel) 且用户角色组没有行级数据权限(!=="all")，则需要进行tab页签能否显示的逻辑判断
+        if (user?.groupFilterType !== "all" && t.filterLevel !== undefined) {
+          if (t.filterLevel === "all") {
+            return false;
+          } else if (
+            user?.groupFilterType.startsWith("sysUser") &&
+            t.filterLevel.startsWith("sysDept")
+          ) {
+            return false;
+          } else if (
+            user?.groupFilterType === "sysDept_1" &&
+            t.filterLevel === "sysDept_2"
+          ) {
+            return false;
+          }
+        }
+        return true;
+      })
+      .map((t) => {
+        return {
+          ...t,
+          tab:
+            t.itemKey !== "add"
+              ? t.tab +
+                `${
+                  t.showCount && tabCount?.[t.itemKey] !== undefined
+                    ? " (" + tabCount?.[t.itemKey] + ")"
+                    : ""
+                }`
+              : t.tab,
+        };
+      });
+  }, [dbTab, fixedTab, allTab, flowTab, addTab, tabCount, disableAll, user]);
+
+  // useEffect(() => {
+  //   if (contentTab && activeKey === undefined) {
+  //     setActiveKey({ level1: contentTab?.[0]?.itemKey });
+  //   }
+  // }, [contentTab]);
 
   //指定页签数据返回(字典/数据库/自定义/flow)
   const reqFunc = useCallback(
@@ -283,7 +308,7 @@ export default (props: TableTabProps) => {
 
         if (Array.isArray(req)) {
           //2 复杂页签，来源queryBuilder设计器，
-          if (req[0].where) {
+          if (req?.[0]?.where) {
             return {
               conditionGroups: req,
             };
@@ -308,8 +333,12 @@ export default (props: TableTabProps) => {
 
   //数据查询回传  reqFunc, contentTab
   useEffect(() => {
-    if (onTabReq !== undefined && _activeKey) {
-      onTabReq(reqFunc(_activeKey));
+    if (onTabReq !== undefined) {
+      if (_activeKey) {
+        onTabReq(reqFunc(_activeKey));
+      } else if (contentTab?.[0]?.itemKey) {
+        onTabReq(reqFunc({ level1: contentTab?.[0]?.itemKey }));
+      }
     }
   }, [_activeKey?.level1, _activeKey?.level2, onTabReq, contentTab?.length]);
 
@@ -352,7 +381,7 @@ export default (props: TableTabProps) => {
 
   return (
     <>
-      {/* {JSON.stringify(tabCount)} */}
+      {/* {activeKey?.level1 || contentTab?.[0]?.itemKey} */}
       {contentTab !== undefined && (
         <div className=" bg-white  pt-1">
           <Tabs
