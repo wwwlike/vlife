@@ -134,9 +134,9 @@ export const useDetail = ({
   ...options
 }: Options<Result<IdBean>, any> & { entityType?: string }) =>
   useRequest(
-    ({id}:IdBean, detailModelName: string,_entityType?:string): Promise<Result<IdBean>> => {
+    ({id}:IdBean, detailModelName?: string,_entityType?:string): Promise<Result<IdBean>> => {
       return apiClient.get(
-        `/${entityType||_entityType}/view/${detailModelName + "/" }${id}`
+        `/${entityType||_entityType}/view/${(detailModelName||entityType||_entityType) + "/" }${id}`
       );
     },
     { manual, ...options }

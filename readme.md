@@ -1,5 +1,5 @@
 <p align="center">
-	<img alt="logo" src="https://wwwlike.gitee.io/vlife-img/logo1.jpg">
+	<img alt="logo" src="http://admin.vlife.cc/assets/vlife-img/logo1.jpg">
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">vlife低代码研发平台</h1>
 <h4 align="center">一款旨在帮助企业`降本增效`和提升研发团队`幸福感`的快速开发平台</h4>
@@ -56,31 +56,31 @@ demo地址
 
 ### 流程引擎
 - 仿钉钉流程设计器(业务人员也能轻松设计一套中国式复杂的流程)
-![模型管理](https://wwwlike.gitee.io/vlife-img/flow.png)
+![模型管理](http://admin.vlife.cc/assets/vlife-img/flow.png)
 ### 模型管理
 - 将实体模型和其关联的其他类型的模型集中在此进行展示，为代码生成和模型设计的入口
-![模型管理](https://wwwlike.gitee.io/vlife-img/vlifepage/abcd.png)
+![模型管理](http://admin.vlife.cc/assets/vlife-img/vlifepage/abcd.png)
 
 ### 表单引擎
 - 以图形化的方式进行表单配置
-![表单引擎](https://wwwlike.gitee.io/vlife-img/vlifepage/formDesign.png)
+![表单引擎](http://admin.vlife.cc/assets/vlife-img/vlifepage/formDesign.png)
 
 ### 列表引擎
 - 以图形化的方式进行列表配置
-![table引擎](https://wwwlike.gitee.io/vlife-img/vlifepage/tableDesign.png)
+![table引擎](http://admin.vlife.cc/assets/vlife-img/vlifepage/tableDesign.png)
 
 ### 查询引擎
 - 配置指定实体的查询视图的过滤条件
-![数据过滤引擎](https://wwwlike.gitee.io/vlife-img/vlifepage/queryDesign.png)
+![数据过滤引擎](http://admin.vlife.cc/assets/vlife-img/vlifepage/queryDesign.png)
 
 ### 页面引擎
 - 以图形化的方式配置页面，可实现页面，报表，看板的配置功能
-![页面设计引擎](https://wwwlike.gitee.io/vlife-img/vlifepage/pageDesign.png)
+![页面设计引擎](http://admin.vlife.cc/assets/vlife-img/vlifepage/pageDesign.png)
 
 ### 反馈与共建
 <div >
     <div style="display: inline-block;width:200px">
-      <img style="width: 200px; height: 200px;" src="https://wwwlike.gitee.io/vlife-img/vlifepage/qqq.png" alt="qq群">
+      <img style="width: 200px; height: 200px;" src="http://admin.vlife.cc/assets/vlife-img/vlifepage/qqq.png" alt="qq群">
     </div>
 </div>
 

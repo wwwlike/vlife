@@ -64,16 +64,15 @@ export const FormModal = createNiceModal(
     //这里提交的数据，返回回来要给到表单
     //formModal的数据如何传输出去，印象列表的数据和按钮组数据？
 
-    const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo>(); //流程基本信息
-    const [historys, setHistorys] = useState<FlowNode[]>();
     const [form, setForm] = useState<Form>(); // formliy的form
     const [errors, setErrors] = useState<IFormFeedback[]>([]);
     const [formVo, setFormVo] = useState<FormVo | undefined>(modelInfo);
+    const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo>(); //流程基本信息
+    const [historys, setHistorys] = useState<FlowNode[]>();
 
     //请求该条记录的流程信息和历史审核信息
     const getFlowInfo = useCallback(() => {
       if (formVo && formVo.flowJson && data && data.id) {
-        // alert(activeKey);
         findProcessDefinitions({
           businessKeys: [data.id],
           defineKey: formVo.type,

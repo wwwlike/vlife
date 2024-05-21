@@ -15,6 +15,6 @@ export default ({ userId, className }: ShowUserProps) => {
       getUserInfo(userId).then((res) => {
         setSysUser(res);
       });
-  }, []);
+  }, [userId]);
   return <span className={`${className || ""}`}>{sysUser?.name}</span>;
 };

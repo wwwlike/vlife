@@ -42,7 +42,6 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
         AbstractWrapper<T, R, Children>>
         extends Wrapper<T>
         implements Nested<Children, Children>, Compare<Children, R> {
-
     /**
      * 设置本业务过滤使用的“哪个业务模型”的过滤维度
      * 如查询“项目”模块，它的查看维度部门下的项目，但是部门表的维度是查看本机构的部门，再项目里过滤部门的维度就需要调整成和项目一致
@@ -54,8 +53,6 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
      * 全量查询，开启后status=-1已删除的也查询
      */
     private boolean fullData=false;
-
-
 
     /**
      * 占位符
@@ -301,12 +298,7 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
     }
 
 
-    public static void main(String[] args) {
-        Consumer<String> nameConsumer = s -> System.out.println(s);
 
-        nameConsumer.accept("Mahesh");
-        nameConsumer.accept("Krishna");
-    }
 
     @Override
     public Children endsWith(boolean condition, R column, Object val, DataExpressTran tran, Class<? extends Item>... leftClz) {
@@ -358,11 +350,9 @@ public abstract class AbstractWrapper<T extends Item, R, Children extends
         children.entityClz = (Class<T>) subMainClz;
         consumer.accept(children);
         List leftClz = new ArrayList();
-
         if (leftPathClz == null || leftPathClz.length == 0 || leftPathClz[0] != entityClz) {
             leftClz.add(entityClz);
         }
-
         if (leftPathClz != null) {
             for (Class clz : leftPathClz) {
                 leftClz.add(clz);

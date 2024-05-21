@@ -52,6 +52,7 @@ export interface ApiDatas{
 //组件组成信息
 export interface CompInfo{
   label:string; //组件名称
+  componentType?:"chart"|"form"|"table"|"filter"|"view"; //组件呈现类型
   component:any,//组件
   icon?:ReactNode|string,//图标
   remark?: string;  //组件使用说明

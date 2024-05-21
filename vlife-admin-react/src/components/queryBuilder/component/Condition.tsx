@@ -99,6 +99,20 @@ export const OPT: {
   // fix: { label: "用户匹配", fieldType: [], dict: false, fk: true }, //当前用户 用户表上的外键 可以使用sys系统值进行匹配
 };
 
+export const dates = [
+  { label: "今天", value: "today" },
+  { label: "昨天", value: "yesterday" },
+  { label: "本周", value: "this_week" },
+  { label: "上周", value: "last_week" },
+  { label: "本月", value: "this_month" },
+  { label: "上月", value: "last_month" },
+  { label: "今年", value: "this_year" },
+  { label: "去年", value: "last_year" },
+  { label: "近7天", value: "last_7_days" },
+  { label: "近30天", value: "last_30_days" },
+  { label: "近90天", value: "last_90_days" },
+  { label: "近一年", value: "last_1_year" },
+];
 /**
  * 单行条件信息
  */
@@ -113,20 +127,6 @@ export default ({
 }: ConditionProps) => {
   const { dicts } = useAuth();
 
-  const dates = [
-    { label: "今天", value: "today" },
-    { label: "昨天", value: "yesterday" },
-    { label: "本周", value: "this_week" },
-    { label: "上周", value: "last_week" },
-    { label: "本月", value: "this_month" },
-    { label: "上月", value: "last_month" },
-    { label: "今年", value: "this_year" },
-    { label: "去年", value: "last_year" },
-    { label: "近7天", value: "last_7_days" },
-    { label: "近30天", value: "last_30_days" },
-    { label: "近90天", value: "last_90_days" },
-    { label: "近一年", value: "last_1_year" },
-  ];
   /**
    * 当前字段信息
    */

@@ -90,6 +90,7 @@ public class VlifeDataProcess extends DataProcess {
               SecurityUser securityUser= SecurityConfig.getCurrUser();
                 JSONObject user= (JSONObject)securityUser.getUseDetailVo();
                 mm.put("createId", user.get("id"));
+                mm.put("createDeptcode",user.get("codeDept"));
 //                if(IOrg.class.isAssignableFrom(entityClz)) {
 //                    mm.put("sysOrgId",user.getsys());
 //                }

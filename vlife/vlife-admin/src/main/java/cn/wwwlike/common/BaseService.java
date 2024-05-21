@@ -112,13 +112,14 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
      * 当前支持查询本部门下级部门，查询本人，查看同一权限组 （权限组非树形关系，不支持查看下级）
      */
     public <S extends AbstractWrapper> S addQueryFilter(S queryWrapper) {
+        Class itemClz=queryWrapper.getEntityClz();
         //实体类并且开启了工作流则不启用行级数据过滤
-        if(Item.class.isAssignableFrom(queryWrapper.getEntityClz())){
-            FormVo vo=getModelInfo(queryWrapper.getEntityClz().getSimpleName());
+        if(Item.class.isAssignableFrom(itemClz)){
+            FormVo vo=getModelInfo(itemClz.getSimpleName());
             if(vo!=null&& vo.getFlowJson()!=null){
                 return queryWrapper;
             }
-        }
+        }else if(GroupFilter.class.isAssignableFrom(itemClz)){
         SecurityUser securityUser = SecurityConfig.getCurrUser();
         if (securityUser != null) {
             JSONObject user = (JSONObject) securityUser.getUseDetailVo();
@@ -136,9 +137,9 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
                 String filterEntityType = filterType[0]; //根据哪个外键过滤
                 String level = filterType[1];// 过滤级别 "1" 本级  2 本级和下级
                 EntityDto groupFilterEntityDto = GlobalData.entityDto(filterEntityType); //过滤方式对应的表
-                EntityDto entityDto = GlobalData.entityDto(queryWrapper.getEntityClz());//当前查询的表
+                EntityDto entityDto = GlobalData.entityDto(itemClz);//当前查询的表
                 EntityDto sysUserEntityDto = GlobalData.entityDto("sysUser");
-                if (groupFilterEntityDto.getClz() == queryWrapper.getEntityClz() || entityDto.fkMap.get(groupFilterEntityDto.getClz()) != null) {
+                if (groupFilterEntityDto.getClz() ==itemClz || entityDto.fkMap.get(groupFilterEntityDto.getClz()) != null) {
                     //拼装过滤条件
                     Consumer<S> consumer = wrapper -> {
                         String userField = userMap.get(filterEntityType);// sysDept
@@ -149,7 +150,7 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
                         //行级数据过滤，关于用户表上的那个值
                         Object userFieldIdVal = user.get(userField);
                         //查询的表和过滤的条件实体相同，行数据查询本人，当前查询业务为用户，则都是sysUser;
-                        if (groupFilterEntityDto.getClz() == queryWrapper.getEntityClz()) {//查询的表和行过滤的表相同(如查询本部门的数据，此时查询的表时部门表)
+                        if (groupFilterEntityDto.getClz() == itemClz) {//查询的表和行过滤的表相同(如查询本部门的数据，此时查询的表时部门表)
                             if (level.equals("1")) {//id
                                 wrapper.eq("id", userFieldIdVal);
                             } else if (level.equals("2")) {
@@ -176,6 +177,7 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
             }else{
                 //查看全部，不进行过滤
             }
+        }
         }
         return queryWrapper;
     }

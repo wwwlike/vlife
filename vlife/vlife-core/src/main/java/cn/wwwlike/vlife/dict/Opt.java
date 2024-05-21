@@ -23,7 +23,6 @@ package cn.wwwlike.vlife.dict;
  * 查询对比方式
  */
 public enum Opt {
-
     VOID("void"),
     eq("eq"),
     like("like"),
@@ -41,48 +40,8 @@ public enum Opt {
     isNotNull("isNotNull"),
     isNull("isNull"),
     notIn("notIn");
-
     public String optName;
     Opt(String optName){
         this.optName=optName;
     }
-
 }
-    // 重写equals方法，实现枚举和字符串常量的比对
-
-// eq: {
-//    label: "等于",
-//    fieldType: ["string", "number", "date", "boolean"],
-//  },
-//  ne: {
-//    label: "不等于",
-//    fieldType: ["string", "number", "date", "boolean"],
-//  },
-//  startsWith: {
-//    label: "开头匹配",
-//    fieldType: ["string"],
-//    dict: false,
-//    fk: false,
-//  },
-//  endsWith: {
-//    label: "结尾匹配",
-//    fieldType: ["string"],
-//    dict: false,
-//    fk: false,
-//  },
-//  // between: {
-//  //   label: "范围",
-//  //   fieldType: ["date", "number"],
-//  //   dict: false,
-//  //   fk: false,
-//  // },
-//  // in: {
-//  //   label: "in",
-//  //   fieldType: ["string"],
-//  // },
-//  gt: { label: ">", fieldType: ["date", "number"], dict: false, fk: false },
-//  ge: { label: ">=", fieldType: ["date", "number"], dict: false, fk: false },
-//  lt: { label: "<", fieldType: ["date", "number"], dict: false, fk: false },
-//  le: { label: "<=", fieldType: ["date", "number"], dict: false, fk: false },
-//  like: { label: "模糊匹配", fieldType: ["string"], dict: false, fk: false },
-//  fix: { label: "用户匹配", fieldType: [], dict: false, fk: true }, //当前用户 用户表上的外键 可以使用sys系统值进行匹配

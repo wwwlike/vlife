@@ -24,10 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 统计项目查询分组条件
- * 分析:
- * 1. 看作是req，是否可以把conditions堪称是reqDto
- * 2. where是req里的字段
+ * 复杂设计器数据dto
+ * 支持条件嵌套
+ * (当前 组内是可以设置orAnd, 其实一个组内应该就是and)
  */
 @Data
 public class Conditions {
@@ -36,18 +35,18 @@ public class Conditions {
      */
     public String entityName;
     /**
-     * 分组条件
+     * 组内过滤条件
+     */
+    public List<Where> where = new ArrayList<>();
+    /**
+     * 同级其他过滤组条件 (递归)
      */
     public List<Conditions> conditions;
     /**
      * 关联方式
-     * 括号内关联方式
+     * 组内关联方式 a1 and (a or b or (c and d and e) or f)
      */
     public String orAnd;
-    /**
-     * 过滤条件(支持递归)
-     */
-    public List<Where> where = new ArrayList<>();
 
 }
 

@@ -49,6 +49,15 @@ public abstract class DbEntity implements Item {
      * 修改人
      */
     private String modifyId;
+
+    /**
+     * 创建人部门编码
+     */
+    private String createDeptcode;
+
+
+//    private String areacode;
+
     /**
      * 记录创建日期
      */
@@ -127,5 +136,13 @@ public abstract class DbEntity implements Item {
     }
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCreateDeptcode() {
+        return createDeptcode;
+    }
+
+    public void setCreateDeptcode(String createDeptcode) {
+        this.createDeptcode = createDeptcode;
     }
 }

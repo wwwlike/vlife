@@ -41,6 +41,8 @@ public class QDbEntity extends EntityPathBase<DbEntity> {
 
     public final StringPath id = createString("id");
 
+    public final StringPath createDeptcode = createString("createDeptcode");
+
     public final StringPath createId = createString("createId");
 
     public final StringPath modifyId = createString("modifyId");

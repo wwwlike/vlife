@@ -16,11 +16,10 @@ import { IconSetting } from "@douyinfe/semi-icons";
 import apiClient from "@src/api/base/apiClient";
 import { VfAction } from "@src/dsl/VF";
 import TagFilter from "@src/components/table/component/TagFilter";
-import { Empty, Pagination, SideSheet, Tooltip } from "@douyinfe/semi-ui";
+import { Pagination, SideSheet, Tooltip } from "@douyinfe/semi-ui";
 import { orderObj } from "./orderPage";
 import { useSize } from "ahooks";
 import BtnToolBar from "@src/components/button/BtnToolBar";
-import { IllustrationConstruction } from "@douyinfe/semi-illustrations";
 import classNames from "classnames";
 import VfSearch from "@src/components/VfSearch";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +38,8 @@ import {
   startFlow,
 } from "@src/api/workflow/Flow";
 import { useNiceModal } from "@src/store";
-import TableTab, { ActiveTab } from "./tableTab";
+import TableTab, { ActiveTab, TabConfig } from "./tableTab";
+import { table } from "console";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
@@ -75,13 +75,14 @@ export type TableTab = {
   tab: string | ReactNode; //名称
   icon?: ReactNode; //图标
   showCount?: boolean; //是否显示统计数量
-  req?: object | Partial<where>[]; //视图过滤条件(简单方式)
+  req?: object | Partial<where>[]; //简单属性| grouCondition(不嵌套方式设计器)  ps:当前不支持传入复杂condition对象
   subs?: (TableTab & { singleReq?: boolean })[]; //子级过滤页签 singleReq:表示不联合上一级过滤条件
 };
 
 // T为列表listType的类型
 export interface TablePageProps<T extends TableBean> extends ListProps<T> {
-  tab?: false | "disableAll"; //false:不启用页签(tabList传值无效) |disableAll 不显示all页签
+  // tab?: false | "disableAll" | "disableFlow"; //false->不启用页签(tabList传值无效) |disableAll->不显示all页签 |disableFlow->不显示流程页签
+  tabConfig?: false | TabConfig; //页签配置 false 不需要页签
   tabList?: TableTab[]; //tab分组的条件对象
   sider?: ReactNode; //侧滑
   tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
@@ -92,6 +93,7 @@ export interface TablePageProps<T extends TableBean> extends ListProps<T> {
   design: true | undefined; //true则是设计器模式
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
+  sheetContainer?: () => HTMLElement; //侧滑的容器
   mode: "view" | "hand" | "normal"; //列表的三个场景模式  预览(精简无按钮，有搜索分页)|input传值(不从数据库取值，无需系统内置按钮和分页)|一般场景
   loadApi: PageFuncType<T>; //异步加载数据的地址，
   onTableModel: (formVo: FormVo) => void; //列表模型信息传出
@@ -103,7 +105,8 @@ export interface TablePageProps<T extends TableBean> extends ListProps<T> {
 }
 
 const TablePage = <T extends TableBean>({
-  tab,
+  // tab,
+  tabConfig,
   className,
   listType,
   editType,
@@ -127,6 +130,7 @@ const TablePage = <T extends TableBean>({
   tabList,
   tabDictField,
   sider,
+  sheetContainer,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const navigate = useNavigate();
@@ -181,8 +185,7 @@ const TablePage = <T extends TableBean>({
         if (onTableModel && f) {
           onTableModel(f);
         }
-
-        if (listType !== editModelType) {
+        if (listType !== editModelType && editModelType !== undefined) {
           getFormInfo({
             type: editModelType,
           }).then((f: FormVo | undefined) => {
@@ -202,6 +205,7 @@ const TablePage = <T extends TableBean>({
     if (dataSource) {
       return dataSource;
     } else if (pageData && pageData.result) {
+      //工作流信息整合进来
       if (recordFlowInfo && recordFlowInfo.length > 0) {
         return pageData.result.map((item) => {
           const flowInfo = recordFlowInfo.filter(
@@ -451,12 +455,11 @@ const TablePage = <T extends TableBean>({
           b.submitConfirm !== undefined
             ? b.submitConfirm
             : b.actionType === "api",
-        onSubmitFinish:
-          b.onSubmitFinish ||
-          (() => {
-            setLoadFlag((flag) => flag + 1); //列表重新加载
-            setSelected([]); //清空选中
-          }),
+        onSubmitFinish: () => {
+          b.onSubmitFinish?.();
+          setLoadFlag((flag) => flag + 1); //列表重新加载
+          setSelected([]); //清空选中
+        },
       };
     } else {
       return b;
@@ -496,6 +499,18 @@ const TablePage = <T extends TableBean>({
     }
     return [];
   }, [tableModel, activeKey]);
+
+  //是否开启工作流
+  const openFlowTab = useMemo(() => {
+    if (
+      (tabConfig === undefined ||
+        (tabConfig !== false && tabConfig?.flowTab !== false)) &&
+      (tableModel?.flowJson || formModel?.flowJson)
+    ) {
+      return true;
+    }
+    return false;
+  }, [tableModel, formModel, tabConfig]);
 
   //工作流按钮
   const flowBtns = useMemo(() => {
@@ -594,7 +609,8 @@ const TablePage = <T extends TableBean>({
           },
           onSubmitFinish: () => {
             //场景切换
-            setActiveKey({ level1: "flow_byMe", level2: "flow_byMe_todo" });
+            openFlowTab &&
+              setActiveKey({ level1: "flow_byMe", level2: "flow_byMe_todo" });
           },
           disabledHide: true,
           saveApi: (data: any) => {
@@ -738,14 +754,14 @@ const TablePage = <T extends TableBean>({
     } else {
       return [];
     }
-  }, [formModel, activeKey]);
+  }, [formModel, activeKey, openFlowTab]);
 
   /*页面所有按钮(查找工作流加入进来) */
   const totalBtns = useMemo((): VFBtn[] => {
-    const buttons = formModel?.flowJson
-      ? [...flowBtns]
-      : btns
+    const buttons = btns
       ? btns
+      : formModel?.flowJson
+      ? [...flowBtns]
       : otherBtns
       ? [...defbtn, ...otherBtns]
       : [...defbtn];
@@ -926,14 +942,25 @@ const TablePage = <T extends TableBean>({
           className={`${className} relative h-full flex flex-col text-sm  `}
         >
           {/* 页签 */}
-          {tab !== false && (
+          {tabConfig !== false && (
             <TableTab
               activeKey={activeKey} //主动切换页签
               tabCount={tabCount} // 查询页签上数据的数量
               tabDictField={tabDictField}
               tabList={tabList}
-              formModel={formModel}
-              disableAll={tab === "disableAll" ? true : false} //不显示全部按钮
+              tabConfig={
+                tabConfig
+                  ? tabConfig
+                  : {
+                      allTab: true,
+                      flowTab:
+                        tableModel?.flowJson || formModel?.flowJson
+                          ? true
+                          : false,
+                    }
+              }
+              // formModel={formModel}
+              // disableAll={tab === "disableAll" ? true : false} //不显示全部按钮
               tableModel={tableModel}
               createAble={user?.superUser}
               onActiveChange={setActiveKey}
@@ -941,11 +968,12 @@ const TablePage = <T extends TableBean>({
               onCountReq={setTabReqCount} //需要查询页签数量的条件
             />
           )}
-          {version === "v_base" && formModel?.flowJson && (
-            <div className=" text-red-500 absolute top-2 right-20 ">
-              需要专业版开放工作流全部功能
-            </div>
-          )}
+          {version === "v_base" &&
+            (tableModel?.flowJson || formModel?.flowJson) && (
+              <div className=" text-red-500 absolute top-2 right-20 ">
+                开源版支持流程配置，业务流转需升级为专业版
+              </div>
+            )}
           <div
             className={`flex bg-white items-center p-2 border-gray-100  justify-start  sidesheet-container `}
           >
@@ -1004,7 +1032,7 @@ const TablePage = <T extends TableBean>({
             />
           </div>
           <SideSheet
-            getPopupContainer={getContainer}
+            getPopupContainer={sheetContainer || getContainer}
             // mask={false}
             style={{ boxShadow: "2px 2px 5px rgba(0,0,0,0.3)" }} // 滑块边框阴影
             maskStyle={{ backgroundColor: "rgba(0, 0, 0, 0)" }} //遮罩层透明
@@ -1055,7 +1083,12 @@ const TablePage = <T extends TableBean>({
                 : undefined
             }
             onLineClick={(record) => {
-              if (formModel?.flowJson && version !== "v_base") {
+              if (
+                tabConfig !== false &&
+                tabConfig?.flowTab !== false &&
+                (tableModel?.flowJson || formModel?.flowJson) &&
+                version !== "v_base"
+              ) {
                 formModal.show({
                   modelInfo: formModel,
                   type: editModelType,

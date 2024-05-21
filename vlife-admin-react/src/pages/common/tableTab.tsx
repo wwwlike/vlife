@@ -16,12 +16,16 @@ export interface ActiveTab {
   level1: string; //首层
   level2?: string; //第二层
 }
+export interface TabConfig {
+  allTab?: boolean; // 是否显示所有页签
+  flowTab?: boolean; // 是否显示流程页签
+}
 export interface TableTabProps {
-  disableAll?: boolean; //是否禁用全部
+  tabConfig?: TabConfig; //页签配置
   activeKey?: ActiveTab; //场景页签
   tabList?: TableTab[]; //tab分组的条件对象
   tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
-  formModel?: FormVo; //表单模型
+  // formModel?: FormVo; //表单模型
   tableModel: FormVo; //列表模型
   tabCount?: { [tabKey: string]: number }; //tab页签数量
   createAble?: boolean; //是否可新增
@@ -35,13 +39,18 @@ export default (props: TableTabProps) => {
     tabList,
     tabDictField,
     createAble,
-    formModel,
+    // formModel,
     tableModel,
     activeKey,
     onActiveChange,
     onCountReq,
     tabCount,
-    disableAll = false,
+    tabConfig = {
+      allTab: true,
+      flowTab: true,
+    },
+    // openFlowTab = true,
+    // disableAll = false,
     onTabReq,
   } = props;
 
@@ -72,71 +81,71 @@ export default (props: TableTabProps) => {
   }, []);
   //工作流页签
   const flowTab = useMemo((): TableTab[] => {
-    if (formModel?.flowJson || tableModel?.flowJson) {
-      return [
-        {
-          itemKey: "flow_todo",
-          icon: <i className="icon-checkbox_01" />,
-          tab: "待办视图",
-          req: { flowTab: "todo" },
-        },
-        {
-          itemKey: "flow_byMe",
-          icon: <i className="  icon-workflow_new" />,
-          tab: `我发起的`,
-          req: { flowTab: "byMe" },
-          subs: [
-            {
-              itemKey: "flow_byMe_todo",
-              tab: "流程中",
-              showCount: true,
-              req: { flowTab: "byMe_todo" },
-            },
-            {
-              //待办
-              itemKey: "flow_byMe_edit",
-              tab: "待完善",
-              showCount: true,
-              req: { flowTab: "byMe_edit" },
-            },
-            {
-              //
-              itemKey: "flow_byMe_finish",
-              tab: "已通过",
-              showCount: true,
-              req: { flowTab: "byMe_finish" },
-              singleReq: true,
-            },
-            {
-              itemKey: "flow_byMe_refuse",
-              tab: "已拒绝",
-              showCount: true,
-              req: { flowTab: "byMe_refuse" },
-            },
-            {
-              itemKey: "flow_byMe_draft",
-              tab: "草稿",
-              showCount: true,
-              req: { flowTab: "byMe_draft" },
-            },
-          ],
-        },
-        {
-          itemKey: "flow_done",
-          tab: "已办视图",
-          icon: <i className=" icon-workflow_ok" />,
-          req: { flowTab: "done" },
-        },
-        {
-          itemKey: "flow_notifier",
-          icon: <i className="  icon-resend" />,
-          tab: "抄送视图",
-          req: { flowTab: "notifier" },
-        },
-      ];
-    }
-    return [];
-  }, [formModel, tableModel]);
+    // if (formModel?.flowJson || tableModel?.flowJson) {
+    return tabConfig.flowTab
+      ? [
+          {
+            itemKey: "flow_todo",
+            icon: <i className="icon-checkbox_01" />,
+            tab: "待办视图",
+            req: { flowTab: "todo" },
+          },
+          {
+            itemKey: "flow_byMe",
+            icon: <i className="  icon-workflow_new" />,
+            tab: `我发起的`,
+            req: { flowTab: "byMe" },
+            subs: [
+              {
+                itemKey: "flow_byMe_todo",
+                tab: "流程中",
+                showCount: true,
+                req: { flowTab: "byMe_todo" },
+              },
+              {
+                //待办
+                itemKey: "flow_byMe_edit",
+                tab: "待完善",
+                showCount: true,
+                req: { flowTab: "byMe_edit" },
+              },
+              {
+                //
+                itemKey: "flow_byMe_finish",
+                tab: "已通过",
+                showCount: true,
+                req: { flowTab: "byMe_finish" },
+                singleReq: true,
+              },
+              {
+                itemKey: "flow_byMe_refuse",
+                tab: "已拒绝",
+                showCount: true,
+                req: { flowTab: "byMe_refuse" },
+              },
+              {
+                itemKey: "flow_byMe_draft",
+                tab: "草稿",
+                showCount: true,
+                req: { flowTab: "byMe_draft" },
+              },
+            ],
+          },
+          {
+            itemKey: "flow_done",
+            tab: "已办视图",
+            icon: <i className=" icon-workflow_ok" />,
+            req: { flowTab: "done" },
+          },
+          {
+            itemKey: "flow_notifier",
+            icon: <i className="  icon-resend" />,
+            tab: "抄送视图",
+            req: { flowTab: "notifier" },
+          },
+        ]
+      : [];
+  }, [tabConfig.flowTab]);
   //视图转换成页签
   useEffect(() => {
     if (conditions && conditions.length > 0) {
@@ -235,7 +244,11 @@ export default (props: TableTabProps) => {
   const contentTab = useMemo((): TableTab[] | undefined => {
     const tabs = [
       ...flowTab,
-      ...(flowTab.length === 0 ? (disableAll ? [] : [allTab]) : []),
+      ...(flowTab.length === 0 || tabConfig.flowTab === false
+        ? tabConfig.allTab !== false
+          ? [allTab]
+          : []
+        : []),
       ...dbTab,
       ...(flowTab.length === 0 ? fixedTab : []),
       ...(createAble ? [addTab] : []),
@@ -276,7 +289,17 @@ export default (props: TableTabProps) => {
               : t.tab,
         };
       });
-  }, [dbTab, fixedTab, allTab, flowTab, addTab, tabCount, disableAll, user]);
+  }, [
+    dbTab,
+    fixedTab,
+    allTab,
+    flowTab,
+    addTab,
+    tabCount,
+    tabConfig.allTab,
+    tabConfig.flowTab,
+    user,
+  ]);
 
   // useEffect(() => {
   //   if (contentTab && activeKey === undefined) {
@@ -381,6 +404,7 @@ export default (props: TableTabProps) => {
 
   return (
     <>
+      {/* {JSON.stringify(tabConfig.allTab)} */}
       {/* {activeKey?.level1 || contentTab?.[0]?.itemKey} */}
       {contentTab !== undefined && (
         <div className=" bg-white  pt-1">

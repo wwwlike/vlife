@@ -324,10 +324,11 @@ const TableIndex = <T extends TableBean>({
         }
       });
       //行按钮添加,工作流不需要行级按钮
-
       if (flowFormType) {
         columnshow?.unshift({
           title: "当前流程节点",
+          // fixed: "left",
+          width: 150,
           align: "center",
           // fixed: "right",
           fieldName: "operate",

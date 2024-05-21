@@ -24,7 +24,7 @@ import cn.wwwlike.vlife.query.QueryWrapper;
 import lombok.Data;
 
 /**
- * 前台传入req需要叠加程序传参则继承它
+ * 一般查询模型
  */
 @Data
 public class VlifeQuery<T extends Item> extends CustomQuery<T, QueryWrapper<T>>  {

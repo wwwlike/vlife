@@ -8,7 +8,6 @@ import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.annotation.PermissionEnum;
 import cn.wwwlike.vlife.dict.VCT;
-import cn.wwwlike.vlife.query.req.VlifeQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

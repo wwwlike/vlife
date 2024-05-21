@@ -65,11 +65,12 @@ export default <T extends IdBean>({
     if (position === "tableToolbar") {
       toolBarBtns = btns.filter(
         (b) =>
-          b.multiple === true ||
-          b.position === "tableToolbar" ||
-          b.actionType === "create" ||
-          b.actionType === "save" ||
-          b.allowEmpty === true
+          b.actionType !== "flow" &&
+          (b.multiple === true ||
+            b.position === "tableToolbar" ||
+            b.actionType === "create" ||
+            b.actionType === "save" ||
+            b.allowEmpty === true)
       );
     } else if (position === "tableLine") {
       toolBarBtns = btns.filter(
@@ -108,7 +109,6 @@ export default <T extends IdBean>({
     onBtnNum && onBtnNum(currBtns.length);
   }, [currBtns]);
 
-  // console.log("BtnToolBar");
   return (
     <div
       className={`flex ${className} !items-center ${classNames({

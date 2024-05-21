@@ -28,6 +28,7 @@ import cn.wwwlike.vlife.dict.Opt;
 import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.dto.ReqDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
+import cn.wwwlike.vlife.query.req.QueryUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -40,21 +41,14 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- * 支持自定义查询条件的req
- * 无分页、分组（统计），支持排序；
- *
- * @param <T>
+ * 支持lamdba链式数据过滤的查询模型
+ * 另外支持简单分组（统计）和排序；
  */
 @Data
 public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> implements BaseRequest<T> {
-
     public CustomQuery() {
     }
-    /**
-     * 自定义参数传入
-     *
-     * @ignore
-     */
+
     @JsonIgnore
     protected Class<T> entityClz;
 
@@ -62,27 +56,27 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
         this.entityClz = entityClz;
     }
 
-    //    @JsonIgnore post提交不需要该注解
+    //@JsonIgnore 改为post提交后不需要该注解
     protected OrderRequest order = new OrderRequest();
 
     @JsonIgnore
     private Q queryWrapper;
 
-    public Q getQueryWrapper() {
-        if (this.queryWrapper == null) {
-            qw();
-        }
-        return queryWrapper;
-    }
-
     public abstract Q instance();
 
     public Q qw(Class<T> clz) {
-        if (Item.class.isAssignableFrom(clz)) {
-        }
         this.entityClz = clz;
         if (this.queryWrapper == null) {
+            //1. 模型属性转queryWrapper查询对象
             queryWrapper = getJoinQueryWrapper(GlobalData.reqDto(this.getClass()));
+            //2. 页面研发固定传condition支持嵌套的封装的复杂查询对象(ColumnFilter采用此,input列表搜索采用此)
+            if(getConditions()!=null){
+                QueryUtils.condition(queryWrapper,getConditions());
+            }
+            //3. 查询设计器传入的
+            if(getConditionGroups()!=null){
+                QueryUtils.condition(queryWrapper,getConditionGroups());
+            }
         }
         return this.queryWrapper;
     }
@@ -97,17 +91,12 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     }
 
     /**
-     * 获得整合的查询封装条件
-     * req传入和程序手工传入的进行整合;
-     * 自主创建的 lifequery,pageQuery,groupQuery不用join
-     *
-     * @return
+     * 将模型里简单属性方式传值的查询方式转换成为QueryWrapper的查询方式
      */
     protected Q getJoinQueryWrapper(ReqDto reqDto) {
         Q wrapper = null;
         if (reqDto != null && reqDto.getFields() != null) {
             List<FieldDto> fields = reqDto.getFields();
-
             for (FieldDto fieldDto : fields) {
                 if (ReflectionUtils.getFieldValue(this, fieldDto.getFieldName()) != null
                 &&(fieldDto.getVField()==null|| fieldDto.getVField().skip()==false)
@@ -124,22 +113,17 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     }
 
     /**
-     * 查询路径里写，groupby里写
-     *
-     * @param qw
-     * @param fieldDto
-     * @param val
-     * @return
+     * 根据字段信息(注解)和值进行转换成QueryWrapper的查询方式
+     * 有注解且多字段联合or形式
      */
     private Q createWrapperFromQueryPath(Q qw, FieldDto fieldDto, Object val) {
         if (fieldDto.getVField() != null &&
                 fieldDto.getVField().orReqFields().length > 0) {
             List<String> list = Arrays.stream(fieldDto.getVField().orReqFields()).collect(Collectors.toList());
-            list.add(fieldDto.getEntityFieldName());
+            list.add(fieldDto.getEntityFieldName());//所有需要进行or查询的字段
             if (qw == null) {
                 qw = instance();
             }
-
             qw.or(ww -> {
                 createWrapperFromQueryPath((Q) ww, fieldDto.getQueryPath(), val,
                         fieldDto.getOpt(),
@@ -154,7 +138,6 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
 
     /**
      * 通过查询路径创建包裹条件,把查询条件传到最后一个对象上进行过滤???
-     *
      * @param qw                     已经存在的wrapper对象，未空的情况->1.无程序手工传入， 2是第一个req的字段需要转换
      * @param queryPath              字段的查询路径
      * @param lastQueryPathFieldName 主查询里的字段名称 是数组因为 有 fied1=1 feid2=1 feid3 =1 这种查询需求
@@ -206,11 +189,8 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
         return qw;
     }
 
-
     /**
      * 正常简单的正向排序
-     *
-     * @param field
      */
     public CustomQuery addOrder(String... field) {
         for (String f : field) {
@@ -238,9 +218,10 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
         }
         return this;
     }
+
     /**
-     * queryBuild的查询条件
-     * 老的支持嵌套的复杂型，接收TagFilter
+     * queryBuild传入的查询条件(老的)
+     * 支持嵌套的复杂型(当前查询设计器已经停用)，目前用来接收字段上的TagFilter
      */
     @VField(skip = true)
     private Conditions conditions;
@@ -254,24 +235,7 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     //流程页签
     @VField(skip = true,dictCode = "FLOW_TAB")
     private  String flowTab;
-    //流程下一级过滤条件
-    @VField(skip = true)
-    private String flowNextTab;
-
+//    //流程下一级过滤条件
 //    @VField(skip = true)
-//    private String busniessType;
-//
-//    @VField(skip = true)
-//    private boolean todo;
-//    //工作流已办
-//    @VField(skip = true)
-//    private boolean done;
-//    //我发起的
-//    @VField(skip = true)
-//    private boolean byMe;
-//    //抄送
-//    @VField(skip = true)
-//    private boolean notifier;
-
-
+//    private String flowNextTab;
 }

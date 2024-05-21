@@ -44,7 +44,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * 查询工具类
+ * 客户端查询脚本转queryWrapper
  */
 public class QueryUtils {
 
@@ -55,7 +55,7 @@ public class QueryUtils {
      * @param condition b端定义查询条件
      * @return
      */
-    public static <T extends AbstractWrapper> T condition(T qw, Conditions condition) {
+    public static <T extends AbstractWrapper> AbstractWrapper condition(AbstractWrapper qw, Conditions condition) {
         if ("and".equals(condition.orAnd)) {
             //增加一组and过滤
             qw.and(ww -> where((T) ww, condition.getWhere())
@@ -75,20 +75,11 @@ public class QueryUtils {
         return qw;
     }
 
+    //简单过滤分组设计器
     public static <T extends AbstractWrapper> T condition(T qw, List<ConditionGroup> groups) {
         qw.or(ww -> groups.forEach(g->
             ((T)ww).and(www->where((T) www,g.getWhere()))
         ));
-//        qw.and(ww -> groups.stream()
-//                .map(g -> where((T) ww, g.getWhere()))
-//                .reduce((g1, g2) -> g1.or((Consumer) g2))
-//                .orElse(qw));
-
-//        qw.and(ww -> qw.or(((T)ww) ->groups.forEach(g->((T)ww).and(www->where((T) www,g.getWhere())))));
-
-//        qw.and(ww ->
-//                ((T)ww).or(www->
-//                        groups.forEach(g->((T)ww).and(www->where((T) www,g.getWhere())))));
         return qw;
     }
 
@@ -101,29 +92,32 @@ public class QueryUtils {
      */
     public static <T extends AbstractWrapper>T where(T qw, List<Where> wheres) {
         for (Where w : wheres) {
-            if(StringUtils.isNotBlank(w.getFieldName()) && StringUtils.isNotBlank(w.getOpt())){
+            if(w.subQuery!=null&& w.subQuery==true){
+//                qw.andSub(w.getClazz(),t->((T)t).eq("content","1"),qw.getEntityClz());
+            }else if(StringUtils.isNotBlank(w.getFieldName()) && StringUtils.isNotBlank(w.getOpt())){
                 if (!w.getOpt().equals("isNotNull")&&!w.getOpt().equals("isNull")&&w.getValue()!=null
                  &&w.getValue()!=null&& w.getValue().length > 0 && Arrays.stream(w.getValue()).filter(v->v!=null&&StringUtils.isNotBlank(v.toString())).count()==w.getValue().length
                 ) {
                     //动态条件
                     if (w.getOpt().equals("dynamic")) {
-                        LocalDate today = LocalDate.now();
+                        LocalDate now = LocalDate.now();
                         Integer currentMonth = LocalDate.now().getMonthValue();
+                        Integer currentWeek = now.get(WeekFields.ISO.weekOfWeekBasedYear()); //所在年的周数
                         Integer currentYear = LocalDate.now().getYear();
                         DateRange dateRange = DateRange.valueOf(w.getValue()[0].toString().toUpperCase());
+                        Integer today =now.getDayOfYear();
                         switch (dateRange) {
                             case TODAY:
-                                qw.eq(w.getFieldName(), Date.valueOf(today),w.getClazz());
+                                qw.eq(true, w.getFieldName(), today, new DateExpressTran(),w.getClazz());
                                 break;
                             case YESTERDAY:
-                                qw.eq(w.getFieldName(), Date.valueOf(today.minusDays(1)),w.getClazz());
+                                qw.eq(true, w.getFieldName(), today-1, new DateExpressTran(),w.getClazz());
                                 break;
                             case THIS_WEEK:
-                                Integer currentWeek = LocalDate.now().get(WeekFields.ISO.weekOfWeekBasedYear());
-                                qw.eq(true, w.getFieldName(), currentWeek, new WeekExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), currentWeek-1, new WeekExpressTran(),w.getClazz());
                                 break;
                             case LAST_WEEK:
-                                Integer lastWeek = LocalDate.now().minusWeeks(1).get(WeekFields.ISO.weekOfWeekBasedYear());
+                                Integer lastWeek = currentWeek-2;
                                 qw.eq(true, w.getFieldName(), lastWeek, new WeekExpressTran(),w.getClazz());
                                 break;
                             case THIS_MONTH:
@@ -134,6 +128,10 @@ public class QueryUtils {
                                 Integer lastMonth = Integer.parseInt(String.format("%04d%02d", currentYear, LocalDate.now().minusMonths(1).getMonthValue()));
                                 qw.eq(true, w.getFieldName(), lastMonth, new MonthExpressTran(),w.getClazz());
                                 break;
+                            case THIS_JI:
+                                break;
+                            case LAST_JI:
+                                break;
                             case THIS_YEAR:
                                 qw.eq(true, w.getFieldName(), currentYear, new YearExpressTran(),w.getClazz());
                                 break;
@@ -142,19 +140,19 @@ public class QueryUtils {
                                 qw.eq(true, w.getFieldName(), lastYear, new YearExpressTran(),w.getClazz());
                                 break;
                             case LAST_7_DAYS:
-                                LocalDate last7Days = today.minusDays(7);
+                                LocalDate last7Days = now.minusDays(7);
                                 qw.goe(w.getFieldName(), Date.valueOf(last7Days),w.getClazz());
                                 break;
                             case LAST_30_DAYS:
-                                LocalDate last30Days = today.minusDays(30);
+                                LocalDate last30Days = now.minusDays(30);
                                 qw.goe(w.getFieldName(), Date.valueOf(last30Days),w.getClazz());
                                 break;
                             case LAST_90_DAYS:
-                                LocalDate last90Days = today.minusDays(90);
+                                LocalDate last90Days = now.minusDays(90);
                                 qw.goe(w.getFieldName(), Date.valueOf(last90Days),w.getClazz());
                                 break;
                             case LAST_1_YEAR:
-                                LocalDate last1Year = today.minusYears(1);
+                                LocalDate last1Year = now.minusYears(1);
                                 qw.goe(w.getFieldName(), Date.valueOf(last1Year),w.getClazz());
                         }
                     }  else {
@@ -187,10 +185,12 @@ public class QueryUtils {
                             qw.like(w.getFieldName(), "%" + w.getValue()[0] + "%",w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.startsWith.optName)) {
-                            qw.startsWith(w.getFieldName(), w.getValue()[0] + "%",w.getClazz());
+                            qw.startsWith(w.getFieldName(), w.getValue()[0],w.getClazz());
+//                            qw.startsWith(w.getFieldName(), w.getValue()[0] + "%",w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.endsWith.optName)) {
-                            qw.endsWith(w.getFieldName(), "%" + w.getValue()[0],w.getClazz());
+                            qw.endsWith(w.getFieldName(), w.getValue()[0],w.getClazz());
+//                            qw.endsWith(w.getFieldName(), "%" + w.getValue()[0],w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.ne.optName)) {
                             Object finalValue = value;

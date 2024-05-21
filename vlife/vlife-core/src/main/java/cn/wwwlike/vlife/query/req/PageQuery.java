@@ -24,14 +24,10 @@ import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.PageableRequest;
 import cn.wwwlike.vlife.query.CustomQuery;
 import cn.wwwlike.vlife.query.QueryWrapper;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-
 /**
- * 带分页，带排序，带自定义入参
- *
- * @param <T>
+ * 支持分页的查询模型
  */
 @Data
 public class PageQuery<T extends Item> extends CustomQuery<T, QueryWrapper<T>> implements IPage {
