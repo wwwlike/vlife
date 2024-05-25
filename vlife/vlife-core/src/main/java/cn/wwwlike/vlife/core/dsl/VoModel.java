@@ -516,6 +516,8 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
                     re = ((SimpleExpression) fieldlDsl).in(vals);
                 } else if (opt == Opt.notIn) {
                     re = ((SimpleExpression) fieldlDsl).notIn(vals);
+                } else if("%%".equals(element.getVal())|| ("".equals(element.getVal())&& opt==Opt.eq)){
+                    return null;
                 } else {
                     method = ReflectionUtils.findMethod(fieldlDsl.getClass(), opt.name(), element.getVal().getClass());
                     re = (BooleanExpression) org.springframework.util.ReflectionUtils.invokeMethod(method, fieldlDsl, element.getVal());

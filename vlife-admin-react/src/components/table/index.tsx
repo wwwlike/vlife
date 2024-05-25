@@ -273,7 +273,7 @@ const TableIndex = <T extends TableBean>({
           };
         } else if (m.fieldType === "boolean") {
           m["render"] = (text, record, index) => {
-            return text === null ? "-" : text ? <IconStoryStroked /> : "";
+            return text === null ? "-" : text ? `是` : "否";
           };
         } else if (m.entityFieldName === "id" && fkMap) {
           m["render"] = (text, record, index) => {
