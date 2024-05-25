@@ -54,7 +54,7 @@ export const FormModal = createNiceModal(
     );
     const [data, setData] = useState(formData);
     const [formNumber, setFormNumber] = useState<number>(0);
-    const [_modifyData, setModifyData] = useState(); //提交保存后返回的数据，外部修订后的数据
+    const [_modifyData, setModifyData] = useState<any>(); //提交保存后返回的数据，外部修订后的数据
 
     useEffect(() => {
       setModifyData(modifyData);
@@ -235,7 +235,6 @@ export const FormModal = createNiceModal(
         width={modalWidth}
         // onOk={handleSubmit}
       >
-        {/* 外部formModal {data?.id} */}
         <FormPage
           key={`${formNumber}`}
           onError={setErrors}

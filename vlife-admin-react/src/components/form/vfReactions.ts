@@ -45,7 +45,7 @@ export const execVfAction = (actions: VfAction[], form: Form,parentData:any) => 
             });
           }
         }else{
-          console.error(`VF.field("${fieldName}")字段${fieldName}不存在或者是设置为隐藏`)
+          console.log(`VF.field("${fieldName}")字段${fieldName}不存在或者是设置为隐藏`)
         }
       })
     });
