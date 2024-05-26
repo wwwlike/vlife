@@ -23,6 +23,7 @@ export interface SysResources extends DbEntity ,ITree,IFkItem {
   remark:string//说明
   formId:string//所属板块
   permission:string;//授权方式
+  methedType:string
 }
 // 类说明
 export interface ResourcesDto extends SaveBean {

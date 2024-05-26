@@ -114,10 +114,10 @@ public class QueryUtils {
                                 qw.eq(true, w.getFieldName(), today-1, new DateExpressTran(),w.getClazz());
                                 break;
                             case THIS_WEEK:
-                                qw.eq(true, w.getFieldName(), currentWeek-1, new WeekExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), currentWeek, new WeekExpressTran(),w.getClazz());
                                 break;
                             case LAST_WEEK:
-                                Integer lastWeek = currentWeek-2;
+                                Integer lastWeek = currentWeek-1;
                                 qw.eq(true, w.getFieldName(), lastWeek, new WeekExpressTran(),w.getClazz());
                                 break;
                             case THIS_MONTH:

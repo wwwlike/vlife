@@ -44,6 +44,14 @@ public class AuthDict {
         public final static String VILLAGE = "5";
     }
 
+    @Named("性别")
+    public static final class sex {
+        @Named("男")
+        public final static String man = "1";
+        @Named("女")
+        public final static String woman = "2";
+    }
+
     @Named("数据维度")
     public static final class GROUP_FILTER_TYPE {
         @Named("查看本系统数据")
