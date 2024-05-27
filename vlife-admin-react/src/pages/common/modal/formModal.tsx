@@ -70,33 +70,40 @@ export const FormModal = createNiceModal(
     const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo>(); //流程基本信息
     const [historys, setHistorys] = useState<FlowNode[]>();
 
-    //请求该条记录的流程信息和历史审核信息
-    const getFlowInfo = useCallback(() => {
-      if (formVo && formVo.flowJson && data && data.id) {
-        findProcessDefinitions({
-          businessKeys: [data.id],
-          defineKey: formVo.type,
-          activeKey: activeKey,
-        }).then((d) => {
-          setRecordFlowInfo(d?.data?.[0]);
-          //流程开始则查询各个历史节点信息
-          if (d?.data?.[0]?.started === true) {
-            queryHistoricInfo({
-              businessKey: data.id,
-              defineKey: formVo.type,
-            }).then((d) => {
-              setHistorys(d.data);
-            });
-          }
-        });
-      }
-    }, [activeKey, formVo, data]);
+    useEffect(() => {
+      setModifyData(modifyData);
+    }, [modifyData]);
 
     useEffect(() => {
       if (data?.id && !version.toString().startsWith("v_base")) {
-        getFlowInfo();
+        getFlowInfo(data);
       }
-    }, [data]);
+    }, []);
+
+    //请求该条记录的流程信息和历史审核信息
+    const getFlowInfo = useCallback(
+      (_data: any) => {
+        if (formVo && formVo.flowJson && _data && _data.id) {
+          findProcessDefinitions({
+            businessKeys: [_data.id],
+            defineKey: formVo.type,
+            activeKey: activeKey,
+          }).then((d) => {
+            setRecordFlowInfo(d?.data?.[0]);
+            //流程开始则查询各个历史节点信息
+            if (d?.data?.[0]?.started === true) {
+              queryHistoricInfo({
+                businessKey: _data.id,
+                defineKey: formVo.type,
+              }).then((d) => {
+                setHistorys(d.data);
+              });
+            }
+          });
+        }
+      },
+      [activeKey, formVo]
+    );
 
     const title = useMemo(() => {
       const no = data?.no || "";
@@ -134,7 +141,7 @@ export const FormModal = createNiceModal(
               }
               //流程类型按钮触发流程信息提取
               if (f.actionType === "flow") {
-                getFlowInfo();
+                getFlowInfo(_data);
               }
               if (f.onSubmitFinish) {
                 f.onSubmitFinish(_data);
