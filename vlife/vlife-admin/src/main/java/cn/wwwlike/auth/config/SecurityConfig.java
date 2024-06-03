@@ -130,7 +130,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .access("hasPermission('','" + map.get(url) + "')");
         }
         authorizeRequests.antMatchers( "/dist/**","/open/api/getToken","/tsCode/code/*",
-                   "/sysUser/sendEmail","/excel/*","/git/*","/git/token/*", "/ts/test/file", "/ts/upload", "/sysFile/upload", "/sysFile/image/*", "/sysFile/uploadImg", "/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
+                   "/sysUser/sendEmail","/excel/template/*","/git/*","/git/token/*", "/ts/test/file", "/ts/upload", "/sysFile/upload", "/sysFile/image/*", "/sysFile/uploadImg", "/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
                 .and().formLogin()
                 .failureHandler(eauthenticationFailureHandler())
                 .and()

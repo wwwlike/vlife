@@ -11,6 +11,7 @@ interface QuickDictProps {
 }
 export default ({ dictCode, ...props }: QuickDictProps) => {
   const { datasInit, dicts } = useAuth();
+  const { user } = useAuth();
   const [label, setLabel] = useState<string | undefined>();
   const [visible, setVisible] = useState(true);
   useEffect(() => {
@@ -19,7 +20,7 @@ export default ({ dictCode, ...props }: QuickDictProps) => {
       setVisible(false);
     }
   }, [dictCode]);
-  return visible ? (
+  return visible && user?.superUser ? (
     <div className=" w-full p-2 flex justify-between items-center border-t divide-dashed">
       <div className="">
         <Input

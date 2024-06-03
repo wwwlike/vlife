@@ -35,6 +35,7 @@ export default (props: Partial<VFBtn>) => {
     icon,
     multiple = false,
     model,
+    modal,
     submitClose = false,
     submitConfirm,
     reaction,
@@ -277,9 +278,43 @@ export default (props: Partial<VFBtn>) => {
     [position, btnData, comment]
   );
 
+  const [customModalVisiable, setCustomModalVisiable] = useState(true);
   //按钮点击
   const btnClick = useCallback(() => {
-    if (onClick) {
+    if (modal) {
+      //弹出自定义的modal
+      let modalOutData: any;
+      // setCustomModalVisiable(true);
+      Modal.info({
+        width: 800,
+        title,
+        footer: onClick ? (
+          <div className="flex justify-end">
+            <Button
+              type="primary"
+              onClick={() => {
+                modalOutData && onClick(modalOutData);
+              }}
+            >
+              {title || "提交"}
+            </Button>
+          </div>
+        ) : (
+          false
+        ),
+        content: (
+          //modal->传入的弹出层包裹的组件
+          <>
+            {React.cloneElement(modal, {
+              onDataChange: (__data: any) => {
+                modalOutData = __data;
+              },
+              onFinish: () => onSubmitFinish?.(modalOutData),
+            })}
+          </>
+        ),
+      });
+    } else if (onClick) {
       onClick(btnData);
     } else if (position !== "formFooter" && model) {
       //1 页面(非modal)的按钮，model不为空,则触发model的弹出
@@ -308,7 +343,7 @@ export default (props: Partial<VFBtn>) => {
         });
       }
     }
-  }, [btnData, position, continueCreate, reaction, props]);
+  }, [btnData, position, continueCreate, reaction, props, customModalVisiable]);
 
   // 按钮名称计算
   const btnTitle = useMemo((): string | ReactNode => {
@@ -412,7 +447,6 @@ export default (props: Partial<VFBtn>) => {
           icon={btnType === "link" ? undefined : btnIcon}
           disabled={disabled}
         >
-          {/* {JSON.stringify(btnData?.id)} */}
           <span className=" space-x-2 items-center justify-center">
             {props.children ? props.children : btnTitle}
           </span>

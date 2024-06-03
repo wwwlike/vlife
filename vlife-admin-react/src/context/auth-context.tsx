@@ -47,7 +47,7 @@ const AuthContext = React.createContext<
       menuState: MenuState;
       setMenuState: (state: MenuState) => void;
       //所有菜单
-      allMenus?: MenuVo[];
+      allMenus: MenuVo[];
       setAllMenus: (allMenus: MenuVo[]) => void;
 
       app: MenuVo | undefined; //当前应用
@@ -217,11 +217,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setUser(res.data);
           datasInit();
-          if (res.data?.superUser) {
-            menuAll().then((m) => {
-              setAllMenus(m.data);
-            });
-          }
+          setAllMenus(res.data?.menus);
         }
       });
     }

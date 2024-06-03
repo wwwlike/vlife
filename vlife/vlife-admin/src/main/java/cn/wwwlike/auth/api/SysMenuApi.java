@@ -44,12 +44,13 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
    * 菜单保存
    */
   @PostMapping("/save")
-  public SysMenu save(@RequestBody SysMenu dto) {
+  public MenuVo save(@RequestBody SysMenu dto) {
     if(dto.getFormId()!=null&&dto.getPlaceholderUrl()==null&&dto.getUrl()!=null&&dto.getUrl().indexOf("*")!=-1){
       Form form=formService.findOne(dto.getFormId());
       dto.setPlaceholderUrl(form.getType());
     }
-    return service.save(dto);
+    service.save(dto);
+    return service.queryOne(MenuVo.class,dto.getId());
   }
   /**
    * 菜单详情

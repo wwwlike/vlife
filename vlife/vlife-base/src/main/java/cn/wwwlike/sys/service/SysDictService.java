@@ -36,6 +36,9 @@ public class SysDictService extends VLifeService<SysDict, SysDictDao> {
         return result.isEmpty() ? null : result.get(0);
     }
 
+    public List<SysDict> listByCode(String code){
+        return find(QueryWrapper.of(SysDict.class).eq("code",code).eq("level",2));
+    }
 
     /**
      * 通过字段注解来创建和更新字典（@VField(dictCode="code")

@@ -11,6 +11,7 @@ export default () => {
     <Content<SysUser>
       listType="sysUser"
       tabDictField="state"
+      dataImp={true}
       // tabList={[
       //   {
       //     itemKey: "sysTab_1",

@@ -15,6 +15,8 @@ export interface SysMenu extends DbEntity {
   sort: number; //排序号
   sysRoleId: string; //绑定的角色
   formId:string;
+  confPage: boolean; //是否连接到配置页面
+  pageLayoutId: string; //配置页面信息
 }
 
 /**
@@ -34,6 +36,7 @@ export interface MenuVo extends DbEntity {
   formId:string;
   sysResourcesList: SysResources[]; //接口数据
   roleList:SysRole[];//应用对应的角色
+  routerAddress:string;//拼接计算后的路由地址
 }
 
 //菜单资源关联dto

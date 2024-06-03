@@ -18,6 +18,7 @@
 
 package cn.wwwlike.sys.entity;
 import cn.wwwlike.vlife.annotation.VField;
+import cn.wwwlike.vlife.base.IFilter;
 import cn.wwwlike.vlife.base.ITree;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
@@ -30,7 +31,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_dept")
-public class SysDept extends DbEntity implements ITree {//属性结构实体继承ITree
+public class SysDept extends DbEntity implements ITree, IFilter {//属性结构实体继承ITree
     /**
      * 部门名称
      */

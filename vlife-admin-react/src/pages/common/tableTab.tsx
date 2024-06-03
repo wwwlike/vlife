@@ -6,7 +6,7 @@ import Button from "@src/components/button";
 import { VF } from "@src/dsl/VF";
 import { TableTab } from "./tablePage";
 import classNames from "classnames";
-import { objToConditionWhere, OptEnum, where } from "@src/dsl/base";
+import { objToConditionWhere, OptEnum } from "@src/dsl/base";
 import { loadApi } from "@src/resources/ApiDatas";
 import { SysDict } from "@src/api/SysDict";
 import { useAuth } from "@src/context/auth-context";
@@ -16,21 +16,20 @@ export interface ActiveTab {
   level1: string; //首层
   level2?: string; //第二层
 }
-export interface TabConfig {
-  allTab?: boolean; // 是否显示所有页签
-  flowTab?: boolean; // 是否显示流程页签
+
+export interface TableTabBaseProps {
+  activeTab?: ActiveTab; //当前页签场景key
+  addTabAble?: boolean; //是否可新增
+  allTabAble?: boolean; //是否显示全部页签
+  tabList?: TableTab[]; // 1. 前端传过滤条件的预设固定页签
+  tabDictField?: string; //2. 传字典编码的预设固定页签
 }
-export interface TableTabProps {
-  tabConfig?: TabConfig; //页签配置
-  activeKey?: ActiveTab; //场景页签
-  tabList?: TableTab[]; //tab分组的条件对象
-  tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
-  // formModel?: FormVo; //表单模型
+
+export interface TableTabProps extends TableTabBaseProps {
   tableModel: FormVo; //列表模型
   tabCount?: { [tabKey: string]: number }; //tab页签数量
-  createAble?: boolean; //是否可新增
   onActiveChange: (activeKey: { level1: string; level2?: string }) => void; //切换页签
-  onTabReq: (req: any) => void; // 请求数据
+  onTabReq: (req: any) => void; // 页签查询条件传出
   onCountReq?: (countReq: { [tabKey: string]: any }) => void; // 需要请求数量的页签查询条件
 }
 
@@ -38,151 +37,71 @@ export default (props: TableTabProps) => {
   const {
     tabList,
     tabDictField,
-    createAble,
-    // formModel,
+    addTabAble = false,
+    allTabAble = true,
     tableModel,
-    activeKey,
+    activeTab,
+    tabCount,
     onActiveChange,
     onCountReq,
-    tabCount,
-    tabConfig = {
-      allTab: true,
-      flowTab: true,
-    },
-    // openFlowTab = true,
-    // disableAll = false,
     onTabReq,
   } = props;
 
-  const [_activeKey, setActiveKey] = useState<ActiveTab | undefined>(activeKey);
   const { user } = useAuth();
+  const [_activeTab, setActiveTab] = useState<ActiveTab | undefined>(activeTab); //当前页面激活的页签(场景)
+  useEffect(() => {
+    //外部传入的场景页签
+    if (activeTab) setActiveTab(activeTab);
+  }, [activeTab?.level1, activeTab?.level2]);
 
   useEffect(() => {
-    if (activeKey) setActiveKey(activeKey);
-  }, [activeKey?.level1, activeKey?.level2]);
-
-  useEffect(() => {
-    if (_activeKey) onActiveChange(_activeKey);
-  }, [_activeKey?.level1, _activeKey?.level2]);
+    //当前选中页签传出
+    if (_activeTab) onActiveChange(_activeTab);
+  }, [_activeTab?.level1, _activeTab?.level2]);
 
   const allTab: TableTab = {
     itemKey: "all",
     icon: <i className=" icon-gallery_view " />,
     tab: "全部",
   };
-  const [fixedTab, setFixedTab] = useState<TableTab[]>([]); //固定项页签 tab dbList方式+tabDictField方式
-  const [dbTab, setDbTab] = useState<TableTab[]>([]); //用户保存的自定义页签
-  const [conditions, setConditions] = useState<ReportCondition[]>([]); //数据库查询视图
-  //数据库查询视图加载函数
-  const loadCondition = useCallback((formId: string) => {
-    list({ formId, type: "table" }).then((result) =>
-      setConditions(result.data || [])
+  const [fixedTab, setFixedTab] = useState<TableTab[]>(
+    tabList
+      ? tabList.map((tab: TableTab) =>
+          Array.isArray(tab.req) || tab.req === undefined
+            ? tab
+            : { ...tab, req: objToConditionWhere(tab.req) }
+        )
+      : []
+  ); // 1.固定项页签 -> tabList 需转换
+  const [dictTab, setDictTab] = useState<TableTab[]>(); // 2. 字典页签 ->tabDictField 需加载
+  const [dbTab, setDbTab] = useState<TableTab[]>(); // 3. 数据库页签
+
+  //3 数据库页签加载
+  const loadDbTab = useCallback((formId: string) => {
+    list({ formId, type: "table" }).then(
+      (result) => {
+        const conditions: ReportCondition[] = result.data || [];
+        if (conditions && conditions.length > 0) {
+          setDbTab([
+            ...conditions.map((d) => {
+              return {
+                tab: d.name,
+                itemKey: d.id,
+                req: JSON.parse(conditions?.[0]?.conditionJson),
+                closable: addTabAble,
+              };
+            }),
+          ]);
+        } else {
+          setDbTab([]);
+        }
+      }
+      // setConditions( || [])
     );
   }, []);
-  //工作流页签
-  const flowTab = useMemo((): TableTab[] => {
-    // if (formModel?.flowJson || tableModel?.flowJson) {
-    return tabConfig.flowTab
-      ? [
-          {
-            itemKey: "flow_todo",
-            icon: <i className="icon-checkbox_01" />,
-            tab: "待办视图",
-            req: { flowTab: "todo" },
-          },
-          {
-            itemKey: "flow_byMe",
-            icon: <i className="  icon-workflow_new" />,
-            tab: `我发起的`,
-            req: { flowTab: "byMe" },
-            subs: [
-              {
-                itemKey: "flow_byMe_todo",
-                tab: "流程中",
-                showCount: true,
-                req: { flowTab: "byMe_todo" },
-              },
-              {
-                //待办
-                itemKey: "flow_byMe_edit",
-                tab: "待完善",
-                showCount: true,
-                req: { flowTab: "byMe_edit" },
-              },
-              {
-                //
-                itemKey: "flow_byMe_finish",
-                tab: "已通过",
-                showCount: true,
-                req: { flowTab: "byMe_finish" },
-                singleReq: true,
-              },
-              {
-                itemKey: "flow_byMe_refuse",
-                tab: "已拒绝",
-                showCount: true,
-                req: { flowTab: "byMe_refuse" },
-              },
-              {
-                itemKey: "flow_byMe_draft",
-                tab: "草稿",
-                showCount: true,
-                req: { flowTab: "byMe_draft" },
-              },
-            ],
-          },
-          {
-            itemKey: "flow_done",
-            tab: "已办视图",
-            icon: <i className=" icon-workflow_ok" />,
-            req: { flowTab: "done" },
-          },
-          {
-            itemKey: "flow_notifier",
-            icon: <i className="  icon-resend" />,
-            tab: "抄送视图",
-            req: { flowTab: "notifier" },
-          },
-        ]
-      : [];
-  }, [tabConfig.flowTab]);
-  //视图转换成页签
-  useEffect(() => {
-    if (conditions && conditions.length > 0) {
-      setDbTab([
-        ...conditions.map((d) => {
-          return {
-            tab: d.name,
-            itemKey: d.id,
-            req: JSON.parse(conditions?.[0]?.conditionJson),
-            closable: createAble,
-          };
-        }),
-      ]);
-    } else {
-      setDbTab([]);
-    }
-  }, [conditions]);
 
-  //固定页签组装 tablePage手工传值页签组装
+  //字典页签加载
   useEffect(() => {
-    const tabs: TableTab[] = [];
-    // 1 代码object方式传参页签，不分简单对象型过滤方式需要转换成 `and连接的[{fieldName:"xxx"，opt:OptEnum.eq,value:[]}]`
-    if (tabList) {
-      tabs.push(
-        ...tabList.map((tab: TableTab) => {
-          if (Array.isArray(tab.req) || tab.req === undefined) {
-            return tab; //
-          } else {
-            return {
-              ...tab,
-              req: objToConditionWhere(tab.req), //简单对象转成后台能识别的格式
-            };
-          }
-        })
-      );
-    }
-    // 2 dict方式，手工生成opt方式对比数组长度为1的查询条件 [{fieldName:"xxx"，opt:OptEnum.eq,value:[]}]
     const dictcode = tableModel?.fields?.filter(
       (f) => f.fieldName === tabDictField
     )?.[0]?.dictCode;
@@ -193,6 +112,7 @@ export default (props: TableTabProps) => {
         paramObj: { code: dictcode },
       }).then((d) => {
         const dicts: SysDict[] = d;
+        const tabs: TableTab[] = [];
         tabs.push(
           ...dicts.map((d) => {
             return {
@@ -208,18 +128,18 @@ export default (props: TableTabProps) => {
             };
           })
         );
-        setFixedTab(tabs);
+        setDictTab(tabs || []);
       });
-    } else if (tabList) {
-      setFixedTab(tabs);
+    } else {
+      setDictTab([]);
     }
-  }, [tabDictField, tableModel, tabList]);
+  }, []);
 
   const addTab: TableTab = useMemo(() => {
     return {
       tab: (
         <Button
-          title={`视图创建`}
+          title={`场景创建`}
           actionType="create"
           btnType="icon"
           icon={<i className="icon-task_add-02 font-bold" />}
@@ -229,10 +149,10 @@ export default (props: TableTabProps) => {
             VF.then("sysMenuId").hide().value(tableModel?.sysMenuId),
             VF.then("formId").hide().value(tableModel?.id),
             VF.then("type").hide().value("table"),
-            VF.then("name").title("页签名称"),
+            VF.then("name").title("场景页签名称"),
           ]}
           onSubmitFinish={() => {
-            if (tableModel?.id) loadCondition(tableModel?.id);
+            if (tableModel?.id) loadDbTab(tableModel?.id);
           }}
         />
       ),
@@ -240,24 +160,18 @@ export default (props: TableTabProps) => {
     };
   }, [tableModel]);
 
-  //页面页签整体组装
+  //流程页签有则其他页签不显示
   const contentTab = useMemo((): TableTab[] | undefined => {
-    const tabs = [
-      ...flowTab,
-      ...(flowTab.length === 0 || tabConfig.flowTab === false
-        ? tabConfig.allTab !== false
-          ? [allTab]
-          : []
-        : []),
-      ...dbTab,
-      ...(flowTab.length === 0 ? fixedTab : []),
-      ...(createAble ? [addTab] : []),
-    ];
+    if (dictTab && dbTab) {
+      //需这2个加载完毕
+      const tabs: TableTab[] = (allTabAble ? [allTab] : [])
+        .concat(dbTab)
+        .concat(dictTab)
+        .concat(fixedTab ? fixedTab : [])
+        .concat(addTabAble ? [addTab] : []);
 
-    //一级节点绑定数量
-    return tabs
-      .filter((t) => {
-        //tab页签和行级数据权限有关(t.filterLevel) 且用户角色组没有行级数据权限(!=="all")，则需要进行tab页签能否显示的逻辑判断
+      //tab页签和行级数据权限有关(t.filterLevel) 且用户角色组没有行级数据权限(!=="all")，则需要进行tab页签能否显示的逻辑判断
+      return tabs.filter((t) => {
         if (user?.groupFilterType !== "all" && t.filterLevel !== undefined) {
           if (t.filterLevel === "all") {
             return false;
@@ -274,38 +188,18 @@ export default (props: TableTabProps) => {
           }
         }
         return true;
-      })
-      .map((t) => {
-        return {
-          ...t,
-          tab:
-            t.itemKey !== "add"
-              ? t.tab +
-                `${
-                  t.showCount && tabCount?.[t.itemKey] !== undefined
-                    ? " (" + tabCount?.[t.itemKey] + ")"
-                    : ""
-                }`
-              : t.tab,
-        };
       });
+    }
+    return undefined;
   }, [
     dbTab,
+    dictTab,
     fixedTab,
-    allTab,
-    flowTab,
     addTab,
-    tabCount,
-    tabConfig.allTab,
-    tabConfig.flowTab,
-    user,
+    addTabAble,
+    // tabCount,
+    allTabAble,
   ]);
-
-  // useEffect(() => {
-  //   if (contentTab && activeKey === undefined) {
-  //     setActiveKey({ level1: contentTab?.[0]?.itemKey });
-  //   }
-  // }, [contentTab]);
 
   //指定页签数据返回(字典/数据库/自定义/flow)
   const reqFunc = useCallback(
@@ -351,29 +245,22 @@ export default (props: TableTabProps) => {
         }
       }
     },
-    [contentTab?.length]
+    [contentTab]
   );
 
   //数据查询回传  reqFunc, contentTab
   useEffect(() => {
-    if (onTabReq !== undefined) {
-      if (_activeKey) {
-        onTabReq(reqFunc(_activeKey));
+    if (onTabReq !== undefined && contentTab) {
+      if (_activeTab) {
+        onTabReq(reqFunc(_activeTab));
       } else if (contentTab?.[0]?.itemKey) {
         onTabReq(reqFunc({ level1: contentTab?.[0]?.itemKey }));
       }
     }
-  }, [_activeKey?.level1, _activeKey?.level2, onTabReq, contentTab?.length]);
-
-  //视图tab加载
-  useEffect(() => {
-    if (tableModel && tableModel.id) {
-      loadCondition(tableModel.id);
-    }
-  }, [tableModel]);
+  }, [_activeTab?.level1, _activeTab?.level2, onTabReq, contentTab]);
 
   useEffect(() => {
-    if (onCountReq) {
+    if (onCountReq && contentTab) {
       let countReq: any = {};
       //统计数量页签参数封装(2级页签各自封装)
       contentTab?.forEach((tab) => {
@@ -400,56 +287,74 @@ export default (props: TableTabProps) => {
       });
       onCountReq(countReq);
     }
-  }, [_activeKey?.level1, _activeKey?.level2, contentTab?.length]);
+  }, [_activeTab?.level1, _activeTab?.level2, contentTab]);
+
+  //视图tab加载
+  useEffect(() => {
+    if (tableModel && tableModel.id) {
+      loadDbTab(tableModel.id);
+    }
+  }, []);
 
   return (
     <>
-      {/* {JSON.stringify(tabConfig.allTab)} */}
-      {/* {activeKey?.level1 || contentTab?.[0]?.itemKey} */}
       {contentTab !== undefined && (
         <div className=" bg-white  pt-1">
           <Tabs
             style={{ height: "37px", paddingLeft: "10px" }}
             type="card"
-            activeKey={activeKey?.level1 || contentTab?.[0]?.itemKey} //没有则默认显示全部
-            tabList={contentTab}
+            activeKey={activeTab?.level1 || contentTab?.[0]?.itemKey} //没有则默认显示全部
+            tabList={contentTab.map((t) => {
+              return {
+                ...t,
+                tab:
+                  t.itemKey !== "add"
+                    ? t.tab +
+                      `${
+                        t.showCount && tabCount?.[t.itemKey] !== undefined
+                          ? " (" + tabCount?.[t.itemKey] + ")"
+                          : ""
+                      }`
+                    : t.tab,
+              };
+            })}
             onChange={(key) => {
               if (key !== "add") {
                 if (contentTab.filter((tab) => tab.itemKey === key)?.[0].subs) {
-                  setActiveKey({
+                  setActiveTab({
                     level1: key,
                     level2: contentTab.filter((tab) => tab.itemKey === key)?.[0]
                       .subs?.[0]?.itemKey,
                   });
                 } else {
-                  setActiveKey({ level1: key });
+                  setActiveTab({ level1: key });
                 }
               }
             }}
             onTabClose={(targetKey) => {
               remove([targetKey]).then(() => {
-                if (tableModel?.id) loadCondition(tableModel.id);
+                if (tableModel?.id) loadDbTab(tableModel.id);
               });
             }}
           />
           {/* 二级页签 */}
-          {contentTab?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
+          {contentTab?.filter((c) => c.itemKey === activeTab?.level1)?.[0]
             ?.subs && (
             <div className="flex  space-x-1 p-1  bg-gray-50">
               {contentTab
-                ?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
+                ?.filter((c) => c.itemKey === activeTab?.level1)?.[0]
                 ?.subs?.map((s) => {
                   return (
                     <div
                       className={` text-sm  cursor-pointer    ${classNames({
                         "bg-white border font-bold":
-                          activeKey?.level2 === s.itemKey,
+                          activeTab?.level2 === s.itemKey,
                       })} rounded-2xl  py-1 px-4`}
                       key={s.itemKey}
                       onClick={() => {
-                        if (activeKey && activeKey?.level1) {
-                          setActiveKey({
-                            level1: activeKey.level1,
+                        if (activeTab && activeTab?.level1) {
+                          setActiveTab({
+                            level1: activeTab.level1,
                             level2: s.itemKey,
                           });
                         }

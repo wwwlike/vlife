@@ -18,7 +18,7 @@ import {
   saveUserPasswordModifyDto,
   UserPasswordModifyDto,
 } from "@src/api/SysUser";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { listAll, MenuVo, save } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
@@ -28,6 +28,9 @@ import VfButton from "@src/components/button";
 import { saveRoleDto, SysRole, listAll as roleList } from "@src/api/SysRole";
 import { Result } from "@src/api/base";
 import { useDetail } from "@src/api/base/baseService";
+import { findSubs, findTreeRoot } from "@src/util/func";
+import { urlMenu, visitTopMenu } from "../sider";
+import path from "path";
 const { Header } = Layout;
 
 const Index = () => {
@@ -42,15 +45,8 @@ const Index = () => {
     allMenus,
     setAllMenus,
   } = useAuth();
-  const pathname = window.location.href;
-
   const { runAsync: getDetail } = useDetail({ entityType: "sysRole" });
-
   const [roles, setRoles] = useState<SysRole[]>([]);
-  //所有菜单
-  const userMenus = useMemo(() => {
-    return user?.superUser && allMenus ? allMenus : user?.menus || [];
-  }, [user, allMenus]);
 
   useEffect(() => {
     if (user?.superUser) {
@@ -63,11 +59,36 @@ const Index = () => {
   //所有应用
   const apps = useMemo((): MenuVo[] => {
     return (
-      userMenus
+      allMenus
         ?.filter((m) => m.app === true)
         ?.sort((a, b) => a.sort - b.sort) || []
     );
-  }, [userMenus]);
+  }, [allMenus]);
+
+  const location = useLocation();
+  const { pathname } = location;
+
+  //刷新和路由为空时候确定选中的APP
+  useEffect(() => {
+    //路由为空情况选择第一个应用
+    if (user && allMenus) {
+      if (pathname === "/" && apps) {
+        setApp(apps[0]);
+      } else {
+        //查找菜单
+        const currMenu = urlMenu(allMenus, pathname);
+        if (currMenu) {
+          //查找应用
+          const currApp = findTreeRoot(allMenus, currMenu);
+          if (currApp) {
+            setApp(currApp);
+          }
+        } else {
+          setApp(apps[0]);
+        }
+      }
+    }
+  }, [pathname]);
 
   function renderIcon(icon: any) {
     if (!icon) {
@@ -78,14 +99,20 @@ const Index = () => {
     }
     return icon.render();
   }
+
+  const visitMenu = (menu?: MenuVo) => {
+    if (menu && menu.routerAddress) {
+      navigate(menu.routerAddress);
+    }
+  };
   const menuItems = useMemo((): Partial<MenuItem>[] => {
     const _apps: Partial<MenuItem>[] = apps.map((m: MenuVo) => {
       return {
         itemKey: m.id,
         icon: m.icon ? renderIcon(m.icon) : null,
         onClick: () => {
-          if (m.url) navigate(m.url);
           setApp(m);
+          visitMenu(visitTopMenu(findSubs(allMenus, m), m.code));
         },
         text: user?.superUser ? (
           <div className=" z-10 flex !items-center relative">

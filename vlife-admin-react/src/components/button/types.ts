@@ -1,6 +1,6 @@
 import { IdBean, Result } from '@src/api/base';
 import { VfAction } from '@src/dsl/VF';
-import {  ReactNode } from 'react';
+import React, {  ReactNode } from 'react';
 /**
  * vlife平台按钮数据结构v1.0
  * ------------------------------
@@ -16,7 +16,7 @@ import {  ReactNode } from 'react';
  * api ：无需模型，直接触发saveApi方法(异步按钮)
  * click:自定义点击事件的按钮 触发的实际onCLick方法(同步按钮)
  */
-export type actionType= "create"|"save"|"edit"|"api"|"click"|"flow"|string;
+export type actionType= "create"|"save"|"edit"|"api"|"click"|"flow"|"modal"|string;
 //按钮显示类型
 export type btnType= "button" | "icon" | "link";
 //场景 按钮位置 tableToolbar：表格工具栏 tableLine |表格行上 | formFooter 表单底部 | page 自定义页面 |dropdown 更多 |  comment 审核说明
@@ -52,6 +52,10 @@ export interface VFBtn{
   saveApi?:(...data:(any&{tableSort:number})[])=>Promise<Result<any>>| any//按钮点击后触发的异步或者同步，必须返回数据，该数据返回到外层并且是onSubmitFinish方法作为入参
   onSubmitFinish?:(...saveApiResult:any[])=>void; //提交完成后触发的动作，如：用于关闭弹窗，刷新列表等操作
   onClick?:(...data:(any&{tableSort:number})[])=>void,//一般custom按钮使用，优先级高于saveAPI，一般不做接口类型的操作，不返回数据出去
+  modal?:React.ReactElement<{
+    onDataChange:(data:any)=>void;//modal弹窗内部数据变化通知外层
+    onFinish:()=>void; //modal弹窗内部业务处理完毕通知外层
+  }>; //React.ComponentType<any>,
   //不够好
   divider?:boolean|string; // dropdown的分割线
   //发现以下没有用到

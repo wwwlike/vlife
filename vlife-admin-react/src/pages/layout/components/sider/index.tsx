@@ -47,59 +47,93 @@ function findMenuByPath(menus: MenuItem[], path: string, keys: any[]): any {
   return [];
 }
 
+export const urlMenu = (userAllMenus: MenuVo[], pathUrl: string) => {
+  const menu = userAllMenus?.filter((m) => m.routerAddress === pathUrl)?.[0];
+  return menu;
+};
+//查询第一个有链接的菜单
+export const visitTopMenu = (
+  currAppMenus: MenuVo[],
+  appCode: string
+): MenuVo | undefined => {
+  const level1Menus: MenuVo[] = currAppMenus
+    .filter((m: any) => m.pcode === appCode) //一级菜单
+    .sort((a, b) => a.sort - b.sort);
+  let targetMenu: MenuVo | undefined;
+  level1Menus.find((modelMenu) => {
+    if (modelMenu.routerAddress) {
+      targetMenu = modelMenu;
+      return true;
+    } else {
+      const subMenu = currAppMenus
+        .filter((m) => m.pcode === modelMenu.code)
+        .sort((a, b) => a.sort - b.sort)
+        .find((sub) => {
+          if (sub.routerAddress) {
+            targetMenu = sub;
+            return true;
+          }
+          return false;
+        });
+      if (subMenu) {
+        return true;
+      }
+    }
+    return false;
+  });
+  return targetMenu;
+};
+
 export default () => {
+  const { user, setMenuState, app, allMenus, setAllMenus } = useAuth();
   const navigate = useNavigate();
-  const [height, setHeight] = useState(window.innerHeight);
   const { pathname } = useLocation();
+  const [height, setHeight] = useState(window.innerHeight);
   const [openKeys, setOpenKeys] = useState<string[]>([]); //打开节点
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]); //选中节点
-  const { user, setMenuState, app, setApp, allMenus, setAllMenus } = useAuth();
-  //用户的所有菜单
-  const userAllMenus = useMemo(() => {
-    return user?.superUser && allMenus ? allMenus : user?.menus || [];
-  }, [user, allMenus]);
+
   //用户当前应用的菜单
   const appMenus = useMemo((): MenuVo[] => {
-    if (userAllMenus && userAllMenus.length > 0 && app) {
-      return findSubs(userAllMenus, app);
+    if (allMenus && allMenus.length > 0 && app) {
+      return findSubs(allMenus, app);
     } else {
       return [];
     }
-  }, [userAllMenus, app]);
+  }, [allMenus, app]);
+  //访问应用首页
+
+  const visitMenu = (menu?: MenuVo) => {
+    if (menu && menu.routerAddress) {
+      navigate(menu.routerAddress);
+    }
+  };
 
   useEffect(() => {
-    const menu = userAllMenus?.filter(
-      (m: any) =>
-        pathname.indexOf(
-          m.url?.endsWith("*") ? m.url.replace("*", m.placeholderUrl) : m.url
-        ) !== -1 ||
-        (m.pageLayout && `/page/admin/${m.pageLayout.url}` === pathname)
-    )?.[0];
-
-    if (menu) {
-      if (app === undefined) {
-        setApp(findTreeRoot(userAllMenus, menu));
-      }
+    if (
+      app &&
+      pathname === "/" //切换了应用跳转到该应用的第一个菜单
+    ) {
+      visitMenu(visitTopMenu(appMenus, app.code));
     } else {
-      const localApp: any = localStorage.getItem("currMenu");
-      if (localApp !== null) {
-        const _currMenu = JSON.parse(localApp);
-        setApp(userAllMenus.filter((m) => m.id === _currMenu.app)[0]);
-        setSelectedKeys([_currMenu.menu]);
-        setOpenKeys(_currMenu.openKeys);
+      let currMenu: MenuVo = appMenus?.filter(
+        (m: MenuVo) => m.routerAddress === pathname
+      )?.[0];
+      if (currMenu !== undefined) {
+        setSelectedKeys([currMenu.id]);
+        setOpenKeys([
+          allMenus.filter((m) => m.code === currMenu.pcode)?.[0]?.id,
+        ]);
+      } else {
+        //缓存里读取
+        const localMenu: any = localStorage.getItem("currMenu");
+        if (localMenu !== null) {
+          const _currMenu = JSON.parse(localMenu);
+          setSelectedKeys([_currMenu.menu]);
+          setOpenKeys(_currMenu.openKeys);
+        }
       }
     }
-
-    if (app === undefined) {
-      // const localApp: any = localStorage.getItem("currMenu");
-      // if (localApp !== null) {
-      //   const _currMenu = JSON.parse(localApp);
-      //   setApp(userAllMenus.filter((m) => m.id === _currMenu.app)[0]);
-      //   setSelectedKeys([_currMenu.menu]);
-      //   setOpenKeys(_currMenu.openKeys);
-      // }
-    }
-  }, [userAllMenus, pathname]);
+  }, [pathname, app, appMenus]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -111,25 +145,22 @@ export default () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (app && app.url) {
-  //     navigate(app.url);
-  //   }
-  // }, [app]);
-
   const createMenuBtn = useCallback(
     (pcode: string, title?: string): VFBtn => {
       return {
-        title: title || "创建模块菜单",
+        title: title || "一级菜单创建",
         btnType: "icon",
         icon: <i className="  icon-task_add-02" />,
         actionType: "create",
-        continueCreate: true,
+        continueCreate: false,
         model: "sysMenu",
         fieldOutApiParams: { formId: { sysMenuId: app?.id } },
         reaction: [
           VF.then("app").hide().value(false),
-          VF.then("pcode").value(pcode).readPretty(),
+          VF.then("pcode")
+            .value(pcode)
+            .readPretty()
+            .title(title ? "上级菜单" : "所在应用"),
           VF.field("confPage")
             .eq(true)
             .then("url", "formId", "placeholderUrl")
@@ -151,12 +182,13 @@ export default () => {
         ],
         saveApi: save,
         onSubmitFinish: (...datas) => {
-          listAll().then((d) =>
-            setAllMenus([
-              ...(d.data?.filter((f) => f.id !== datas[0].id) || []),
-              datas[0],
-            ])
-          );
+          listAll().then((d) => setAllMenus(d.data || []));
+          if (datas && datas[0] && datas[0].routerAddress) {
+            visitMenu(datas[0]);
+          }
+
+          // if(datas[0])
+          // menuUrl(datas[0]) && ();
         },
       };
     },
@@ -204,11 +236,12 @@ export default () => {
                         model: "sysMenu",
                         saveApi: save,
                         onSubmitFinish: (...datas) => {
-                          setAllMenus([
-                            ...(allMenus?.filter((f) => f.id !== datas[0].id) ||
-                              []),
-                            datas[0],
-                          ]);
+                          listAll().then((d) => {
+                            setAllMenus(d.data || []);
+                            if (datas[0] && datas[0].routerAddress) {
+                              visitMenu(datas[0]);
+                            }
+                          });
                         },
                         reaction: [
                           VF.then("app").hide(),
@@ -217,6 +250,7 @@ export default () => {
                             .then("url", "formId", "placeholderUrl")
                             .hide()
                             .clearValue(),
+                          VF.then("pcode").readPretty(),
                           VF.field("url").isNotNull().then("formId").show(),
                           VF.result((sysMenu: any) => {
                             return (
@@ -246,10 +280,27 @@ export default () => {
                         },
                         submitConfirm: true,
                         onSubmitFinish: (...datas) => {
-                          setAllMenus([
-                            ...(allMenus?.filter((f) => f.id !== menu.id) ||
+                          const _appMenus = [
+                            ...(appMenus?.filter((f) => f.id !== menu.id) ||
                               []),
-                          ]);
+                          ];
+                          listAll()
+                            .then((d) => setAllMenus(d.data || []))
+                            .then(() => {
+                              _appMenus.length > 0 &&
+                                app &&
+                                visitMenu(visitTopMenu(_appMenus, app.code));
+                            });
+
+                          // listAll().then((d) => {
+                          //   setAllMenus(d.data || []);
+                          //   if (datas[0] && datas[0].routerAddress) {
+                          //     visitMenu(
+                          //       visitTopMenu(appMenus, app?.code || "")
+                          //     );
+                          //   }
+                          // });
+                          // visitMenu(visitTopMenu(appMenus, app?.code || ""));
                         },
                       },
                       {
@@ -372,7 +423,17 @@ export default () => {
   }, [pathname, currAppMenuList]);
 
   return (
-    <Sider>
+    <Sider className=" relative">
+      {app?.code && user?.superUser && (
+        <div
+          className={` ${classNames({
+            "absolute bottom-16": appMenus.length !== 0,
+            " h-96": appMenus.length === 0,
+          })}   flex  w-full items-center justify-center`}
+        >
+          <Button {...createMenuBtn(app.code)} btnType="button" />
+        </div>
+      )}
       <Nav
         toggleIconPosition={user?.superUser ? "left" : "right"}
         bodyStyle={{ height: `${height - 110}px` }}
@@ -393,12 +454,6 @@ export default () => {
           setMenuState(open ? "mini" : "show");
         }}
       >
-        {appMenus.length === 0 && app?.code && (
-          <div className=" w-full h-96 flex items-center justify-center">
-            <Button {...createMenuBtn(app.code)} btnType="button" />
-          </div>
-        )}
-        {/* {localStorage.getItem("currMenu")}|{JSON.stringify(selectedKeys)} */}
         <Nav.Footer className=" absolute bottom-0" collapseButton={true} />
       </Nav>
     </Sider>

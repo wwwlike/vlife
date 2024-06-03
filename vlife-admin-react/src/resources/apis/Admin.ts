@@ -4,7 +4,7 @@ import { list as dictList, SysDict } from '@src/api/SysDict';
 import { list as userList, SysUser } from '@src/api/SysUser';
 import { listAll as groupList } from '@src/api/SysGroup';
 import { listAll as roleList,SysRole } from '@src/api/SysRole';
-import { listAll as menuList, SysMenu } from '@src/api/SysMenu';
+import { listAll, listAll as menuList, MenuVo, SysMenu } from '@src/api/SysMenu';
 import { list as resourcesList, SysResources } from '@src/api/SysResources';
 import { ApiInfo } from '@src/components/compConf/compConf';
 import { DataModel, DataType, OptEnum } from '@src/dsl/base';
@@ -527,17 +527,19 @@ export const routeOpenApi:ApiInfo={
   label:"路由列表",
   dataType: DataType.array,
   dataModel:'ISelect',
-  api:()=>{
-    return new Promise((resolve) => {
-      resolve({ code: "200", msg: "success", data: allRouter() });
-    });
-  },
+  api:listAll,
   match:{
-    self:{    
+    self:{  
         dataType: DataType.array,
         dataModel:'ISelect',
+        func:(datas:MenuVo[]):ISelect[]=>{
+          const routerList=datas.filter((d:MenuVo)=>d.routerAddress).map(d=>d.routerAddress);
+          //未使用过的路由
+          return allRouter().filter(d=>!routerList.includes(d.value))
+        }
     }
   }
+
 }
 
 

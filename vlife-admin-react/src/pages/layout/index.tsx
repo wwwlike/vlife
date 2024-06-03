@@ -2,20 +2,26 @@ import React, { Suspense } from "react";
 import { Layout } from "@douyinfe/semi-ui";
 import Header from "./components/header";
 import Sider from "./components/sider";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import SuspendFallbackLoading from "../../components/fallback-loading";
 import FormModal from "../common/modal/formModal";
 import VlifeModal from "../common/modal/vlifeModal";
 import ConfirmModal from "../common/modal/confirmModal";
 import FullScreenHeader from "./components/header/FullScreenHeader";
+import { useAuth } from "@src/context/auth-context";
 const { Content } = Layout;
 const Index: React.FC = () => {
-  const fullTitle = new URLSearchParams(location.search).get("fullTitle");
+  const { allMenus, user } = useAuth();
+  const { pathname } = useLocation();
+  const singlePage =
+    pathname !== "/" &&
+    !allMenus?.map((m) => m.routerAddress).includes(pathname);
+
   return (
     <Layout className="layout-page">
-      {fullTitle ? (
+      {singlePage ? (
         <>
-          <FullScreenHeader title={fullTitle} />
+          {/* <FullScreenHeader title={""} /> */}
           <Content className="layout-content bg-gray-50 pl-2 pt-2 pr-2">
             <Suspense
               fallback={<SuspendFallbackLoading message="正在加载中" />}

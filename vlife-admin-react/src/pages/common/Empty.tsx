@@ -11,6 +11,7 @@ interface Iprops {
   imgSize?: "small" | "large" | "default";
   type?: "404" | "403" | "405";
 }
+import wxImage from "@src/assets/wx.jpg";
 
 const Result: FC<Iprops> = ({
   title,
@@ -19,8 +20,6 @@ const Result: FC<Iprops> = ({
   imgSize = "default",
 }) => {
   const navigate = useNavigate();
-  // const [size, setSize] = useState(imgSi);
-
   const size = useMemo((): string => {
     if (imgSize === "small") {
       return "w-20";
@@ -50,16 +49,9 @@ const Result: FC<Iprops> = ({
         ) : type === "404" ? (
           <IllustrationConstruction className={size} />
         ) : (
-          <Image
-            className={` w-48 h-48`}
-            src="https://wwwlike.gitee.io/vlife-img/wx.jpg"
-          ></Image>
+          <Image src={wxImage} className=" w-48" />
         )
       }
-      // <Image
-      //               className={" w-48 top-4"}
-      //               src="https://wwwlike.gitee.io/vlife-img/wx.jpg"
-      //             />
       title={title}
       description={description}
       style={{
@@ -85,7 +77,7 @@ const Result: FC<Iprops> = ({
                     // navigate(gotoLogin);
                     window.location.href = gotoLogin;
                   }
-                : () => navigate(`/dashboard/workbeach`, { replace: true })
+                : () => navigate(`/`, { replace: true })
             }
           >
             {type === "403" ? "去登录" : "回到首页"}

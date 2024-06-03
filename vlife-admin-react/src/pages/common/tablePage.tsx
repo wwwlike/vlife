@@ -38,8 +38,10 @@ import {
   startFlow,
 } from "@src/api/workflow/Flow";
 import { useNiceModal } from "@src/store";
-import TableTab, { ActiveTab, TabConfig } from "./tableTab";
-import { table } from "console";
+import TableTab, { ActiveTab, TableTabBaseProps } from "./tableTab";
+import Button from "@src/components/button";
+import ImportPage from "@src/plus/page/excel/ImportPage";
+import FlowTab from "./FlowTab";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
@@ -80,12 +82,13 @@ export type TableTab = {
 };
 
 // T为列表listType的类型
-export interface TablePageProps<T extends TableBean> extends ListProps<T> {
-  // tab?: false | "disableAll" | "disableFlow"; //false->不启用页签(tabList传值无效) |disableAll->不显示all页签 |disableFlow->不显示流程页签
-  tabConfig?: false | TabConfig; //页签配置 false 不需要页签
-  tabList?: TableTab[]; //tab分组的条件对象
-  sider?: ReactNode; //侧滑
-  tabDictField?: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
+export interface TablePageProps<T extends TableBean>
+  extends ListProps<T>,
+    TableTabBaseProps {
+  tab?: boolean; //是否开启页签
+  dataImp?: boolean; //数据可否导出
+  dataExp?: boolean; //数据可否导入
+  sider?: ReactNode; //侧滑组件
   listType: string; //列表模型
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req?: any; //查询条件obj  //简单obj对象完全匹配的过滤条件
@@ -93,20 +96,19 @@ export interface TablePageProps<T extends TableBean> extends ListProps<T> {
   design: true | undefined; //true则是设计器模式
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
-  sheetContainer?: () => HTMLElement; //侧滑的容器
   mode: "view" | "hand" | "normal"; //列表的三个场景模式  预览(精简无按钮，有搜索分页)|input传值(不从数据库取值，无需系统内置按钮和分页)|一般场景
+  otherBtns: VFBtn[]; // 按钮触发的增量功能
+  sheetContainer?: () => HTMLElement; //侧滑的容器
   loadApi: PageFuncType<T>; //异步加载数据的地址，
   onTableModel: (formVo: FormVo) => void; //列表模型信息传出
   onFormModel: (formVo: FormVo) => void; //表单模型信息传出
   onGetData: (pageData: PageVo<T>) => void; //请求的列表数据传出
   onTabCount: (tabCount: { tabKey: string; count: number }) => void; //tab页签数量传出
   onHttpError: (error: apiError) => void; //异常信息传出，设计阶段时接口没有会用到
-  otherBtns: VFBtn[]; // 按钮触发的增量功能
 }
 
 const TablePage = <T extends TableBean>({
-  // tab,
-  tabConfig,
+  tab = true,
   className,
   listType,
   editType,
@@ -114,7 +116,6 @@ const TablePage = <T extends TableBean>({
   model,
   conditionReq,
   dataSource,
-  // activeKey,
   mode = "normal",
   width,
   btns,
@@ -131,6 +132,8 @@ const TablePage = <T extends TableBean>({
   tabDictField,
   sider,
   sheetContainer,
+  dataImp = false,
+  dataExp = false,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const navigate = useNavigate();
@@ -148,7 +151,7 @@ const TablePage = <T extends TableBean>({
   const [pageData, setPageData] = useState<PageVo<T>>(); //请求到的分页数据
   const [order, setOrder] = useState<orderObj[]>(); //默认的排序内容
   const [loadFlag, setLoadFlag] = useState(1); //刷新标志
-  const [tabReq, setTabReq] = useState({}); //当前tab页签的查询条件
+  const [tabReq, setTabReq] = useState(); //当前tab页签的查询条件
   const [tabCount, setTabCount] = useState<{ [tabKey: string]: number }>(); //tab页签数量
   const [tabReqCount, setTabReqCount] = useState<{ [tabKey: string]: any }>({}); //查询数量页签条件
 
@@ -156,6 +159,7 @@ const TablePage = <T extends TableBean>({
     fkObj: any; //外键数据
     parentObj: any; //code关联数据
   }>();
+
   // const [queryBuilderCondition, setQueryBuilderCondition] =
   //   useState<ConditionGroup[]>(); //builder查询条件
   const [columnWheres, setColumnWheres] = useState<Partial<where>[]>([]); //字段的查询条件
@@ -340,23 +344,13 @@ const TablePage = <T extends TableBean>({
     [req, searchAndColumnCondition]
   );
 
-  //数据请求参数
-  const reqParams = useMemo(() => {
-    return {
+  const query = useCallback(() => {
+    const reqParams = {
       ..._params(tabReq),
       order: { orders: orderStr(order) },
       pager: pager,
     };
-  }, [
-    order,
-    JSON.stringify(req),
-    JSON.stringify(tabReq),
-    searchAndColumnCondition,
-    JSON.stringify(pager),
-  ]);
-
-  const query = useCallback(() => {
-    if (pageLoad) {
+    if (pageLoad && (tab === false || tabReq)) {
       pageLoad(reqParams)
         .then((data: Result<PageVo<T>>) => {
           if (activeKey) {
@@ -368,7 +362,6 @@ const TablePage = <T extends TableBean>({
               };
             });
           }
-
           if (data.data) {
             if (data.data.totalPage !== 0 && data.data.totalPage < pager.page) {
               setPageNum(data.data.totalPage);
@@ -389,7 +382,8 @@ const TablePage = <T extends TableBean>({
         });
     }
   }, [
-    JSON.stringify(reqParams),
+    tabReq,
+    JSON.stringify(tabReq),
     JSON.stringify(tableModel),
     JSON.stringify(pageLoad),
     JSON.stringify(pager),
@@ -397,15 +391,17 @@ const TablePage = <T extends TableBean>({
   ]);
 
   useEffect(() => {
-    if (dataSource === undefined) query();
+    if (dataSource === undefined) {
+      query();
+    }
   }, [
     dataSource,
-    reqParams,
-    order,
-    loadFlag,
-    JSON.stringify(tableModel),
-    JSON.stringify(pager),
-    JSON.stringify(pageLoad),
+    tabReq, //查询条件
+    order, //排序
+    loadFlag, //手工加载
+    JSON.stringify(tableModel), //模型信息
+    JSON.stringify(pager), //
+    JSON.stringify(pageLoad), //同步方法
   ]);
 
   const addMissingButtonAttributes = (b: VFBtn, entity: string): VFBtn => {
@@ -431,9 +427,9 @@ const TablePage = <T extends TableBean>({
         };
       }
 
-      if (b.model === undefined && b.saveApi === undefined) {
-        b.model = listType;
-      }
+      // if (b.model === undefined && b.saveApi === undefined) {
+      //   b.model = listType;
+      // }
 
       // if (b.disabledHide === undefined) {
       //   b.disabledHide = true;
@@ -500,17 +496,18 @@ const TablePage = <T extends TableBean>({
     return [];
   }, [tableModel, activeKey]);
 
-  //是否开启工作流
-  const openFlowTab = useMemo(() => {
+  //当前是否是工作流类型页签
+  const flowTab = useMemo(() => {
     if (
-      (tabConfig === undefined ||
-        (tabConfig !== false && tabConfig?.flowTab !== false)) &&
+      tab &&
+      tabDictField === undefined &&
+      tabList === undefined &&
       (tableModel?.flowJson || formModel?.flowJson)
     ) {
       return true;
     }
     return false;
-  }, [tableModel, formModel, tabConfig]);
+  }, [tableModel, formModel, tab, tabDictField, tabList]);
 
   //工作流按钮
   const flowBtns = useMemo(() => {
@@ -609,7 +606,7 @@ const TablePage = <T extends TableBean>({
           },
           onSubmitFinish: () => {
             //场景切换
-            openFlowTab &&
+            tab === true &&
               setActiveKey({ level1: "flow_byMe", level2: "flow_byMe_todo" });
           },
           disabledHide: true,
@@ -754,7 +751,7 @@ const TablePage = <T extends TableBean>({
     } else {
       return [];
     }
-  }, [formModel, activeKey, openFlowTab]);
+  }, [formModel, activeKey, tab]);
 
   /*页面所有按钮(查找工作流加入进来) */
   const totalBtns = useMemo((): VFBtn[] => {
@@ -777,7 +774,7 @@ const TablePage = <T extends TableBean>({
     tableModel,
     JSON.stringify(formModel),
     query,
-    JSON.stringify(reqParams),
+    // JSON.stringify(reqParams),
     flowBtns,
     otherBtns,
   ]);
@@ -935,47 +932,45 @@ const TablePage = <T extends TableBean>({
 
   return (
     <>
-      {/* {JSON.stringify(searchAndColumnCondition)} */}
       {tableModel && apiError === undefined && (
         <div
           ref={ref}
           className={`${className} relative h-full flex flex-col text-sm  `}
         >
-          {/* 页签 */}
-          {tabConfig !== false && (
+          {/* 常规页签 */}
+          {tab === true && flowTab !== true ? (
             <TableTab
-              activeKey={activeKey} //主动切换页签
+              activeTab={activeKey} //主动切换页签
               tabCount={tabCount} // 查询页签上数据的数量
               tabDictField={tabDictField}
               tabList={tabList}
-              tabConfig={
-                tabConfig
-                  ? tabConfig
-                  : {
-                      allTab: true,
-                      flowTab:
-                        tableModel?.flowJson || formModel?.flowJson
-                          ? true
-                          : false,
-                    }
-              }
-              // formModel={formModel}
-              // disableAll={tab === "disableAll" ? true : false} //不显示全部按钮
               tableModel={tableModel}
-              createAble={user?.superUser}
+              addTabAble={props.addTabAble && user?.superUser}
+              allTabAble={props.allTabAble}
               onActiveChange={setActiveKey}
               onTabReq={setTabReq}
               onCountReq={setTabReqCount} //需要查询页签数量的条件
             />
+          ) : flowTab ? (
+            <FlowTab
+              activeKey={activeKey} //主动切换页签
+              tabCount={tabCount} // 查询页签上数据的数量
+              tableModel={tableModel}
+              onActiveChange={setActiveKey}
+              onTabReq={setTabReq}
+              onCountReq={setTabReqCount} //需要查询页签数量的条件
+            />
+          ) : (
+            <></>
           )}
-          {version === "v_base" &&
-            (tableModel?.flowJson || formModel?.flowJson) && (
-              <div className=" text-red-500 absolute top-2 right-20 ">
-                开源版支持流程配置，业务流转需升级为专业版
-              </div>
-            )}
+
+          {version === "v_base" && flowTab && (
+            <div className=" text-red-500 absolute top-2 right-20 ">
+              开源版支持流程配置，业务流转需升级为专业版
+            </div>
+          )}
           <div
-            className={`flex bg-white items-center p-2 border-gray-100  justify-start  sidesheet-container `}
+            className={`flex bg-white items-center p-2  border-gray-100  justify-start  sidesheet-container `}
           >
             {/* 1. tableToolBar列表工具栏 */}
             <BtnToolBar<T>
@@ -1030,6 +1025,19 @@ const TablePage = <T extends TableBean>({
                 );
               }}
             />
+            <div className=" absolute right-4">
+              {dataImp && (
+                <Button
+                  title="数据导入"
+                  allowEmpty={true}
+                  actionType={"modal"}
+                  modal={<ImportPage entityType={tableModel?.entityType} />}
+                  onSubmitFinish={(data) => {
+                    setLoadFlag((flag) => flag + 1); //列表重新加载
+                  }}
+                />
+              )}
+            </div>
           </div>
           <SideSheet
             getPopupContainer={sheetContainer || getContainer}
@@ -1083,12 +1091,7 @@ const TablePage = <T extends TableBean>({
                 : undefined
             }
             onLineClick={(record) => {
-              if (
-                tabConfig !== false &&
-                tabConfig?.flowTab !== false &&
-                (tableModel?.flowJson || formModel?.flowJson) &&
-                version !== "v_base"
-              ) {
+              if (flowTab && version !== "v_base") {
                 formModal.show({
                   modelInfo: formModel,
                   type: editModelType,

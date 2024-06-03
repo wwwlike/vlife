@@ -53,7 +53,7 @@ import java.util.function.Consumer;
  * 权限应用的service基类
  * 至少需要进行查询权限控制的模型service应该继承与他
  */
-public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeService<T,D> {
+public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeService<T, D> {
     public final String TREECODE = "code";
     @Autowired
     public SysGroupService sysGroupService;
@@ -62,30 +62,33 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
     /*
      * 权限组map
      * */
-    public static Map<String, FormVo> models = new HashMap<>();
-
-    public FormVo getModelInfo(String type){
-        if(models.get(type)==null){
-            QueryWrapper<Form> req=QueryWrapper.of(Form.class).eq("type",type);
-            List<FormVo> vos=formService.query(FormVo.class,req);
-            if(vos.size()>0){
-                 models.put(type,vos.get(0));
-            }else{
-                //模型查询不到（数据未初始化）
-                return null;
-            }
-        }
-       return models.get(type);
-    }
-    /*
-     * 权限组map
-     * */
     public static Map<String, SysGroup> groups = new HashMap<>();
+    /*
+     * 模型map
+     * */
+    public static Map<String, FormVo> models = new HashMap<>();
     /**
      * 对应用户表里的字段
      * 当前权限组设置的模块->用户表的字段
      */
     public static Map<String, String> userMap = new HashMap<>();
+
+    public FormVo getModelInfo(String type) {
+        if (models.get(type) == null) {
+            QueryWrapper<Form> req = QueryWrapper.of(Form.class).eq("type", type);
+            List<FormVo> vos = formService.query(FormVo.class, req);
+            if (vos.size() > 0) {
+                models.put(type, vos.get(0));
+            } else {
+                //模型查询不到（数据未初始化）
+                return null;
+            }
+        }
+        return models.get(type);
+    }
+
+
+
 
     protected DataProcess createProcess(IdBean bean) {
         return new VlifeDataProcess(bean);
@@ -104,7 +107,6 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
         return false;
     }
 
-
     /**
      * 行级数据过滤
      * 用户表上外键能作为行级数据过滤的条件选项，在sysUser表加入外键，则需要同步在UserDetailVo里添加进去；2 在字典里配置 `实体_1`的形式；
@@ -112,139 +114,98 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
      * 当前支持查询本部门下级部门，查询本人，查看同一权限组 （权限组非树形关系，不支持查看下级）
      */
     public <S extends AbstractWrapper> S addQueryFilter(S queryWrapper) {
-        Class itemClz=queryWrapper.getEntityClz();
-        //实体类并且开启了工作流则不启用行级数据过滤
-        if(Item.class.isAssignableFrom(itemClz)){
-            FormVo vo=getModelInfo(itemClz.getSimpleName());
-            if(vo!=null&& vo.getFlowJson()!=null){
+        Class itemClz = queryWrapper.getEntityClz();
+        //实体类开启了工作流(flowJson)则不启用行级数据过滤
+        if (Item.class.isAssignableFrom(itemClz)) {
+            FormVo vo = getModelInfo(itemClz.getSimpleName());
+            if (vo != null && vo.getFlowJson() != null) {
                 return queryWrapper;
             }
-        }else if(GroupFilter.class.isAssignableFrom(itemClz)){
-        SecurityUser securityUser = SecurityConfig.getCurrUser();
-        if (securityUser != null) {
-            JSONObject user = (JSONObject) securityUser.getUseDetailVo();
-            String groupId = securityUser.getGroupId();
-            SysGroup group = groups.get(groupId);
-            if (group == null) {
-                group = sysGroupService.findOne(securityUser.getGroupId());
-                groups.put(groupId, group);
-            }
-            String groupFilterType = group.getFilterType();
-            //权限组需要进行数据权限过滤
-            if (group != null && !AuthDict.GROUP_FILTER_TYPE.ALL.equals(group) &&
-                    groupFilterType != null && groupFilterType.split("_").length == 2) {
-                String[] filterType = groupFilterType.split("_");
-                String filterEntityType = filterType[0]; //根据哪个外键过滤
-                String level = filterType[1];// 过滤级别 "1" 本级  2 本级和下级
-                EntityDto groupFilterEntityDto = GlobalData.entityDto(filterEntityType); //过滤方式对应的表
-                EntityDto entityDto = GlobalData.entityDto(itemClz);//当前查询的表
-                EntityDto sysUserEntityDto = GlobalData.entityDto("sysUser");
-                if (groupFilterEntityDto.getClz() ==itemClz || entityDto.fkMap.get(groupFilterEntityDto.getClz()) != null) {
-                    //拼装过滤条件
-                    Consumer<S> consumer = wrapper -> {
-                        String userField = userMap.get(filterEntityType);// sysDept
-                        if (userField == null) {
-                            userField = filterEntityType.equals("sysUser") ? "id" : filterEntityType + "Id";
-                            userMap.put(filterEntityType, userField);
-                        }
-                        //行级数据过滤，关于用户表上的那个值
-                        Object userFieldIdVal = user.get(userField);
-                        //查询的表和过滤的条件实体相同，行数据查询本人，当前查询业务为用户，则都是sysUser;
-                        if (groupFilterEntityDto.getClz() == itemClz) {//查询的表和行过滤的表相同(如查询本部门的数据，此时查询的表时部门表)
-                            if (level.equals("1")) {//id
-                                wrapper.eq("id", userFieldIdVal);
-                            } else if (level.equals("2")) {
-                                CommonResponseEnum.CANOT_CONTINUE.assertNotNull((JSONObject) user.get(filterEntityType),"用户表里没有找到"+filterEntityType+"数据");
-                                wrapper.startsWith(TREECODE, ((JSONObject) user.get(filterEntityType)).get(TREECODE));
-                            }
-                        } else {//过滤级别时本部门，查询的时项目表； select * from project where deptId
-                            if (level.equals("1")) {
-                                wrapper.eq(filterEntityType + "Id", userFieldIdVal);
-                            } else if (level.equals("2")) {
-                                wrapper.startsWith(TREECODE, ((JSONObject) user.get(filterEntityType)).get(TREECODE), groupFilterEntityDto.getClz());//,info.getDataClz());
-                            }
-                        }
-                    };
-                    consumer.accept(queryWrapper);
-//                    queryWrapper.and(consumer);
-                }else if(sysUserEntityDto.fkMap.get(queryWrapper.getEntityClz()) != null&&queryWrapper.getEntityClz()!=SysGroup.class){
-                    //当前查询实体，时sysUser的外键，但是这个实体没有权限组里设置的实体，则查询使用用户表里的值关联查询
-                   String fieldName=sysUserEntityDto.fkMap.get(queryWrapper.getEntityClz());
-                   queryWrapper.eq("id",user.get(fieldName));
-                }else{
-                    //查询实体，没有该过滤模型，则设置的行级过滤对此模块不起作用
-                }
-            }else{
-                //查看全部，不进行过滤
-            }
         }
+
+        if (IFilter.class.isAssignableFrom(itemClz)) {
+            SecurityUser securityUser = SecurityConfig.getCurrUser();
+            if (securityUser != null) {
+                JSONObject user = (JSONObject) securityUser.getUseDetailVo();
+                String groupId = securityUser.getGroupId();
+                SysGroup group = groups.get(groupId);
+                if (group == null) {
+                    group = sysGroupService.findOne(securityUser.getGroupId());
+                    groups.put(groupId, group);
+                }
+                String groupFilterType = group.getFilterType();
+                //权限组需要进行数据权限过滤
+                if (group != null && !AuthDict.GROUP_FILTER_TYPE.ALL.equals(group) &&
+                        groupFilterType != null && groupFilterType.split("_").length == 2) {
+                    String[] filterType = groupFilterType.split("_");
+                    String filterEntityType = filterType[0]; //根据哪个外键过滤
+                    String level = filterType[1];// 过滤级别 "1" 本级  2 本级和下级
+                    EntityDto groupFilterEntityDto = GlobalData.entityDto(filterEntityType); //过滤方式对应的表
+                    EntityDto entityDto = GlobalData.entityDto(itemClz);//当前查询的表
+                    EntityDto sysUserEntityDto = GlobalData.entityDto("sysUser");
+                    if (groupFilterEntityDto.getClz() == itemClz || entityDto.fkMap.get(groupFilterEntityDto.getClz()) != null) {
+                        //拼装过滤条件
+                        Consumer<S> consumer = wrapper -> {
+                            String userField = userMap.get(filterEntityType);// sysDept
+                            if (userField == null) {
+                                userField = filterEntityType.equals("sysUser") ? "id" : filterEntityType + "Id";
+                                userMap.put(filterEntityType, userField);
+                            }
+                            //行级数据过滤，关于用户表上的那个值
+                            Object userFieldIdVal = user.get(userField);
+                            //查询的表和过滤的条件实体相同，行数据查询本人，当前查询业务为用户，则都是sysUser;
+                            if (groupFilterEntityDto.getClz() == itemClz) {//查询的表和行过滤的表相同(如查询本部门的数据，此时查询的表时部门表)
+                                if (level.equals("1")) {//id
+                                    wrapper.eq("id", userFieldIdVal);
+                                } else if (level.equals("2")) {
+                                    CommonResponseEnum.CANOT_CONTINUE.assertNotNull((JSONObject) user.get(filterEntityType), "用户表里没有找到" + filterEntityType + "数据");
+                                    wrapper.startsWith(TREECODE, ((JSONObject) user.get(filterEntityType)).get(TREECODE));
+                                }
+                            } else {//过滤级别时本部门，查询的时项目表； select * from project where deptId
+                                if (level.equals("1")) {
+                                    wrapper.eq(filterEntityType + "Id", userFieldIdVal);
+                                } else if (level.equals("2")) {
+                                    wrapper.startsWith(TREECODE, ((JSONObject) user.get(filterEntityType)).get(TREECODE), groupFilterEntityDto.getClz());//,info.getDataClz());
+                                }
+                            }
+                        };
+                        consumer.accept(queryWrapper);
+//                    queryWrapper.and(consumer);
+                    } else if (sysUserEntityDto.fkMap.get(queryWrapper.getEntityClz()) != null && queryWrapper.getEntityClz() != SysGroup.class) {
+                        //当前查询实体，时sysUser的外键，但是这个实体没有权限组里设置的实体，则查询使用用户表里的值关联查询
+                        String fieldName = sysUserEntityDto.fkMap.get(queryWrapper.getEntityClz());
+                        queryWrapper.eq("id", user.get(fieldName));
+                    } else {
+                        //查询实体，没有该过滤模型，则设置的行级过滤对此模块不起作用
+                    }
+                } else {
+                    //查看全部，不进行过滤
+                }
+            }
         }
         return queryWrapper;
     }
 
 
     @Override
-    protected <E extends IdBean> E saveBean(final E idBean, boolean isFull) {
+    public <E extends IdBean> E saveBean(final E idBean, boolean isFull) {
         //判断是否树型实体接口，对树形code及父code进行计算赋值
         ITree oldTree = null;
         if (idBean instanceof ITree) {
             oldTree = treeCode((ITree) idBean, idBean.getId() != null ? (ITree) findOne(idBean.getId()) : null);
         }
         //编号接口赋值
-        if(idBean instanceof INo && ((INo) idBean).getNo()==null){
-            String noPrefix=getModelInfo(StringUtils.uncapitalize(idBean.getClass().getSimpleName())).getPrefixNo();
-            ReflectionUtils.setFieldValue(idBean,"no", BusinessNumberGenerator.generate(noPrefix));
+        if (idBean instanceof INo && ((INo) idBean).getNo() == null) {
+            String noPrefix = getModelInfo(StringUtils.uncapitalize(idBean.getClass().getSimpleName())).getPrefixNo();
+            ReflectionUtils.setFieldValue(idBean, "no", BusinessNumberGenerator.generate(noPrefix));
         }
-         saveBean(idBean, null, null, null, isFull);
+        saveBean(idBean, null, null, null, isFull);
         if (oldTree != null) {  //1 修改之前的子集成新的code
             batchTreeSub(oldTree.getCode(), ((ITree) idBean).getCode());
         }
         return idBean;
 
     }
-
-//    /**
-//     * 实体直接保存重载
-//     */
-//    @Override
-//    protected <E extends Item> E save(E beanDto, DataProcess masterProcess) {
-//        //判断是否树型实体接口，对树形code及父code进行计算赋值
-//        ITree oldTree = null;
-//        if (beanDto instanceof ITree) {
-//            oldTree = treeCode((ITree) beanDto, beanDto.getId() != null ? (ITree) findOne(beanDto.getId()) : null);
-//        }
-//        //赋值表单
-//        if(beanDto instanceof INo && ((INo) beanDto).getNo()==null){
-//            BusinessNumberGenerator.generate("NO-");
-//        }
-//        super.save(beanDto, masterProcess);
-//        if (oldTree != null) {  //1 修改之前的子集成新的code
-//            batchTreeSub(oldTree.getCode(), ((ITree) beanDto).getCode());
-//        }
-//
-//        return beanDto;
-//    }
-
-
-//    public <E extends SaveBean<T>> E save(E saveBean, boolean isFull) {
-//        //判断是否树型实体接口，对树形code及父code进行计算赋值
-//        ITree oldTree = null;
-//        if (saveBean instanceof ITree) {
-//            oldTree = treeCode((ITree) saveBean, saveBean.getId() != null ? (ITree) findOne(saveBean.getId()) : null);
-//        }
-//        if(saveBean instanceof INo && ((INo) saveBean).getNo()==null){
-//            BusinessNumberGenerator.generate("NO-");
-//        }
-//        super.save(saveBean, isFull);
-//        if (oldTree != null) {  //1 修改之前的子集成新的code
-//            batchTreeSub(oldTree.getCode(), ((ITree) saveBean).getCode());
-//        }
-//        return saveBean;
-//    }
-
-
-
-    //内部辅助方法
 
     /**
      * 设置code,并返回标识是否保存后还要做其他修改的工作(老code)

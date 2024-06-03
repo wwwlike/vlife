@@ -15,7 +15,7 @@ export default ({ title }: { title: string }) => {
         header={
           <div className=" flex items-center  space-x-3">
             <IconArrowLeft
-              className="cursor-pointer"
+              className="cursor-pointer hover:text-blue-500"
               onClick={() => {
                 navigate(-1);
               }}
