@@ -120,9 +120,10 @@ export default () => {
       )?.[0];
       if (currMenu !== undefined) {
         setSelectedKeys([currMenu.id]);
-        setOpenKeys([
-          allMenus.filter((m) => m.code === currMenu.pcode)?.[0]?.id,
-        ]);
+        const _openKeys: string[] = [
+          allMenus?.filter((m) => m.code === currMenu.pcode)?.[0]?.id,
+        ];
+        setOpenKeys((openKeys) => [...openKeys, ..._openKeys]);
       } else {
         //缓存里读取
         const localMenu: any = localStorage.getItem("currMenu");
