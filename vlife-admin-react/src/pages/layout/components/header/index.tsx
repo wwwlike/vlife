@@ -30,7 +30,7 @@ import { Result } from "@src/api/base";
 import { useDetail } from "@src/api/base/baseService";
 import { findSubs, findTreeRoot } from "@src/util/func";
 import { urlMenu, visitTopMenu } from "../sider";
-import path from "path";
+import weilai from "@src/assets/weilai.jpg";
 const { Header } = Layout;
 
 const Index = () => {
@@ -74,7 +74,7 @@ const Index = () => {
     if (user && allMenus) {
       if (pathname === "/" && apps) {
         setApp(apps[0]);
-      } else {
+      } else if (app === undefined) {
         //查找菜单
         const currMenu = urlMenu(allMenus, pathname);
         if (currMenu) {
@@ -288,7 +288,7 @@ const Index = () => {
                 className=" relative top-3 "
                 image={
                   <img
-                    src={"https://wwwlike.gitee.io/vlife-img/weilai.jpg"}
+                    src={weilai}
                     style={{ width: 80, height: 30, top: 10 }}
                   />
                 }

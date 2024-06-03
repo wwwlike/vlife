@@ -966,7 +966,7 @@ const TablePage = <T extends TableBean>({
 
           {version === "v_base" && flowTab && (
             <div className=" text-red-500 absolute top-2 right-20 ">
-              开源版支持流程配置，业务流转需升级为专业版
+              工作流开源版仅支持流程配置
             </div>
           )}
           <div

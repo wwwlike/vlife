@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import logo from "@src/logo.png";
 import backgroundImage from "@src/assets/login_bg.jpg";
 import loginLeftImage from "@src/assets/login_left.png";
+import wxgzh from "@src/assets/wxgzh.jpg";
+import weilai from "@src/assets/weilai.jpg";
 import LinkMe from "../layout/components/header/LinkMe";
 const Index: React.FC = () => {
   const localUsername = window.localStorage.getItem(localHistoryLoginUserName);
@@ -51,10 +53,7 @@ const Index: React.FC = () => {
           className="relative  flex justify-center items-center bg-white rounded-r-3xl shadow-xl shadow-right shadow-top shadow-bottom"
         >
           <div className=" absolute top-1 right-3  ">
-            <img
-              src="https://wwwlike.gitee.io/vlife-img/wxgzh.jpg"
-              className=" w-24 "
-            />
+            <img src={wxgzh} className=" w-24 " />
             关注获取账号
           </div>
           {/* <div className="gitee" onClick={gitLogin}>
@@ -66,10 +65,7 @@ const Index: React.FC = () => {
           >
             <div className=" flex justify-left w-full ">
               <img src={logo} style={{ width: 40, height: 30, top: 10 }} />
-              <img
-                src={"https://wwwlike.gitee.io/vlife-img/weilai.jpg"}
-                style={{ width: 80, height: 30, top: 10 }}
-              />
+              <img src={weilai} style={{ width: 80, height: 30, top: 10 }} />
             </div>
             <p className="text-red-500 pt-2 text-center ">{error}</p>
             <div className="mb-1 pt-2 rounded">
