@@ -9,7 +9,7 @@ import loginLeftImage from "@src/assets/login_left.png";
 import LinkMe from "../layout/components/header/LinkMe";
 const Index: React.FC = () => {
   const localUsername = window.localStorage.getItem(localHistoryLoginUserName);
-  const { user, login, error } = useAuth();
+  const { user, login, error, setAllMenus } = useAuth();
   const navigate = useNavigate();
   const { values, setFieldValue } = useForm<{
     username: string;
@@ -19,6 +19,7 @@ const Index: React.FC = () => {
   useEffect(() => {
     if (user && user.id) {
       navigate("/");
+      setAllMenus(user.menus);
     }
   }, [user]);
 

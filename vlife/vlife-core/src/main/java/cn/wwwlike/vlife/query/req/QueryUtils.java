@@ -51,6 +51,7 @@ public class QueryUtils {
     /**
      * 将B端定义的查询转换成queryWrapper里
      * 支持嵌套的querybuild查询条件
+     *
      * @param qw        包裹数据对象
      * @param condition b端定义查询条件
      * @return
@@ -77,8 +78,8 @@ public class QueryUtils {
 
     //简单过滤分组设计器
     public static <T extends AbstractWrapper> T condition(T qw, List<ConditionGroup> groups) {
-        qw.or(ww -> groups.forEach(g->
-            ((T)ww).and(www->where((T) www,g.getWhere()))
+        qw.or(ww -> groups.forEach(g ->
+                ((T) ww).and(www -> where((T) www, g.getWhere()))
         ));
         return qw;
     }
@@ -86,17 +87,19 @@ public class QueryUtils {
 
     /**
      * 进行一组查询
+     *
      * @param qw
      * @param wheres
      * @return
      */
-    public static <T extends AbstractWrapper>T where(T qw, List<Where> wheres) {
+    public static <T extends AbstractWrapper> T where(T qw, List<Where> wheres) {
         for (Where w : wheres) {
-            if(w.subQuery!=null&& w.subQuery==true){
+//            if(w.subQuery!=null&& w.subQuery==true){
 //                qw.andSub(w.getClazz(),t->((T)t).eq("content","1"),qw.getEntityClz());
-            }else if(StringUtils.isNotBlank(w.getFieldName()) && StringUtils.isNotBlank(w.getOpt())){
-                if (!w.getOpt().equals("isNotNull")&&!w.getOpt().equals("isNull")&&w.getValue()!=null
-                 &&w.getValue()!=null&& w.getValue().length > 0 && Arrays.stream(w.getValue()).filter(v->v!=null&&StringUtils.isNotBlank(v.toString())).count()==w.getValue().length
+//            }else
+            if (StringUtils.isNotBlank(w.getFieldName()) && StringUtils.isNotBlank(w.getOpt())) {
+                if (!w.getOpt().equals("isNotNull") && !w.getOpt().equals("isNull") && w.getValue() != null
+                        && w.getValue() != null && w.getValue().length > 0 && Arrays.stream(w.getValue()).filter(v -> v != null && StringUtils.isNotBlank(v.toString())).count() == w.getValue().length
                 ) {
                     //动态条件
                     if (w.getOpt().equals("dynamic")) {
@@ -105,111 +108,111 @@ public class QueryUtils {
                         Integer currentWeek = now.get(WeekFields.ISO.weekOfWeekBasedYear()); //所在年的周数
                         Integer currentYear = LocalDate.now().getYear();
                         DateRange dateRange = DateRange.valueOf(w.getValue()[0].toString().toUpperCase());
-                        Integer today =now.getDayOfYear();
+                        Integer today = now.getDayOfYear();
                         switch (dateRange) {
                             case TODAY:
-                                qw.eq(true, w.getFieldName(), today, new DateExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), today, new DateExpressTran(), w.getClazz());
                                 break;
                             case YESTERDAY:
-                                qw.eq(true, w.getFieldName(), today-1, new DateExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), today - 1, new DateExpressTran(), w.getClazz());
                                 break;
                             case THIS_WEEK:
-                                qw.eq(true, w.getFieldName(), currentWeek, new WeekExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), currentWeek, new WeekExpressTran(), w.getClazz());
                                 break;
                             case LAST_WEEK:
-                                Integer lastWeek = currentWeek-1;
-                                qw.eq(true, w.getFieldName(), lastWeek, new WeekExpressTran(),w.getClazz());
+                                Integer lastWeek = currentWeek - 1;
+                                qw.eq(true, w.getFieldName(), lastWeek, new WeekExpressTran(), w.getClazz());
                                 break;
                             case THIS_MONTH:
                                 Integer yearMonth = Integer.parseInt(String.format("%04d%02d", currentYear, currentMonth));
-                                qw.eq(true, w.getFieldName(), yearMonth, new MonthExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), yearMonth, new MonthExpressTran(), w.getClazz());
                                 break;
                             case LAST_MONTH:
                                 Integer lastMonth = Integer.parseInt(String.format("%04d%02d", currentYear, LocalDate.now().minusMonths(1).getMonthValue()));
-                                qw.eq(true, w.getFieldName(), lastMonth, new MonthExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), lastMonth, new MonthExpressTran(), w.getClazz());
                                 break;
                             case THIS_JI:
                                 break;
                             case LAST_JI:
                                 break;
                             case THIS_YEAR:
-                                qw.eq(true, w.getFieldName(), currentYear, new YearExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), currentYear, new YearExpressTran(), w.getClazz());
                                 break;
                             case LAST_YEAR:
                                 Integer lastYear = LocalDate.now().minusYears(1).getYear();
-                                qw.eq(true, w.getFieldName(), lastYear, new YearExpressTran(),w.getClazz());
+                                qw.eq(true, w.getFieldName(), lastYear, new YearExpressTran(), w.getClazz());
                                 break;
                             case LAST_7_DAYS:
                                 LocalDate last7Days = now.minusDays(7);
-                                qw.goe(w.getFieldName(), Date.valueOf(last7Days),w.getClazz());
+                                qw.goe(w.getFieldName(), Date.valueOf(last7Days), w.getClazz());
                                 break;
                             case LAST_30_DAYS:
                                 LocalDate last30Days = now.minusDays(30);
-                                qw.goe(w.getFieldName(), Date.valueOf(last30Days),w.getClazz());
+                                qw.goe(w.getFieldName(), Date.valueOf(last30Days), w.getClazz());
                                 break;
                             case LAST_90_DAYS:
                                 LocalDate last90Days = now.minusDays(90);
-                                qw.goe(w.getFieldName(), Date.valueOf(last90Days),w.getClazz());
+                                qw.goe(w.getFieldName(), Date.valueOf(last90Days), w.getClazz());
                                 break;
                             case LAST_1_YEAR:
                                 LocalDate last1Year = now.minusYears(1);
-                                qw.goe(w.getFieldName(), Date.valueOf(last1Year),w.getClazz());
+                                qw.goe(w.getFieldName(), Date.valueOf(last1Year), w.getClazz());
                         }
-                    }  else {
+                    } else {
                         Object value = w.getValue()[0];
                         try {
                             if ("number".equals(w.getFieldType())) {
                                 value = NumberFormat.getInstance().parse(value.toString());
-                            }else if ("date".equals(w.getFieldType())) {
-                                value = DateUtils.parseDate(value.toString(),"yyyy/MM/dd");
+                            } else if ("date".equals(w.getFieldType())) {
+                                value = DateUtils.parseDate(value.toString(), "yyyy/MM/dd");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                         if (w.getOpt().equals(Opt.eq.optName)) {
-                            qw.eq(w.getFieldName(), value,w.getClazz());
+                            qw.eq(w.getFieldName(), value, w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.gt.optName)) {
-                            qw.gt(w.getFieldName(), value,w.getClazz());
+                            qw.gt(w.getFieldName(), value, w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.goe.optName)) {
-                            qw.goe(w.getFieldName(), value,w.getClazz());
+                            qw.goe(w.getFieldName(), value, w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.lt.optName)) {
-                            qw.lt(w.getFieldName(), value,w.getClazz());
+                            qw.lt(w.getFieldName(), value, w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.loe.optName)) {
-                            qw.loe(w.getFieldName(), value,w.getClazz());
+                            qw.loe(w.getFieldName(), value, w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.like.optName)) {
-                            qw.like(w.getFieldName(), "%" + w.getValue()[0] + "%",w.getClazz());
+                            qw.like(w.getFieldName(), "%" + w.getValue()[0] + "%", w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.startsWith.optName)) {
-                            qw.startsWith(w.getFieldName(), w.getValue()[0],w.getClazz());
+                            qw.startsWith(w.getFieldName(), w.getValue()[0], w.getClazz());
 //                            qw.startsWith(w.getFieldName(), w.getValue()[0] + "%",w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.endsWith.optName)) {
-                            qw.endsWith(w.getFieldName(), w.getValue()[0],w.getClazz());
+                            qw.endsWith(w.getFieldName(), w.getValue()[0], w.getClazz());
 //                            qw.endsWith(w.getFieldName(), "%" + w.getValue()[0],w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.ne.optName)) {
                             Object finalValue = value;
-                            qw.or(d->{
-                                ((AbstractWrapper)d).isNull(w.getFieldName(),w.getClazz());
-                                ((AbstractWrapper)d).ne(w.getFieldName(), finalValue,w.getClazz());
+                            qw.or(d -> {
+                                ((AbstractWrapper) d).isNull(w.getFieldName(), w.getClazz());
+                                ((AbstractWrapper) d).ne(w.getFieldName(), finalValue, w.getClazz());
                             });//递归
                         }
                         if (w.getOpt().equals(Opt.notIn.optName)) {
-                            qw.notIn(w.getFieldName(), w.getValue(),w.getClazz());
+                            qw.notIn(w.getFieldName(), w.getValue(), w.getClazz());
                         }
                         if (w.getOpt().equals(Opt.in.optName)) {
-                            qw.in(w.getFieldName(), w.getValue(),w.getClazz());
+                            qw.in(w.getFieldName(), w.getValue(), w.getClazz());
                         }
                     }
-                }else if (w.getOpt().equals(Opt.isNotNull.optName)) {
-                    qw.isNotNull(w.getFieldName(),w.getClazz());
+                } else if (w.getOpt().equals(Opt.isNotNull.optName)) {
+                    qw.isNotNull(w.getFieldName(), w.getClazz());
                 } else if (w.getOpt().equals(Opt.isNull.optName)) {
-                    qw.isNull(w.getFieldName(),w.getClazz());
+                    qw.isNull(w.getFieldName(), w.getClazz());
                 }
             }
         }

@@ -6,7 +6,6 @@ import { list as dictList, SysDict } from "@src/api/SysDict";
 import {
   currUser,
   SysUser,
-  list as userList,
   ThirdAccountDto,
   UserDetailVo,
   detail,
@@ -16,7 +15,7 @@ import { FormVo, formPageReq, list } from "@src/api/Form";
 import { SysResources } from "@src/api/SysResources";
 import { useEffect } from "react";
 import { listAll, SysGroup } from "@src/api/SysGroup";
-import { listAll as menuAll, MenuVo } from "@src/api/SysMenu";
+import { MenuVo } from "@src/api/SysMenu";
 import { gitToken } from "@src/api/pro/gitee";
 export const localStorageKey = "__auth_provider_token__";
 const mode = import.meta.env.VITE_APP_MODE;
@@ -120,7 +119,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   /**封装好的全量字典信息 */
   const [dicts, setDicts] = useState<dictObj>({});
 
-  const [allMenus, setAllMenus] = useState<MenuVo[]>();
+  const [allMenus, setAllMenus] = useState<MenuVo[]>([]);
 
   const [error, setError] = useState<string | null>();
 
@@ -217,7 +216,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setUser(res.data);
           datasInit();
-          setAllMenus(res.data?.menus);
+          setAllMenus(res.data?.menus || []);
         }
       });
     }

@@ -1,24 +1,15 @@
 /**
  * 桌面
  */
-
+import React, { useEffect, useState } from "react";
 import { Avatar, Banner, Card, Empty, Image, Steps } from "@douyinfe/semi-ui";
 import Meta from "@douyinfe/semi-ui/lib/es/card/meta";
-import { SysMenu, listAll } from "@src/api/SysMenu";
+import { SysMenu } from "@src/api/SysMenu";
 import { useAuth } from "@src/context/auth-context";
-
-import { useEffect, useState } from "react";
 import { LiveProvider, LiveEditor } from "react-live";
 const APP_TITLE = import.meta.env.VITE_APP_TITLE;
 export default () => {
   const { user } = useAuth();
-  const [apps, setApps] = useState<SysMenu[]>([]);
-  useEffect(() => {
-    listAll().then((datas) => {
-      setApps(datas.data?.filter((d) => d.app) || []);
-    });
-  }, []);
-
   interface IUser {
     id: number;
     name: string;

@@ -40,8 +40,8 @@ import {
 import { useNiceModal } from "@src/store";
 import TableTab, { ActiveTab, TableTabBaseProps } from "./tableTab";
 import Button from "@src/components/button";
-import ImportPage from "@src/plus/page/excel/ImportPage";
 import FlowTab from "./FlowTab";
+import ImportPage from "../excel/ImportPage";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {

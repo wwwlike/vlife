@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication(scanBasePackages ={
         "cn.wwwlike.auth",
         "cn.wwwlike.sys",
+        "cn.wwwlike.excel",
         "cn.wwwlike.form",
         "cn.wwwlike.vlife.ts",
         "cn.wwwlike.vlife.gitee",

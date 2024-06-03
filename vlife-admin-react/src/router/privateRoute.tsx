@@ -9,13 +9,7 @@ const PrivateRoute = ({ ...props }) => {
   // 登录验证
   const logged = user?.name ? true : false;
   return logged ? (
-    pathname === "/" ? (
-      // <Navigate to={{ pathname: `/dashboard/workbeach` }} replace />
-      ///sysConf/model
-      <Navigate to={{ pathname: `/sysConf/flowDesign/product` }} replace />
-    ) : (
-      props.element
-    )
+    props.element
   ) : (
     <Empty title="没有权限" description="您还没有登录，请先去登录" type="403" />
   );
