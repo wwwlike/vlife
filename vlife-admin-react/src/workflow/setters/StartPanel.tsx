@@ -49,6 +49,7 @@ export const StartPanel = memo(
             "auditLevel",
             "fields"
           ).hide(),
+          VF.then("entityType").value(props?.formVo?.entityType).hide(),
           VF.field("handleType").default("general"),
           VF.field("handleType")
             .eq("general")

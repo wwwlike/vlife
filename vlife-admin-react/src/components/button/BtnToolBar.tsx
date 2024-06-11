@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import classNames from "classnames";
 import { IdBean } from "@src/api/base";
 import {
@@ -20,16 +20,16 @@ import { Dropdown } from "@douyinfe/semi-ui";
  * 区块按钮组定义
  */
 export interface BtnToolBarProps<T extends IdBean> {
-  btnType?: btnType;
+  btns: VFBtn[]; //按钮信息集合
+  btnType?: btnType; //按钮展现形式
   className?: string;
-  dropdown?: boolean; //是否下拉
-  btns: VFBtn[]; //按钮对象
-  formModel?: string; //传入，则会对btns根据model进行过滤
+  dropdown?: boolean; //是否下拉类型按钮组
+  formModel?: string; //传入，则会对btns根据model进行过滤,显示单一模型的按钮
   datas?: T[]; //操作的数据
   position?: BtnToolBarPosition; //显示场景(过滤出满足条件的按钮)
   line?: number; //行号 tableLine模式下使用 临时数据可用行号当索引进行操作
-  readPretty?: boolean; //当前页面模式(过滤按钮使用)
-  activeKey?: string; //当前所在页签的key
+  readPretty?: boolean; //true 则只使用api的按钮
+  activeKey?: string; //当前所在页签的key()
   // onDataChange?: (datas: any[]) => void; //数据修订好传输出去
   onBtnNum?: (num: number) => void; //当前按钮数量
 }
@@ -53,11 +53,14 @@ export default <T extends IdBean>({
   onBtnNum,
   ...props
 }: BtnToolBarProps<T>) => {
-  const [btnDatas, setBtnDatas] = useState<T[] | undefined>(datas); //当前操作的数据
+  // useEffect(() => {
+
+  // }, [btns]);
+  // const [btnDatas, setBtnDatas] = useState<T[] | undefined>(datas); //当前操作的数据
   // const [currBtns, setCurrBtns] = useState<VFBtn[]>([]); //当前页面应该显示的按钮
-  useEffect(() => {
-    setBtnDatas(datas);
-  }, [datas]);
+  // useEffect(() => {
+  //   setBtnDatas(datas);
+  // }, [datas]);
 
   //筛选出应该在当前场景下可以使用的按钮
   const currBtns = useMemo(() => {
@@ -79,7 +82,7 @@ export default <T extends IdBean>({
           b.position === "tableLine"
       );
     } else if (position === "formFooter") {
-      if (btnDatas === undefined || btnDatas?.[0]?.id === undefined) {
+      if (datas === undefined || datas?.[0]?.id === undefined) {
         //模型数据为空
         toolBarBtns = btns.filter(
           (b) =>
@@ -102,7 +105,7 @@ export default <T extends IdBean>({
     return toolBarBtns
       .filter((btn) => (formModel ? btn.model === formModel : true)) //模型过滤
       .filter((btn) => (readPretty ? btn.actionType === "api" : true)); //只读过滤
-  }, [position, btns, formModel, readPretty]);
+  }, [position, btns, formModel, readPretty, datas]);
 
   //返回按钮数量
   useEffect(() => {
@@ -134,7 +137,7 @@ export default <T extends IdBean>({
                   : btn.position
               }
               datas={
-                btn.datas || btnDatas
+                btn.datas || datas
                 // btn.actionType === "create" ||
                 // (btn.actionType === "save" && position === "tableToolbar")
                 //   ? btn.initData //新增类型按钮使用initData
@@ -183,7 +186,7 @@ export default <T extends IdBean>({
                     <Button
                       {...btn}
                       position={"dropdown"}
-                      datas={btn.datas || btnDatas}
+                      datas={btn.datas || datas}
                       otherBtns={
                         btn.actionType === "save" && btn.model ? currBtns : []
                       }

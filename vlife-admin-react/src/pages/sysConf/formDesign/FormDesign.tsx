@@ -140,6 +140,7 @@ export default ({ onModelChange, useButton = false }: FormDesignProps) => {
   }, [currModel]);
 
   useEffect(() => {
+    console.log("name", currModel?.name);
     currModel && onModelChange?.(currModel);
   }, [currModel]);
 

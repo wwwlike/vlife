@@ -246,4 +246,9 @@ public class FormField extends DbEntity {
      * 字符加密
      */
     public boolean safeStr;
+
+    /**
+     * 导入导出
+     */
+    public Boolean excel;
 }

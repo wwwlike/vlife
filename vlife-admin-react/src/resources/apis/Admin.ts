@@ -225,6 +225,28 @@ export const resourcesOpenApi:ApiInfo= {
           label:d.name,
         }})
       }
+     },
+     flow:{
+      label:"流程执行可执法的接口",
+      dataType: DataType.array,
+      dataModel:"ISelect",
+      params:{
+        entityType:{
+          label:"实体类型",
+          required:true,
+          dynamicParams:true,
+          dynamicParamsOpt:OptEnum.eq,
+          dataType:DataType.basic,
+          dataModel:DataModel.string,
+          fromField:true,
+        },
+      },
+      func:(datas:SysResources[]):ISelect[]=>{
+        return datas.filter(f=>f.methedType.startsWith("@Post")&&f.methedType.indexOf("{id}")!==-1).map((d)=>{return {
+          value:d.url,
+          label:d.name,
+        }})
+      }
      }
   }
 }

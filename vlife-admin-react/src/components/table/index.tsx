@@ -174,6 +174,7 @@ const TableIndex = <T extends TableBean>({
         list.forEach((f) => {
           columnshow.push({
             ...f,
+
             title: (
               <ColumnTitle
                 entityName={model.entityType}
@@ -202,6 +203,7 @@ const TableIndex = <T extends TableBean>({
             width: f.listWidth
               ? f.listWidth + avgAddWidth
               : fieldDefaultWidthObj[f.fieldType] + avgAddWidth,
+
             dataIndex: f.fieldName,
             align: f.listAlign ? f.listAlign : "center",
             className: `${
@@ -443,6 +445,7 @@ const TableIndex = <T extends TableBean>({
         className={`${className} relative `}
         showHeader={true}
         scroll={{ y: height }}
+        resizable={true}
         // style={{ lineHeight: "24px" }}
         style={{
           width: `${width}px`, //设置宽度方便横向滚动条展示

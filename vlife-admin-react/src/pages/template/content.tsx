@@ -1,11 +1,4 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { ReactNode, useMemo, useRef, useState } from "react";
 import FormPage from "@src/pages/common/formPage";
 import { useNavigate } from "react-router-dom";
 import TablePage, { TablePageProps } from "@src/pages/common/tablePage";
@@ -13,16 +6,10 @@ import { useNiceModal } from "@src/store";
 import { FormVo } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
 import { useSize } from "ahooks";
-import { VF, VfAction } from "@src/dsl/VF";
-import { list, remove, ReportCondition, save } from "@src/api/ReportCondition";
-import { Tabs } from "@douyinfe/semi-ui";
 import GroupLabel from "@src/components/form/component/GroupLabel";
 import { OptEnum, where } from "@src/dsl/base";
-import { loadApi } from "@src/resources/ApiDatas";
-import { SysDict } from "@src/api/SysDict";
-import Button from "@src/components/button";
 import { TableBean } from "@src/components/table";
-import classNames from "classnames";
+import { VF, VfAction } from "@src/dsl/VF";
 
 //tab页签
 type TableTab = {
@@ -145,7 +132,7 @@ const Content = <T extends TableBean>({
                   ? filterReaction
                   : [...filterReaction, ...filterType.reaction]
               }
-              formData={req}
+              // formData={req}
               onDataChange={(data) => {
                 setFormData({ ...data });
                 onReq?.(data);

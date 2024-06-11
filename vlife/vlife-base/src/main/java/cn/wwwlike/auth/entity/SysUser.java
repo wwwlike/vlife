@@ -71,7 +71,7 @@ public class SysUser extends DbEntity implements IFkItem,IUser, IFilter {
      * 用户类型
      */
     @VField(dictCode = "USER_TYPE")
-    public String usetype;
+    public String userType;
     /**
      * 头像
      */

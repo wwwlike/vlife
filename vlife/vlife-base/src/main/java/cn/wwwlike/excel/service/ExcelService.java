@@ -21,10 +21,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -73,7 +71,12 @@ public class ExcelService {
 //        headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 //        headerStyle.setFillPattern(FillPattern.SOLID_FILL);
         AtomicInteger i = new AtomicInteger(0);
-        List<FormFieldVo> fields = formVo.getFields().stream().filter(f -> !f.fieldName.equals("id")).collect(Collectors.toList());
+        //不导入的字段过滤
+        List<FormFieldVo> fields = formVo.getFields().stream().filter(
+                f -> !f.fieldName.equals("id")
+                && f.create_hide!=true //新增时隐藏
+                && f.x_hidden!=true  //直接隐藏
+        ).collect(Collectors.toList());
         fields.forEach(field -> {
             int a = i.getAndIncrement();
             Cell cell = headerRow.createCell(a);
@@ -89,18 +92,6 @@ public class ExcelService {
             } else if (field.getFieldType().equals("number")) {
                 sheet.setDefaultColumnStyle(coloumn, numberCellStyle);
             } else if (field.dictCode != null) {
-                List<String> dictTitles = dictService.listByCode(field.dictCode).stream()
-                        .map(SysDict::getTitle)
-                        .collect(Collectors.toList());
-                String[] titlesArray = dictTitles.toArray(new String[0]);
-                if (titlesArray.length > 0) {
-                    DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(titlesArray);
-                    CellRangeAddressList addressList = new CellRangeAddressList(2, 10000, coloumn, coloumn);
-                    DataValidation validation = validationHelper.createValidation(constraint, addressList);
-                    validation.setShowErrorBox(true);
-                    sheet.addValidationData(validation);
-                }
-            }else if (field.getFieldName().endsWith("Id") && field.getEntityFieldName().equals("id")&& field.getEntityType().startsWith("sys")) {
                 List<String> dictTitles = dictService.listByCode(field.dictCode).stream()
                         .map(SysDict::getTitle)
                         .collect(Collectors.toList());
@@ -132,7 +123,7 @@ public class ExcelService {
     }
 
     // 通过中文名称获取表头字段的模型信息
-    private List<FormFieldVo> getExcelFields(List<FormFieldVo> all, Workbook workbook) throws IOException {
+    public List<FormFieldVo> getExcelFields(List<FormFieldVo> all, Workbook workbook) throws IOException {
         List<FormFieldVo> list = new ArrayList<>();
         Row titleRow = title(workbook);
         for (Cell cell : titleRow) {
@@ -154,11 +145,11 @@ public class ExcelService {
         List<FormFieldVo> fields = getExcelFields(form.getFields(), workbook);
         Class itemClazz = GlobalData.entityDto(form.getEntityType()).getClz();
         List list = excelToList(itemClazz, fields, workbook);
-        List items = listToItems(list, fields);
+        List<? extends Item> excelItems = listToItems(list, fields);
         if(override){
-            return overrideImport(items,fields,itemClazz);
+            return overrideImport(excelItems,fields,itemClazz);
         }else{
-            return skipImport(items,fields,itemClazz);
+            return skipImport(excelItems,fields,itemClazz);
         }
 
     }
@@ -189,6 +180,11 @@ public class ExcelService {
                         case NUMERIC: {
                             if (_field.getFieldType().equals("number")) {
                                 ReflectionUtils.setFieldValue(item, _field.getFieldName(), cell.getNumericCellValue());
+                            }else if (_field.getFieldType().equals("string")) {
+                                double numericValue = cell.getNumericCellValue();
+                                DecimalFormat decimalFormat = new DecimalFormat("#");
+                                String text = decimalFormat.format(numericValue);
+                                ReflectionUtils.setFieldValue(item, _field.getFieldName(),text);
                             } else if (_field.getFieldType().equals("date") && DateUtil.isCellDateFormatted(cell)) {
                                 ReflectionUtils.setFieldValue(item, _field.getFieldName(), cell.getDateCellValue());
                             }
@@ -265,13 +261,31 @@ public class ExcelService {
         return db;
     }
 
+    //excel数据内部查重，去除重复数据
+    private List<?extends Item> innerRepeatFilter(List<? extends Item> excelItems,List<FormFieldVo> uniqueFields){
+        //excel数据去重
+        for(FormFieldVo f:uniqueFields){
+            List list=new ArrayList();
+            Set set=new HashSet();
+            for(Item i:excelItems){
+                if(set.add(ReflectionUtils.getFieldValue(i,f.getFieldName()))){
+                    list.add(i);
+                }
+            }
+            excelItems=list;
+        }
+        return excelItems;
+    }
+
     /**
      * 1. 可覆盖导入
+     * 1.1 与数据库数据比对
      * sheet的每行数据里 是唯一类型的字段 ，组合成or 条件查询,查询结果有以下三种可能性
      *  a. 查询到一条记录，那么该条记录就是要被覆盖的那条记录；
      *  b. 查询到多条记录，则程序其实是不知道覆盖哪条记录的;这条数据过滤掉，后面做成导入失败数据，让用户确定；
      *  c. 查询不到记录，则当前这个Item做为新的记录插入数据库
      * 覆盖导入的效率低一点，每行记录都需要去查重；
+     * 1.2 导入数据内部查重（使用第一条数据）
      */
     public List<? extends Item> overrideImport(List<? extends Item> items,List<FormFieldVo> fields,Class<Item> entityClz){
         List<Item> dbItems = new ArrayList<>();
@@ -300,31 +314,37 @@ public class ExcelService {
         }else{
             return null;
         }
-        return dbItems;
+        return innerRepeatFilter(dbItems,uniqueFields);
     }
 
     /**
-     * 2. 重复数据则跳过的导入
-     *  有几个唯一列就进行几次in查询，每次in查询把存在于数据库的记录排除掉，剩下的记录做新增操作；
+     * 2. 去重导入数据过滤
+     *  a. 去除与数据库重复数据
+     *  b. 去除excel内部重复数据
+     *  规则:有几个唯一列就进行几次in查询，每次in查询把存在于数据库的记录排除掉，剩下的记录做新增操作；
      *  优势：查询效率高， 不足：数据量大in查询会有性能问题，需要优化索引。
+     *  excel里有多条相同数据，以第一条为准
      */
-    public List<Item> skipImport(List<Item> items,List<FormFieldVo> fields,Class<Item> entityClz){
+    public List<? extends Item> skipImport(List<? extends Item> excelItems,List<FormFieldVo> fields,Class<Item> entityClz){
         //唯一的字段
         List<FormFieldVo> uniqueFields = fields.stream().filter(field -> field.isValidate_unique()==true).collect(Collectors.toList());
         if(uniqueFields!=null&&uniqueFields.size()>0){
             QueryWrapper qw=QueryWrapper.of(entityClz);
+            //数据库去重
             for(FormFieldVo f:uniqueFields){
-                List list=items.stream().filter(item->ReflectionUtils.getFieldValue(item,f.getFieldName())!=null)
+                List list=excelItems.stream().filter(item->ReflectionUtils.getFieldValue(item,f.getFieldName())!=null)
                         .map(item->ReflectionUtils.getFieldValue(item,f.getFieldName())).collect(Collectors.toList());
                 qw.in(f.fieldName,list.toArray());
                 List skipField= (List) dao.query(entityClz,qw,null).stream().map(item->ReflectionUtils.getFieldValue(item,f.getFieldName())).collect(Collectors.toList());
                 //  通过字段f 过滤掉已经重复的行记录数 ; 迭代后可实现导入的数据都是当前数据库里没有的字段的行记录
-                items=items.stream().filter(item->!skipField.contains(ReflectionUtils.getFieldValue(item,f.getFieldName()))).collect(Collectors.toList());
+                excelItems=excelItems.stream().filter(item->!skipField.contains(ReflectionUtils.getFieldValue(item,f.getFieldName()))).collect(Collectors.toList());
             }
+            //excel数据去重
+            excelItems=innerRepeatFilter(excelItems,uniqueFields);
         }else {
             return null;
         }
-        return items;
+        return excelItems;
     }
 
 

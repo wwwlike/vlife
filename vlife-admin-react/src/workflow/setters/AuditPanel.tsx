@@ -19,6 +19,7 @@ export const AuditPanel = memo(
         onDataChange={props.onChange}
         reaction={[
           VF.then("nodeType").value("audit"),
+          VF.then("entityType").value(props?.formVo?.entityType).hide(),
           VF.then(
             "joinType",
             "emptyPass",

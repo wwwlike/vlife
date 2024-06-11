@@ -57,11 +57,11 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
      */
     @PostMapping("/save/userPasswordModifyDto")
     @VMethod(permission = PermissionEnum.single)
-    public boolean saveUserPasswordModifyDto(@RequestBody UserPasswordModifyDto userPasswordModifyDto) {
+    public UserPasswordModifyDto saveUserPasswordModifyDto(@RequestBody UserPasswordModifyDto userPasswordModifyDto) {
        SysUser user=service.findOne(userPasswordModifyDto.getId());
        CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(new MessageDigestPasswordEncoder("MD5").matches(userPasswordModifyDto.getPassword(), user.getPassword()),"原密码不正确");
        service.save("password", SysUserService.encode(userPasswordModifyDto.getNewPassword()),userPasswordModifyDto.getId());
-       return true;
+       return userPasswordModifyDto;
     }
     /**
      * 用户保存

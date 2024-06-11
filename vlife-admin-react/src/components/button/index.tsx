@@ -65,6 +65,15 @@ export default (props: Partial<VFBtn>) => {
   const [tooltip, setTooltip] = useState<string | undefined>(props.tooltip);
   const [btnData, setBtnData] = useState<any>();
   const [comment, setComment] = useState<string>();
+
+  //权限码计算
+  const _permissionCode = useMemo(() => {
+    return (
+      permissionCode ||
+      (model && saveApi ? model + `:${saveApi.name}` : undefined)
+    );
+  }, [permissionCode, model, saveApi]);
+
   //按钮数据
   useEffect((): any => {
     if (datas) {
@@ -84,10 +93,10 @@ export default (props: Partial<VFBtn>) => {
   // 鉴权方法
   const authPass = useMemo((): boolean => {
     return (
-      (permissionCode && checkBtnPermission(permissionCode)) ||
-      permissionCode === undefined
+      (_permissionCode && checkBtnPermission(_permissionCode)) ||
+      _permissionCode === undefined
     );
-  }, [permissionCode]);
+  }, [_permissionCode]);
 
   //设置按钮可用状态
   useEffect(() => {
@@ -120,6 +129,7 @@ export default (props: Partial<VFBtn>) => {
     | boolean
     | string
     | Promise<boolean | string> => {
+    //按钮可用
     if (props.disabled !== true) {
       if (
         (props.actionType === "create" ||
@@ -127,7 +137,7 @@ export default (props: Partial<VFBtn>) => {
           props.allowEmpty === true) &&
         (btnData === null || btnData === undefined || btnData.id === undefined)
       ) {
-        return true; //1. 新增可用
+        return true; //1. 新增无数据可用
       } else if (
         //任何字段都没有值判断
         btnData === undefined ||
@@ -137,9 +147,10 @@ export default (props: Partial<VFBtn>) => {
       ) {
         return false;
       } else if (props.usableMatch === undefined) {
-        //2 无匹配方式
+        //2 无其他数据动态匹配方式
         return true;
       } else if (typeof props.usableMatch === "object" && btnData) {
+        //3. 采用对象值 eq方式匹配
         if (Array.isArray(btnData)) {
           return (
             //所有数据都满足
@@ -151,14 +162,11 @@ export default (props: Partial<VFBtn>) => {
           return objectIncludes(btnData, props.usableMatch);
         }
       } else if (typeof props.usableMatch === "function") {
-        //同步函数
         if (props.usableMatch instanceof Promise<boolean | string>) {
           //异步函数转同步返回
-          const result = props.usableMatch;
-          return result;
+          return props.usableMatch;
         } else {
           const match = props.usableMatch(btnData);
-
           return match === undefined && btnData && btnData.length > 0
             ? true
             : match;
@@ -170,18 +178,58 @@ export default (props: Partial<VFBtn>) => {
       return false;
     }
   }, [btnData, props]);
+  //模态窗口按钮计算
+  const modalBtns = useCallback(
+    (_formData: any) => {
+      // 1.  四种情况只显示自己和流程关联的按钮
+      if (
+        props.actionType === "api" ||
+        props.actionType === "create" ||
+        (props.actionType === "save" && _formData?.id === undefined) ||
+        otherBtns === undefined
+      ) {
+        return otherBtns
+          ? [
+              props,
+              ...otherBtns?.filter(
+                (o) => o.model === props.model && o.actionType === "flow"
+              ),
+            ]
+          : [props];
+      } else if (
+        // 2. modal关联显示多个按钮的情况; 主按钮是编辑保存，同时可以关联显示有模型且actionType->api的按钮
+        props.model &&
+        otherBtns &&
+        (props.actionType === "save" || props.actionType === "edit")
+      ) {
+        return [
+          props,
+          ...otherBtns.filter(
+            (o) =>
+              o.model === props.model &&
+              (o.actionType === "api" || o.actionType === "flow")
+          ),
+        ];
+      }
+      //其他情况都只显示当前一个按钮
+      return [props];
+    },
+    [props, otherBtns]
+  );
 
   // 修改了数据才往回传输数据
   const show = useCallback(() => {
     const modal = (formData: any) => {
+      const btns = otherBtns
+        ? [props, ...otherBtns.filter((o) => o.model === props.model)]
+        : [props];
+
       formModal.show({
         type: model,
         formData: formData,
         activeKey: activeKey,
         fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
-        btns: otherBtns
-          ? [props, ...otherBtns.filter((o) => o.model === props.model)]
-          : [props], //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
+        btns: modalBtns(formData), //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
         terse: !saveApi ? true : false, //紧凑
         fontBold: !saveApi ? true : false, //加粗
         readPretty: actionType === "api",
@@ -200,7 +248,7 @@ export default (props: Partial<VFBtn>) => {
         modal(d.data);
       });
     }
-  }, [btnData, props, reaction, activeKey]);
+  }, [btnData, props, reaction, activeKey, modalBtns]);
 
   // 工作流审核框弹出
   const flowCommentShow = useCallback(() => {
@@ -497,8 +545,8 @@ export default (props: Partial<VFBtn>) => {
   ]);
   return authPass && !(disabledHide && disabled === true) ? (
     <>
-      {tooltip && disabled === true ? (
-        <Tooltip content={tooltip}>{BtnComp}</Tooltip>
+      {tooltip && props.disabled === true ? (
+        <Tooltip content={tooltip}>{BtnComp} </Tooltip>
       ) : (
         <>{BtnComp}</>
       )}

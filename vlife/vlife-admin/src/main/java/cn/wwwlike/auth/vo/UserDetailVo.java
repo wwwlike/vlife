@@ -52,6 +52,8 @@ public class  UserDetailVo implements VoBean<SysUser> {
      */
     public String username;
 
+    public String userType;
+
     public SysDept sysDept;
 
 

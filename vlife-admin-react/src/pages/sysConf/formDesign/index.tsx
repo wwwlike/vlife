@@ -82,7 +82,6 @@ export default memo(() => {
 
   return (
     <Container className={"  bg-white"}>
-      {/* {currModel?.unpublishJson} */}
       <Toolbar
         title={
           <Space>
@@ -153,27 +152,26 @@ export default memo(() => {
           />
         )}
       </Toolbar>
+      {/* 基础设置 */}
       {selectedTab === TabType.baseSettings && currModel && (
         <BasicSetting
           formVo={currModel}
           onDataChange={function (formVo: FormVo): void {
-            setCurrModel(formVo);
+            setCurrModel((m) => ({
+              ...formVo,
+              unpublishJson: m?.unpublishJson || "",
+            }));
           }}
         />
       )}
-      {/* 字段设计+列宽 */}
+      {/*  */}
       {selectedTab === TabType.formDesign && (
         <FormDesign
           onModelChange={(formVo: FormVo) => {
-            setCurrModel((m) => {
-              return (
-                m && {
-                  ...m,
-                  modelSize: formVo.modelSize,
-                  fields: formVo.fields,
-                }
-              );
-            });
+            setCurrModel((m) => ({
+              ...formVo,
+              unpublishJson: m?.unpublishJson || "",
+            }));
           }}
         />
       )}
@@ -187,7 +185,6 @@ export default memo(() => {
               //只更新未发布的
               return m && { ...m, unpublishJson: flowJson };
             });
-            // setCurrModel({ ...currModel, new });
           }}
         />
       )}

@@ -1,11 +1,13 @@
 package cn.wwwlike.sys.api;
 
+import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.sys.entity.SysDept;
 import cn.wwwlike.sys.req.SysDeptPageReq;
 import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.req.PageQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -15,6 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/sysDept")
 public class SysDeptApi extends VLifeApi<SysDept, SysDeptService> {
+  @Autowired
+  public SysUserService userService;
   /**
    * 部门分页
    * @return
@@ -49,7 +53,15 @@ public class SysDeptApi extends VLifeApi<SysDept, SysDeptService> {
    */
   @DeleteMapping("/remove")
   public Long remove(@RequestBody String[] ids) {
-    return service.remove(ids);
+    //当前只能删除没有员工的部门
+    Long count = 0L;
+    for(String id:ids){
+      if(userService.find("sysDeptId",id).size()==0){
+        count++;
+        service.remove(id);
+      }
+    }
+    return count;
   }
 
 }

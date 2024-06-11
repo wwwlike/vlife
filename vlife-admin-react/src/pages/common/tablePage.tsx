@@ -88,6 +88,7 @@ export interface TablePageProps<T extends TableBean>
   tab?: boolean; //是否开启页签
   dataImp?: boolean; //数据可否导出
   dataExp?: boolean; //数据可否导入
+  hideToolbar?: boolean; //隐藏工具栏
   sider?: ReactNode; //侧滑组件
   listType: string; //列表模型
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
@@ -134,6 +135,7 @@ const TablePage = <T extends TableBean>({
   sheetContainer,
   dataImp = false,
   dataExp = false,
+  hideToolbar = false,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const navigate = useNavigate();
@@ -142,7 +144,9 @@ const TablePage = <T extends TableBean>({
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
   const [formModel, setFormModel] = useState<FormVo | undefined>(model); //主要表单模型信息
-  const [activeKey, setActiveKey] = useState<ActiveTab>(); //当前激活的tab的主页签key}>();
+  const [activeKey, setActiveKey] = useState<ActiveTab | undefined>(
+    props.activeTab
+  ); //当前激活的tab的主页签key}>();
   const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo[]>(); //列表记录关联的流程信息
   const [apiError, setApiError] = useState<apiError>(); //接口异常信息
   const [pageNum, setPageNum] = useState(1); //分页
@@ -383,6 +387,9 @@ const TablePage = <T extends TableBean>({
     }
   }, [
     tabReq,
+    req,
+    order,
+    searchAndColumnCondition,
     JSON.stringify(tabReq),
     JSON.stringify(tableModel),
     JSON.stringify(pageLoad),
@@ -396,7 +403,9 @@ const TablePage = <T extends TableBean>({
     }
   }, [
     dataSource,
+    req,
     tabReq, //查询条件
+    searchAndColumnCondition,
     order, //排序
     loadFlag, //手工加载
     JSON.stringify(tableModel), //模型信息
@@ -426,20 +435,19 @@ const TablePage = <T extends TableBean>({
           return getDetail(id, b.model);
         };
       }
-
       // if (b.model === undefined && b.saveApi === undefined) {
       //   b.model = listType;
       // }
-
       // if (b.disabledHide === undefined) {
       //   b.disabledHide = true;
       // }
-      if (
-        b.saveApi &&
-        (b.permissionCode === undefined || b.permissionCode === null)
-      ) {
-        b.permissionCode = entity + ":" + b.saveApi.name;
-      }
+      // if (
+      //   b.saveApi &&
+      //   (b.permissionCode === undefined || b.permissionCode === null)
+      // ) {
+      //   b.permissionCode =
+      //     entity + ":" + b.saveApi.name === "saveApi" ? b.actionType : "";
+      // }
       return {
         ...b,
         reaction:
@@ -514,7 +522,9 @@ const TablePage = <T extends TableBean>({
     if (formModel?.flowJson) {
       return [
         {
-          //permissionCode: savePermissionCode,权限取消掉了
+          permissionCode: `${formModel?.entityType}:save${
+            formModel.entityType !== formModel.type ? `:${formModel.type}` : ""
+          }`,
           actionType: "save",
           title: "新增",
           icon: <i className=" icon-add_circle_outline" />,
@@ -523,12 +533,14 @@ const TablePage = <T extends TableBean>({
           model: editModelType,
           // disabledHide: true,
           usableMatch: (data: TableBean) => {
+            //几种可能保存按钮可用的情况
             return (
               data === undefined ||
               data.id === undefined ||
               data?.flow == undefined ||
-              (data?.flow?.ended !== true &&
+              (data?.flow?.ended !== true && // 2. 流程没结束&办理人节点&页签是待办&
                 data?.flow?.currTask &&
+                data?.flow?.nodeType === "audit" &&
                 activeKey?.level1 === "flow_todo") ||
               (data?.flow?.started !== true &&
                 (activeKey?.level2 === "flow_byMe_edit" || // 待完善
@@ -611,40 +623,38 @@ const TablePage = <T extends TableBean>({
           },
           disabledHide: true,
           saveApi: (data: any) => {
-            // alert(JSON.stringify(data));
-            return save(formModel?.entityType || "")(data).then(
-              (_data: Result<any>) => {
-                if (
-                  _data?.data?.flow === undefined ||
-                  _data?.data?.started !== true
-                ) {
-                  return startFlow({
-                    businessKey: _data.data.id,
-                    defineKey: formModel?.type,
-                    formData: data,
-                    description: "发起流程",
-                  }).then((res) => {
-                    if (res.data === false) {
-                      alert("不能操作当前流程");
-                    }
-                    return _data;
-                  });
-                } else {
-                  return completeTask({
-                    comment: _data.data.comment,
-                    businessKey: _data.data.id,
-                    defineKey: formModel?.type,
-                    formData: _data.data,
-                    description: "提交处理",
-                  }).then((res) => {
-                    if (res.data === false) {
-                      alert("不能操作当前流程");
-                    }
-                    return _data;
-                  });
-                }
+            return save(
+              formModel?.entityType || "",
+              editModelType
+            )(data).then((_data: Result<any>) => {
+              if (data?.flow === undefined || data.flow?.started !== true) {
+                //是data 非`_data`来字方法入参
+                return startFlow({
+                  businessKey: _data.data.id,
+                  defineKey: formModel?.type,
+                  formData: data,
+                  description: "发起流程",
+                }).then((res) => {
+                  if (res.data === false) {
+                    alert("不能操作当前流程");
+                  }
+                  return _data;
+                });
+              } else {
+                return completeTask({
+                  comment: _data.data.comment,
+                  businessKey: _data.data.id,
+                  defineKey: formModel?.type,
+                  formData: _data.data,
+                  description: "提交处理",
+                }).then((res) => {
+                  if (res.data === false) {
+                    alert("不能操作当前流程");
+                  }
+                  return _data;
+                });
               }
-            );
+            });
           },
         },
         {
@@ -939,18 +949,20 @@ const TablePage = <T extends TableBean>({
         >
           {/* 常规页签 */}
           {tab === true && flowTab !== true ? (
-            <TableTab
-              activeTab={activeKey} //主动切换页签
-              tabCount={tabCount} // 查询页签上数据的数量
-              tabDictField={tabDictField}
-              tabList={tabList}
-              tableModel={tableModel}
-              addTabAble={props.addTabAble && user?.superUser}
-              allTabAble={props.allTabAble}
-              onActiveChange={setActiveKey}
-              onTabReq={setTabReq}
-              onCountReq={setTabReqCount} //需要查询页签数量的条件
-            />
+            <>
+              <TableTab
+                activeTab={activeKey} //主动切换页签
+                tabCount={tabCount} // 查询页签上数据的数量
+                tabDictField={tabDictField}
+                tabList={tabList}
+                tableModel={tableModel}
+                addTabAble={props.addTabAble && user?.superUser}
+                allTabAble={props.allTabAble}
+                onActiveChange={setActiveKey}
+                onTabReq={setTabReq}
+                onCountReq={setTabReqCount} //需要查询页签数量的条件
+              />
+            </>
           ) : flowTab ? (
             <FlowTab
               activeKey={activeKey} //主动切换页签
@@ -969,22 +981,21 @@ const TablePage = <T extends TableBean>({
               工作流开源版仅支持流程配置
             </div>
           )}
+
           <div
-            className={`flex bg-white items-center p-2  border-gray-100  justify-start  sidesheet-container `}
+            className={`flex bg-white items-center p-2  border-gray-100  justify-start sidesheet-container`}
           >
-            {/* 1. tableToolBar列表工具栏 */}
-            <BtnToolBar<T>
-              className={` ${classNames({
-                hidden: mode !== "normal",
-              })}`}
-              activeKey={activeKey?.level2 || activeKey?.level1}
-              // model={tableModel.entityType}
-              key={"tableBtn"}
-              btns={totalBtns}
-              position="tableToolbar"
-              datas={selected}
-              {...props}
-            />
+            {hideToolbar !== true && (
+              <BtnToolBar<T>
+                activeKey={activeKey?.level2 || activeKey?.level1}
+                // model={tableModel.entityType}
+                key={"tableBtn"}
+                btns={totalBtns}
+                position="tableToolbar"
+                datas={selected}
+                {...props}
+              />
+            )}
             {/* 搜索 */}
             {tableModel?.fields?.filter((f) => f.listSearch).length > 0 && (
               <VfSearch
@@ -1039,6 +1050,7 @@ const TablePage = <T extends TableBean>({
               )}
             </div>
           </div>
+
           <SideSheet
             getPopupContainer={sheetContainer || getContainer}
             // mask={false}
@@ -1091,7 +1103,11 @@ const TablePage = <T extends TableBean>({
                 : undefined
             }
             onLineClick={(record) => {
-              if (flowTab && version !== "v_base") {
+              if (
+                (tableModel?.flowJson || formModel?.flowJson) &&
+                !onFieldClick &&
+                version !== "v_base"
+              ) {
                 formModal.show({
                   modelInfo: formModel,
                   type: editModelType,

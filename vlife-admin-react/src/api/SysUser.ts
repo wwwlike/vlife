@@ -91,7 +91,7 @@ export const reset=(ids:String[]): Promise<Result<number>>=>{
   return apiClient.post(`/sysUser/reset`,ids);
 };
 /** 密码修改*/
-export const saveUserPasswordModifyDto=(userPasswordModifyDto:UserPasswordModifyDto): Promise<Result<boolean>>=>{
+export const saveUserPasswordModifyDto=(userPasswordModifyDto:UserPasswordModifyDto): Promise<Result<UserPasswordModifyDto>>=>{
   return apiClient.post(`/sysUser/save/userPasswordModifyDto`,userPasswordModifyDto);
 };
 /** 用户保存*/

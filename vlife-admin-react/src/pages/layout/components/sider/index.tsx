@@ -126,12 +126,12 @@ export default () => {
         setOpenKeys((openKeys) => [...openKeys, ..._openKeys]);
       } else {
         //缓存里读取
-        const localMenu: any = localStorage.getItem("currMenu");
-        if (localMenu !== null) {
-          const _currMenu = JSON.parse(localMenu);
-          setSelectedKeys([_currMenu.menu]);
-          setOpenKeys(_currMenu.openKeys);
-        }
+        // const localMenu: any = localStorage.getItem("currMenu");
+        // if (localMenu !== null) {
+        //   const _currMenu = JSON.parse(localMenu);
+        //   setSelectedKeys([_currMenu.menu]);
+        //   setOpenKeys(_currMenu.openKeys);
+        // }
       }
     }
   }, [pathname, app, appMenus]);

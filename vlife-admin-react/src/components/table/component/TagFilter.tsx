@@ -75,7 +75,10 @@ const TagFilter = ({
   );
   // .map(obj => obj.val + (obj.opt===("goe") ? "~" : ",")).join("");
   return (
-    <Space className={`${props.className} `} style={props.style}>
+    <Space
+      className={`${props.className} whitespace-nowrap`}
+      style={props.style}
+    >
       {order?.map((w, index) => {
         return (
           <div
@@ -84,7 +87,7 @@ const TagFilter = ({
             hover:text-gray-600
             "
           >
-            <div>{`${orderMsg(w)}`}</div>
+            <div className="">{`${orderMsg(w)}`}</div>
             <IconClose
               size="small"
               className="ml-2 cursor-pointer"

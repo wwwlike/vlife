@@ -56,7 +56,7 @@ public class UserVo implements VoBean<SysUser> {
     /**
      * 用户类型
      */
-    public String usetype;
+    public String userType;
 
     public String state;
 

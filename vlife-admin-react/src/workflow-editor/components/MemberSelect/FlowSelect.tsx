@@ -1,9 +1,9 @@
 //和流程相关的人员选择模块
+import React, { useCallback, useMemo, useState } from "react";
 import { TabPane, Tabs } from "@douyinfe/semi-ui";
 import MultipleSelect from "@src/components/select/MultipleSelect";
 import { ISelect, VfBaseProps } from "@src/dsl/component";
 import { NodeUserInfo } from "@src/workflow-editor/classes/vlife";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import Scrollbars from "react-custom-scrollbars";
 import DynamicNodeSelect from "./DynamicNodeSelect";
 
@@ -11,6 +11,7 @@ export interface FlowSelectProps extends VfBaseProps<Partial<NodeUserInfo>[]> {
   showUser?: boolean; //仅使用用户
   multiple?: boolean; //是否能多选
   roleSelectData?: ISelect[];
+  groupSelectData?: ISelect[];
   deptSelectData?: ISelect[];
   userSelectData?: ISelect[];
 }
@@ -22,6 +23,7 @@ export default (props: FlowSelectProps) => {
     showUser = false,
     multiple = true,
     roleSelectData,
+    groupSelectData,
     deptSelectData,
     userSelectData,
   } = props;
@@ -31,6 +33,10 @@ export default (props: FlowSelectProps) => {
   //角色数据
   const roles = useMemo((): Partial<NodeUserInfo>[] => {
     return value?.filter((v) => v.userType === "role") || [];
+  }, [value]);
+  //权限组数据
+  const groups = useMemo((): Partial<NodeUserInfo>[] => {
+    return value?.filter((v) => v.userType === "group") || [];
   }, [value]);
 
   //用户数据
@@ -96,6 +102,19 @@ export default (props: FlowSelectProps) => {
                   value={depts.map((v) => v.objectId || "")}
                   onDataChange={(vals?: string[]) => {
                     selectNode(deptSelectData, "dept", ...(vals || []));
+                  }}
+                />
+              )}
+            </TabPane>
+          )}
+          {showUser === false && (
+            <TabPane tab="权限组" itemKey="group">
+              {groupSelectData && (
+                <MultipleSelect
+                  selectData={groupSelectData || []}
+                  value={groups.map((v) => v.objectId || "")}
+                  onDataChange={(vals?: string[]) => {
+                    selectNode(groupSelectData, "group", ...(vals || []));
                   }}
                 />
               )}
@@ -209,7 +228,40 @@ export default (props: FlowSelectProps) => {
             </div>
           </>
         )}
-        {/* 3. 角色已选择 */}
+
+        {/* 3. 权限组已选择 */}
+        {groups && groups.length > 0 && (
+          <>
+            <div className="pl-2 text-gray-400 font-bold">权限组</div>
+            <div className="flex flex-wrap">
+              {groups.map((group, index) => {
+                return (
+                  <div key={`${index}_role`} className="inline-flex p-1 ">
+                    <div
+                      onClick={() => {
+                        onDataChange(
+                          value?.filter((v) => v.objectId !== group.objectId)
+                        );
+                      }}
+                      className="  text-sm bg-slate-200 hover:bg-slate-300 p-1 rounded font-thin cursor-pointer "
+                    >
+                      {group.label}
+                      {(group.label === undefined || group.label === null) &&
+                        group.userType === "group" &&
+                        groupSelectData &&
+                        groupSelectData.filter(
+                          (data) => data.value === group.objectId
+                        )?.[0]?.label}
+
+                      <i className=" ml-1 icon-clear" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+        {/* 4. 角色已选择 */}
         {roles && roles.length > 0 && (
           <>
             <div className="pl-2 text-gray-400 font-bold">角色</div>

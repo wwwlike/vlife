@@ -32,7 +32,9 @@ export interface AuditInfo extends IModel{
 
 // 审核节点配置
 export interface IApproverSettings extends AuditInfo{
+  entityType:string; //审核实体类型
   joinType:string; //会签类型
+  passExecuteEl:string;//审核通过后触发接口
 }
 // 逐层审批配置
 export interface AuditLevel extends IModel{

@@ -19,10 +19,13 @@
 package cn.wwwlike.common;
 
 import cn.wwwlike.auth.common.IBus;
+import cn.wwwlike.auth.common.IDeptUser;
 import cn.wwwlike.auth.config.AuthDict;
 import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.service.SysGroupService;
+import cn.wwwlike.sys.entity.SysDept;
+import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
@@ -57,6 +60,11 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
     public final String TREECODE = "code";
     @Autowired
     public SysGroupService sysGroupService;
+
+    @Autowired
+    public SysDeptService deptService;
+
+
     @Autowired
     public FormService formService;
     /*
@@ -193,6 +201,15 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
         ITree oldTree = null;
         if (idBean instanceof ITree) {
             oldTree = treeCode((ITree) idBean, idBean.getId() != null ? (ITree) findOne(idBean.getId()) : null);
+        }
+        if(idBean instanceof IDeptUser){
+            IDeptUser deptUser=((IDeptUser) idBean);
+            if(deptUser.getSysUserId()!=null){
+                SysDept dept=deptService.getByUserId(deptUser.getSysUserId());
+                deptUser.setDeptCode(dept.getCode());
+            }else{
+                deptUser.setDeptCode(null);
+            }
         }
         //编号接口赋值
         if (idBean instanceof INo && ((INo) idBean).getNo() == null) {

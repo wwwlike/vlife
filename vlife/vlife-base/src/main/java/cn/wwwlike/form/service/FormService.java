@@ -153,7 +153,7 @@ public class FormService extends VLifeService<Form, FormDao> {
         if (javaDto != null && javaDto.commentRead) {
             if (formDto != null) {//更新
                 boolean formChange = false;
-                if (formDto.getTypeParentsStr() == null && javaDto.getParentsName() != null) {
+                if (javaDto.getParentsName() != null && !javaDto.getParentsName().equals(formDto.getTypeParentsStr())) {
                     formDto.setTypeParentsStr(String.join(",", javaDto.getParentsName()));
                     formChange = true;
                 }

@@ -8,6 +8,7 @@ import FlowSelect, {
 import { list } from "@src/api/SysDept";
 import { list as userList } from "@src/api/SysUser";
 import { listAll } from "@src/api/SysRole";
+import { listAll as groupList } from "@src/api/SysGroup";
 import { useEffect, useState } from "react";
 
 interface MemberSelectProps extends FlowSelectProps {
@@ -55,6 +56,7 @@ export default ({
   const [roleSelectData, setRoleSelectData] = useState<ISelect[]>(); //角色数据
   const [deptSelectData, setDeptSelectData] = useState<ISelect[]>(); //部门数据
   const [userSelectData, setUserSelectData] = useState<ISelect[]>(); //用户数据
+  const [groupSelectData, setGroupSelectData] = useState<ISelect[]>(); //用户数据
 
   useEffect(() => {
     userList({}).then((d) => {
@@ -73,6 +75,14 @@ export default ({
     });
     list().then((d) => {
       setDeptSelectData(
+        d.data?.map((r) => {
+          return { label: r.name, value: r.id };
+        }) || []
+      );
+    });
+
+    groupList().then((d) => {
+      setGroupSelectData(
         d.data?.map((r) => {
           return { label: r.name, value: r.id };
         }) || []
@@ -108,6 +118,7 @@ export default ({
           userSelectData={userSelectData}
           deptSelectData={deptSelectData}
           roleSelectData={roleSelectData}
+          groupSelectData={groupSelectData}
           value={modalSelected}
           multiple={multiple}
           showUser={showUser}

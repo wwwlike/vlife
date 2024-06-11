@@ -80,8 +80,9 @@ const contentTab: TableTab[] = [
 
 export default (props: FlowTabProps) => {
   const { activeKey, onActiveChange, onCountReq, tabCount, onTabReq } = props;
-
-  const [_activeKey, setActiveKey] = useState<ActiveTab | undefined>(activeKey);
+  const [_activeKey, setActiveKey] = useState<ActiveTab | undefined>(
+    activeKey || { level1: "flow_todo" }
+  );
   const { user } = useAuth();
 
   useEffect(() => {
@@ -89,7 +90,9 @@ export default (props: FlowTabProps) => {
   }, [activeKey?.level1, activeKey?.level2]);
 
   useEffect(() => {
-    if (_activeKey) onActiveChange(_activeKey);
+    if (_activeKey) {
+      onActiveChange(_activeKey);
+    }
   }, [_activeKey?.level1, _activeKey?.level2]);
 
   //指定页签数过滤条件返回

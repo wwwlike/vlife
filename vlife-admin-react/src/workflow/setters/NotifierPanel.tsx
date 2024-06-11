@@ -29,7 +29,9 @@ export const NotifierPanel = memo(
             "auditLevel",
             "recall",
             "transfer",
-            "nodeType"
+            "nodeType",
+            "entityType",
+            "passExecuteEl"
           ).hide(),
           VF.then("nodeType").value("notifier"),
           VF.field("handleType").default("general"),

@@ -33,7 +33,6 @@ export default ({
   unModify = false,
   onDataChange,
 }: FormTableProps) => {
-  const navigate = useNavigate();
   //列表数据
   const [tableData, setTableData] = useState<any[]>([]);
 
@@ -46,7 +45,31 @@ export default ({
   //当前编辑行号，有值则弹出框弹出
   const [index, setIndex] = useState<number>();
   const btns = useMemo((): VFBtn[] => {
-    const btns: VFBtn[] = [];
+    const btns: VFBtn[] = [
+      // {
+      //   title: "添加新11行",
+      //   allowEmpty: true,
+      //   actionType: "create",
+      //   model: "sysUser",
+      //   saveApi: (d) => {},
+      //   // onClick: () => {
+      //   //   setIndex(-1);
+      //   // },
+      // },
+    ];
+
+    if (!read && unCreate === false) {
+      btns.push({
+        title: "添加新行",
+        allowEmpty: true,
+        multiple: true,
+        actionType: "click",
+        onClick: (datas: any) => {
+          setIndex(-1);
+        },
+      });
+    }
+
     if (unModify === false) {
       btns.push({
         title: "修改",
@@ -71,6 +94,7 @@ export default ({
         },
       });
     }
+
     return btns;
   }, [unModify, unRemove]);
 
@@ -82,16 +106,6 @@ export default ({
   }, [tableData]);
   return (
     <div ref={ref}>
-      {!read && unCreate === false && (
-        <Button
-          icon={<IconPlusStroked />}
-          onClick={() => {
-            setIndex(-1);
-          }}
-        >
-          添加新行
-        </Button>
-      )}
       <Modal
         title={index !== -1 ? "修改" : "新增"}
         visible={index !== undefined ? true : false}
@@ -128,7 +142,9 @@ export default ({
         />
       </Modal>
       <TablePage<any>
+        tab={false}
         columnTitle={false}
+        // hideToolbar={true}
         className="mt-1"
         key={"table_sub" + fieldInfo?.fieldName}
         mode="hand"

@@ -18,6 +18,7 @@
 
 package cn.wwwlike.sys.service;
 
+import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.common.BaseService;
 import cn.wwwlike.sys.dao.SysDeptDao;
 import cn.wwwlike.sys.entity.SysDept;
@@ -30,6 +31,15 @@ import java.util.List;
 
 @Service
 public class SysDeptService extends BaseService<SysDept, SysDeptDao> {
+
+    //通过用户id查询所在部门
+    public SysDept getByUserId(String userId){
+        QueryWrapper<SysDept> qw= QueryWrapper.of(SysDept.class);
+        qw.andSub(SysUser.class,qw2->qw2.eq("id",userId));
+        return find(qw).get(0);
+    }
+
+
     /**
      * 对没有编码的部门进行初始化
      */

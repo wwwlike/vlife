@@ -37,7 +37,7 @@ export interface VFBtn{
   reaction?:VfAction[],   //表单内的级联关系配置
   fieldOutApiParams?: { [fieldName: string]: any }; //指定字段访问api取值的补充外部入参
   position?: BtnToolBarPosition; //使用场景
-  datas?: any | any[]; //按钮数据
+  datas?: any | any[]; //按钮数据 考虑和loadApi合并
   permissionCode?:string;//权限编码,不传则根据->`实体名:方法名(动作:模型名)`组成 sysUser:save:sysUserDto对应后端sysUser的API下的saveSysUserDto方法
   multiple?:boolean,//是否是对多条数据操作(和按钮展示位置有关，true:展示在列表上，false 展示在详情页)
   model?:string,//当前操作模型;当前操作数据的模型名称,(form模型type,saveData的返回数据类型) 
@@ -49,7 +49,7 @@ export interface VFBtn{
   onFormilySubmitCheck?:()=>Promise<boolean>;//内部方法不用关注，数据【提交】之前的校验，使用fomily的主动检查 在formModal里添加
   loadApi?:(data:any)=>Promise<Result<any>|any>,//打开form时模型数据的取值接口(和列表的模型不一致时可传,不传则采用通用查询取值)，
   onSaveBefore?:(data:any)=>any;//提交之前进行数据处理，返回数据给saveData函数
-  saveApi?:(...data:(any&{tableSort:number})[])=>Promise<Result<any>>| any//按钮点击后触发的异步或者同步，必须返回数据，该数据返回到外层并且是onSubmitFinish方法作为入参
+  saveApi?:(...data:(any&{tableSort:number})[])=>Promise<Result<any>>| any//按钮点击后触发的异步或者同步，必须返回数据，该数据返回到外层并且是onSubmitFinish方法作为入参,提取权限关键字时采用
   onSubmitFinish?:(...saveApiResult:any[])=>void; //提交完成后触发的动作，如：用于关闭弹窗，刷新列表等操作
   onClick?:(...data:(any&{tableSort:number})[])=>void,//一般custom按钮使用，优先级高于saveAPI，一般不做接口类型的操作，不返回数据出去
   modal?:React.ReactElement<{

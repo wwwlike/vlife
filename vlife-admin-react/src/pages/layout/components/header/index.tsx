@@ -15,8 +15,10 @@ import { useAuth } from "@src/context/auth-context";
 import { useNiceModal } from "@src/store";
 import { VF } from "@src/dsl/VF";
 import {
+  detail,
   saveUserPasswordModifyDto,
   UserPasswordModifyDto,
+  save as userSave,
 } from "@src/api/SysUser";
 import { useLocation, useNavigate } from "react-router-dom";
 import { listAll, MenuVo, save } from "@src/api/SysMenu";
@@ -32,19 +34,11 @@ import { findSubs, findTreeRoot } from "@src/util/func";
 import { urlMenu, visitTopMenu } from "../sider";
 import weilai from "@src/assets/weilai.jpg";
 const { Header } = Layout;
-
+const APP_TITLE = import.meta.env.VITE_APP_TITLE;
 const Index = () => {
   const navigate = useNavigate();
   const formModal = useNiceModal("formModal");
-  const {
-    loginOut,
-    user,
-    app,
-    setApp,
-    checkBtnPermission,
-    allMenus,
-    setAllMenus,
-  } = useAuth();
+  const { loginOut, user, app, setApp, allMenus, setAllMenus } = useAuth();
   const { runAsync: getDetail } = useDetail({ entityType: "sysRole" });
   const [roles, setRoles] = useState<SysRole[]>([]);
 
@@ -360,13 +354,42 @@ const Index = () => {
                 render={
                   <Dropdown.Menu>
                     <Dropdown.Item onClick={loginOut}>退出登录</Dropdown.Item>
-                    {checkBtnPermission(
-                      "sysUser:save:userPasswordModifyDto"
-                    ) && (
-                      <Dropdown.Item onClick={editPassword}>
-                        密码修改
-                      </Dropdown.Item>
-                    )}
+                    <Dropdown.Item>
+                      <VfButton
+                        btnType="link"
+                        loadApi={detail}
+                        model="sysUser"
+                        actionType="edit"
+                        reaction={[
+                          VF.then(
+                            "name",
+                            "username",
+                            "sysDeptId",
+                            "sysGroupId"
+                          ).readPretty(),
+                          VF.then("superUser", "state").hide(),
+                        ]}
+                        datas={{ id: user?.id }}
+                        allowEmpty={true}
+                        saveApi={userSave}
+                        title="基本信息"
+                      />
+                    </Dropdown.Item>
+
+                    <Dropdown.Item>
+                      <VfButton
+                        btnType="link"
+                        datas={{ id: user?.id }}
+                        model="userPasswordModifyDto"
+                        actionType="edit"
+                        submitClose={true}
+                        saveApi={saveUserPasswordModifyDto}
+                        onSubmitFinish={(data) => {
+                          loginOut();
+                        }}
+                        title="密码修改"
+                      />
+                    </Dropdown.Item>
                   </Dropdown.Menu>
                 }
               >

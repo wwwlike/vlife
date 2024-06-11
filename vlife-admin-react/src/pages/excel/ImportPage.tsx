@@ -20,6 +20,18 @@ export default ({ entityType, onFinish, onDataChange }: ImportPageProps) => {
     Partial<ExcelUploadFile>
   >({ entityType: entityType, override: true, file: undefined });
 
+  const checkFile = (file: File) => {
+    if (file.size > 1024 * 1024) {
+      return false;
+    }
+    const fileName = file.name;
+    const fileExt = fileName.substring(fileName.lastIndexOf(".") + 1);
+    if (!["xlsx", "xls"].includes(fileExt)) {
+      return false;
+    }
+    return true;
+  };
+
   //导入中
   const [loading, setLoading] = useState<boolean>(false);
   //当前页面 导入页面|导入结果页面
@@ -39,7 +51,7 @@ export default ({ entityType, onFinish, onDataChange }: ImportPageProps) => {
   useEffect(() => {
     list({ type: entityType }).then((t) => {
       setFormVo(t.data?.[0]);
-      if (formVo?.fields.filter((f) => f.validate_unique).length === 0) {
+      if (t.data?.[0]?.fields.filter((f) => f.validate_unique).length === 0) {
         setPage("modelError");
       }
     });
@@ -69,10 +81,12 @@ export default ({ entityType, onFinish, onDataChange }: ImportPageProps) => {
                   template(entityType);
                 }}
               >
-                《{formVo?.title}导入模板》
+                《{formVo?.title}数据模板》
               </a>
             </div>
-            <div> 导入文件请勿超过2MB（约10,000条数据）</div>
+            <div>
+              请勿修改表格标题，防止导入失败,一次导入数据量控制在1000条以内
+            </div>
           </div>
           <div>
             <div className=" font-bold mb-2">
@@ -107,12 +121,26 @@ export default ({ entityType, onFinish, onDataChange }: ImportPageProps) => {
                 className="bg-blue-300 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
               />
             </div>
+            {excelUploadFile.file &&
+              checkFile(excelUploadFile.file) === false && (
+                <div className=" text-xs text-red-500 font-bold">
+                  请选择excel文件进行导入
+                  <a
+                    href="#"
+                    className=" text-blue-500 cursor-pointer"
+                    onClick={() => {
+                      template(entityType);
+                    }}
+                  >
+                    模版下载-《{formVo?.title}数据模板》
+                  </a>
+                </div>
+              )}
           </div>
         </>
       )}
-
       {page === "result" && (
-        <div className=" text-center">
+        <div className="text-center  pt-20">
           {loading && (
             <div>
               <div>
@@ -120,29 +148,36 @@ export default ({ entityType, onFinish, onDataChange }: ImportPageProps) => {
               </div>
             </div>
           )}
-          {result && result >= 0 && (
-            <span className=" font-bold"> 成功导入{result}条数据</span>
+          {result !== undefined && result > 0 && (
+            <div className=" font-bold">
+              成功导入 <span className=" text-blue-500">{result}</span>条记录
+            </div>
           )}
-          {result && result === -1 && (
+          {result !== undefined && result === 0 && (
+            <div className=" font-bold">没有任何记录导入</div>
+          )}
+          {result !== undefined && result === -1 && (
             <span className=" font-bold text-red-500">
               导入数据格式与模版不匹配，不能导入
             </span>
           )}
         </div>
       )}
-
       {page === "modelError" && (
         <div className=" font-bold text-red-500">
           导入的数据模型，必须至少设置一个字段为唯一字段不能重复
         </div>
       )}
-
       {page !== "modelError" && (
         <div className="absolute  right-4  bottom-4">
           {
             <Button
               loading={loading}
-              disabled={!excelUploadFile.file}
+              disabled={
+                !excelUploadFile.file ||
+                (excelUploadFile.file &&
+                  checkFile(excelUploadFile.file) === false)
+              }
               onClick={() => {
                 if (page === "import") {
                   setPage("result");

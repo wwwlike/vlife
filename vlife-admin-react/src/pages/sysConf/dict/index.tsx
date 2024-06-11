@@ -23,14 +23,17 @@ export default () => {
             VF.then("level", "type").hide(),
           ],
           actionType: "create",
-          usableMatch: req?.code ? true : "请在左侧选择一个字典类目",
+          usableMatch: true,
           saveApi: save,
         },
         {
           title: "修改",
           actionType: "edit",
-          reaction: [VF.then("level", "type").hide()],
-          usableMatch: { sys: false },
+          reaction: [
+            VF.then("level", "type").hide(),
+            VF.field("sys").eq(true).then("title", "sort").readPretty(),
+          ],
+          model: "sysDict",
           saveApi: save,
         },
         {
