@@ -1,10 +1,13 @@
 package cn.wwwlike.excel.service;
 
+import cn.wwwlike.common.DataImpResult;
 import cn.wwwlike.form.dao.FormDao;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.vo.FormFieldVo;
 import cn.wwwlike.form.vo.FormVo;
+import cn.wwwlike.sys.dao.SysExcelDao;
 import cn.wwwlike.sys.entity.SysDict;
+import cn.wwwlike.sys.entity.SysExcel;
 import cn.wwwlike.sys.service.SysDictService;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.core.VLifeService;
@@ -27,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
-public class ExcelService {
+public class ExcelService extends  VLifeService<SysExcel, SysExcelDao>{
 
     @Autowired
     public SysDictService dictService;
@@ -80,7 +83,19 @@ public class ExcelService {
         fields.forEach(field -> {
             int a = i.getAndIncrement();
             Cell cell = headerRow.createCell(a);
-            cell.setCellStyle(headerStyle);
+
+            if(field.isRequired()){
+                CellStyle redFontStyle = cell.getSheet().getWorkbook().createCellStyle();
+                redFontStyle.cloneStyleFrom(headerStyle); // 从原有样式复制
+                Font redFont = cell.getSheet().getWorkbook().createFont();
+                redFont.setBold(true);
+                redFont.setColor(IndexedColors.RED.getIndex());
+                redFontStyle.setFont(redFont);
+                cell.setCellStyle(redFontStyle);
+            }else{
+                cell.setCellStyle(headerStyle);
+            }
+
             cell.setCellValue(field.getTitle().trim());
         });
         AtomicInteger j = new AtomicInteger(0);
@@ -141,15 +156,18 @@ public class ExcelService {
     /**
      * excel数据转实体数据
      */
-    public List<Item> excelToItems(FormVo form, Workbook workbook,boolean override) throws IOException, InstantiationException, IllegalAccessException {
+    public List<Item> excelToItems(FormVo form, Workbook workbook, boolean override, DataImpResult result) throws IOException, InstantiationException, IllegalAccessException {
         List<FormFieldVo> fields = getExcelFields(form.getFields(), workbook);
         Class itemClazz = GlobalData.entityDto(form.getEntityType()).getClz();
         List list = excelToList(itemClazz, fields, workbook);
         List<? extends Item> excelItems = listToItems(list, fields);
+        result.setTotal(excelItems.size());//数据总条数
         if(override){
-            return overrideImport(excelItems,fields,itemClazz);
+            //覆盖式导入(默认)
+            return overrideImport(excelItems,fields,itemClazz,result);
         }else{
-            return skipImport(excelItems,fields,itemClazz);
+            //重复跳过
+            return skipImport(excelItems,fields,itemClazz,result);
         }
 
     }
@@ -261,6 +279,22 @@ public class ExcelService {
         return db;
     }
 
+    //必填数据过滤
+    private List<?extends Item> innerRequiredFilter(List<? extends Item> excelItems,List<FormFieldVo> requiredFields){
+        //excel数据去重
+        for(FormFieldVo f:requiredFields){
+            List list=new ArrayList();
+            for(Item i:excelItems){
+                Object val=ReflectionUtils.getFieldValue(i,f.getFieldName());
+                if(val!=null) {
+                    list.add(i);
+                }
+            }
+            excelItems=list;
+        }
+        return excelItems;
+    }
+
     //excel数据内部查重，去除重复数据
     private List<?extends Item> innerRepeatFilter(List<? extends Item> excelItems,List<FormFieldVo> uniqueFields){
         //excel数据去重
@@ -268,7 +302,9 @@ public class ExcelService {
             List list=new ArrayList();
             Set set=new HashSet();
             for(Item i:excelItems){
-                if(set.add(ReflectionUtils.getFieldValue(i,f.getFieldName()))){
+                Object val=ReflectionUtils.getFieldValue(i,f.getFieldName());
+                //该字段为空或者不存在list里则查重校验成功
+                if(val==null||set.add(val)) {
                     list.add(i);
                 }
             }
@@ -287,10 +323,15 @@ public class ExcelService {
      * 覆盖导入的效率低一点，每行记录都需要去查重；
      * 1.2 导入数据内部查重（使用第一条数据）
      */
-    public List<? extends Item> overrideImport(List<? extends Item> items,List<FormFieldVo> fields,Class<Item> entityClz){
+    public List<? extends Item> overrideImport(List<? extends Item> items,List<FormFieldVo> fields,Class<Item> entityClz, DataImpResult result){
         List<Item> dbItems = new ArrayList<>();
         //唯一的字段
         List<FormFieldVo> uniqueFields = fields.stream().filter(field -> field.isValidate_unique()==true).collect(Collectors.toList());
+        List<FormFieldVo> requiredFields = fields.stream().filter(field -> field.isRequired()==true).collect(Collectors.toList());
+        items=innerRequiredFilter(items,requiredFields);
+        result.setError_null(result.total-items.size());//空数据条数
+        int override=0;
+        int newInsert=0;
         if(uniqueFields!=null&&uniqueFields.size()>0){
             for(Item item:items){
                 QueryWrapper<? extends  Item> qw=QueryWrapper.of(entityClz);
@@ -302,19 +343,26 @@ public class ExcelService {
                 });
                 List<? extends  Item> list=dao.query(entityClz,qw,null);
                 if(list!=null&&list.size()==1){
-                    Item  db=list.get(0);
-//                    item覆盖db
+                    override++;
+                    Item db=list.get(0);
+//                   item覆盖db(clone到db的id)
                     db=override(item,db,fields);
                     dbItems.add(db);
                 } else if(list==null||list.size()==0){
+                    newInsert++;
                     dbItems.add(item);
-                }else{//size>1
                 }
             }
         }else{
             return null;
         }
-        return innerRepeatFilter(dbItems,uniqueFields);
+        result.setUpdate(override);
+        result.setAdd(newInsert);
+        //excel内部去重过滤
+        List<? extends Item> toDbItems= innerRepeatFilter(dbItems,uniqueFields);
+        //内部重复跳过数据条数
+        result.setSkip(dbItems.size()-toDbItems.size());
+        return toDbItems;
     }
 
     /**
@@ -325,9 +373,13 @@ public class ExcelService {
      *  优势：查询效率高， 不足：数据量大in查询会有性能问题，需要优化索引。
      *  excel里有多条相同数据，以第一条为准
      */
-    public List<? extends Item> skipImport(List<? extends Item> excelItems,List<FormFieldVo> fields,Class<Item> entityClz){
+    public List<? extends Item> skipImport(List<? extends Item> excelItems,List<FormFieldVo> fields,Class<Item> entityClz, DataImpResult result){
         //唯一的字段
         List<FormFieldVo> uniqueFields = fields.stream().filter(field -> field.isValidate_unique()==true).collect(Collectors.toList());
+        List<FormFieldVo> requiredFields = fields.stream().filter(field -> field.isRequired()==true).collect(Collectors.toList());
+        //必填数据为空排除
+        excelItems= innerRequiredFilter(excelItems,requiredFields);
+        result.setError_null(result.total-excelItems.size());//空数据条数
         if(uniqueFields!=null&&uniqueFields.size()>0){
             QueryWrapper qw=QueryWrapper.of(entityClz);
             //数据库去重
@@ -339,14 +391,31 @@ public class ExcelService {
                 //  通过字段f 过滤掉已经重复的行记录数 ; 迭代后可实现导入的数据都是当前数据库里没有的字段的行记录
                 excelItems=excelItems.stream().filter(item->!skipField.contains(ReflectionUtils.getFieldValue(item,f.getFieldName()))).collect(Collectors.toList());
             }
-            //excel数据去重
-            excelItems=innerRepeatFilter(excelItems,uniqueFields);
+            //excel内部数据去重 和必填数据清理
+           List toDbItems=innerRepeatFilter(excelItems,uniqueFields);
+           result.setSkip(excelItems.size()-toDbItems.size());
+           return toDbItems;
         }else {
-            return null;
+           return null;
         }
-        return excelItems;
+
     }
 
+
+    public void setMsg(DataImpResult result){
+        String msg="";
+        msg="共"+result.getTotal()+"条数据，成功导入" +result.getSuccess()+"条数据";
+        if(result.getSuccess()!=0){
+           msg+=",其中新增"+result.getAdd()+"条数据，更新"+result.getUpdate()+"条数据";
+        }
+        if(result.getSuccess()>0){
+            msg+= ",跳过"+result.getSkip()+"条数据";
+        }
+        if(result.getError_null()>0){
+            msg+=",有"+result.getError_null()+"条记录必填项未填，无法导入";
+        }
+        result.setMsg(msg);
+    }
 
     public void save(List<Item> items,String entityClz){
         VLifeService entityService=getService(entityClz);

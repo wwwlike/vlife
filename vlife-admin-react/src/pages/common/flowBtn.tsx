@@ -58,7 +58,7 @@ export const flowBtns = (
       onSubmitFinish: onSubmitFinish,
       datas: data,
       saveApi: (data: any) => {
-        if (data?.flow === undefined || data?.started !== true) {
+        if (data?.flow === undefined || data.flow?.started !== true) {
           return startFlow({
             businessKey: data.id,
             defineKey: defineKey,
@@ -113,6 +113,7 @@ export const flowBtns = (
         });
         return data;
       },
+      onSubmitFinish: onSubmitFinish,
     },
     {
       actionType: "flow",
@@ -132,6 +133,7 @@ export const flowBtns = (
       saveApi: (data: any) => {
         return data;
       },
+      onSubmitFinish: onSubmitFinish,
     },
     //当前视图是已办，且后端返回可以测回则显示
     {
@@ -156,6 +158,7 @@ export const flowBtns = (
         });
         return data;
       },
+      onSubmitFinish: onSubmitFinish,
     },
     {
       actionType: "flow",
@@ -184,6 +187,7 @@ export const flowBtns = (
         });
         return data;
       },
+      onSubmitFinish: onSubmitFinish,
     },
   ];
 };

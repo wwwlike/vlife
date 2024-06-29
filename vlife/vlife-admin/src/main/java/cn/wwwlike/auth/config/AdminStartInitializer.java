@@ -17,6 +17,7 @@
  */
 
 package cn.wwwlike.auth.config;
+
 import cn.vlife.erp.common.ErpDict;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
@@ -51,6 +52,7 @@ public class AdminStartInitializer implements ApplicationRunner {
     SysDictService dictService;
     @Autowired
     private Environment env;
+
     public String getActiveProfile() {
         return env.getProperty("spring.profiles.active");
     }
@@ -64,41 +66,41 @@ public class AdminStartInitializer implements ApplicationRunner {
     }
 
 
-    public void dictSync(){
-        List<SysDict> dbs=dictService.findAll();
+    public void dictSync() {
+        List<SysDict> dbs = dictService.findAll();
         List<DictVo> sysDict = ReadCt.getSysDict();
-        dictService.saveByDictVo(sysDict,dbs,AuthDict.DICT_TYPE.VLIFE);//是框架级不可以维护
+        dictService.saveByDictVo(sysDict, dbs, AuthDict.DICT_TYPE.VLIFE);//是框架级不可以维护
         List<DictVo> autiDict = ReadCt.read(AuthDict.class);
-        dictService.saveByDictVo(autiDict,dbs,AuthDict.DICT_TYPE.ADMIN);//平台级字典同步
+        dictService.saveByDictVo(autiDict, dbs, AuthDict.DICT_TYPE.ADMIN);//平台级字典同步
         List<DictVo> erpDict = ReadCt.read(ErpDict.class);
-        dictService.saveByDictVo(erpDict,dbs,AuthDict.DICT_TYPE.FIELD);// erp字典
+        dictService.saveByDictVo(erpDict, dbs, AuthDict.DICT_TYPE.FIELD);// erp字典
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-       if(!getActiveProfile().equals("pro")){
-            URL url = getClass().getClassLoader().getResource("title.json");
-            if (url == null) {
-                printErrorMessage();
-                System.exit(0); // Exit without starting the application
+//       if(!getActiveProfile().equals("pro")){//做成开关
+        URL url = getClass().getClassLoader().getResource("title.json");
+        if (url == null) {
+            printErrorMessage();
+            System.exit(0); // Exit without starting the application
+        }
+        //1. 字典同步
+        dictSync();
+        //2. 模型同步
+        GlobalData.allModels().stream().forEach(m -> {
+            if (service.syncOne(m.getType())) {
+                if (m.getFields() != null) {
+                    m.getFields().stream().filter(f -> ((FieldDto) f).getDictCode() != null).forEach(f -> {
+                        //通过字段创建字典field级字典
+                        dictService.createByField(((FieldDto) f).getDictCode(), ((FieldDto) f).getTitle(), AuthDict.DICT_TYPE.FIELD);
+                    });
+                }
             }
-            //1. 字典同步
-            dictSync();
-            //2. 模型同步
-            GlobalData.allModels().stream().forEach(m->{
-               if(service.syncOne(m.getType())){
-                  if(m.getFields()!=null){
-                       m.getFields().stream().filter(f->((FieldDto)f).getDictCode()!=null).forEach(f->{
-                           //通过字段创建字典field级字典
-                           dictService.createByField(((FieldDto)f).getDictCode(),((FieldDto)f).getTitle(),AuthDict.DICT_TYPE.FIELD);
-                       });
-                  }
-               }
-            });
-            List<Form> dbModels=formService.findAll();
-            dbModels.stream().filter(db->GlobalData.allModels().stream().filter(java->java.getType().equals(db.getType())).count()==0).forEach(m->{
-                formService.remove(m.getId());
-            });
-       }
+        });
+        List<Form> dbModels = formService.findAll();
+        dbModels.stream().filter(db -> GlobalData.allModels().stream().filter(java -> java.getType().equals(db.getType())).count() == 0).forEach(m -> {
+            formService.remove(m.getId());
+        });
     }
+//    }
 }

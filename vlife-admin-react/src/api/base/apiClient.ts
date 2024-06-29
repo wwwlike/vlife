@@ -5,7 +5,7 @@ import qs from 'qs';
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 const mode=import.meta.env.VITE_APP_MODE;
 const canRemove: string = import.meta.env.VITE_APP_SAVE_REMOVE;
-const localStorageKey = "__auth_provider_token__";
+export const localStorageKey = "__auth_provider_token__";
 
 
 //待启用(让前端错误代码和ServletResponseEnum匹配紧密型)
@@ -77,6 +77,10 @@ instance.interceptors.request.use(
     if(config.url&&config.url.indexOf("?")!==-1 &&config.url.indexOf("undefined")!==-1){
       config.url=filterUndefinedParams(config.url);
     }
+    
+    if (config.url?.includes ('/import')) {
+      config.timeout = 60000; // 将特定接口的超时时间设置为 60 秒
+    }
     //  拦截器来过滤掉 GET 请求参数中值为空字符串的属性，从而不发送这些参数到后端
     if (config.method === "get") {
       // 过滤掉请求参数中值为空字符串的属性
@@ -137,6 +141,23 @@ instance.interceptors.response.use(
       Notification.error({
         content: `服务端运行异常，异常代码${res.status}`,
       });
+    }else  if (res.headers['content-type'] 
+      &&( res.headers['content-type'].includes('application/octet-stream') || 
+      res.headers['content-type'].includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    ))  {
+      const disposition = res.headers['content-disposition'];
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(disposition);
+      const filename = matches && matches[1] ? matches[1] : 'download.pdf';
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', decodeURIComponent(filename));
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      // return res; //文件下载类型 不做任何处理，直接返回原始的响应数据
     } else if (res.data.code != 200 &&    window.location.href.indexOf("login") === -1) {
       if(mode==="dev"){
         Notification.error({
@@ -153,7 +174,6 @@ instance.interceptors.response.use(
       &&url?.indexOf("list") === -1&&!url?.endsWith("page")&&url?.indexOf("/page/")===-1
       &&url?.indexOf("query") === -1 &&url?.indexOf("find") === -1
     ){
-
       const currentTime = Date.now();
       const timeDiff = currentTime - lastNotificationTime;
       if (timeDiff > 3000) { // 设定时间间隔为 3 秒 只能弹出一次成功提示

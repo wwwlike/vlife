@@ -31,51 +31,57 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.Map;
 @Configuration
 @ConditionalOnExpression("${security.basic.enable:true}")
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SysUserService userService;
     @Autowired
-    private SysGroupService groupService;
-    @Autowired
     SysResourcesService resourcesService;
+    @Autowired
+    public CustomUrlDecisionManager customUrlDecisionManager;
+    @Autowired
+    public CustomFilterInvocationSecurityMetadataSource customFilterInvocationSecurityMetadataSource;
     // 装载BCrypt密码编码器
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new MessageDigestPasswordEncoder("MD5");
     }
-
     @Bean
     EDefaultWebSecurityExpressionHandler ewebSecurityExpressionHandler() {
         EDefaultWebSecurityExpressionHandler webSecurityExpressionHandler = new EDefaultWebSecurityExpressionHandler();
         return webSecurityExpressionHandler;
     }
-
     //配置权限校验
     @Bean
     PermissionEvaluator permissionEvaluator() {
         EPermissionEvaluator permissionEvaluator = new EPermissionEvaluator();
         return permissionEvaluator;
     }
-
     @Bean
     EAuthenticationFailureHandler eauthenticationFailureHandler() {
         return new EAuthenticationFailureHandler();
     }
-
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
@@ -103,12 +109,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //表达式拦截器 注册表
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry authorizeRequests = httpSecurity
                 .authorizeRequests();
-        authorizeRequests.expressionHandler(ewebSecurityExpressionHandler());//验证人员是否有权限的过滤
         // 403  未登录请求资源  EAccessDeniedHandler 没有权限的处理
         httpSecurity.exceptionHandling().authenticationEntryPoint(new Jwt403AuthenticationEntryPoint())
                 .accessDeniedHandler(new EAccessDeniedHandler());
-
-
         try {
             //接口资源同步，做更新，不做初始化
             if(resourcesService.findAll().size()!=0){
@@ -122,15 +125,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             System.out.println("╚════════════════════════════════════════════════════════════════╝");
             System.exit(0); // Exit without starting the application
         }
+        //动态权限(新)
+        authorizeRequests
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                        object.setAccessDecisionManager(customUrlDecisionManager);
+                        object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
+                        return object;
+                    }
+                });
 
-        Map<String, String> map = groupService.resourceGroupMap();
-        for (String url : map.keySet()) {
-            // 资源路径与角色组绑定，以此资源为父资源角色所在的角色组
-            authorizeRequests.antMatchers("/**/" + url)
-                    .access("hasPermission('','" + map.get(url) + "')");
-        }
+           authorizeRequests.expressionHandler(ewebSecurityExpressionHandler());//验证人员是否有权限的过滤
+        //一次读入的方式(废弃)
+//        Map<String, String> map = groupService.resourceGroupMap();
+//        for (String url : map.keySet()) {
+//            // 资源路径与角色组绑定，以此资源为父资源角色所在的角色组
+//            authorizeRequests.antMatchers("/**/" + url)
+//                    .access("hasPermission('','" + map.get(url) + "')");
+//        }
+        //,"/sysFile/download/*" "/sysFile/upload", ,"/sysFile/download/*" "/excel/template/*",
         authorizeRequests.antMatchers( "/dist/**","/open/api/getToken","/tsCode/code/*",
-                   "/sysUser/sendEmail","/excel/template/*","/git/*","/git/token/*", "/ts/test/file", "/ts/upload", "/sysFile/upload", "/sysFile/image/*", "/sysFile/uploadImg", "/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
+                   "/sysUser/sendEmail","/git/*","/git/token/*", "/ts/test/file", "/ts/upload","/sysFile/image/*","/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
                 .and().formLogin()
                 .failureHandler(eauthenticationFailureHandler())
                 .and()
@@ -140,7 +156,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 得到当前用户
-     *
      * @return
      */
     public static SecurityUser getCurrUser() {
@@ -156,7 +171,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     public static void main(String[] args) {
-        //{F4T9t2BE3HCvD9khLCxL/nyib/AdM1WqR/tMx5eJJ2k=}f0afa783ba7607063606fdb43c2e55fb
         System.out.println(new MessageDigestPasswordEncoder("MD5").encode("123456"));
     }
 }

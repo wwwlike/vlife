@@ -2,6 +2,7 @@ package cn.wwwlike.auth.service;
 
 import cn.wwwlike.auth.dao.SysFileDao;
 import cn.wwwlike.auth.entity.SysFile;
+import cn.wwwlike.common.BaseService;
 import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,7 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 @Service
-public class SysFileService extends VLifeService<SysFile, SysFileDao> {
+public class SysFileService extends BaseService<SysFile, SysFileDao> {
 
     @Value("${file.image.path}")
     public String imgPath;
@@ -35,19 +36,13 @@ public class SysFileService extends VLifeService<SysFile, SysFileDao> {
                 !imgPath.startsWith("/")) {
             imgPath = "/" + imgPath;
         }
-
         String fileName = getFileName() + "." + multipartFile.getOriginalFilename().split("\\.")[1];
         String pathFileName = imgPath + "/" + fileName;
         FileUtil.createDir(imgPath);
-
         if (pathFileName.indexOf(":") == -1) { //linux
             pathFileName = "/" + pathFileName;
         }
-
-
         pathFileName = imgPath + "/" + fileName;
-
-
         File file = new File(pathFileName);
         OutputStream out = null;
         try {

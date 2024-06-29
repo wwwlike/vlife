@@ -98,7 +98,8 @@ const load = async (
   field: Field,
   parentFormData: any,
   formVo: FormVo,
-  fieldOutParams: any
+  fieldOutParams: any,
+  fieldVal?: any
 ) => {
   if (
     field.componentProps["fieldInfo"] &&
@@ -115,7 +116,8 @@ const load = async (
         field, //字段信息；其实只传这一个值，上面三个可以都取得到
         parentFormData,
         formVo,
-        fieldOutParams
+        fieldOutParams,
+        fieldVal
       ).then((field: Field) => {});
     } else {
       console.log(
@@ -541,6 +543,7 @@ export default <T extends IdBean>({
       .sort((a, b) => {
         return a.sort - b.sort;
       })
+      // .filter((f) => f.x_hidden !== true) //过滤掉隐藏字段
       .forEach((f: FormFieldVo, index: number) => {
         if (f.divider) {
           pp[f.fieldName + "_divider"] = {
@@ -838,7 +841,8 @@ export default <T extends IdBean>({
                 field,
                 parentFormData,
                 modelInfo,
-                fieldOutApiParams?.[f.fieldName]
+                fieldOutApiParams?.[f.fieldName],
+                formData?.[f.fieldName]
               );
             },
           ];
@@ -849,7 +853,8 @@ export default <T extends IdBean>({
                 field,
                 parentFormData,
                 modelInfo,
-                fieldOutApiParams?.[f.fieldName]
+                fieldOutApiParams?.[f.fieldName],
+                formData?.[f.fieldName]
               );
             },
           ];

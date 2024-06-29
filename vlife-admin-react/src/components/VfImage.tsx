@@ -4,6 +4,7 @@ import { IconPlus } from "@douyinfe/semi-icons";
 import { FileItem } from "@douyinfe/semi-ui/lib/es/upload";
 import { Image } from "@douyinfe/semi-ui";
 import { VfBaseProps } from "@src/dsl/component";
+import { localStorageKey } from "@src/api/base/apiClient";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 /**
  * 图片上传组件
@@ -21,6 +22,7 @@ const VfImage = ({
   className,
   ...props
 }: VfImageProps) => {
+  const token = window.localStorage.getItem(localStorageKey);
   const action = `${apiUrl}/sysFile/uploadImg`;
   const [imageIds, setImageIds] = useState<string[]>();
   //是否手动修改过
@@ -110,6 +112,9 @@ const VfImage = ({
         fileName="file"
         prompt={getPrompt("right", true)}
         promptPosition={"right"}
+        headers={{
+          Authorization: token,
+        }}
         listType="picture"
         limit={fieldInfo?.dataType === "array" ? 100 : 1}
         defaultFileList={fileList}
@@ -151,7 +156,7 @@ const VfImage = ({
       fileName="file"
       prompt={getPrompt("right", true)}
       promptPosition={"right"}
-      accept=".jpg,.png,.gif"
+      // accept=".jpg,.png,.gif"
       listType="picture"
       limit={fieldInfo?.dataType === "array" ? 100 : 1}
       defaultFileList={fileList}

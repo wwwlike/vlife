@@ -86,7 +86,7 @@ export interface TablePageProps<T extends TableBean>
   extends ListProps<T>,
     TableTabBaseProps {
   tab?: boolean; //是否开启页签
-  dataImp?: boolean; //数据可否导出
+  dataImp?: true | string; //导入开关，字符串则为导入后跳转的activeTab的itemKey
   dataExp?: boolean; //数据可否导入
   hideToolbar?: boolean; //隐藏工具栏
   sider?: ReactNode; //侧滑组件
@@ -133,11 +133,12 @@ const TablePage = <T extends TableBean>({
   tabDictField,
   sider,
   sheetContainer,
-  dataImp = false,
+  dataImp,
   dataExp = false,
   hideToolbar = false,
   ...props
 }: Partial<TablePageProps<T>> & { listType: string }) => {
+  const pageSizeArray = [15, 30, 50];
   const navigate = useNavigate();
   const { getFormInfo, user } = useAuth();
   const ref = useRef(null);
@@ -241,12 +242,12 @@ const TablePage = <T extends TableBean>({
   }, [formModel, pageData?.result]);
 
   const tableHight = useMemo(() => {
-    const hight = size?.height ? size?.height - 145 : undefined;
+    const hight = size?.height ? size?.height - 220 : undefined;
     return hight && hight < 700 ? 700 : hight;
   }, [size]);
   const pager = useMemo((): { size: number; page: number } => {
     return {
-      size: pageSize || tableModel?.pageSize || defaultPageSize,
+      size: pageSize || defaultPageSize || tableModel?.pageSize,
       page: pageNum,
     };
   }, [pageSize, pageNum, tableModel]);
@@ -570,6 +571,9 @@ const TablePage = <T extends TableBean>({
           permissionCode: formModel?.entityType + ":remove",
           saveApi: (datas: IdBean[]): Promise<Result<any>> => {
             return rm(datas.map((d) => d.id));
+          },
+          onSubmitFinish: (int: number) => {
+            // alert(int);
           },
         },
         {
@@ -958,18 +962,24 @@ const TablePage = <T extends TableBean>({
                 tableModel={tableModel}
                 addTabAble={props.addTabAble && user?.superUser}
                 allTabAble={props.allTabAble}
-                onActiveChange={setActiveKey}
+                onActiveChange={(_activeKey) => {
+                  setActiveKey(_activeKey);
+                  setSelected([]);
+                }}
                 onTabReq={setTabReq}
                 onCountReq={setTabReqCount} //需要查询页签数量的条件
               />
             </>
           ) : flowTab ? (
             <FlowTab
-              activeKey={activeKey} //主动切换页签
+              activeKey={activeKey && activeKey.level1 ? activeKey : undefined} //主动切换页签
               tabCount={tabCount} // 查询页签上数据的数量
               tableModel={tableModel}
               onActiveChange={setActiveKey}
-              onTabReq={setTabReq}
+              onTabReq={(d) => {
+                // alert(JSON.stringify(d));
+                setTabReq(d);
+              }}
               onCountReq={setTabReqCount} //需要查询页签数量的条件
             />
           ) : (
@@ -988,7 +998,7 @@ const TablePage = <T extends TableBean>({
             {hideToolbar !== true && (
               <BtnToolBar<T>
                 activeKey={activeKey?.level2 || activeKey?.level1}
-                // model={tableModel.entityType}
+                entity={tableModel.entityType}
                 key={"tableBtn"}
                 btns={totalBtns}
                 position="tableToolbar"
@@ -1037,7 +1047,7 @@ const TablePage = <T extends TableBean>({
               }}
             />
             <div className=" absolute right-4">
-              {dataImp && (
+              {dataImp !== undefined && (
                 <Button
                   title="数据导入"
                   allowEmpty={true}
@@ -1045,6 +1055,9 @@ const TablePage = <T extends TableBean>({
                   modal={<ImportPage entityType={tableModel?.entityType} />}
                   onSubmitFinish={(data) => {
                     setLoadFlag((flag) => flag + 1); //列表重新加载
+                    if (typeof dataImp === "string") {
+                      setActiveKey({ level1: dataImp, level2: undefined });
+                    }
                   }}
                 />
               )}
@@ -1080,7 +1093,7 @@ const TablePage = <T extends TableBean>({
             {/* {sider} */}
           </SideSheet>
           <Table<T>
-            className={"flex justify-center flex-grow"}
+            className={"flex justify-center flex-1 "}
             key={
               tableModel.type +
               pageSize +
@@ -1157,7 +1170,7 @@ const TablePage = <T extends TableBean>({
               </div>
               <div className="text-gray-500 space-x-2 justify-end items-center pr-4 flex ">
                 每页
-                {[10, 15, 20].map((num) => {
+                {pageSizeArray.map((num) => {
                   return (
                     <span
                       key={num}
@@ -1167,8 +1180,8 @@ const TablePage = <T extends TableBean>({
                       className={` ml-1 border  rounded hover:bg-slate-200 hover:cursor-pointer p-1 ${classNames(
                         {
                           " bg-slate-100 text-blue-500 font-bold":
-                            num === pager.size,
-                          " font-normal": num !== pager.size,
+                            num + "" === pager.size + "",
+                          " font-normal": num + "" !== pager.size + "",
                         }
                       )}`}
                     >

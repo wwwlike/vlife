@@ -26,10 +26,16 @@ export interface VFBtn{
   title?:string;//按钮名
   icon?:ReactNode;//图标
   allowEmpty?:boolean;//是否允许空值(且是对单挑数据操作则可显示在tableToolbar上，因为是对单体数据操作所以列表选择的数据它不使用)
-  activeKey?:string; // 当前所在激活页签key
+  activeTabKey?:string[]; // 按钮所能当前激活页签key
   btnType?:btnType;// 按钮类型 "button" | "icon" | "link";
   continueCreate?:boolean;//连续新增 create按钮会出现(undefined不可见 false可见不可用  true可见可用)
-  actionType:actionType // 动作类型
+  entity?:string;// 实体名称
+  actionType:actionType // 动作类型 
+  model?:string,//当前操作模型;当前操作数据的模型名称,(form模型type,saveData的返回数据类型) 按钮触发的指定表单模型
+  modal?:React.ReactElement<{ //手工传入页面用作按钮触发弹出modal; 该页面需要支持 数据传出onDataChange；该modal不赋值数据保存接口调用，只需要把最新数据传出即可
+    onDataChange:(data:any)=>void;//modal弹窗内部数据变化通知外层(一般是通知modal的按钮进行数据保存)
+    onFinish:()=>void; //modal弹窗内部业务处理完毕通知外层
+}>; 
   disabled?:boolean;// 布尔方式判断按钮是否不可用
   usableMatch?:any|((...datas:any[])=>string|boolean|Promise<string|boolean>); //表单数据校验按钮可用性 any=>直接比对|函数=>复杂/异步校验 string表示不能使用原因 赋值给tooltip
   tooltip?:string;// 不可用时候的提醒
@@ -40,7 +46,6 @@ export interface VFBtn{
   datas?: any | any[]; //按钮数据 考虑和loadApi合并
   permissionCode?:string;//权限编码,不传则根据->`实体名:方法名(动作:模型名)`组成 sysUser:save:sysUserDto对应后端sysUser的API下的saveSysUserDto方法
   multiple?:boolean,//是否是对多条数据操作(和按钮展示位置有关，true:展示在列表上，false 展示在详情页)
-  model?:string,//当前操作模型;当前操作数据的模型名称,(form模型type,saveData的返回数据类型) 
   submitConfirm?:boolean, //提交之前确认
   disabledHide?:boolean,  //不可用时隐藏
   submitClose?:boolean,   //modal提交后关闭
@@ -52,10 +57,7 @@ export interface VFBtn{
   saveApi?:(...data:(any&{tableSort:number})[])=>Promise<Result<any>>| any//按钮点击后触发的异步或者同步，必须返回数据，该数据返回到外层并且是onSubmitFinish方法作为入参,提取权限关键字时采用
   onSubmitFinish?:(...saveApiResult:any[])=>void; //提交完成后触发的动作，如：用于关闭弹窗，刷新列表等操作
   onClick?:(...data:(any&{tableSort:number})[])=>void,//一般custom按钮使用，优先级高于saveAPI，一般不做接口类型的操作，不返回数据出去
-  modal?:React.ReactElement<{
-    onDataChange:(data:any)=>void;//modal弹窗内部数据变化通知外层
-    onFinish:()=>void; //modal弹窗内部业务处理完毕通知外层
-  }>; //React.ComponentType<any>,
+//React.ComponentType<any>,
   //不够好
   divider?:boolean|string; // dropdown的分割线
   //发现以下没有用到

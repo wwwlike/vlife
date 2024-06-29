@@ -18,8 +18,6 @@ interface FilterSettingProp {
 
 /* 当前接口可配置的过滤器选择 */
 export default ({ data, onDataChange }: FilterSettingProp) => {
-  const [filterOptions, setFilterOpen] = useState([]);
-
   useEffect(() => {}, []);
 
   return (

@@ -4,6 +4,7 @@ import { MenuVo, listAll } from "@src/api/SysMenu";
 import { SysResources } from "@src/api/SysResources";
 import SelectIcon from "@src/components/SelectIcon";
 import { VfBaseProps } from "@src/dsl/component";
+import { useUpdateEffect } from "ahooks";
 
 interface MenuResourcesSelectProp extends VfBaseProps<string[]> {
   appId: string; //应用id
@@ -27,12 +28,18 @@ export default ({
   placeholder = "请先选择应用",
   onDataChange,
 }: MenuResourcesSelectProp) => {
+  const [selected, setSelected] = useState<string[]>(value || []);
+
   //app应用
   const [appMenu, setAppMenu] = useState<MenuVo>();
   //tab菜单
   const [tabMenus, setTabMenus] = useState<MenuVo[]>([]);
   //所有菜单
   const [menus, setMenus] = useState<MenuVo[]>([]);
+
+  useUpdateEffect(() => {
+    onDataChange?.(selected);
+  }, [selected]);
 
   /**
    * 找到指定菜单menuVo下roleId角色能使用的资源
@@ -42,13 +49,15 @@ export default ({
     sroleId: string
   ): SysResources[] => {
     if (menuVo.sysResourcesList && menuVo.sysResourcesList.length > 0) {
-      const res = menuVo.sysResourcesList.filter((res) => {
-        return sroleId !== undefined && sroleId !== null
-          ? res.sysRoleId === null ||
-              res.sysRoleId === undefined ||
-              res.sysRoleId === sroleId
-          : res.sysRoleId === null || res.sysRoleId === undefined;
-      });
+      const res = menuVo.sysResourcesList
+        .filter((res) => {
+          return sroleId !== undefined && sroleId !== null
+            ? res.sysRoleId === null ||
+                res.sysRoleId === undefined ||
+                res.sysRoleId === sroleId
+            : res.sysRoleId === null || res.sysRoleId === undefined;
+        })
+        .filter((s) => s.menuRequired !== true);
       return res;
     }
     return [];
@@ -113,16 +122,24 @@ export default ({
           <Checkbox
             value={m.id}
             type="card"
-            checked={value && value.includes(m.id)}
+            checked={selected && selected.includes(m.id)}
             onChange={(v) => {
-              if (v.target.checked && (value === null || value === undefined)) {
-                onDataChange && onDataChange([m.id]);
-              } else if (v.target.checked && !value?.includes(m.id)) {
-                onDataChange && onDataChange([...(value || []), m.id]);
+              if (v.target.checked) {
+                setSelected([...selected, m.id]);
+              } else {
+                setSelected(selected.filter((v) => v !== m.id));
               }
-              if (v.target.checked === false && value?.includes(m.id)) {
-                onDataChange && onDataChange(value?.filter((v) => v !== m.id));
-              }
+              //   onDataChange && onDataChange(value?.filter((v) => v !== m.id));
+              // }
+
+              // if (v.target.checked && (value === null || value === undefined)) {
+              //   onDataChange && onDataChange([m.id]);
+              // } else if (v.target.checked && !value?.includes(m.id)) {
+              //   onDataChange && onDataChange([...(value || []), m.id]);
+              // }
+              // if (v.target.checked === false && value?.includes(m.id)) {
+              //   onDataChange && onDataChange(value?.filter((v) => v !== m.id));
+              // }
             }}
           >
             <SelectIcon read value={m.icon} />
@@ -148,34 +165,42 @@ export default ({
           </h3>
           <div className="flex w-full">
             <ul role="list" className="grid p-2 gap-4 grid-cols-6  w-full">
-              {findMenuResources(m, roleId).map((dd) => (
-                <li className="flex" key={dd.code}>
-                  <Checkbox
-                    value={dd.code}
-                    checked={value && value.includes(dd.id)}
-                    onChange={(v) => {
-                      if (
-                        v.target.checked &&
-                        (value === null || value === undefined)
-                      ) {
-                        onDataChange && onDataChange([dd.id]);
-                      } else if (v.target.checked && !value?.includes(dd.id)) {
-                        onDataChange && onDataChange([...(value || []), dd.id]);
-                      }
+              {findMenuResources(m, roleId)
+                .filter((f) => f.menuRequired !== true)
+                .map((dd) => (
+                  <li className="flex" key={dd.code}>
+                    <Checkbox
+                      value={dd.code}
+                      checked={selected && selected.includes(dd.id)}
+                      onChange={(v) => {
+                        if (v.target.checked) {
+                          setSelected([...selected, dd.id]);
+                        } else {
+                          setSelected(selected.filter((v) => v !== dd.id));
+                        }
 
-                      if (
-                        v.target.checked === false &&
-                        value?.includes(dd.id)
-                      ) {
-                        onDataChange &&
-                          onDataChange(value?.filter((v) => v !== dd.id));
-                      }
-                    }}
-                  >
-                    {dd.name}
-                  </Checkbox>
-                </li>
-              ))}
+                        // if (
+                        //   v.target.checked &&
+                        //   (value === null || value === undefined)
+                        // ) {
+                        //   onDataChange && onDataChange([dd.id]);
+                        // } else if (v.target.checked && !value?.includes(dd.id)) {
+                        //   onDataChange && onDataChange([...(value || []), dd.id]);
+                        // }
+
+                        // if (
+                        //   v.target.checked === false &&
+                        //   value?.includes(dd.id)
+                        // ) {
+                        //   onDataChange &&
+                        //     onDataChange(value?.filter((v) => v !== dd.id));
+                        // }
+                      }}
+                    >
+                      {dd.name}
+                    </Checkbox>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>

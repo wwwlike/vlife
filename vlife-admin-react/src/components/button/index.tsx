@@ -21,6 +21,14 @@ import { IconSend } from "@douyinfe/semi-icons";
 export default (props: Partial<VFBtn>) => {
   const { Text } = Typography;
   const formModal = useNiceModal("formModal");
+  const vlifeModal = useNiceModal("vlifeModal");
+
+  const [modal, contextHolder] = Modal.useModal();
+  const config = {
+    title: "This is a success message",
+    content: "Context consumer",
+  };
+
   const confirmModal = useNiceModal("confirmModal");
   const [loading, setLoading] = useState<boolean>();
   const { checkBtnPermission } = useAuth();
@@ -35,7 +43,6 @@ export default (props: Partial<VFBtn>) => {
     icon,
     multiple = false,
     model,
-    modal,
     submitClose = false,
     submitConfirm,
     reaction,
@@ -43,8 +50,8 @@ export default (props: Partial<VFBtn>) => {
     initData,
     otherBtns,
     className,
+    entity,
     permissionCode,
-    activeKey,
     onFormilySubmitCheck,
     saveApi,
     loadApi,
@@ -68,11 +75,31 @@ export default (props: Partial<VFBtn>) => {
 
   //权限码计算
   const _permissionCode = useMemo(() => {
-    return (
-      permissionCode ||
-      (model && saveApi ? model + `:${saveApi.name}` : undefined)
-    );
-  }, [permissionCode, model, saveApi]);
+    if (permissionCode) {
+      return permissionCode;
+    } else if (entity && saveApi && saveApi.name !== "savaApi") {
+      return `${entity}:${saveApi.name}`;
+      // actionType&&["save","delete","remove"].includes(actionType)
+      // save|edit|delete
+      // api
+      // click 不用管权限
+    } else if (entity && model) {
+      return `${entity}:${actionType}:${model}`;
+      // actionType&&["save","delete","remove"].includes(actionType)
+      // save|edit|delete
+      // api
+      // click 不用管权限
+    } else if (entity) {
+      return `${entity}:${actionType}`;
+    } else if (model) {
+      return `${model}:${actionType}`;
+    }
+
+    // return (
+    //   permissionCode ||
+    //   (model && saveApi ? model + `:${saveApi.name}` : undefined)
+    // );
+  }, [permissionCode, model, entity, actionType, saveApi]);
 
   //按钮数据
   useEffect((): any => {
@@ -227,7 +254,7 @@ export default (props: Partial<VFBtn>) => {
       formModal.show({
         type: model,
         formData: formData,
-        activeKey: activeKey,
+        // activeKey: activeKey,
         fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
         btns: modalBtns(formData), //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
         terse: !saveApi ? true : false, //紧凑
@@ -248,7 +275,7 @@ export default (props: Partial<VFBtn>) => {
         modal(d.data);
       });
     }
-  }, [btnData, props, reaction, activeKey, modalBtns]);
+  }, [btnData, props, reaction, modalBtns]);
 
   // 工作流审核框弹出
   const flowCommentShow = useCallback(() => {
@@ -329,39 +356,52 @@ export default (props: Partial<VFBtn>) => {
   const [customModalVisiable, setCustomModalVisiable] = useState(true);
   //按钮点击
   const btnClick = useCallback(() => {
-    if (modal) {
-      //弹出自定义的modal
-      let modalOutData: any;
-      // setCustomModalVisiable(true);
-      Modal.info({
-        width: 800,
-        title,
-        footer: onClick ? (
-          <div className="flex justify-end">
-            <Button
-              type="primary"
-              onClick={() => {
-                modalOutData && onClick(modalOutData);
-              }}
-            >
-              {title || "提交"}
-            </Button>
-          </div>
-        ) : (
-          false
-        ),
-        content: (
-          //modal->传入的弹出层包裹的组件
-          <>
-            {React.cloneElement(modal, {
-              onDataChange: (__data: any) => {
-                modalOutData = __data;
-              },
-              onFinish: () => onSubmitFinish?.(modalOutData),
-            })}
-          </>
-        ),
+    if (props.modal) {
+      vlifeModal.show({
+        title: title || "提交",
+        children: props.modal,
+        okFun: onClick,
+        submitClose: props.submitClose,
       });
+
+      // let modalOutData: any;
+      // // setCustomModalVisiable(true);
+      // Modal.info({
+      //   width: 800,
+      //   title,
+      //   visible: customModalVisiable,
+      //   footer: onClick ? (
+      //     <div className="flex justify-end">
+      //       <Button
+      //         type="primary"
+      //         onClick={() => {
+      //           modalOutData && onClick(modalOutData);
+      //           if (props.submitClose) {
+      //             setCustomModalVisiable(false);
+      //           }
+      //         }}
+      //       >
+      //         {title || "提交"}
+      //       </Button>
+      //     </div>
+      //   ) : (
+      //     false
+      //   ),
+      //   content: (
+      //     //modal->传入的弹出层包裹的组件
+      // <>
+      //   {React.cloneElement(modal, {
+      //     //克隆组件，并给组件传入2个方法
+      //     onDataChange: (__data: any) => {
+      //       modalOutData = __data;
+      //     },
+      //     onFinish: () => {
+      //       onSubmitFinish?.(modalOutData);
+      //     },
+      //   })}
+      // </>
+      //   ),
+      // });
     } else if (onClick) {
       onClick(btnData);
     } else if (position !== "formFooter" && model) {
@@ -545,6 +585,7 @@ export default (props: Partial<VFBtn>) => {
   ]);
   return authPass && !(disabledHide && disabled === true) ? (
     <>
+      {/* {_permissionCode} */}
       {tooltip && props.disabled === true ? (
         <Tooltip content={tooltip}>{BtnComp} </Tooltip>
       ) : (

@@ -254,13 +254,8 @@ const TableIndex = <T extends TableBean>({
               if (dict && dict.color) {
                 return (
                   <span
-                    className={` text-white text-xs ${classNames({
-                      "bg-green-500": dict.color === "green",
-                      "bg-blue-500": dict.color === "blue",
-                      "bg-red-500": dict.color === "red",
-                      "bg-yellow-500": dict.color === "yellow",
-                      "bg-gray-500": dict.color === "gray",
-                      " bg-violet-500": dict.color === "violet",
+                    className={`text-white  text-xs ${classNames({
+                      [`bg-${dict.color}-500`]: dict.color !== undefined,
                     })} px-3 py-1 font-bold  rounded-lg`}
                   >
                     {dict.label}
@@ -328,7 +323,7 @@ const TableIndex = <T extends TableBean>({
       //行按钮添加,工作流不需要行级按钮
       if (flowFormType) {
         columnshow?.unshift({
-          title: "当前流程节点",
+          title: "审核阶段",
           // fixed: "left",
           width: 150,
           align: "center",
@@ -351,7 +346,12 @@ const TableIndex = <T extends TableBean>({
             );
           },
         });
-      } else if (read !== true && model.flowJson === null) {
+      } else if (
+        read !== true &&
+        model.flowJson === null &&
+        btns.filter((b) => b.multiple !== true && b.actionType !== "create")
+          .length !== 0
+      ) {
         columnshow?.push({
           title: "操作",
           align: "center",
@@ -361,6 +361,7 @@ const TableIndex = <T extends TableBean>({
           render: (text, record, index) => {
             return (
               <BtnToolBar
+                entity={model.entityType}
                 onBtnNum={(v) => {
                   setListBtnMax((m) => (v > m ? v : m));
                 }}
@@ -442,7 +443,7 @@ const TableIndex = <T extends TableBean>({
   return (
     <>
       <Table
-        className={`${className} relative `}
+        className={`${className}  `}
         showHeader={true}
         scroll={{ y: height }}
         resizable={true}

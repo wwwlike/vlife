@@ -110,6 +110,7 @@ export default memo(() => {
         }
         actions={
           <BtnToolBar
+            entity="form"
             btns={[
               {
                 actionType: "edit",

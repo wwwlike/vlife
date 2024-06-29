@@ -37,7 +37,7 @@ const FieldSelect = ({
 }: FieldSelectProps) => {
   const column2Flag =
     fields.filter((f) => f.x_hidden === false || f.x_hidden === undefined)
-      .length > 20; //2行显示标识
+      .length > 100; //2行显示标识
   //布局改变 数量，大小，位置
   const onLayoutChange = useCallback(
     (divLayout: LayoutDataType[]) => {

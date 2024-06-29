@@ -112,6 +112,18 @@ public class AuthDict {
         public final static String BLUE = "blue";
         @Named("白")
         public final static String WHITE = "white";
+        @Named("黑")
+        public final static String BLACK = "black";
+        @Named("紫")
+        public final static String PURPLE = "purple";
+        @Named("橙")
+        public final static String ORANGE = "orange";
+        @Named("粉")
+        public final static String PINK = "pink";
+        @Named("灰")
+        public final static String GRAY = "gray";
+        @Named("棕")
+        public final static String BROWN = "brown";
     }
 
 

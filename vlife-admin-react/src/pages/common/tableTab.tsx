@@ -201,6 +201,12 @@ export default (props: TableTabProps) => {
     allTabAble,
   ]);
 
+  useEffect(() => {
+    if (contentTab !== undefined && activeTab === undefined) {
+      setActiveTab({ level1: contentTab?.[0]?.itemKey });
+    }
+  }, [contentTab]);
+
   //指定页签数据返回(字典/数据库/自定义/flow)
   const reqFunc = useCallback(
     (_activeKey: { level1: string; level2?: string }) => {
@@ -298,6 +304,7 @@ export default (props: TableTabProps) => {
 
   return (
     <>
+      {/* {activeTab?.level1} */}
       {contentTab !== undefined && (
         <div className=" bg-white  pt-1">
           <Tabs

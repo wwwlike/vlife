@@ -1,5 +1,6 @@
 package cn.wwwlike.auth.api;
 
+import cn.wwwlike.auth.config.CustomFilterInvocationSecurityMetadataSource;
 import cn.wwwlike.auth.dto.GroupDto;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.req.SysGroupPageReq;
@@ -40,6 +41,7 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
   public GroupDto saveGroupDto(@RequestBody GroupDto dto) {
     service.save(dto,true);
     BaseService.groups=new HashMap<>();//刷新权限组
+    CustomFilterInvocationSecurityMetadataSource.urlRole=null;
     return dto;
   }
   //权限组详情

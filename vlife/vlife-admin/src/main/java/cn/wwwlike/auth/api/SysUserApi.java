@@ -6,6 +6,7 @@ import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysUserPageReq;
 import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.auth.vo.UserDetailVo;
+import cn.wwwlike.sys.dto.UserDataMoveDto;
 import cn.wwwlike.vlife.annotation.PermissionEnum;
 import cn.wwwlike.vlife.annotation.VMethod;
 import cn.wwwlike.vlife.bean.PageVo;
@@ -27,7 +28,7 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
      * 用户列表
      */
     @PostMapping("/page")
-    public PageVo<SysUser> page(@RequestBody PageQuery req) {
+    public PageVo<SysUser> page(@RequestBody SysUserPageReq req) {
         return service.findPage(req);
     }
 
@@ -36,8 +37,6 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
     public List<SysUser> list(@RequestBody SysUserPageReq req) {
         return service.find(req);
     }
-
-
 
     /**
      * 密码重置
@@ -91,7 +90,20 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
      */
     @DeleteMapping("/remove")
     public Long remove(@RequestBody String[] ids) {
+        //把被删除人的数据转移到删除人账号上
+        Arrays.stream(ids).forEach(id->{
+            service.dataMove(id,SecurityConfig.getCurrUser().getId());
+        });
         return service.remove(ids);
+    }
+
+    /**
+     * 数据迁移
+     */
+    @PostMapping("/move")
+    public boolean move(@RequestBody UserDataMoveDto dto) {
+        service.dataMove(dto.getTargetUserId(),dto.getTargetUserId());
+        return true;
     }
     /**
      * 当前用户

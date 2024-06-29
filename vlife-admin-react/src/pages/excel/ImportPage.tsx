@@ -3,10 +3,14 @@
  */
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Select, Spin } from "@douyinfe/semi-ui";
-import { ExcelUploadFile, importData, template } from "@src/api/common/Excel";
+import {
+  DataImpResult,
+  ExcelUploadFile,
+  importData,
+  template,
+} from "@src/api/common/Excel";
 import { FormVo, list } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
-import { useUpdateEffect } from "ahooks";
 
 export interface ImportPageProps {
   entityType: string;
@@ -38,7 +42,7 @@ export default ({ entityType, onFinish, onDataChange }: ImportPageProps) => {
   const [page, setPage] = useState<"import" | "result" | "modelError">(
     "import"
   );
-  const [result, setResult] = useState<number>();
+  const [result, setResult] = useState<DataImpResult>();
   // 在ImportPage组件中添加一个处理文件选择的函数
   const handleFileChange = (e: any) => {
     const file = e.target.files[0]; // 获取选择的文件
@@ -148,23 +152,20 @@ export default ({ entityType, onFinish, onDataChange }: ImportPageProps) => {
               </div>
             </div>
           )}
-          {result !== undefined && result > 0 && (
-            <div className=" font-bold">
-              成功导入 <span className=" text-blue-500">{result}</span>条记录
-            </div>
-          )}
-          {result !== undefined && result === 0 && (
-            <div className=" font-bold">没有任何记录导入</div>
-          )}
-          {result !== undefined && result === -1 && (
-            <span className=" font-bold text-red-500">
-              导入数据格式与模版不匹配，不能导入
-            </span>
+          {result !== undefined && (
+            <>
+              <div className=" font-bold text-2xl">
+                {result.success && result.total > 0 && result.success > 0
+                  ? "导入成功"
+                  : "导入失败"}
+              </div>
+              <div className=" text-blue-500 font-bold">{result.msg}</div>
+            </>
           )}
         </div>
       )}
       {page === "modelError" && (
-        <div className=" font-bold text-red-500">
+        <div className=" font-bold text-red-500  mt-4">
           导入的数据模型，必须至少设置一个字段为唯一字段不能重复
         </div>
       )}
@@ -181,6 +182,7 @@ export default ({ entityType, onFinish, onDataChange }: ImportPageProps) => {
               onClick={() => {
                 if (page === "import") {
                   setPage("result");
+                  setResult(undefined);
                   setLoading(true);
                   importData(excelUploadFile).then((r) => {
                     setResult(r.data);

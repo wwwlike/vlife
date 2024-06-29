@@ -383,12 +383,14 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
         }
         if (tag.getTags().size() > 0) {
             List<FieldDto> fieldDtos = beanInfo.getFields();
-            fieldDtos.stream().forEach(field -> {
-                if (tag.getTags().get(field.getFieldName()) != null) {
-                    field.setTitle(tag.getTags().get(field.getFieldName()).getTitle());
-                    field.setPlaceholder(tag.getTags().get(field.getFieldName()).getPlaceholder());
-                }
-            });
+            if(fieldDtos!=null){
+                fieldDtos.stream().forEach(field -> {
+                    if (tag.getTags().get(field.getFieldName()) != null) {
+                        field.setTitle(tag.getTags().get(field.getFieldName()).getTitle());
+                        field.setPlaceholder(tag.getTags().get(field.getFieldName()).getPlaceholder());
+                    }
+                });
+            }
         }
         beanInfo.setCommentRead(true);
         return beanInfo;

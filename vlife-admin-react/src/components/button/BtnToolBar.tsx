@@ -20,6 +20,7 @@ import { Dropdown } from "@douyinfe/semi-ui";
  * 区块按钮组定义
  */
 export interface BtnToolBarProps<T extends IdBean> {
+  entity?: string; //实体类型
   btns: VFBtn[]; //按钮信息集合
   btnType?: btnType; //按钮展现形式
   className?: string;
@@ -29,7 +30,7 @@ export interface BtnToolBarProps<T extends IdBean> {
   position?: BtnToolBarPosition; //显示场景(过滤出满足条件的按钮)
   line?: number; //行号 tableLine模式下使用 临时数据可用行号当索引进行操作
   readPretty?: boolean; //true 则只使用api的按钮
-  activeKey?: string; //当前所在页签的key()
+  activeKey?: string; //当前场景
   // onDataChange?: (datas: any[]) => void; //数据修订好传输出去
   onBtnNum?: (num: number) => void; //当前按钮数量
 }
@@ -44,6 +45,7 @@ export default <T extends IdBean>({
   btnType = "button",
   className,
   formModel,
+  entity,
   readPretty,
   line,
   dropdown = false,
@@ -104,8 +106,15 @@ export default <T extends IdBean>({
     }
     return toolBarBtns
       .filter((btn) => (formModel ? btn.model === formModel : true)) //模型过滤
-      .filter((btn) => (readPretty ? btn.actionType === "api" : true)); //只读过滤
-  }, [position, btns, formModel, readPretty, datas]);
+      .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //只读过滤
+      .filter(
+        (btn) =>
+          !btn.activeTabKey ||
+          (activeKey &&
+            btn.activeTabKey &&
+            btn.activeTabKey.includes(activeKey))
+      ); //只读过滤
+  }, [position, btns, formModel, readPretty, datas, activeKey]);
 
   //返回按钮数量
   useEffect(() => {
@@ -125,7 +134,7 @@ export default <T extends IdBean>({
             <Button
               key={`btn_${line}_${index}`}
               {...btn}
-              activeKey={activeKey}
+              // activeKey={activeKey}
               btnType={
                 btnType !== undefined && btn.btnType === undefined
                   ? btnType
@@ -143,6 +152,7 @@ export default <T extends IdBean>({
                 //   ? btn.initData //新增类型按钮使用initData
                 //   : btn.datas || btnDatas
               }
+              entity={btn.entity || entity}
               otherBtns={
                 btns.filter(
                   //排除掉当前按钮

@@ -7,9 +7,17 @@ import cn.wwwlike.auth.vo.GroupVo;
 import cn.wwwlike.auth.vo.MenuVo;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.common.BaseService;
+import cn.wwwlike.form.entity.Form;
+import cn.wwwlike.form.entity.FormField;
+import cn.wwwlike.form.service.FormFieldService;
+import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
+import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.objship.dto.EntityDto;
+import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.QueryWrapper;
+import cn.wwwlike.vlife.utils.ReflectionUtils;
 import cn.wwwlike.web.security.core.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -93,4 +101,42 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
     public static String encode(String str)  {
         return  new MessageDigestPasswordEncoder("MD5").encode(str);
     }
+
+
+    @Autowired
+    public FormFieldService fieldService;
+
+    @Autowired
+    public FormService formService;
+
+    //和该用户关联的数据
+    public List<Item> realationData(String sourceUserId){
+        List<Item> items=new ArrayList<>();
+        QueryWrapper<FormField> qw=QueryWrapper.of(FormField.class);
+        qw.eq("fieldName","sysUserId");
+        List<FormField> fields=fieldService.find(qw);
+        for(FormField field:fields){
+            Form form=formService.findOne(field.getFormId());
+            if(form.getItemType().equals("entity")){
+                Class entity=GlobalData.entityDto(form.getEntityType()).getClz();
+                QueryWrapper _qw=QueryWrapper.of(entity);
+                _qw.eq("sysUserId",sourceUserId);
+                List<? extends Item> _items=dao.query(entity,_qw,null);
+                for(Item item:_items){
+                    items.add(item);
+                }
+            }
+        }
+        return items;
+    }
+
+    //离职数据迁移
+    public void dataMove(String sourceUserId,String targetUserId){
+        List<Item> items=realationData(sourceUserId);
+         for(Item item:items){
+             ReflectionUtils.setFieldValue(item,"sysUserId",targetUserId);
+             dao.save(item);
+         }
+    }
+
 }

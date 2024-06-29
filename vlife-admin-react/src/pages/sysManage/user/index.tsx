@@ -12,6 +12,7 @@ export default () => {
       listType="sysUser"
       tabDictField="state"
       dataImp={true}
+      filterType="sysUserPageReq"
       // tabList={[
       //   {
       //     itemKey: "sysTab_1",

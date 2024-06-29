@@ -37,6 +37,7 @@ import TableRadioSelect from "@src/components/radio/TableRadioSelect";
 import SwitchCard from "@src/components/checkbox/SwitchCard";
 import UserSelect from "@src/pages/sysManage/user/UserSelect";
 import MemberSelect from "@src/workflow-editor/components/MemberSelect";
+import VfUpload from "@src/components/VfUpload";
 
 //解决预览不正确问题
 const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
@@ -266,6 +267,12 @@ export const FormComponents: CompDatas = {
     component: VfImage,
     icon: "IconImage",
     label: "图片上传",
+    dataModel: DataModel.string,
+  },
+  VfUpload: {
+    component: VfUpload,
+    icon: "IconUpload",
+    label: "文件上传",
     dataModel: DataModel.string,
   },
   SearchInput: {

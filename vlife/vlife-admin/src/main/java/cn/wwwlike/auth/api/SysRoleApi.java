@@ -1,5 +1,5 @@
 package cn.wwwlike.auth.api;
-
+import cn.wwwlike.auth.config.CustomFilterInvocationSecurityMetadataSource;
 import cn.wwwlike.auth.dto.RoleDto;
 import cn.wwwlike.auth.entity.SysRole;
 import cn.wwwlike.auth.req.SysRolePageReq;
@@ -10,7 +10,10 @@ import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.req.PageQuery;
+import cn.wwwlike.web.security.core.EAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,16 +32,21 @@ public class SysRoleApi extends VLifeApi<SysRole, SysRoleService> {
    * 角色保存
    */
   @PostMapping("/save/roleDto")
-  public RoleDto saveRoleDto(@RequestBody RoleDto dto) {
-    if(dto.getResourcesAndMenuIds()!=null){
+  public RoleDto saveRoleDto(@RequestBody RoleDto dto) throws Exception {
+    if(dto.resourcesAndMenuIds!=null){
       dto.setSysMenu_id(
-      menuService.findByIds(dto.getResourcesAndMenuIds().toArray(new String[dto.getResourcesAndMenuIds().size()])).stream().map(DbEntity::getId).collect(Collectors.toList())
+      menuService.findByIds(dto.resourcesAndMenuIds.toArray(new String[dto.getResourcesAndMenuIds().size()])).stream().map(DbEntity::getId).collect(Collectors.toList())
       );
       dto.setSysResources_id(
-              resourcesService.findByIds(dto.getResourcesAndMenuIds().toArray(new String[dto.getResourcesAndMenuIds().size()])).stream().map(DbEntity::getId).collect(Collectors.toList())
+              resourcesService.findByIds(dto.resourcesAndMenuIds.toArray(new String[dto.getResourcesAndMenuIds().size()])).stream().map(DbEntity::getId).collect(Collectors.toList())
       );
+    }else{
+      dto.setSysResources_id(null);
+      dto.setSysMenu_id(null);
     }
-    return service.save(dto,true);
+    service.save(dto,true);
+    CustomFilterInvocationSecurityMetadataSource.urlRole=null;
+    return dto;
   }
   /**
    * 角色详情

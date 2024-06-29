@@ -33,7 +33,7 @@ export default () => {
           (req) => {
             setFormVo(edit.data?.[0]);
             if (req.data) {
-              setPageReqType(req.data?.[0].type);
+              setPageReqType(req.data?.[0]?.type);
             }
           }
         );

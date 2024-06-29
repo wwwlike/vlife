@@ -80,9 +80,7 @@ const contentTab: TableTab[] = [
 
 export default (props: FlowTabProps) => {
   const { activeKey, onActiveChange, onCountReq, tabCount, onTabReq } = props;
-  const [_activeKey, setActiveKey] = useState<ActiveTab | undefined>(
-    activeKey || { level1: "flow_todo" }
-  );
+  const [_activeKey, setActiveKey] = useState<ActiveTab | undefined>(activeKey);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -92,6 +90,8 @@ export default (props: FlowTabProps) => {
   useEffect(() => {
     if (_activeKey) {
       onActiveChange(_activeKey);
+    } else {
+      onActiveChange({ level1: "flow_todo" });
     }
   }, [_activeKey?.level1, _activeKey?.level2]);
 
@@ -157,6 +157,7 @@ export default (props: FlowTabProps) => {
 
   return (
     <>
+      {/* {JSON.stringify(_activeKey)} */}
       {contentTab !== undefined && (
         <div className=" bg-white  pt-1">
           <Tabs

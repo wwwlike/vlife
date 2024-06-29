@@ -178,64 +178,67 @@ public class FormService extends VLifeService<Form, FormDao> {
                 List<FieldDto> javaFields = javaDto.getFields();
                 //遍历最新模型的Java字段
                 int count = 0;
-                for (FieldDto javaField : javaFields) {
-                    //1找出要新增，要修改的字段
-                    boolean exists = false;
-                    for (FormFieldDto dbField : formDto.getFields()) {
-                        boolean change = false;
-                        //字段属性发生变化进行修订
-                        if (dbField.getFieldName().equals(javaField.getFieldName())) {
-                            if (!dbField.getFieldType().equals(getFileType(javaField.getType())) || !dbField.getDataType().equals(getDataType(javaField.getFieldType()))) {
-                                change = true;
-                                dbField.setDataType(getDataType(javaField.getFieldType()));
-                                dbField.setFieldType(getFileType(javaField.getType()));
-                                initComponent(dbField, formDto.getItemType(), javaDto);
-                            } else if (javaField.getDictCode() != null && "Input".equals(dbField.getX_component()) && dbField.getDictCode() == null) {
-                                change = true;
-                                dbField.setDictCode(javaField.getDictCode());
-                                initComponent(dbField, formDto.getItemType(), javaDto);
-                            }
-                            String javaTitle = javaField.getTitle();
-                            if (javaTitle != null && !javaTitle.equals("/") && !javaTitle.equals(dbField.getJavaTitle())) {
-                                change = true;
-                                if (dbField.getTitle().equals(dbField.getJavaTitle())) {
-                                    dbField.setTitle(javaTitle);
+                if (javaFields!=null&&javaFields.size() > 0) {
+                    for (FieldDto javaField : javaFields) {
+                        //1找出要新增，要修改的字段
+                        boolean exists = false;
+                        for (FormFieldDto dbField : formDto.getFields()) {
+                            boolean change = false;
+                            //字段属性发生变化进行修订
+                            if (dbField.getFieldName().equals(javaField.getFieldName())) {
+                                if (!dbField.getFieldType().equals(getFileType(javaField.getType())) || !dbField.getDataType().equals(getDataType(javaField.getFieldType()))) {
+                                    change = true;
+                                    dbField.setDataType(getDataType(javaField.getFieldType()));
+                                    dbField.setFieldType(getFileType(javaField.getType()));
+                                    initComponent(dbField, formDto.getItemType(), javaDto);
+                                } else if (javaField.getDictCode() != null && "Input".equals(dbField.getX_component()) && dbField.getDictCode() == null) {
+                                    change = true;
+                                    dbField.setDictCode(javaField.getDictCode());
+                                    initComponent(dbField, formDto.getItemType(), javaDto);
                                 }
-                                dbField.setJavaTitle(javaTitle);
-                            }
-                            if (StringUtils.isNotBlank(javaField.getPlaceholder()) && StringUtils.isEmpty(dbField.getX_component_props$placeholder())) {
-                                change = true;
-                                dbField.setX_component_props$placeholder(javaField.getPlaceholder());
-                            }
+                                String javaTitle = javaField.getTitle();
+                                if (javaTitle != null && !javaTitle.equals("/") && !javaTitle.equals(dbField.getJavaTitle())) {
+                                    change = true;
+                                    if (dbField.getTitle().equals(dbField.getJavaTitle())) {
+                                        dbField.setTitle(javaTitle);
+                                    }
+                                    dbField.setJavaTitle(javaTitle);
+                                }
+                                if (StringUtils.isNotBlank(javaField.getPlaceholder()) && StringUtils.isEmpty(dbField.getX_component_props$placeholder())) {
+                                    change = true;
+                                    dbField.setX_component_props$placeholder(javaField.getPlaceholder());
+                                }
 
-                            if (change) {
-                                fieldService.save(dbField);
+                                if (change) {
+                                    fieldService.save(dbField);
+                                }
+                                exists = true;
                             }
-                            exists = true;
+                        }
+
+                        if (exists == false) {//增量新增
+                            count++;
+                            FormFieldDto formField = new FormFieldDto();
+                            BeanUtils.copyProperties(fieldTran(javaField), formField);
+                            formField.setSort(formDto.getFields().size() + count);
+                            formField.setFormId(formDto.getId());
+                            formField.setX_component_props$placeholder(javaField.getPlaceholder());
+                            initComponent(formField, formDto.getItemType(), javaDto);
+                            //没有注释，则使用fieldName
+                            if (formField.getTitle() == null || formField.getTitle().equals("/")) {
+                                formField.setTitle(formField.getFieldName());
+                            }
+                            formField.setJavaTitle(formField.getTitle());
+                            fieldService.save(formField);
                         }
                     }
-                    if (exists == false) {//增量新增
-                        count++;
-                        FormFieldDto formField = new FormFieldDto();
-                        BeanUtils.copyProperties(fieldTran(javaField), formField);
-                        formField.setSort(formDto.getFields().size() + count);
-                        formField.setFormId(formDto.getId());
-                        formField.setX_component_props$placeholder(javaField.getPlaceholder());
-                        initComponent(formField, formDto.getItemType(), javaDto);
-                        //没有注释，则使用fieldName
-                        if (formField.getTitle() == null || formField.getTitle().equals("/")) {
-                            formField.setTitle(formField.getFieldName());
-                        }
-                        formField.setJavaTitle(formField.getTitle());
-                        fieldService.save(formField);
-                    }
-                }
-                //2 找出要删除的字段
-                if (formDto.getFields() != null) {
-                    for (FormFieldDto dbField : formDto.getFields()) {
-                        //开始删除
-                        if (javaFields.stream().filter(f -> f.getFieldName().equals(dbField.getFieldName())).count() == 0) {
-                            fieldService.remove(dbField.getId());
+                    //2 找出要删除的字段
+                    if (formDto.getFields() != null) {
+                        for (FormFieldDto dbField : formDto.getFields()) {
+                            //开始删除
+                            if (javaFields.stream().filter(f -> f.getFieldName().equals(dbField.getFieldName())).count() == 0) {
+                                fieldService.remove(dbField.getId());
+                            }
                         }
                     }
                 }

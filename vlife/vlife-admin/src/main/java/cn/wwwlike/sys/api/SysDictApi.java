@@ -53,7 +53,9 @@ public class SysDictApi extends VLifeApi<SysDict, SysDictService> {
     @PostMapping("/save")
     public SysDict save(@RequestBody SysDict dto) {
         SysDict type=service.findLevel1ByCode(dto.getCode());
-        dto.setSys(false);
+        if(dto.getId()==null){
+            dto.setSys(false);
+        }
         if(dto.getVal()==null){
             dto.setVal(service.dictVal(dto.getCode()));
         }

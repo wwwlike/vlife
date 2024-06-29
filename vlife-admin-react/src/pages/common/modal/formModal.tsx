@@ -201,6 +201,7 @@ export const FormModal = createNiceModal(
             <BtnToolBar
               datas={[{ ...data, flow: recordFlowInfo }]}
               btns={formBtns}
+              entity={modelInfo?.entityType}
               formModel={modelInfo?.type}
               position="formFooter"
               btnType="button"
