@@ -17,6 +17,7 @@ import { useEffect } from "react";
 import { listAll, SysGroup } from "@src/api/SysGroup";
 import { MenuVo } from "@src/api/SysMenu";
 import { gitToken } from "@src/api/pro/gitee";
+import { varObj } from "@src/api/SysVar";
 export const localStorageKey = "__auth_provider_token__";
 const mode = import.meta.env.VITE_APP_MODE;
 export interface dictObj {
@@ -39,7 +40,8 @@ type MenuState = "show" | "mini" | "hide";
 //全局状态和函数
 const AuthContext = React.createContext<
   | {
-      /**1 attr */
+      //系统变量
+      sysVar: { [key: string]: any };
       //当前用户
       user: UserDetailVo | undefined;
       //菜单展开状态
@@ -88,6 +90,8 @@ AuthContext.displayName = "AuthContext";
  * 把 authContext需要的数据注入了进来
  */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  //系统变量
+  const [sysVar, setVar] = useState<{ [key: string]: any }>({});
   /**
    * 当前模块menuId
    */
@@ -220,30 +224,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       });
     }
+    //系统环境变量提取
+    varObj({}).then((d: Result<any>) => {
+      setVar(d || {});
+    });
   });
-
-  /**
-   * 获得后台Java内存里的所有模型原始信息
-   * @param modelName
-   */
-  // async function getModelInfo(
-  //   modelName: string
-  // ): Promise<ModelInfo | undefined> {
-  //   if (javaModels[modelName] === undefined) {
-  //     //简写
-  //     let model = await (await javaModel(modelName)).data;
-  //     setJavaModels({ ...javaModel, modelName: model });
-  //     // then的写法
-  //     // await modelInfo(entityName,modelName).then(data=>{
-  //     //   model=data.data;
-  //     //   setModels({...models,modelName:model})
-  //     // });
-  //     // alert(JSON.stringify(model?.parentsName));
-  //     return model;
-  //   } else {
-  //     return javaModels[modelName];
-  //   }
-  // }
 
   /**
    *
@@ -489,6 +474,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       <AuthContext.Provider
         children={children}
         value={{
+          sysVar,
           user,
           menuState,
           setMenuState,

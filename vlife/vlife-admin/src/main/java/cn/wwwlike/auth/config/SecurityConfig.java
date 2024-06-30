@@ -59,6 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     SysResourcesService resourcesService;
     @Autowired
+    SysGroupService groupService;
+    @Autowired
     public CustomUrlDecisionManager customUrlDecisionManager;
     @Autowired
     public CustomFilterInvocationSecurityMetadataSource customFilterInvocationSecurityMetadataSource;
@@ -136,8 +138,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     }
                 });
 
-           authorizeRequests.expressionHandler(ewebSecurityExpressionHandler());//验证人员是否有权限的过滤
-        //一次读入的方式(废弃)
+//        authorizeRequests.expressionHandler(ewebSecurityExpressionHandler());//验证人员是否有权限的过滤
+//        //一次读入的方式(废弃)
 //        Map<String, String> map = groupService.resourceGroupMap();
 //        for (String url : map.keySet()) {
 //            // 资源路径与角色组绑定，以此资源为父资源角色所在的角色组
@@ -146,7 +148,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        }
         //,"/sysFile/download/*" "/sysFile/upload", ,"/sysFile/download/*" "/excel/template/*",
         authorizeRequests.antMatchers( "/dist/**","/open/api/getToken","/tsCode/code/*",
-                   "/sysUser/sendEmail","/git/*","/git/token/*", "/ts/test/file", "/ts/upload","/sysFile/image/*","/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
+                   "/sysUser/sendEmail","/sysVar/list","/git/*","/git/token/*", "/ts/test/file", "/ts/upload","/sysFile/uploadImg","/sysFile/image/*","/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
                 .and().formLogin()
                 .failureHandler(eauthenticationFailureHandler())
                 .and()

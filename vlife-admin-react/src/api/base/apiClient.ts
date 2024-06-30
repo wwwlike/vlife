@@ -31,7 +31,7 @@ const instance = axios.create({
   timeout: 30000,
 });
 
-const whiteList = ["/login", "/git/token"];
+const whiteList = ["/login", "/git/token","/sysFile/uploadImg","/sysVar/list"];
 
 const CancelToken = axios.CancelToken;
 let source = CancelToken.source();
@@ -103,24 +103,24 @@ instance.interceptors.request.use(
     const token = window.localStorage.getItem(localStorageKey);
     if (
       token === null &&
-      config.url?.indexOf("/login") === -1 &&
-      config.url?.indexOf("git") === -1 && 
-      config.url?.indexOf("Email") === -1 &&
-      config.url?.indexOf("/register") === -1
+      config.url&&
+      whiteList.filter((white) => config.url===white).length === 0
+      // !whiteList.includes(config.url) &&
+      // config.url?.indexOf("/login") === -1 &&
+      // config.url?.indexOf("git") === -1 && 
+      // config.url?.indexOf("Email") === -1 &&
+      // config.url?.indexOf("/register") === -1
     ) {
       source.cancel("请先登录"); //取消请求
       source = CancelToken.source(); //终止cancel;否则全部请求都会取消
-    }
-    if (
+    }else if (
       config.url &&
-      !whiteList.includes(config.url) &&
+      // !whiteList.includes(config.url) &&
       token &&
       config.headers
     ) {
-   
       config.headers.Authorization = token;
     }
- 
     return config;
   },
   (err) => {

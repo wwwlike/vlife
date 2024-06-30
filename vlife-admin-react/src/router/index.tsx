@@ -28,6 +28,7 @@ const CodeViewPage = lazy(() => import("@src/pages/sysConf/model/CodeView")); //
 const MenuPage = lazy(() => import("@src/pages/sysConf/menu"));
 const ResourcesPage = lazy(() => import("@src/pages/sysConf/resources"));
 const DictPage = lazy(() => import("@src/pages/sysConf/dict"));
+const VarSettingPage = lazy(() => import("@src/pages/sysConf/varSetting"));
 const IconPage = lazy(() => import("@src/pages/common/IconContainer"));
 //业务系统
 const LoginPage = lazy(() => import("@src/pages/login"));
@@ -214,6 +215,16 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={<DictPage />}
             titleId="字典管理"
+            auth
+          />
+        ),
+      },
+      {
+        path: "varSetting",
+        element: (
+          <WrapperRouteComponent
+            element={<VarSettingPage />}
+            titleId="系统配置"
             auth
           />
         ),

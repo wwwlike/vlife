@@ -38,7 +38,8 @@ const APP_TITLE = import.meta.env.VITE_APP_TITLE;
 const Index = () => {
   const navigate = useNavigate();
   const formModal = useNiceModal("formModal");
-  const { loginOut, user, app, setApp, allMenus, setAllMenus } = useAuth();
+  const { loginOut, user, app, sysVar, setApp, allMenus, setAllMenus } =
+    useAuth();
   const { runAsync: getDetail } = useDetail({ entityType: "sysRole" });
   const [roles, setRoles] = useState<SysRole[]>([]);
 
@@ -272,12 +273,30 @@ const Index = () => {
                 navigate("/");
               }}
             >
-              <Empty
-                className=" relative top-3  mr-4"
-                image={
-                  <img src={logo} style={{ width: 40, height: 30, top: 10 }} />
-                }
-              ></Empty>
+              {sysVar.systemIcon ? (
+                <Empty
+                  className=" relative top-3  mr-4"
+                  image={
+                    <img
+                      src={apiUrl + "/sysFile/image/" + sysVar.systemIcon}
+                      style={{ width: 30, height: 30, top: 10 }}
+                    />
+                  }
+                />
+              ) : (
+                <Empty
+                  className=" relative top-3  mr-4"
+                  image={
+                    <img
+                      src={logo}
+                      style={{ width: 30, height: 30, top: 10 }}
+                    />
+                  }
+                />
+              )}
+              {/* <span className="text-xl font-bold ml-2">
+                {sysVar.systemName || APP_TITLE}
+              </span> */}
               <Empty
                 className=" relative top-3 "
                 image={
