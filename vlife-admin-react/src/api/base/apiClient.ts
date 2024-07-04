@@ -185,6 +185,7 @@ instance.interceptors.response.use(
       }
     }
     if (res.data.code === 9999) {
+        window.localStorage.removeItem(localStorageKey);
       //超时删除token 系统异常也是9999（排查）
     }
     //采集每个菜单用到的接口，目前未使用

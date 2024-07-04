@@ -75,6 +75,7 @@ export default <T extends IdBean>({
             b.position === "tableToolbar" ||
             b.actionType === "create" ||
             b.actionType === "save" ||
+            b.actionType === "edit" ||
             b.allowEmpty === true)
       );
     } else if (position === "tableLine") {
@@ -90,7 +91,8 @@ export default <T extends IdBean>({
           (b) =>
             (b.actionType === "create" ||
               b.actionType === "save" ||
-              b.actionType === "flow") &&
+              b.actionType === "flow" ||
+              (b.actionType === "edit" && b.multiple)) && //多数据局编辑id可以为空
             (formModel ? b.model === formModel : true)
         );
       } else {
@@ -105,6 +107,11 @@ export default <T extends IdBean>({
       toolBarBtns = btns;
     }
     return toolBarBtns
+      .filter((btn) =>
+        position
+          ? btn.position === position || btn.position === undefined
+          : true
+      ) //场景过滤
       .filter((btn) => (formModel ? btn.model === formModel : true)) //模型过滤
       .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //只读过滤
       .filter(

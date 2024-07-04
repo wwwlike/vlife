@@ -132,11 +132,13 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
 
     //离职数据迁移
     public void dataMove(String sourceUserId,String targetUserId){
-        List<Item> items=realationData(sourceUserId);
-         for(Item item:items){
-             ReflectionUtils.setFieldValue(item,"sysUserId",targetUserId);
-             dao.save(item);
-         }
+        if(targetUserId!=null){
+            List<Item> items=realationData(sourceUserId);
+             for(Item item:items){
+                 ReflectionUtils.setFieldValue(item,"sysUserId",targetUserId);
+                 dao.save(item);
+             }
+        }
     }
 
 }

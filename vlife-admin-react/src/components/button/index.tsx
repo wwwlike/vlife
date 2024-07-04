@@ -55,7 +55,9 @@ export default (props: Partial<VFBtn>) => {
     onFormilySubmitCheck,
     saveApi,
     loadApi,
+    onFormBefore,
     onSubmitFinish,
+
     // onDataChange,
     onClick,
     onSaveBefore,
@@ -104,15 +106,23 @@ export default (props: Partial<VFBtn>) => {
   //按钮数据
   useEffect((): any => {
     if (datas) {
-      if (
-        (multiple && Array.isArray(datas)) ||
-        (!multiple && !Array.isArray(datas))
-      ) {
-        setBtnData(datas);
-      } else if (multiple && !Array.isArray(datas)) {
-        setBtnData([datas]);
-      } else if (!multiple && Array.isArray(datas)) {
-        setBtnData(datas?.[0]);
+      if (position === "formFooter") {
+        if (Array.isArray(datas)) {
+          setBtnData(datas?.[0]);
+        } else {
+          setBtnData(datas);
+        }
+      } else {
+        if (
+          (multiple && Array.isArray(datas)) ||
+          (!multiple && !Array.isArray(datas))
+        ) {
+          setBtnData(datas);
+        } else if (multiple && !Array.isArray(datas)) {
+          setBtnData([datas]);
+        } else if (!multiple && Array.isArray(datas)) {
+          setBtnData(datas?.[0]);
+        }
       }
     }
   }, [datas, multiple]);
@@ -247,10 +257,10 @@ export default (props: Partial<VFBtn>) => {
   // 修改了数据才往回传输数据
   const show = useCallback(() => {
     const modal = (formData: any) => {
+      // alert(JSON.stringify(formData));
       const btns = otherBtns
         ? [props, ...otherBtns.filter((o) => o.model === props.model)]
         : [props];
-
       formModal.show({
         type: model,
         formData: formData,
@@ -263,7 +273,11 @@ export default (props: Partial<VFBtn>) => {
         reaction: reaction,
       });
     };
-    if (
+
+    if (onFormBefore !== undefined) {
+      //onFormBefore 优先级最高
+      modal(onFormBefore(btnData));
+    } else if (
       actionType === "create" ||
       (actionType === "save" && position === "tableToolbar")
     ) {
@@ -585,7 +599,7 @@ export default (props: Partial<VFBtn>) => {
   ]);
   return authPass && !(disabledHide && disabled === true) ? (
     <>
-      {/* {_permissionCode} */}
+      {/* {initData.length} */}
       {tooltip && props.disabled === true ? (
         <Tooltip content={tooltip}>{BtnComp} </Tooltip>
       ) : (

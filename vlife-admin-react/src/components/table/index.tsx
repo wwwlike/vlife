@@ -178,7 +178,16 @@ const TableIndex = <T extends TableBean>({
             title: (
               <ColumnTitle
                 entityName={model.entityType}
-                option={f.dictCode ? dicts[f.dictCode]?.data : undefined}
+                option={
+                  f.dictCode
+                    ? dicts[f.dictCode]?.data
+                    : f.fieldType === "boolean"
+                    ? [
+                        { label: "是", value: true },
+                        { label: "否", value: false },
+                      ]
+                    : []
+                }
                 field={f}
                 where={wheres?.filter((w) => w.fieldId === f.id)}
                 onFilter={(where: Partial<where>[] | void) => {
@@ -349,8 +358,11 @@ const TableIndex = <T extends TableBean>({
       } else if (
         read !== true &&
         model.flowJson === null &&
-        btns.filter((b) => b.multiple !== true && b.actionType !== "create")
-          .length !== 0
+        btns.filter(
+          (b) =>
+            b.multiple !== true &&
+            (b.actionType !== "create" || b.position === "tableLine") //如果是新增则必须是行按钮
+        ).length !== 0
       ) {
         columnshow?.push({
           title: "操作",

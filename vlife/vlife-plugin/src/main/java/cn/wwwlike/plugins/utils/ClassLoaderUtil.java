@@ -28,9 +28,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Julien Boz
- */
+
 public class ClassLoaderUtil {
 
     public static ClassLoader getVlifeClassLoader(MavenProject project){
@@ -40,8 +38,8 @@ public class ClassLoaderUtil {
             List<URL> classpathUrls = new ArrayList<>();
             // 1 添加每个Spring Boot应用程序的target目录的路径到classpathUrls列表中
             for(File file:projectBasedir.getParentFile().listFiles()){
-                if(new File(file.getPath()+"\\target\\classes").exists()){
-                    classpathUrls.add(new File(file.getPath()+"\\target\\classes").toURI().toURL());
+                if(new File(file.getPath()+"/target/classes").exists()){
+                    classpathUrls.add(new File(file.getPath()+"/target/classes").toURI().toURL());
                 }
             }
             //2 添加resources里的jar包

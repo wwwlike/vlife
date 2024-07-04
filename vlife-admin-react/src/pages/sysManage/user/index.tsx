@@ -1,5 +1,5 @@
 import React from "react";
-import { reset, state, SysUser } from "@src/api/SysUser";
+import { move, reset, state, SysUser } from "@src/api/SysUser";
 import { IconPlay, IconForward, IconStop } from "@douyinfe/semi-icons";
 import Content from "../../template/content";
 import { VF } from "@src/dsl/VF";
@@ -53,6 +53,18 @@ export default () => {
             return data.map((d) => d.id);
           },
           saveApi: reset,
+        },
+        {
+          title: "数据迁移",
+          actionType: "edit",
+          icon: <IconForward />,
+          model: "userDataMoveDto",
+          multiple: true,
+          // submitConfirm: true,
+          onFormBefore(data: SysUser[]) {
+            return { ids: data.map((d) => d.id) };
+          },
+          saveApi: move,
         },
         {
           title: "停用",

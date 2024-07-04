@@ -44,6 +44,12 @@ const TagFilter = ({
         "：" +
         where
           .filter((w) => w.fieldId === field.id)
+          .filter(
+            (w) =>
+              w.opt === OptEnum.isNull ||
+              w.opt === OptEnum.isNotNull ||
+              w?.value.length > 0
+          )
           .map((w) =>
             w.opt === OptEnum.isNull
               ? "未填写"
@@ -65,9 +71,17 @@ const TagFilter = ({
                 : `${where.filter((w) => w.opt === OptEnum.goe)[0].value}~${
                     where.filter((w) => w.opt === OptEnum.loe)[0].value
                   }`
+              : field.fieldType === "boolean"
+              ? w.value.length === 1
+                ? w.value[0] === true
+                  ? "是"
+                  : "否"
+                : w.value.length === 2
+                ? "是,否"
+                : ""
               : w.value[0]
           )
-          .filter((s) => s !== undefined)
+          .filter((s) => s !== undefined && s !== null)
           .join(",")
       );
     },
@@ -79,6 +93,7 @@ const TagFilter = ({
       className={`${props.className} whitespace-nowrap`}
       style={props.style}
     >
+      {/* {JSON.stringify(where)} */}
       {order?.map((w, index) => {
         return (
           <div
@@ -100,6 +115,7 @@ const TagFilter = ({
       })}
       {formVo.fields
         ?.filter((f) => where.map((w) => w.fieldId).includes(f.id))
+        .filter((f) => conditionMsg(f) !== f.title + "：")
         .map((field, index) => {
           return (
             <div

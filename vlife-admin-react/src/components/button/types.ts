@@ -53,6 +53,7 @@ export interface VFBtn{
   otherBtns?:VFBtn[], // 关联按钮信息(弹出层的相关按钮)
   onFormilySubmitCheck?:()=>Promise<boolean>;//内部方法不用关注，数据【提交】之前的校验，使用fomily的主动检查 在formModal里添加
   loadApi?:(data:any)=>Promise<Result<any>|any>,//打开form时模型数据的取值接口(和列表的模型不一致时可传,不传则采用通用查询取值)，
+  onFormBefore?:(data:any)=>any;//去到表单之前进行数据处理，例：选中多行数据，然后弹出表单层,这里就是要准备form表单层的数据，将多行数据提取成表单数据;loadapi异步的，这个是同步的
   onSaveBefore?:(data:any)=>any;//提交之前进行数据处理，返回数据给saveData函数
   saveApi?:(...data:(any&{tableSort:number})[])=>Promise<Result<any>>| any//按钮点击后触发的异步或者同步，必须返回数据，该数据返回到外层并且是onSubmitFinish方法作为入参,提取权限关键字时采用
   onSubmitFinish?:(...saveApiResult:any[])=>void; //提交完成后触发的动作，如：用于关闭弹窗，刷新列表等操作

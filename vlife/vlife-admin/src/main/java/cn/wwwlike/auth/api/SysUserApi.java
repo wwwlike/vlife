@@ -101,9 +101,11 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
      * 数据迁移
      */
     @PostMapping("/move")
-    public boolean move(@RequestBody UserDataMoveDto dto) {
-        service.dataMove(dto.getTargetUserId(),dto.getTargetUserId());
-        return true;
+    public UserDataMoveDto move(@RequestBody UserDataMoveDto dto) {
+        for(String sourceId:dto.getIds()){
+            service.dataMove(sourceId,dto.getTargetUserId());
+        }
+        return dto;
     }
     /**
      * 当前用户

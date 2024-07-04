@@ -78,6 +78,12 @@ export interface UserVo extends VoBean{
   username: string;  // 账号
 }
 
+export interface UserDataMoveDto extends SaveBean{
+  id:string;
+  ids:string[];
+  targetUserId:string;//目标id
+}
+
 /** 用户查询 */
 export const list=(req: Partial<SysUserPageReq>): Promise<Result<SysUser[]>>=>{
   return apiClient.post(`/sysUser/list`,req);
@@ -117,4 +123,9 @@ return apiClient.get(`/sysUser/checkEmail`,{params:req});
 /** 启用停用*/
 export const state=(dto:{state:string,id:string}): Promise<Result<SysUser>>=>{
   return apiClient.post(`/sysUser/state?${stringify(dto)}`);
+};
+
+export const move=(dto:UserDataMoveDto): Promise<Result<UserDataMoveDto>>=>{
+  // alert(JSON.stringify(dto))
+  return apiClient.post(`/sysUser/move`,dto);
 };

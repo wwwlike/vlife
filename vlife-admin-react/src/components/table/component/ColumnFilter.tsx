@@ -15,7 +15,7 @@ interface ColumnFilterProps {
   field: FormFieldVo;
   where?: Partial<where>[];
   className?: string;
-  option?: ISelect[];
+  option?: ISelect[]; //字典选择
   onChange: (where?: Partial<where>[]) => void;
 }
 /**
