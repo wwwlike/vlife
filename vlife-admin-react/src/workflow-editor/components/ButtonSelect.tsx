@@ -65,14 +65,17 @@ export const ButtonSelect = memo(
         {options.map((option, index) => {
           return (
             <Fragment key={option.key}>
-              <StyleButton
-                theme={inputValue !== option.key ? "borderless" : undefined}
-                // type={inputValue !== option.key ? "text" : undefined}
-                className={inputValue === option.key ? "active" : undefined}
-                onClick={() => handleNodeClick(option.key)}
-              >
-                {option.label}
-              </StyleButton>
+              {
+                //@ts-ignore
+                <StyleButton
+                  theme={inputValue !== option.key ? "borderless" : undefined}
+                  // type={inputValue !== option.key ? "text" : undefined}
+                  className={inputValue === option.key ? "active" : undefined}
+                  onClick={() => handleNodeClick(option.key)}
+                >
+                  {option.label}
+                </StyleButton>
+              }
               {index < options.length - 1 && (
                 <StyledDivider layout="vertical" />
               )}

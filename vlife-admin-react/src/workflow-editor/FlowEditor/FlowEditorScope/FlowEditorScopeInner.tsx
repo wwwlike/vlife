@@ -1,4 +1,3 @@
-import { useToken } from "antd/es/theme/internal";
 import { memo, useMemo, useEffect } from "react";
 import { ThemeProvider } from "styled-components";
 import { EditorEngine } from "../../classes";
