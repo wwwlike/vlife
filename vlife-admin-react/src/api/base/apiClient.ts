@@ -31,7 +31,7 @@ const instance = axios.create({
   timeout: 30000,
 });
 
-const whiteList = ["/login", "/git/token","/sysFile/uploadImg","/sysVar/list"];
+const whiteList = ["/login", "/git/*","/sysFile/uploadImg","/sysVar/list"];
 
 const CancelToken = axios.CancelToken;
 let source = CancelToken.source();
@@ -104,7 +104,7 @@ instance.interceptors.request.use(
     if (
       token === null &&
       config.url&&
-      whiteList.filter((white) => config.url===white).length === 0
+      whiteList.filter((white) => config.url===white||(white.endsWith("*")&&config.url?.startsWith(white.substring(0,white.indexOf("*"))))).length === 0
       // !whiteList.includes(config.url) &&
       // config.url?.indexOf("/login") === -1 &&
       // config.url?.indexOf("git") === -1 && 

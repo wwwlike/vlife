@@ -368,7 +368,7 @@ export const formOpenApi:ApiInfo= {
       dataType:DataType.array,
       dataModel:"ISelect",
       func:(datas:FormVo[]):ISelect[]=>{
-        return datas.map((data:{type:string,title:string})=>{return {value:data.type,label:data.title}});
+        return datas.map((data:{type:string,title:string})=>{return {value:data.type,label:data?.title||data?.type}});
       }
     },
     entityRelationModel:{

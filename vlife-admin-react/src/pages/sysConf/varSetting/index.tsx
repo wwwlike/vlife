@@ -9,8 +9,8 @@ export default () => {
   const [sysVarDatas, setVarDatas] = useState<SysVar[]>();
   const [currTab, setCurrTab] = useState<string>("sys");
   const tabs = [
-    { label: "平台配置", key: "sys", icon: "" },
-    { label: "应用配置", key: "business", icon: "" },
+    { label: "全局配置", key: "sys", icon: "" },
+    // { label: "应用配置", key: "business", icon: "" },
     { label: "配置项维护", key: "manage", icon: "" },
   ];
 

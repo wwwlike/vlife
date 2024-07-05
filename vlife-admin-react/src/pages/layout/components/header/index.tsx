@@ -294,18 +294,19 @@ const Index = () => {
                   }
                 />
               )}
-              {/* <span className="text-xl font-bold ml-2">
-                {sysVar.systemName || APP_TITLE}
-              </span> */}
-              <Empty
-                className=" relative top-3 "
-                image={
-                  <img
-                    src={weilai}
-                    style={{ width: 80, height: 30, top: 10 }}
+              <span className="text-xl font-bold ml-2">
+                {sysVar.systemName || (
+                  <Empty
+                    className=" relative top-3 "
+                    image={
+                      <img
+                        src={weilai}
+                        style={{ width: 80, height: 30, top: 10 }}
+                      />
+                    }
                   />
-                }
-              />
+                )}
+              </span>
             </div>
           }
           selectedKeys={[app?.id || ""]}

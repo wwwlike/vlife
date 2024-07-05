@@ -1,9 +1,8 @@
 //系统设置
-import { FormVo } from "@src/api/Form";
-import { SysVar, list, save, saveVals } from "@src/api/SysVar";
+import React, { useMemo, useState } from "react";
+import { SysVar, saveVals } from "@src/api/SysVar";
 import Button from "@src/components/button";
 import Form from "@src/components/form";
-import React, { useEffect, useMemo, useState } from "react";
 
 export default ({
   vars,
@@ -37,7 +36,6 @@ export default ({
   }, [vars, formData]);
   return (
     <div className={className}>
-      {/* {JSON.stringify(saveData)} */}
       <div className="p-2 text-right">
         <Button
           title="保存"

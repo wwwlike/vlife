@@ -1,16 +1,11 @@
 package cn.wwwlike.sys.api;
 
-import cn.wwwlike.sys.entity.SysArea;
-import cn.wwwlike.sys.entity.SysDict;
 import cn.wwwlike.sys.entity.SysVar;
-import cn.wwwlike.sys.req.SysAreaPageReq;
-import cn.wwwlike.sys.service.SysDictService;
 import cn.wwwlike.sys.service.SysVarService;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 import java.util.List;
 

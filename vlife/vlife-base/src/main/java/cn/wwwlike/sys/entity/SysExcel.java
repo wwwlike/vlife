@@ -6,6 +6,9 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * 导入数据表
+ */
 @Entity
 @Table
 @Data
@@ -18,5 +21,4 @@ public class SysExcel extends DbEntity {
     public String sysUserId;
     //上传文件
     public String sysFileId;
-
 }

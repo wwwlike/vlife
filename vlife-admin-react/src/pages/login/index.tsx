@@ -9,9 +9,10 @@ import loginLeftImage from "@src/assets/login_left.png";
 import wxgzh from "@src/assets/wxgzh.jpg";
 import weilai from "@src/assets/weilai.jpg";
 import LinkMe from "../layout/components/header/LinkMe";
+const apiUrl = import.meta.env.VITE_APP_API_URL;
 const Index: React.FC = () => {
   const localUsername = window.localStorage.getItem(localHistoryLoginUserName);
-  const { user, login, error, setAllMenus } = useAuth();
+  const { user, login, error, sysVar, setAllMenus } = useAuth();
   const navigate = useNavigate();
   const { values, setFieldValue } = useForm<{
     username: string;
@@ -47,7 +48,7 @@ const Index: React.FC = () => {
             backgroundPosition: "center",
           }}
           className="h-full bg-white rounded-l-3xl shadow-xl shadow-left shadow-top shadow-bottom"
-        ></div>
+        />
         <div
           style={{ width: "358px", height: "334px" }}
           className="relative  flex justify-center items-center bg-white rounded-r-3xl shadow-xl shadow-right shadow-top shadow-bottom"
@@ -64,8 +65,21 @@ const Index: React.FC = () => {
             className="flex flex-col  justify-center items-center"
           >
             <div className=" flex justify-left w-full ">
-              <img src={logo} style={{ width: 40, height: 30, top: 10 }} />
-              <img src={weilai} style={{ width: 80, height: 30, top: 10 }} />
+              <img
+                src={
+                  sysVar.systemIcon
+                    ? `${apiUrl}/sysFile/image/${sysVar.systemIcon}`
+                    : logo
+                }
+                style={{ width: 40, height: 30, top: 10 }}
+              />
+              {sysVar.systemName ? (
+                <span className="text-xl font-bold ml-2">
+                  {sysVar.systemName}
+                </span>
+              ) : (
+                <img src={weilai} style={{ width: 80, height: 30, top: 10 }} />
+              )}
             </div>
             <p className="text-red-500 pt-2 text-center ">{error}</p>
             <div className="mb-1 pt-2 rounded">

@@ -95,7 +95,10 @@ public class DbDataInitializer implements ApplicationRunner {
         List<Map<String, Object>> tables =getAllTable();
         for (Map<String, Object> table : tables) {
             String tableName = table.values().iterator().next().toString();
-            jdbcTemplate.execute("delete from "+tableName+"");
+            //工作流不删除
+            if(!tableName.startsWith("act_")){
+                jdbcTemplate.execute("delete from "+tableName+"");
+            }
         }
     }
 
@@ -194,11 +197,12 @@ public class DbDataInitializer implements ApplicationRunner {
         }
     }
 
+    //暂时不采用自动化创建库
     @Override
     public void run(ApplicationArguments args) throws Exception {
         //启动时判断是否是空库 !getActiveProfile().equals("pro")&&
-        if(isDatabaseEmpty()){
-            dataRestore();
-        }
+//        if(isDatabaseEmpty()){
+//            dataRestore();
+//        }
     }
 }
