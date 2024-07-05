@@ -9,11 +9,11 @@ export interface FileListProps {
   relationId: string; //文件关联业务id
   projectId?: string; //文件关联主体项目业务id
   type?: string; // 文件类别(相同业务实体，进行不同场景文件区分，如关联到人才有基本信息和合同之分)
-  queryFieldName: "projectId" | "relationId"; //查询的字段
+  queryFieldName?: "projectId" | "relationId"; //查询的字段
 }
 
 export default (props: FileListProps) => {
-  const { relationId, projectId, type, queryFieldName } = props;
+  const { relationId, projectId, type, queryFieldName = "relationId" } = props;
   const [files, setFiles] = useState<SysFile[]>([]);
   useEffect(() => {
     const conditionGroups: ConditionGroup[] = [];
