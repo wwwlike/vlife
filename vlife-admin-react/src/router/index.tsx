@@ -55,6 +55,11 @@ const QueryBuilderExamplePage = lazy(
   () => import("@src/pages/example/QueryBuilderExample")
 );
 
+//excel数据导入
+const ExcelImportExamplePage = lazy(
+  () => import("@src/pages/example/ExcelImportExample")
+);
+
 //我的待办
 const MyTaskPage = lazy(() => import("@src/pages/dashboard/flow/MyTask"));
 export const allRoute: any[] = [
@@ -416,6 +421,16 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={<QueryBuilderExamplePage />}
             titleId="查询设计器示例"
+            auth
+          />
+        ),
+      },
+      {
+        path: "excelImport",
+        element: (
+          <WrapperRouteComponent
+            element={<ExcelImportExamplePage />}
+            titleId="模版数据导入"
             auth
           />
         ),
