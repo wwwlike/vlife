@@ -100,6 +100,22 @@ const Index = () => {
       navigate(menu.routerAddress);
     }
   };
+
+  //切换到暗黑模式
+  const switchMode = () => {
+    const body = document.body;
+    if (body.hasAttribute("theme-mode")) {
+      body.removeAttribute("theme-mode");
+      // 以下这行代码，window.setMode仅用于当通过本Demo切换时，通知Semi官网Header记录更新当前模式（只用于演示）。在您的代码里无需存在。
+      //@ts-ignore
+      window.setMode("light");
+    } else {
+      body.setAttribute("theme-mode", "dark");
+      //@ts-ignore
+      window.setMode("dark");
+    }
+  };
+
   const menuItems = useMemo((): Partial<MenuItem>[] => {
     const _apps: Partial<MenuItem>[] = apps.map((m: MenuVo) => {
       return {
