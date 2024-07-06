@@ -4,19 +4,19 @@
 [开发文档](http://vlice.cc/quick)   [示例项目](http://admin.vlife.cc)
 
 ## 目标
-做研发热爱的快速开发平台，为成为中小企业降本增效；
+做研发热爱的快速开发平台，为中小企业降本增效；
 
 ## 准备
 1. 支持：jdk8和jdk11
 2. 数据库：mysql8\oracle11G
-3. 采用springboot+security+queryDsl+jpa的单体技术架构
+3. 采用springboot单体技术架构
 
 ## 项目启动
 > 项目启动过程中会建表和数据初始化
 1. 导入项目到`idea`里，项目编译版本为jdk1.8
 2. 导入依赖包后，**整个**项目运行`maven package`
-3. 创建mysql/oracle数据库，修改对应的application-mysql.yml的数据库连接信息
-4. 运行 AdminApplication.java,完成项目启动。(启动的同时自动完成数据初始化)
+3. 创建mysql/oracle数据库，导入db下数据库脚本，修改对应的application-mysql.yml的数据库连接信息
+4. 运行 AdminApplication.java,完成项目启动。
 
 ## 开发内容
 > VLIFE没有改变原有的研发流程，研发上手都是特别快
