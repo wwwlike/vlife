@@ -118,7 +118,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- Javadoc -->
+                    <!-- Javadoc
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -130,7 +130,6 @@
                             <encoding>UTF-8</encoding>
                             <docencoding>UTF-8</docencoding>
                             <additionalparam>-Xdoclint:none</additionalparam>
-                            <!-- TODO 临时解决不规范的javadoc⽣成报错,后⾯要规范化后把这⾏去掉 -->
                         </configuration>
                         <executions>
                             <execution>
@@ -140,8 +139,8 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <!-- GPG 发布的签名屏蔽 -->
+                    </plugin> 签名屏蔽 -->
+                    <!-- GPG 发布的-->
 <!--                    <plugin>-->
 <!--                        <groupId>org.apache.maven.plugins</groupId>-->
 <!--                        <artifactId>maven-gpg-plugin</artifactId>-->
