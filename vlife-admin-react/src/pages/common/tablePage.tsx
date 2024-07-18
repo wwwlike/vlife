@@ -40,8 +40,9 @@ import {
 import { useNiceModal } from "@src/store";
 import TableTab, { ActiveTab, TableTabBaseProps } from "./tableTab";
 import Button from "@src/components/button";
-import FlowTab from "./FlowTab";
 import ImportPage from "../excel/ImportPage";
+import TableHeader, { TableHeaderProps, VfTableTab } from "./TableHeader";
+import { tableFlowBtns, tableFowTabs } from "./TableFlow";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
@@ -84,7 +85,7 @@ export type TableTab = {
 // T为列表listType的类型
 export interface TablePageProps<T extends TableBean>
   extends ListProps<T>,
-    TableTabBaseProps {
+    TableHeaderProps {
   tab?: boolean; //是否开启页签
   dataImp?: true | string; //导入开关，字符串则为导入后跳转的activeTab的itemKey
   dataExp?: boolean; //数据可否导入
@@ -145,9 +146,11 @@ const TablePage = <T extends TableBean>({
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
   const [formModel, setFormModel] = useState<FormVo | undefined>(model); //主要表单模型信息
-  const [activeKey, setActiveKey] = useState<ActiveTab | undefined>(
-    props.activeTab
+  //当前场景
+  const [activeKey, setActiveKey] = useState<string | undefined>(
+    props.activeKey
   ); //当前激活的tab的主页签key}>();
+
   const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo[]>(); //列表记录关联的流程信息
   const [apiError, setApiError] = useState<apiError>(); //接口异常信息
   const [pageNum, setPageNum] = useState(1); //分页
@@ -159,7 +162,6 @@ const TablePage = <T extends TableBean>({
   const [tabReq, setTabReq] = useState(); //当前tab页签的查询条件
   const [tabCount, setTabCount] = useState<{ [tabKey: string]: number }>(); //tab页签数量
   const [tabReqCount, setTabReqCount] = useState<{ [tabKey: string]: any }>({}); //查询数量页签条件
-
   const [relationMap, setRealationMap] = useState<{
     fkObj: any; //外键数据
     parentObj: any; //code关联数据
@@ -363,7 +365,7 @@ const TablePage = <T extends TableBean>({
             setTabCount((d: any) => {
               return {
                 ...d,
-                [activeKey?.level2 || activeKey?.level1]: data.data?.total,
+                [activeKey]: data.data?.total,
               };
             });
           }
@@ -503,10 +505,10 @@ const TablePage = <T extends TableBean>({
       return defaultBtns;
     }
     return [];
-  }, [tableModel, activeKey]);
+  }, [tableModel]);
 
   //当前是否是工作流类型页签
-  const flowTab = useMemo(() => {
+  const openFlowTab = useMemo(() => {
     if (
       tab &&
       tabDictField === undefined &&
@@ -519,253 +521,20 @@ const TablePage = <T extends TableBean>({
   }, [tableModel, formModel, tab, tabDictField, tabList]);
 
   //工作流按钮
-  const flowBtns = useMemo(() => {
-    if (formModel?.flowJson) {
-      return [
-        {
-          permissionCode: `${formModel?.entityType}:save${
-            formModel.entityType !== formModel.type ? `:${formModel.type}` : ""
-          }`,
-          actionType: "save",
-          title: "新增",
-          icon: <i className=" icon-add_circle_outline" />,
-          multiple: false,
-          allowEmpty: true,
-          model: editModelType,
-          // disabledHide: true,
-          usableMatch: (data: TableBean) => {
-            //几种可能保存按钮可用的情况
-            return (
-              data === undefined ||
-              data.id === undefined ||
-              data?.flow == undefined ||
-              (data?.flow?.ended !== true && // 2. 流程没结束&办理人节点&页签是待办&
-                data?.flow?.currTask &&
-                data?.flow?.nodeType === "audit" &&
-                activeKey?.level1 === "flow_todo") ||
-              (data?.flow?.started !== true &&
-                (activeKey?.level2 === "flow_byMe_edit" || // 待完善
-                  activeKey?.level2 === "flow_byMe_draft"))
-            );
-          },
-          reaction:
-            typeof editType === "object" ? editType.reaction : undefined,
-          saveApi: save(formModel?.entityType || "", editModelType), // save方法需要返回和model一致的数据
-        },
-        {
-          title: "删除",
-          disabledHide: activeKey?.level2 !== "flow_byMe_draft",
-          actionType: "api",
-          disabled: activeKey?.level2 !== "flow_byMe_draft",
-          usableMatch: (datas: TableBean[]) => {
-            return datas.every((data) => {
-              return (
-                data.status === "1" &&
-                data?.flow?.started === false &&
-                data?.flow?.ended === false
-              );
-            });
-          },
-          icon: <i className="  icon-remove_circle_outline1" />,
-          multiple: true,
-          permissionCode: formModel?.entityType + ":remove",
-          saveApi: (datas: IdBean[]): Promise<Result<any>> => {
-            return rm(datas.map((d) => d.id));
-          },
-          onSubmitFinish: (int: number) => {
-            // alert(int);
-          },
-        },
-        {
-          actionType: "flow",
-          title: "通过",
-          icon: <i className=" text-base icon-ok" />,
-          multiple: false,
-          model: formModel?.type,
-          usableMatch: (d: T) => {
-            return (
-              d?.flow?.currTask &&
-              d.flow.nodeType === "approver" &&
-              activeKey?.level1 === "flow_todo"
-            );
-          },
-          comment: true,
-          disabledHide: true,
-          saveApi: (data: any) => {
-            completeTask({
-              comment: data.comment,
-              businessKey: data.id,
-              defineKey: formModel?.type,
-              formData: data,
-            });
-            return data;
-          },
-        },
-        {
-          actionType: "flow",
-          allowEmpty: true,
-          title: "提交", //保存数据并且当流程流转到下一个节点
-          disabled: !formModel?.flowJson,
-          icon: <i className="  icon-upload1" />,
-          multiple: false,
-          // comment: true,
-          model: formModel?.type,
-          usableMatch: (d: T) => {
-            return (
-              d?.flow?.started === false || //任务没开始可以提交
-              (d?.flow?.currTask &&
-                d?.flow?.ended === false && //是你的任务并且任务没有结束
-                (d.flow?.nodeType === "audit" || d.flow.nodeId === "start") &&
-                (activeKey?.level1 === "flow_todo" ||
-                  activeKey?.level2 === "flow_byMe_edit")) //办理节点
-            );
-          },
-          onSubmitFinish: () => {
-            //场景切换
-            tab === true &&
-              setActiveKey({ level1: "flow_byMe", level2: "flow_byMe_todo" });
-          },
-          disabledHide: true,
-          saveApi: (data: any) => {
-            return save(
-              formModel?.entityType || "",
-              editModelType
-            )(data).then((_data: Result<any>) => {
-              if (data?.flow === undefined || data.flow?.started !== true) {
-                //是data 非`_data`来字方法入参
-                return startFlow({
-                  businessKey: _data.data.id,
-                  defineKey: formModel?.type,
-                  formData: data,
-                  description: "发起流程",
-                }).then((res) => {
-                  if (res.data === false) {
-                    alert("不能操作当前流程");
-                  }
-                  return _data;
-                });
-              } else {
-                return completeTask({
-                  comment: _data.data.comment,
-                  businessKey: _data.data.id,
-                  defineKey: formModel?.type,
-                  formData: _data.data,
-                  description: "提交处理",
-                }).then((res) => {
-                  if (res.data === false) {
-                    alert("不能操作当前流程");
-                  }
-                  return _data;
-                });
-              }
-            });
-          },
-        },
-        {
-          actionType: "flow",
-          title: "回退",
-          icon: <i className=" text-base icon-reply" />,
-          model: formModel?.type,
-          usableMatch: (d: T) => {
-            return (
-              d?.flow?.auditInfo?.rollback === true &&
-              d?.flow?.started === true &&
-              d?.flow?.ended === false &&
-              d.flow.currTask &&
-              activeKey?.level1 === "flow_todo"
-            );
-          },
-          comment: true,
-          saveApi: (data: any) => {
-            backProcess({
-              comment: data.comment,
-              businessKey: data.id,
-              defineKey: formModel?.type,
-            }).then((res) => {
-              if (res.data === false) {
-                alert("不能操作当前流程");
-              }
-            });
-            return data;
-          },
-        },
-        {
-          actionType: "flow",
-          title: "转交",
-          icon: <i className=" text-base icon-reply" />,
-          model: formModel?.type,
-          usableMatch: (d: T) => {
-            return (
-              d?.flow?.auditInfo?.transfer === true &&
-              d?.flow?.started === true &&
-              d?.flow?.ended === false &&
-              d.flow.currTask &&
-              activeKey?.level1 === "flow_todo"
-            );
-          },
-          comment: true,
-          saveApi: (data: any) => {
-            return data;
-          },
-        },
-        //当前视图是已办，且后端返回可以测回则显示
-        {
-          actionType: "flow",
-          title: "撤回",
-          icon: <i className=" text-base icon-reply" />,
-          model: formModel?.type,
-          usableMatch: (d: T) => {
-            return (
-              d.flow?.recallable === true && activeKey?.level1 === "flow_done"
-            );
-          },
-          comment: true,
-          saveApi: (data: any) => {
-            recall({
-              comment: data.comment,
-              businessKey: data.id,
-              defineKey: formModel?.type,
-            }).then((res) => {
-              if (res.data) {
-                alert(res.data);
-              }
-            });
-            return data;
-          },
-        },
-        {
-          actionType: "flow",
-          title: "拒绝",
-          icon: <i className=" text-base icon-cancel" />,
-          model: formModel?.type,
-          comment: true,
-          usableMatch: (d: T) => {
-            return (
-              d?.flow?.auditInfo?.rejected === true &&
-              d?.flow?.started === true &&
-              d?.flow?.ended === false &&
-              d.flow.currTask &&
-              activeKey?.level1 === "flow_todo"
-            );
-          },
-          saveApi: (data: any) => {
-            cancelProcess({
-              comment: data.comment,
-              businessKey: data.id,
-              defineKey: formModel?.type,
-            }).then((res) => {
-              if (res.data === false) {
-                alert("不能操作当前流程");
-              }
-            });
-            return data;
-          },
-        },
-      ];
-    } else {
-      return [];
+  const flowBtns = useMemo((): VFBtn[] => {
+    if (formModel && activeKey) {
+      return tableFlowBtns({
+        formType: formModel.type,
+        entity: formModel.entityType,
+        activeKey: activeKey,
+        formReaction:
+          typeof editType === "object" ? editType.reaction : undefined,
+        rm: rm,
+        save: save(formModel.entityType, formModel.type),
+      });
     }
-  }, [formModel, activeKey, tab]);
+    return [];
+  }, [formModel, tab, activeKey, editType, rm, save]);
 
   /*页面所有按钮(查找工作流加入进来) */
   const totalBtns = useMemo((): VFBtn[] => {
@@ -890,22 +659,20 @@ const TablePage = <T extends TableBean>({
     }
   }, [pageData, tableModel, dataSource]);
 
-  //各个tab页签列表数量查询
+  //当前tab页签之外的页签计数查询排除当前页签用户输入的查询条件
   useEffect(() => {
     if (pageLoad) {
       Object.keys(tabReqCount).forEach((key) => {
-        if (tabReqCount[key] !== undefined) {
-          pageLoad(_params(tabReqCount[key])).then(
-            (data: Result<PageVo<T>>) => {
-              setTabCount((tabCount) => {
-                return { ...tabCount, [key]: data.data?.total || 0 };
-              });
-            }
-          );
-        }
+        // if (tabReqCount[key] !== undefined) {
+        pageLoad(_params(tabReqCount[key])).then((data: Result<PageVo<T>>) => {
+          setTabCount((tabCount) => {
+            return { ...tabCount, [key]: data.data?.total || 0 };
+          });
+        });
+        // }
       });
     }
-  }, [JSON.stringify(tabReqCount), pageLoad, req, searchAndColumnCondition]);
+  }, [tabReqCount, pageLoad, req, searchAndColumnCondition]);
 
   const [siderVisible, setSiderVisible] = useState(false);
 
@@ -951,58 +718,54 @@ const TablePage = <T extends TableBean>({
           ref={ref}
           className={`${className} relative h-full flex flex-col text-sm  `}
         >
-          {/* 常规页签 */}
-          {tab === true && flowTab !== true ? (
+          {tab === true && (
             <>
-              <TableTab
-                activeTab={activeKey} //主动切换页签
-                tabCount={tabCount} // 查询页签上数据的数量
-                tabDictField={tabDictField}
-                tabList={tabList}
-                tableModel={tableModel}
-                addTabAble={props.addTabAble && user?.superUser}
-                allTabAble={props.allTabAble}
-                onActiveChange={(_activeKey) => {
-                  setActiveKey(_activeKey);
-                  setSelected([]);
-                }}
-                onTabReq={setTabReq}
-                onCountReq={setTabReqCount} //需要查询页签数量的条件
-              />
+              {
+                <TableHeader
+                  tabList={tabList || (openFlowTab ? tableFowTabs : undefined)}
+                  entityModel={tableModel}
+                  tabCount={tabCount}
+                  activeKey={activeKey}
+                  allTabAble={
+                    props.allTabAble || (openFlowTab ? false : undefined)
+                  }
+                  addTabAble={
+                    props.addTabAble || (openFlowTab ? false : undefined)
+                  }
+                  showCount={
+                    props.showCount || (openFlowTab ? true : undefined)
+                  }
+                  onActiveTabChange={(tab: VfTableTab) => {
+                    //当前选中的页签
+                    setActiveKey(tab.itemKey);
+                    // @ts-ignore
+                    setTabReq(tab.req || []);
+                    setSelected([]);
+                  }}
+                  onCountTab={(tab) => {
+                    setTabReqCount(tab);
+                  }}
+                />
+              }
             </>
-          ) : flowTab ? (
-            <FlowTab
-              activeKey={activeKey && activeKey.level1 ? activeKey : undefined} //主动切换页签
-              tabCount={tabCount} // 查询页签上数据的数量
-              tableModel={tableModel}
-              onActiveChange={setActiveKey}
-              onTabReq={(d) => {
-                // alert(JSON.stringify(d));
-                setTabReq(d);
-              }}
-              onCountReq={setTabReqCount} //需要查询页签数量的条件
-            />
-          ) : (
-            <></>
           )}
-
-          {version === "v_base" && flowTab && (
+          {version === "v_base" && openFlowTab && (
             <div className=" text-red-500 absolute top-2 right-20 ">
               工作流开源版仅支持流程配置
             </div>
           )}
-
           <div
             className={`flex bg-white items-center p-2  border-gray-100  justify-start sidesheet-container`}
           >
             {hideToolbar !== true && (
               <BtnToolBar<T>
-                activeKey={activeKey?.level2 || activeKey?.level1}
+                activeKey={activeKey}
                 entity={tableModel.entityType}
                 key={"tableBtn"}
                 btns={totalBtns}
                 position="tableToolbar"
                 datas={selected}
+                onActiveChange={setActiveKey}
                 {...props}
               />
             )}
@@ -1056,14 +819,13 @@ const TablePage = <T extends TableBean>({
                   onSubmitFinish={(data) => {
                     setLoadFlag((flag) => flag + 1); //列表重新加载
                     if (typeof dataImp === "string") {
-                      setActiveKey({ level1: dataImp, level2: undefined });
+                      setActiveKey(dataImp);
                     }
                   }}
                 />
               )}
             </div>
           </div>
-
           <SideSheet
             getPopupContainer={sheetContainer || getContainer}
             // mask={false}
@@ -1080,6 +842,7 @@ const TablePage = <T extends TableBean>({
             {React.isValidElement(sider) &&
               React.cloneElement(sider, {
                 sideCallback,
+                activeTabKey: activeKey,
               } as Partial<{
                 sideCallback: ({
                   close,
@@ -1094,13 +857,7 @@ const TablePage = <T extends TableBean>({
           </SideSheet>
           <Table<T>
             className={"flex justify-center flex-1 "}
-            key={
-              tableModel.type +
-              pageSize +
-              pager?.page +
-              activeKey?.level1 +
-              activeKey?.level2
-            }
+            key={tableModel.type + pageSize + pager?.page + activeKey}
             onFieldClick={_onFieldClick}
             model={tableModel} //设计模式时应用实时传入的formVo
             dataSource={tableData}
@@ -1125,11 +882,11 @@ const TablePage = <T extends TableBean>({
                   modelInfo: formModel,
                   type: editModelType,
                   readPretty:
-                    activeKey?.level1 === "flow_done" || //已办只读
-                    activeKey?.level1 === "flow_notifier" || //抄送只读
-                    activeKey?.level2 === "flow_byMe_todo", //我发起的待办只读
+                    activeKey === "flow_done" || //已办只读
+                    activeKey === "flow_notifier" || //抄送只读
+                    activeKey === "flow_byMe_todo", //我发起的待办只读
                   formData: record,
-                  activeKey: activeKey?.level2 || activeKey?.level1,
+                  activeKey: activeKey,
                   reaction:
                     typeof editType !== "string" ? editType?.reaction : [],
                   btns: mode === "view" ? [] : totalBtns,

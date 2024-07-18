@@ -22,24 +22,20 @@ export default (props: Partial<VFBtn>) => {
   const { Text } = Typography;
   const formModal = useNiceModal("formModal");
   const vlifeModal = useNiceModal("vlifeModal");
-
-  const [modal, contextHolder] = Modal.useModal();
-  const config = {
-    title: "This is a success message",
-    content: "Context consumer",
-  };
-
   const confirmModal = useNiceModal("confirmModal");
   const [loading, setLoading] = useState<boolean>();
   const { checkBtnPermission } = useAuth();
   const {
     datas,
+    toActiveTabKey,
     btnType = "button",
     actionType,
     position = "page",
     continueCreate,
     title,
+    modalOpen,
     divider,
+    activeKey,
     icon,
     multiple = false,
     model,
@@ -57,7 +53,7 @@ export default (props: Partial<VFBtn>) => {
     loadApi,
     onFormBefore,
     onSubmitFinish,
-
+    onActiveChange,
     // onDataChange,
     onClick,
     onSaveBefore,
@@ -183,7 +179,10 @@ export default (props: Partial<VFBtn>) => {
           Object.values(btnData).every((value) => !value) === true)
       ) {
         return false;
-      } else if (props.usableMatch === undefined) {
+      } else if (
+        props.usableMatch === undefined ||
+        (props.actionType === "save" && modalOpen !== true) //没打开模型则是新增
+      ) {
         //2 无其他数据动态匹配方式
         return true;
       } else if (typeof props.usableMatch === "object" && btnData) {
@@ -228,9 +227,16 @@ export default (props: Partial<VFBtn>) => {
         return otherBtns
           ? [
               props,
-              ...otherBtns?.filter(
-                (o) => o.model === props.model && o.actionType === "flow"
-              ),
+              ...otherBtns
+                ?.filter(
+                  (o) => o.model === props.model && o.actionType === "flow"
+                )
+                .map((o) => {
+                  return {
+                    onActiveChange: o.onActiveChange || onActiveChange,
+                    ...o,
+                  };
+                }),
             ]
           : [props];
       } else if (
@@ -241,17 +247,24 @@ export default (props: Partial<VFBtn>) => {
       ) {
         return [
           props,
-          ...otherBtns.filter(
-            (o) =>
-              o.model === props.model &&
-              (o.actionType === "api" || o.actionType === "flow")
-          ),
+          ...otherBtns
+            .filter(
+              (o) =>
+                o.model === props.model &&
+                (o.actionType === "api" || o.actionType === "flow")
+            )
+            .map((o) => {
+              return {
+                onActiveChange: o.onActiveChange || onActiveChange,
+                ...o,
+              };
+            }),
         ];
       }
       //其他情况都只显示当前一个按钮
       return [props];
     },
-    [props, otherBtns]
+    [props, otherBtns, onActiveChange]
   );
 
   // 修改了数据才往回传输数据
@@ -264,7 +277,7 @@ export default (props: Partial<VFBtn>) => {
       formModal.show({
         type: model,
         formData: formData,
-        // activeKey: activeKey,
+        activeKey: activeKey,
         fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
         btns: modalBtns(formData), //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
         terse: !saveApi ? true : false, //紧凑
@@ -335,6 +348,12 @@ export default (props: Partial<VFBtn>) => {
             if (onSubmitFinish) {
               onSubmitFinish(data);
             }
+            if (toActiveTabKey) {
+              onActiveChange?.(toActiveTabKey);
+              if (onActiveChange === undefined) {
+                console.error("场景跳转需要使用BtnToolBar的onActiveChange方法");
+              }
+            }
             setLoading(undefined);
           }, 500);
         };
@@ -377,48 +396,9 @@ export default (props: Partial<VFBtn>) => {
         okFun: onClick,
         submitClose: props.submitClose,
       });
-
-      // let modalOutData: any;
-      // // setCustomModalVisiable(true);
-      // Modal.info({
-      //   width: 800,
-      //   title,
-      //   visible: customModalVisiable,
-      //   footer: onClick ? (
-      //     <div className="flex justify-end">
-      //       <Button
-      //         type="primary"
-      //         onClick={() => {
-      //           modalOutData && onClick(modalOutData);
-      //           if (props.submitClose) {
-      //             setCustomModalVisiable(false);
-      //           }
-      //         }}
-      //       >
-      //         {title || "提交"}
-      //       </Button>
-      //     </div>
-      //   ) : (
-      //     false
-      //   ),
-      //   content: (
-      //     //modal->传入的弹出层包裹的组件
-      // <>
-      //   {React.cloneElement(modal, {
-      //     //克隆组件，并给组件传入2个方法
-      //     onDataChange: (__data: any) => {
-      //       modalOutData = __data;
-      //     },
-      //     onFinish: () => {
-      //       onSubmitFinish?.(modalOutData);
-      //     },
-      //   })}
-      // </>
-      //   ),
-      // });
     } else if (onClick) {
       onClick(btnData);
-    } else if (position !== "formFooter" && model) {
+    } else if (position !== "formFooter" && model && modalOpen !== true) {
       //1 页面(非modal)的按钮，model不为空,则触发model的弹出
       show();
     } else if (props.comment && position !== "comment") {
@@ -470,7 +450,8 @@ export default (props: Partial<VFBtn>) => {
         return "修改";
       } else if (
         actionType === "save" &&
-        (btnData === undefined || position === "tableToolbar")
+        (btnData === undefined || position === "tableToolbar") &&
+        modalOpen !== true
       ) {
         return "新增";
       }

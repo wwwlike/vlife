@@ -1,8 +1,7 @@
-import { save, SysFile } from "@src/api/SysFile";
-import Button from "@src/components/button";
-import VfImage from "@src/components/VfImage";
-import VfUpload from "@src/components/VfUpload";
+import { save } from "@src/api/SysFile";
 import React, { useState } from "react";
+import Button from "@src/components/button";
+import VfUpload from "@src/components/VfUpload";
 import FileList, { FileListProps } from "./FileList";
 
 //文件上传预览页面
@@ -18,7 +17,7 @@ export default ({ title, ...props }: FilePageProps) => {
       {/* {relationId}-{projectId} */}
       <Button
         actionType="create"
-        modal={<VfUpload className=" h-48" />}
+        modal={<VfUpload className="h-48" />}
         onSubmitFinish={() => {
           setCount(count + 1);
         }}

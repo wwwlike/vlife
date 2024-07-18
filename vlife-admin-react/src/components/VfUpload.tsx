@@ -1,10 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Button, Space, Upload } from "@douyinfe/semi-ui";
-import { IconPlus, IconUpload } from "@douyinfe/semi-icons";
-import { FileItem } from "@douyinfe/semi-ui/lib/es/upload";
-import { Image } from "@douyinfe/semi-ui";
+import React, { useEffect, useState } from "react";
+import { Upload } from "@douyinfe/semi-ui";
 import { VfBaseProps } from "@src/dsl/component";
-import { remove, upload } from "@src/api/SysFile";
+import { remove } from "@src/api/SysFile";
 import apiClient, { localStorageKey } from "@src/api/base/apiClient";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 /**
@@ -20,11 +17,11 @@ interface VfUploadProps extends Partial<VfBaseProps<string[]>> {
   //上传文件数量限制
   maxCount?: number;
 }
-const VfImage = ({
+export default ({
   onDataChange,
   maxCount,
   className,
-  maxSize,
+  maxSize = 1024 * 20,
   fileType,
 }: VfUploadProps) => {
   const action = `${apiUrl}/sysFile/uploadImg`;
@@ -86,17 +83,9 @@ const VfImage = ({
             setFiles(undefined);
           });
       }}
-      maxSize={1024 * 10}
+      maxSize={maxSize}
       action={action}
       draggable={true}
-      // customRequest={mockRequest}
-    >
-      {/* <Button icon={<IconUpload />} theme="light">
-        点击上传
-      </Button> */}
-
-      {/* {JSON.stringify(files)} */}
-    </Upload>
+    />
   );
 };
-export default VfImage;

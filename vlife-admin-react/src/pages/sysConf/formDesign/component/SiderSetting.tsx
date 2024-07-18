@@ -18,7 +18,6 @@ import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { PageComponentPropDto } from "@src/api/PageComponentProp";
 import { Mode } from "@src/dsl/base";
-import VlifeButton from "@src/components/button";
 import FieldSetting from "./FieldSetting";
 import { FormComponents } from "@src/resources/CompDatas";
 import schemaDef, { deps, SchemaClz, types } from "../fieldSettingSchema";
@@ -319,7 +318,6 @@ export default ({ field, form, onDataChange, mode }: SiderSettingProps) => {
                   }}
                 />
               )}
-
               {Object.keys(fieldsConf)
                 .filter((key) => fieldsConf[key].tag === t.value)
                 .map((key: string, index: number) => {

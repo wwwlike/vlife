@@ -33,6 +33,10 @@ spring:
     history-level: full
     # 启动项目检测表，不存在即创建
     db-history-used: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 security:
   basic:
     enable: true # 避免跳到security的登录界面

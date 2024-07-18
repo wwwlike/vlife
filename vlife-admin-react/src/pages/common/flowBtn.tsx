@@ -44,7 +44,7 @@ export const flowBtns = (
     },
     {
       actionType: "flow",
-      disabledHide: true,
+      // disabledHide: true,
       title: "提交", //保存数据并且当流程流转到下一个节点
       icon: <i className="  icon-upload1" />,
       usableMatch: (d: any) => {

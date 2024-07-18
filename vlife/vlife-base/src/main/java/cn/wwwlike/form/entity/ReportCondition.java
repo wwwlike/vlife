@@ -37,11 +37,14 @@ public class ReportCondition extends DbEntity {
      */
     public String sysUserId;
     /**
-     * 场景
+     * 视图应用场景
      * report/table
      */
     @VField(dictCode = "CONDITION_TYPE")
     public String type;
+
+
+    public String filterLevel;
 
     @Column(columnDefinition = "text")
     public String getConditionJson() {

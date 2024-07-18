@@ -3,6 +3,7 @@ import { VfBaseProps } from "@src/dsl/component";
 import { NodeUserInfo } from "@src/workflow-editor/classes/vlife";
 import MemberSelect from "@src/workflow-editor/components/MemberSelect";
 import { useAuth } from "@src/context/auth-context";
+import { Space } from "@douyinfe/semi-ui";
 interface UserSelectProps extends VfBaseProps<string> {
   defCurrUser?: boolean; //是否初始化用户为当前用户
 }
@@ -14,6 +15,7 @@ export default ({
   value,
   defCurrUser = false,
   read,
+  disabled,
   onDataChange,
 }: UserSelectProps) => {
   const { user } = useAuth();
@@ -28,7 +30,7 @@ export default ({
 
   return (
     <MemberSelect
-      read={read}
+      read={read || disabled}
       multiple={false}
       value={
         initValue

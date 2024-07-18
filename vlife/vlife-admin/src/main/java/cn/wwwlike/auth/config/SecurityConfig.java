@@ -148,7 +148,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        }
         //,"/sysFile/download/*" "/sysFile/upload", ,"/sysFile/download/*" "/excel/template/*",
         authorizeRequests.antMatchers( "/dist/**","/open/api/getToken","/tsCode/code/*",
-                   "/sysUser/sendEmail","/sysVar/list","/git/*","/git/token/*", "/ts/test/file", "/ts/upload","/sysFile/uploadImg","/sysFile/image/*","/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
+                   "/sysUser/sendEmail","/sysVar/list","/git/*","/git/token/*", "/ts/test/file", "/ts/upload","/sysFile/uploadImg","/sysFile/image/*","/sysFile/pdf/*","/ts/download", "/static/index.html").permitAll().anyRequest().authenticated()
                 .and().formLogin()
                 .failureHandler(eauthenticationFailureHandler())
                 .and()

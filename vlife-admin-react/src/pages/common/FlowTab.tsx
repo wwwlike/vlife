@@ -16,7 +16,7 @@ export interface FlowTabProps {
 }
 
 //工作流页签
-const contentTab: TableTab[] = [
+export const FlowTabs: TableTab[] = [
   {
     itemKey: "flow_todo",
     icon: <i className="icon-checkbox_01" />,
@@ -85,7 +85,7 @@ export default (props: FlowTabProps) => {
 
   useEffect(() => {
     if (activeKey) setActiveKey(activeKey);
-  }, [activeKey?.level1, activeKey?.level2]);
+  }, []);
 
   useEffect(() => {
     if (_activeKey) {
@@ -101,12 +101,13 @@ export default (props: FlowTabProps) => {
       // 1 流程页签，使用obj方式给PageQuery对象flowTab传值
       if (_activeKey?.level2) {
         //二级tab工作流
-        return contentTab
-          ?.filter((item) => item.itemKey === _activeKey?.level1)?.[0]
-          .subs?.filter((item) => item.itemKey === _activeKey?.level2)?.[0].req;
+        return FlowTabs?.filter(
+          (item) => item.itemKey === _activeKey?.level1
+        )?.[0].subs?.filter((item) => item.itemKey === _activeKey?.level2)?.[0]
+          .req;
       } else {
         // 一级tab工作流
-        return contentTab?.filter(
+        return FlowTabs?.filter(
           (item) => item.itemKey === _activeKey?.level1
         )?.[0]?.req;
       }
@@ -114,22 +115,22 @@ export default (props: FlowTabProps) => {
     []
   );
 
-  //数据查询回传  reqFunc, contentTab
+  //数据查询回传  reqFunc, FlowTabs
   useEffect(() => {
     if (onTabReq !== undefined) {
       if (_activeKey) {
         onTabReq(reqFunc(_activeKey));
-      } else if (contentTab?.[0]?.itemKey) {
-        onTabReq(reqFunc({ level1: contentTab?.[0]?.itemKey }));
+      } else if (FlowTabs?.[0]?.itemKey) {
+        onTabReq(reqFunc({ level1: FlowTabs?.[0]?.itemKey }));
       }
     }
-  }, [_activeKey?.level1, _activeKey?.level2, onTabReq, contentTab?.length]);
+  }, [_activeKey?.level1, _activeKey?.level2, onTabReq, FlowTabs?.length]);
 
   useEffect(() => {
     if (onCountReq) {
       let countReq: any = {};
       //统计数量页签参数封装(2级页签各自封装)
-      contentTab?.forEach((tab) => {
+      FlowTabs?.forEach((tab) => {
         if (tab.showCount) {
           countReq = {
             // Level1封装
@@ -153,18 +154,18 @@ export default (props: FlowTabProps) => {
       });
       onCountReq(countReq);
     }
-  }, [_activeKey?.level1, _activeKey?.level2, contentTab?.length]);
+  }, [_activeKey?.level1, _activeKey?.level2, FlowTabs?.length]);
 
   return (
     <>
       {/* {JSON.stringify(_activeKey)} */}
-      {contentTab !== undefined && (
+      {FlowTabs !== undefined && (
         <div className=" bg-white  pt-1">
           <Tabs
             style={{ height: "37px", paddingLeft: "10px" }}
             type="card"
-            activeKey={activeKey?.level1 || contentTab?.[0]?.itemKey} //没有则默认显示全部
-            tabList={contentTab.map((t) => {
+            activeKey={activeKey?.level1 || FlowTabs?.[0]?.itemKey} //没有则默认显示全部
+            tabList={FlowTabs.map((t) => {
               return {
                 ...t,
                 tab:
@@ -180,10 +181,10 @@ export default (props: FlowTabProps) => {
             })}
             onChange={(key) => {
               if (key !== "add") {
-                if (contentTab.filter((tab) => tab.itemKey === key)?.[0].subs) {
+                if (FlowTabs.filter((tab) => tab.itemKey === key)?.[0].subs) {
                   setActiveKey({
                     level1: key,
-                    level2: contentTab.filter((tab) => tab.itemKey === key)?.[0]
+                    level2: FlowTabs.filter((tab) => tab.itemKey === key)?.[0]
                       .subs?.[0]?.itemKey,
                   });
                 } else {
@@ -193,37 +194,37 @@ export default (props: FlowTabProps) => {
             }}
           />
           {/* 二级页签 */}
-          {contentTab?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
+          {FlowTabs?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
             ?.subs && (
-            <div className="flex  space-x-1 p-1  bg-gray-50">
-              {contentTab
-                ?.filter((c) => c.itemKey === activeKey?.level1)?.[0]
-                ?.subs?.map((s) => {
-                  return (
-                    <div
-                      className={` text-sm  cursor-pointer    ${classNames({
-                        "bg-white border font-bold":
-                          activeKey?.level2 === s.itemKey,
-                      })} rounded-2xl  py-1 px-4`}
-                      key={s.itemKey}
-                      onClick={() => {
-                        if (activeKey && activeKey?.level1) {
-                          setActiveKey({
-                            level1: activeKey.level1,
-                            level2: s.itemKey,
-                          });
-                        }
-                      }}
-                    >
-                      {s.tab}
-                      {`${
-                        tabCount?.[s.itemKey] !== undefined
-                          ? " (" + tabCount?.[s.itemKey] + ")"
-                          : ""
-                      }`}
-                    </div>
-                  );
-                })}
+            <div className="flex space-x-1 p-1  items-start bg-gray-50">
+              {FlowTabs?.filter(
+                (c) => c.itemKey === activeKey?.level1
+              )?.[0]?.subs?.map((s) => {
+                return (
+                  <div
+                    className={` text-sm  cursor-pointer    ${classNames({
+                      "bg-white border font-bold":
+                        activeKey?.level2 === s.itemKey,
+                    })} rounded-2xl  py-1 px-4`}
+                    key={s.itemKey}
+                    onClick={() => {
+                      if (activeKey && activeKey?.level1) {
+                        setActiveKey({
+                          level1: activeKey.level1,
+                          level2: s.itemKey,
+                        });
+                      }
+                    }}
+                  >
+                    {s.tab}
+                    {`${
+                      tabCount?.[s.itemKey] !== undefined
+                        ? " (" + tabCount?.[s.itemKey] + ")"
+                        : ""
+                    }`}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

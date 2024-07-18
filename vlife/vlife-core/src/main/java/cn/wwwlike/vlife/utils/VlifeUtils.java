@@ -19,6 +19,7 @@
 package cn.wwwlike.vlife.utils;
 
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.bean.ExcelUploadFile;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Array;
@@ -235,6 +236,32 @@ public class VlifeUtils {
         }else {
             return rootCode+i;
         }
-
     }
+
+
+    public static boolean compareProperties(Object obj1, Object obj2, String...propertyNames) {
+        try {
+            for (String propertyName : propertyNames) {
+                Object value1 = ReflectionUtils.getFieldValue(obj1, propertyName);
+                Object value2 = ReflectionUtils.getFieldValue(obj2, propertyName);
+                // Check if both values are null
+                if (value1 == null && value2 == null) {
+                    continue;
+                }
+                // Check if one of the values is null
+                if (value1 == null || value2 == null) {
+                    return false;
+                }
+
+                if (!value1.equals(value2)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

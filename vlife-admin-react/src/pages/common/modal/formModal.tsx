@@ -202,6 +202,7 @@ export const FormModal = createNiceModal(
               datas={[{ ...data, flow: recordFlowInfo }]}
               btns={formBtns}
               entity={modelInfo?.entityType}
+              activeKey={activeKey}
               formModel={modelInfo?.type}
               position="formFooter"
               btnType="button"

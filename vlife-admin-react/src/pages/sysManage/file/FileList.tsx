@@ -4,6 +4,7 @@ import { ConditionGroup, OptEnum, where } from "@src/dsl/base";
 import { formatDate } from "@src/util/func";
 import React, { useEffect, useState } from "react";
 import ShowUser from "../user/ShowUser";
+import { Document, Page } from "react-pdf";
 
 export interface FileListProps {
   relationId: string; //文件关联业务id
@@ -41,8 +42,30 @@ export default (props: FileListProps) => {
       setFiles(d.data || []);
     });
   }, [relationId, projectId, type]);
+  const apiUrl = import.meta.env.VITE_APP_API_URL;
+  const [pdfUrl, setPdfUrl] = useState("");
+
   return (
+    //   <Image
+    //   width={viewSize.width}
+    //   height={viewSize.height}
+    //   className={className}
+    //   src={}
+    // />
+
     <div className=" p-2">
+      {pdfUrl && (
+        <div style={{ height: "750px" }}>
+          {pdfUrl}
+          <Document
+            file={`${pdfUrl}`}
+            // onLoadSuccess={this.onDocumentLoadSuccess}
+          >
+            {/* <Page pageNumber={pageNumber} /> */}
+          </Document>
+        </div>
+      )}
+
       {files.map((file) => (
         <div
           key={file.id}
@@ -62,6 +85,15 @@ export default (props: FileListProps) => {
             <div>{formatDate(file.createDate, "yyyy/MM/dd")}</div>
           </div>
           <div className=" flex space-x-2 justify-end">
+            {file.fileName.endsWith("pdf") && (
+              <a
+                onClick={() => {
+                  window.open(`${apiUrl}/sysFile/pdf/${file.id}`);
+                }}
+              >
+                查看
+              </a>
+            )}
             <span>
               <a
                 onClick={() => {

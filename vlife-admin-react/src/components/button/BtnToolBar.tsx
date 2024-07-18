@@ -33,6 +33,7 @@ export interface BtnToolBarProps<T extends IdBean> {
   activeKey?: string; //当前场景
   // onDataChange?: (datas: any[]) => void; //数据修订好传输出去
   onBtnNum?: (num: number) => void; //当前按钮数量
+  onActiveChange?: (key: string) => void; //当前场景切换
 }
 /**
  * 按钮栏组件
@@ -53,6 +54,7 @@ export default <T extends IdBean>({
   // onDataChange,
   position = "page", //默认场景
   onBtnNum,
+  onActiveChange,
   ...props
 }: BtnToolBarProps<T>) => {
   // useEffect(() => {
@@ -75,8 +77,7 @@ export default <T extends IdBean>({
             b.position === "tableToolbar" ||
             b.actionType === "create" ||
             b.actionType === "save" ||
-            b.actionType === "edit" ||
-            b.allowEmpty === true)
+            (b.actionType === "edit" && b.allowEmpty === true))
       );
     } else if (position === "tableLine") {
       toolBarBtns = btns.filter(
@@ -106,7 +107,7 @@ export default <T extends IdBean>({
       //position=page
       toolBarBtns = btns;
     }
-    return toolBarBtns
+    toolBarBtns = toolBarBtns
       .filter((btn) =>
         position
           ? btn.position === position || btn.position === undefined
@@ -121,7 +122,8 @@ export default <T extends IdBean>({
             btn.activeTabKey &&
             btn.activeTabKey.includes(activeKey))
       ); //只读过滤
-  }, [position, btns, formModel, readPretty, datas, activeKey]);
+    return toolBarBtns;
+  }, [position, btns, formModel, readPretty, datas]);
 
   //返回按钮数量
   useEffect(() => {
@@ -141,12 +143,13 @@ export default <T extends IdBean>({
             <Button
               key={`btn_${line}_${index}`}
               {...btn}
-              // activeKey={activeKey}
+              activeKey={activeKey}
               btnType={
                 btnType !== undefined && btn.btnType === undefined
                   ? btnType
                   : btn.btnType
               }
+              onActiveChange={btn.onActiveChange || onActiveChange}
               position={
                 position !== undefined && btn.position === undefined
                   ? position
@@ -160,33 +163,15 @@ export default <T extends IdBean>({
                 //   : btn.datas || btnDatas
               }
               entity={btn.entity || entity}
-              otherBtns={
-                btns.filter(
-                  //排除掉当前按钮
-                  (b) =>
-                    !(
-                      b.title === btn.title &&
-                      b.actionType === btn.actionType &&
-                      b.btnType === btn.btnType
-                    )
-                )
-                // btn.actionType === "save" && btn.model
-                //   ? currBtns.filter(
-                //       (b) =>
-                //         (b.actionType === "api" &&
-                //           b.model === btn.model &&
-                //           b.multiple !== true) ||
-                //         b.actionType === "flow"
-                //     )
-                //   : btn.actionType === "flow"
-                //   ? currBtns.filter(
-                //       (b, index2) => b.actionType === "flow" && index !== index2
-                //     )
-                //   : []
-              }
-              // onDataChange={(d) => {
-              //   // setBtnDatas(d);
-              // }}
+              otherBtns={btns.filter(
+                //排除掉当前按钮
+                (b) =>
+                  !(
+                    b.title === btn.title &&
+                    b.actionType === btn.actionType &&
+                    b.btnType === btn.btnType
+                  )
+              )}
             />
           );
         })
@@ -204,6 +189,7 @@ export default <T extends IdBean>({
                       {...btn}
                       position={"dropdown"}
                       datas={btn.datas || datas}
+                      onActiveChange={btn.onActiveChange || onActiveChange}
                       otherBtns={
                         btn.actionType === "save" && btn.model ? currBtns : []
                       }

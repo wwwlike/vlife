@@ -17,6 +17,7 @@ import cn.wwwlike.vlife.objship.dto.FieldDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
+import cn.wwwlike.vlife.utils.VlifeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,39 +145,43 @@ public class FormService extends VLifeService<Form, FormDao> {
     public boolean syncOne(String modelName) {
         //查找最新java模型
         List<Form> published = find("type", modelName);
-        FormDto formDto = null;
+        Form form = null;
         if (published != null && published.size() > 0) {
-            formDto = queryOne(FormDto.class, published.get(0).getId());
+            form = findOne(published.get(0).getId());
         }
         BeanDto javaDto = GlobalData.findModel(modelName);
         //有关联title读取到，则进行同步
         if (javaDto != null && javaDto.commentRead) {
-            if (formDto != null) {//更新
+            if (form != null) {//更新
                 boolean formChange = false;
-                if (javaDto.getParentsName() != null && !javaDto.getParentsName().equals(formDto.getTypeParentsStr())) {
-                    formDto.setTypeParentsStr(String.join(",", javaDto.getParentsName()));
+                Set<String> set1 = new HashSet<String>(javaDto.getParentsName());
+                Set<String> set2 = new HashSet<String>(Arrays.asList(form.getTypeParentsStr().split(",")));
+                if (javaDto.getParentsName() != null && !set1.equals(set2)) {
+                    form.setTypeParentsStr(String.join(",", javaDto.getParentsName()));
                     formChange = true;
                 }
-                if ((javaDto.getTitle() != null && !javaDto.getTitle().equals(formDto.getTitle()))) {
-                    if (formDto.getTitle() == null || formDto.getTitle().equals(formDto.getName())) {
-                        formDto.setName(javaDto.getTitle());
+                if (VlifeUtils.compareProperties(javaDto,form,"title")==false) {
+                    if (form.getTitle() == null || form.getTitle().equals(form.getName())) {
+                        form.setName(javaDto.getTitle());
                     }
                     formChange = true;
-                    formDto.setTitle(javaDto.getTitle());
+                    form.setTitle(javaDto.getTitle());
                 }
                 //主字段表达式设置
-                if (formDto.itemType.equals("entity")) {
+                if (form.itemType.equals("entity")) {
                     String itemName = (String) ReflectionUtils.getFieldValue(javaDto, "itemName");
-                    if (formDto.getItemName() != null && (itemName == null || "".equals(itemName) || !itemName.equals(formDto.getItemName()))) {
-                        formDto.setItemName(itemName);
+                    if (form.getItemName() != null && (itemName == null || "".equals(itemName) || !itemName.equals(form.getItemName()))) {
+                        form.setItemName(itemName);
                         formChange = true;
                     }
                 }
                 if (formChange) {
-                    save(formDto);
+                    save(form);
                 }
                 List<FieldDto> javaFields = javaDto.getFields();
                 //遍历最新模型的Java字段
+                FormDto formDto=queryOne(FormDto.class,form.getId());
+                //同标识的字段，能变化的有：类型,注释,注解
                 int count = 0;
                 if (javaFields!=null&&javaFields.size() > 0) {
                     for (FieldDto javaField : javaFields) {
@@ -186,16 +191,25 @@ public class FormService extends VLifeService<Form, FormDao> {
                             boolean change = false;
                             //字段属性发生变化进行修订
                             if (dbField.getFieldName().equals(javaField.getFieldName())) {
+                                //字段类型发生变化
                                 if (!dbField.getFieldType().equals(getFileType(javaField.getType())) || !dbField.getDataType().equals(getDataType(javaField.getFieldType()))) {
                                     change = true;
                                     dbField.setDataType(getDataType(javaField.getFieldType()));
                                     dbField.setFieldType(getFileType(javaField.getType()));
-                                    initComponent(dbField, formDto.getItemType(), javaDto);
-                                } else if (javaField.getDictCode() != null && "Input".equals(dbField.getX_component()) && dbField.getDictCode() == null) {
-                                    change = true;
-                                    dbField.setDictCode(javaField.getDictCode());
-                                    initComponent(dbField, formDto.getItemType(), javaDto);
                                 }
+                                FormFieldVo tranField= fieldTran(javaField);
+                                //注解里字典变换
+                                if(!VlifeUtils.compareProperties(tranField,dbField,"dictCode")){
+                                    change = true;
+                                    dbField.setDictCode(tranField.getDictCode());
+                                }
+                                //注解里pathName变化
+                                if(!VlifeUtils.compareProperties(tranField,dbField,"pathName")){
+                                    change = true;
+                                    BeanUtils.copyProperties(tranField, dbField,"id","formId","sort");
+                                }
+
+                                //更新Java标题和描述说明
                                 String javaTitle = javaField.getTitle();
                                 if (javaTitle != null && !javaTitle.equals("/") && !javaTitle.equals(dbField.getJavaTitle())) {
                                     change = true;
@@ -209,7 +223,33 @@ public class FormService extends VLifeService<Form, FormDao> {
                                     dbField.setX_component_props$placeholder(javaField.getPlaceholder());
                                 }
 
+
+
+//                                // 1. 字典变化， 2. pathName变化
+//                                if (javaField.getDictCode() != null && dbField.getDictCode() == null && "Input".equals(dbField.getX_component())) {
+//                                    change = true;
+//                                    dbField.setDictCode(javaField.getDictCode());
+//                                }
+
+
+//                                else {
+//                                    FormFieldVo tranField= fieldTran(javaField);
+//                                    try{
+//                                        if((tranField==null&&dbField.getEntityType()!=null)|| !tranField.getEntityType().equals(dbField.getEntityType())){
+//                                            change = true;
+//                                            BeanUtils.copyProperties(tranField, dbField);
+//                                        }
+//                                    }catch (Exception ex){
+//                                        ex.printStackTrace();
+//                                    }
+//                                    if((tranField==null&&dbField.getEntityType()!=null)|| !tranField.getEntityType().equals(dbField.getEntityType())){
+//                                        change = true;
+//                                        BeanUtils.copyProperties(tranField, dbField);
+//                                    }
+//                                }
+
                                 if (change) {
+                                    initComponent(dbField, formDto.getItemType(), javaDto);
                                     fieldService.save(dbField);
                                 }
                                 exists = true;
@@ -339,7 +379,7 @@ public class FormService extends VLifeService<Form, FormDao> {
         });
         return count[0];
     }
-
+    //Java字段转换成db字段之前进行字段清理
     public FormFieldVo fieldTran(FieldDto fieldDto) {
         FormFieldVo formFieldVo = new FormFieldVo();
         BeanUtils.copyProperties(fieldDto, formFieldVo, "fieldType", "dataType");//

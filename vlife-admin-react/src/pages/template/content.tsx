@@ -27,9 +27,9 @@ type TableTab = {
 export interface ContentProps<T extends TableBean> extends TablePageProps<T> {
   title: string; //页面标题
   filterType: string | { type: string; reaction: VfAction[] }; //左侧布局查询条件模型以及级联响应的低代码
-  tabList: TableTab[]; //tab分组的条件对象
-  tabDictField: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
-  customView: boolean; //是否支持自定义页签
+  // // tabList: TableTab[]; //tab分组的条件对象
+  // tabDictField: string; //是字典类型的字段，根据该字段的字典进行tab页签展示
+  // customView: boolean; //是否支持自定义页签
   onReq?: (req: any) => void; //过滤条件回传
 }
 
@@ -55,11 +55,11 @@ const Content = <T extends TableBean>({
   listType,
   editType,
   filterType,
-  tabList,
-  tabDictField,
+  // tabList,
+  // tabDictField,
   req,
   btns,
-  customView = true,
+  // customView = true,
   onReq,
   ...props
 }: Partial<ContentProps<T>> & { listType: string }) => {
@@ -160,8 +160,6 @@ const Content = <T extends TableBean>({
       <TablePage<T>
         className="flex-grow"
         width={tableWidth}
-        tabDictField={tabDictField}
-        tabList={tabList}
         key={listType}
         listType={listType}
         editType={editType}

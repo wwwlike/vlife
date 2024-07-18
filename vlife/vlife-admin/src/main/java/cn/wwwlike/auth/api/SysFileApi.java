@@ -13,7 +13,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,8 +57,8 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
     /**
      * 图片流输出
      */
-    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE,})
-    public byte[] image(@PathVariable String id) throws IOException {
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE,MediaType.APPLICATION_PDF_VALUE})
+    public byte[] image1(@PathVariable String id) throws IOException {
         SysFile file = service.findOne(id);
         String fileName = file == null ? id : file.getFileName();
         if (!System.getProperty("os.name").toLowerCase().contains("win") &&
@@ -69,6 +72,7 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
                 input.read(bytes);
                 return bytes;
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }else{
             Resource notFoundImage = new ClassPathResource("logo.png");
@@ -79,6 +83,73 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
         }
         return null;
     }
+
+    //pdf在线预览
+    @GetMapping(value = "/pdf/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.APPLICATION_PDF_VALUE})
+    public ResponseEntity<byte[]> image(@PathVariable String id) {
+        SysFile file = service.findOne(id);
+        String fileName = file == null ? id : file.getFileName();
+        File img = new File(imgPath + "/" + fileName);
+        if (img.exists()) {
+            try (FileInputStream input = new FileInputStream(img)) {
+                byte[] bytes = new byte[(int) img.length()];
+                input.read(bytes);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_PDF);
+                headers.set("X-Frame-Options", "SAMEORIGIN"); // 设置 X-Frame-Options
+                return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        } else {
+            Resource notFoundImage = new ClassPathResource("logo.png");
+            try (InputStream inputStream = notFoundImage.getInputStream()) {
+                byte[] data = StreamUtils.copyToByteArray(inputStream);
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("X-Frame-Options", "SAMEORIGIN"); // 设置 X-Frame-Options
+                return new ResponseEntity<>(data, headers, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        }
+    }
+
+
+//    /**
+//     * 在线预览PDF
+//     */
+//    @GetMapping("/preview/{id}")
+//    public void preview(HttpServletResponse response, @PathVariable String id) throws IOException {
+//        SysFile sysFile = service.findOne(id);
+//        // 根据id找到文件存储的路径，这里假设文件存储在/upload目录下
+//        String fileName = sysFile == null ? id : sysFile.getFileName();
+//        if (!System.getProperty("os.name").toLowerCase().contains("win") &&
+//                !imgPath.startsWith("/")) {
+//            imgPath = "/" + imgPath;
+//        }
+//        File file = new File(imgPath + "/" + fileName);
+//        if (file.exists()) {
+//            // 设置文件预览响应头
+//            response.setContentType("application/pdf");
+//
+//            try (InputStream fis = new FileInputStream(file);
+//                 OutputStream os = response.getOutputStream()) {
+//                byte[] buffer = new byte[1024];
+//                int len;
+//                while ((len = fis.read(buffer)) != -1) {
+//                    os.write(buffer, 0, len);
+//                }
+//                os.flush();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//            }
+//        } else {
+//            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+//        }
+//    }
 
     /**
      * 图片上传入库
@@ -142,6 +213,11 @@ public class SysFileApi extends VLifeApi<SysFile, SysFileService> {
         }
 
     }
+
+
+
+
+
 
     /**
      * 文件查询

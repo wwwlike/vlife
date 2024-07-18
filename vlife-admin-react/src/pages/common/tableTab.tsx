@@ -49,6 +49,7 @@ export default (props: TableTabProps) => {
 
   const { user } = useAuth();
   const [_activeTab, setActiveTab] = useState<ActiveTab | undefined>(activeTab); //当前页面激活的页签(场景)
+
   useEffect(() => {
     //外部传入的场景页签
     if (activeTab) setActiveTab(activeTab);

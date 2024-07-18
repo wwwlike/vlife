@@ -48,7 +48,8 @@ export interface ListProps<T extends TableBean> {
   onColumnFilter?: (wheres: Partial<where>[]) => void;
 }
 export interface TableBean extends DbEntity {
-  flow?: RecordFlowInfo;
+  activeKey?: string; //场景key
+  flow?: RecordFlowInfo; //流程信息
 }
 
 const TableIndex = <T extends TableBean>({

@@ -61,9 +61,9 @@ export interface IStatus {
 }
 //数据库实体
 export interface DbEntity extends IdBean, IStatus {
-  createId?: string; //创建人
+  createId: string; //创建人
   modifyId?: string; //修订人
-  createDate?: Date; //创建日期
+  createDate: Date; //创建日期
   modifyDate?: Date; // 修订日期
 }
 // 后端返回数据封装
