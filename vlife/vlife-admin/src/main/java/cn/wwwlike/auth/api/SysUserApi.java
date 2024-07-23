@@ -4,6 +4,7 @@ import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.dto.UserPasswordModifyDto;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.req.SysUserPageReq;
+import cn.wwwlike.auth.service.SysGroupResourcesService;
 import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.sys.dto.UserDataMoveDto;
@@ -13,6 +14,7 @@ import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import cn.wwwlike.web.exception.enums.CommonResponseEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -107,14 +109,16 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
         }
         return dto;
     }
+
     /**
      * 当前用户
      */
     @VMethod(permission = PermissionEnum.noAuth)
     @GetMapping("/currUser")
     public UserDetailVo currUser() {
-       return service.getUserDetailVo( SecurityConfig.getCurrUser());
+       return service.getUserDetailVo1( SecurityConfig.getCurrUser());
     }
+    
     /**
      * 邮箱唯一性校验
      */

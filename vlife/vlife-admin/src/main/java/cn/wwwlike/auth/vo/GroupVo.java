@@ -31,18 +31,22 @@ import java.util.List;
 @Data
 public class GroupVo implements VoBean<SysGroup> {
     public String id;
-
     public String filterType;
     /**
-     * 对应的所有角色id
+     * 通过角色查找对应的资源信息
      */
     public List<String> sysRoleGroup_sysRoleId;
-
     public List<String> sysRoleGroup_sysRole_sysResources_code;
-
     public List<String> sysRoleGroup_sysRole_sysResources_sysMenuId;
-    /**
-     * 权限组关联的角色名称集合
-     */
     public List<String> sysRoleGroup_sysRole_name;
+    public List<String> sysRoleGroup_sysRole_sysResources_id;
+    public List<String> sysRoleGroup_sysRole_sysMenu_id;
+    /**
+     * 通过权限组查找对应的资源信息
+     */
+    public List<String> sysGroupResources_sysResources_code;
+    public List<String> sysGroupResources_sysResources_sysMenuId;
+
+
+
 }

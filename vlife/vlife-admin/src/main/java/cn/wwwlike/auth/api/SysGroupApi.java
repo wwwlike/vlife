@@ -1,7 +1,9 @@
 package cn.wwwlike.auth.api;
 
 import cn.wwwlike.auth.config.CustomFilterInvocationSecurityMetadataSource;
+import cn.wwwlike.auth.config.CustomGroupSimpleFilterInvocationSecurityMetadataSource;
 import cn.wwwlike.auth.dto.GroupDto;
+import cn.wwwlike.auth.dto.GroupResourcesDto;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.req.SysGroupPageReq;
 import cn.wwwlike.auth.service.SysGroupService;
@@ -44,6 +46,20 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
     CustomFilterInvocationSecurityMetadataSource.urlRole=null;
     return dto;
   }
+
+
+  /**
+   * 权限组(资源)保存
+   */
+  @PostMapping("/save/groupResourcesDto")
+  public GroupResourcesDto saveGroupResourcesDto(@RequestBody GroupResourcesDto dto) {
+    service.save(dto,true);
+    BaseService.groups=new HashMap<>();//刷新权限组
+    CustomGroupSimpleFilterInvocationSecurityMetadataSource.urlGroup=null;
+    return dto;
+  }
+
+
   //权限组详情
   @GetMapping("/detail/{id}")
   public SysGroup detail(@PathVariable String id) {

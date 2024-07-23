@@ -489,10 +489,10 @@ export default (props: Partial<VFBtn>) => {
     const Btn: any =
       btnType === "link" && position !== "formFooter" ? Text : Button;
 
-    if (position === "dropdown" && disabled === true) {
-      //dropdown场景不存在不可用但是可见的disable状态
-      return <></>;
-    }
+    // if (position === "dropdown" && disabled === true) {
+    //   //dropdown场景不存在不可用但是可见的disable状态
+    //   return <></>;
+    // }
 
     return btnType !== "icon" || position === "formFooter" ? (
       <>
@@ -525,7 +525,8 @@ export default (props: Partial<VFBtn>) => {
           className={` ${className} hover:cursor-pointer  ${classNames({
             "cursor-pointer hover:text-blue-600 hover:font-bold":
               position === "tableLine",
-            " !text-gray-800 !font-thin text-xs": position === "dropdown",
+            " !text-gray-900 font-light text-xs ":
+              position === "dropdown" && disabled === false,
           })}`}
           icon={btnType === "link" ? undefined : btnIcon}
           disabled={disabled}
@@ -581,8 +582,8 @@ export default (props: Partial<VFBtn>) => {
   return authPass && !(disabledHide && disabled === true) ? (
     <>
       {/* {initData.length} */}
-      {tooltip && props.disabled === true ? (
-        <Tooltip content={tooltip}>{BtnComp} </Tooltip>
+      {tooltip && disabled === true ? (
+        <Tooltip content={tooltip}> {BtnComp}</Tooltip>
       ) : (
         <>{BtnComp}</>
       )}

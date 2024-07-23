@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Layout, Nav } from "@douyinfe/semi-ui";
+import { Layout, Nav, Tooltip } from "@douyinfe/semi-ui";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@src/context/auth-context";
 import SelectIcon from "@src/components/SelectIcon";
@@ -205,7 +205,7 @@ export default () => {
       return appMenus
         .sort((a, b) => a.sort - b.sort)
         .filter((m) => m.pcode === root.code)
-        .map((menu: any) => {
+        .map((menu: MenuVo) => {
           return {
             id: menu.id,
             itemKey: menu.id,
@@ -214,7 +214,17 @@ export default () => {
                 key={menu.id}
                 className=" group z-10 flex items-center relative w-28"
               >
-                <div className="z-10">{menu.name}</div>
+                <div className="z-10">
+                  {" "}
+                  {menu.name}
+                  {/* {menu.url !== undefined && menu.formId === null ? (
+                    <Tooltip content={"菜单没有关联模型无法导入相关权限接口"}>
+                      <span className=" text-blue-500 "></span>
+                    </Tooltip>
+                  ) : (
+                    menu.name
+                  )} */}
+                </div>
                 <div
                   className="flex absolute items-center right-0 !z-20 "
                   onClick={(event) => {
@@ -307,12 +317,18 @@ export default () => {
                       {
                         title: "权限导入",
                         actionType: "edit",
-                        disabledHide: true,
+                        tooltip: "权限错误",
+                        // disabledHide: true,
                         usableMatch: (...datas: MenuVo[]) => {
-                          return (
-                            datas[0]?.formId !== undefined &&
-                            datas[0]?.formId !== null
-                          );
+                          if (datas[0].pageLayoutId) {
+                            return "自定义页面无需导入权限";
+                          } else if (
+                            (datas[0]?.formId !== undefined &&
+                              datas[0]?.formId !== null) === false
+                          ) {
+                            return "请先编辑菜单关联模型";
+                          }
+                          return true;
                         },
                         reaction: [
                           VF.then("id").hide(),

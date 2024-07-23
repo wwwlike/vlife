@@ -1,6 +1,7 @@
 
 import {PageVo,DbEntity,SaveBean,PageQuery,VoBean,Result} from '@src/api/base'
 import apiClient from '@src/api/base/apiClient'
+import { SysGroupResources } from './SysGroupResources';
 // 权限组
 export interface SysGroup extends DbEntity{
   name: string;  // 角色组名称
@@ -27,6 +28,17 @@ export interface GroupVo extends VoBean{
   sysRoleGroup_sysRole_name: string[];  // 权限组关联的角色名称集合
   filterType: string;  //     public Integer scope;
 }
+
+
+
+// 权限组dto
+export interface GroupResourcesDto extends SaveBean{
+  sysGroupResourcesList: SysGroupResources[];  // 权限与资源关联
+  name: string;  // 权限组名称
+  remark: string;  // 描述
+  filterType: string;  // 数据维度
+}
+
 /** 权限组列表*/
 export const listAll=(req?:PageQuery): Promise<Result<SysGroup[]>>=>{
   return apiClient.post(`/sysGroup/list/all`,req||{});
@@ -46,4 +58,9 @@ export const detail=(req:{id:string}): Promise<Result<SysGroup>>=>{
 /** 删除权限组*/
 export const remove=(ids:String[]): Promise<Result<number>>=>{
 return apiClient.delete(`/sysGroup/remove`,{data:ids});
+};
+
+/** 权限组(资源)保存*/
+export const saveGroupResourcesDto=(dto:GroupResourcesDto): Promise<Result<GroupResourcesDto>>=>{
+  return apiClient.post(`/sysGroup/save/groupResourcesDto`,dto);
 };

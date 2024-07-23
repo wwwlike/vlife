@@ -38,6 +38,7 @@ import SwitchCard from "@src/components/checkbox/SwitchCard";
 import UserSelect from "@src/pages/sysManage/user/UserSelect";
 import MemberSelect from "@src/workflow-editor/components/MemberSelect";
 import VfUpload from "@src/components/VfUpload";
+import ResourcesBinding from "@src/pages/sysManage/group/ResourcesBinding";
 
 //解决预览不正确问题
 const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
@@ -354,6 +355,27 @@ export const FormComponents: CompDatas = {
         dataType: DataType.basic,
         dataModel: DataModel.string,
         fromField: { entity: "sysRole", field: "id" },
+      },
+    },
+  },
+  GroupResourcesBinding: {
+    component: ResourcesBinding,
+    label: "权限组资源绑定",
+    dataType: DataType.array,
+    dataModel: "sysGroupResources",
+    icon: "IconComponent",
+    props: {
+      allMenu: {
+        required: true,
+        label: "全部菜单",
+        dataType: DataType.array,
+        dataModel: "MenuVo",
+      },
+      allResources: {
+        required: true,
+        label: "全部资源",
+        dataType: DataType.array,
+        dataModel: "SysResources",
       },
     },
   },

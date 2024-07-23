@@ -64,6 +64,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CustomUrlDecisionManager customUrlDecisionManager;
     @Autowired
     public CustomFilterInvocationSecurityMetadataSource customFilterInvocationSecurityMetadataSource;
+    @Autowired
+    public CustomGroupSimpleFilterInvocationSecurityMetadataSource customGroupSimpleFilterInvocationSecurityMetadataSource;
+
     // 装载BCrypt密码编码器
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -116,9 +119,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(new EAccessDeniedHandler());
         try {
             //接口资源同步，做更新，不做初始化
-            if(resourcesService.findAll().size()!=0){
-                resourcesService.sync();
-            }
+            resourcesService.sync();
         }catch (Exception e){
             System.out.println("╔════════════════════════════════════════════════════════════════╗");
             System.out.println("║                                                                ║");
@@ -133,7 +134,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O object) {
                         object.setAccessDecisionManager(customUrlDecisionManager);
-                        object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
+                        //                 object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
+                       object.setSecurityMetadataSource(customGroupSimpleFilterInvocationSecurityMetadataSource);
                         return object;
                     }
                 });

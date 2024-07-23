@@ -1,8 +1,10 @@
 package cn.wwwlike.auth.api;
 
 import cn.wwwlike.auth.dto.MenuResourcesDto;
+import cn.wwwlike.auth.entity.SysGroupResources;
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.req.SysMenuPageReq;
+import cn.wwwlike.auth.service.SysGroupResourcesService;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.auth.vo.MenuVo;
 import cn.wwwlike.form.entity.Form;
@@ -40,6 +42,10 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
 
   @Autowired
   public FormService formService;
+
+
+  @Autowired
+  public SysGroupResourcesService sysGroupResourcesService;
   /**
    * 菜单保存
    */
@@ -103,6 +109,8 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
     }
     return dto;
   }
+
+
   /**
    * 关联资源保存
    */
@@ -114,6 +122,9 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
     if(dto.getSysResources_id()!=null&&menu.getSysRoleId()!=null){
       menu.setSysRoleId(null);
       service.save(menu);
+    }
+    if(dto.getRequireIds()!=null){
+      sysGroupResourcesService.clearMainGroup(dto.getRequireIds().toArray(new String[dto.getRequireIds().size()]));
     }
     resourcesService.clearRoleWithMenuEmpty();
     String[] requireIds = dto.getRequireIds() != null ? dto.getRequireIds().toArray(new String[0]) : new String[0];

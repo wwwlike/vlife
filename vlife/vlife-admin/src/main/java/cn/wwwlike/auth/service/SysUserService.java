@@ -1,5 +1,6 @@
 package cn.wwwlike.auth.service;
 
+import cn.wwwlike.auth.entity.SysGroupResources;
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.dao.SysUserDao;
@@ -38,6 +39,8 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
     public SysGroupService groupService;
     @Autowired
     public SysMenuService menuService;
+    @Autowired
+    public SysGroupResourcesService groupResourcesService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -73,7 +76,7 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
         List<MenuVo> menus=new ArrayList<>();
         //权限提取
         if(vo.getSuperUser()!=null&&vo.getSuperUser()==true){
-            //超级用户所有的菜单和权限和权限组无关了，开发使用
+            //超级用户所有的菜单和权限
             menus=menuService.queryAll(MenuVo.class);
             QueryWrapper qw=QueryWrapper.of(SysResources.class);
             qw.isNotNull("sysRoleId");
@@ -97,6 +100,45 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
         vo.setResourceCodes(codes);
         return vo;
     }
+
+
+    public UserDetailVo getUserDetailVo1(SecurityUser currUser){
+        UserDetailVo vo = queryOne(UserDetailVo.class, currUser.getId());
+        List<String> codes =null;
+        List<MenuVo> allMenus=new ArrayList<>();
+        //超级用户
+        if(vo.getSuperUser()!=null&&vo.getSuperUser()==true){
+            allMenus=menuService.queryAll(MenuVo.class);
+            QueryWrapper qw=QueryWrapper.of(SysResources.class);
+            qw.isNotNull("sysRoleId");
+            List<SysResources> resources=resourcesService.find(qw);
+            codes=resources.stream().map(f->f.getId()).collect(Collectors.toList());
+        }else{
+            //添加权限组绑定资源关联的菜单
+            codes = groupService.findSimpleGroupResourceCodes(vo.getSysGroupId());
+            if(codes!=null){
+                //资源关联的菜单
+                allMenus.addAll(menuService.findAllMenusByResources(resourcesService.find(QueryWrapper.of(SysResources.class).in("code",codes.toArray(new String[codes.size()])))));
+            }
+            //角色组绑定的菜单
+            List<String> groupMenuIds=groupResourcesService.find("sysGroupId",vo.getSysGroupId()).stream().filter(f->f.getSysMenuId()!=null).map(SysGroupResources::getSysMenuId).collect(Collectors.toList());
+            if(groupMenuIds!=null&& groupMenuIds.size()>0){
+                List<MenuVo> groupMenus=menuService.queryByIds(MenuVo.class,groupMenuIds.toArray(new String[groupMenuIds.size()]));
+                allMenus.addAll(menuService.findAllMenu(groupMenus));
+            }
+            //所有没有绑定权限的菜单(有链接)
+//            menus.addAll(
+//                    menuService.findAllMenu(
+//                            menuService.query(MenuVo.class,QueryWrapper.of(SysMenu.class).isNotNull("url").isNull("formId"))));
+            //去重
+            allMenus= allMenus.stream().collect(Collectors.toMap(MenuVo::getId, Function.identity(), (existing, replacement) -> existing)).values().stream().collect(Collectors.toList());
+        }
+        vo.setMenus(allMenus);
+        vo.setResourceCodes(codes);
+        return vo;
+    }
+
+
 
     public static String encode(String str)  {
         return  new MessageDigestPasswordEncoder("MD5").encode(str);

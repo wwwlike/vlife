@@ -204,6 +204,10 @@ export const resourcesOpenApi:ApiInfo= {
         }})
       }
     },
+     SELF:{
+      dataType: DataType.array,
+      dataModel:'sysResources',
+    },
     ISelect_IDS:{
       label:"指定集合的资源",
       dataType: DataType.array,
@@ -227,7 +231,7 @@ export const resourcesOpenApi:ApiInfo= {
       }
      },
      flow:{
-      label:"流程执行可执法的接口",
+      label:"流程可触发执行的接口",
       dataType: DataType.array,
       dataModel:"ISelect",
       params:{
@@ -360,7 +364,7 @@ export const formOpenApi:ApiInfo= {
         }
       },
       func:(datas:FormVo[]):ISelect[]=>{
-        return datas.map((data:{id:string,title:string})=>{return {value:data.id,label:data.title}});
+        return datas.map((data:FormVo)=>{return {value:data.id,label:data.title||data?.type}});
       }
     },
     type:{
@@ -546,12 +550,13 @@ export const fieldOpenApi:ApiInfo={
 }
 
 export const routeOpenApi:ApiInfo={
-  label:"路由列表",
+  label:"MenuVo",
   dataType: DataType.array,
-  dataModel:'ISelect',
+  dataModel:'MenuVo',
   api:listAll,
   match:{
     self:{  
+        label:"路由列表",
         dataType: DataType.array,
         dataModel:'ISelect',
         func:(datas:MenuVo[]):ISelect[]=>{
@@ -559,6 +564,10 @@ export const routeOpenApi:ApiInfo={
           //未使用过的路由
           return allRouter().filter(d=>!routerList.includes(d.value))
         }
+    },
+    menuVO:{
+      dataType: DataType.array,
+      dataModel:'MenuVo',
     }
   }
 
