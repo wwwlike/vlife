@@ -44,7 +44,8 @@ public class ReportConditionApi extends VLifeApi<ReportCondition, ReportConditio
     //非超级管理员的列表视图需要根据权限组过滤
     SecurityUser currUser=SecurityConfig.getCurrUser();
     if("table".equals(req.getType())){
-      return list.stream().filter(item->currUser.getSuperUser()||item.getSysGroupIds()==null||item.getSysGroupIds().indexOf(currUser.getGroupId())!=-1).collect(Collectors.toList());
+      return list.stream().filter(
+              item->(currUser.getSuperUser()!=null&&currUser.getSuperUser())||item.getSysGroupIds()==null||item.getSysGroupIds().indexOf(currUser.getGroupId())!=-1).collect(Collectors.toList());
     }
     return list;
   }
