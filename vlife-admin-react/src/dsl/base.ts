@@ -29,7 +29,8 @@ export enum OptEnum{
     isNotNull="isNotNull",
     isNull="isNull",
     notIn="notIn",
-    dynamic="dynamic"//日期类型动态范围
+    dynamic="dynamic",//日期类型动态范围
+    fix="fix"
 }
 
 export enum Mode{
@@ -66,6 +67,7 @@ export enum DataModel{
   boolean="boolean",
 }
 
+
 export interface where {
   fieldId:string,
   /** 搜索条件来源 */
@@ -84,6 +86,8 @@ export interface where {
   value: any;
   /** 动态值的code */
   fixCode: string;
+  /** 条件中文描述 */
+  desc:  {fieldName?:string,opt?:string,value?:any};
 }
 //简单条件分组 where内部是and(且条件), where之间是or(或条件)
 export interface ConditionGroup {
@@ -98,6 +102,12 @@ export interface Conditions {
   orAnd: andOr;
   where: Partial<where>[];
   conditions: Partial<Conditions>[];
+}
+
+export interface FormItemCondition {
+  orAnd: andOr;
+  where: Partial<where>[];
+  conditions: Partial<FormItemCondition>[];
 }
 
 /**

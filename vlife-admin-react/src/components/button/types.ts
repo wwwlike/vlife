@@ -81,12 +81,14 @@ export type BtnToolBarPosition = "tableToolbar" | "tableLine" | "formFooter" | "
 
 //本次主要解决之前的缺陷，通过saveAPi确定权限；
 export interface VFBtn{
+  sysMenuId?: string;  // 所在菜单
   //----------------准备加入new----------
   formTitle?:string;//表单名称
   sort?:number; //排序
   toActiveTabKey?:string; //完成后去到的场景页签key
   onActiveChange?: (key: string) => void; //切换页签后触发
   modalOpen?:boolean;//是否打开modal
+  sysResourcesId?:string;
   // ----------------------------
   actionType:actionType // 动作类型 (拿掉最好)
   datas?: any | any[]; //按钮数据 考虑和loadApi合并
@@ -101,6 +103,7 @@ export interface VFBtn{
   activeTabKey?:string[]; // 按钮所能显示在的页签场景
   disabled?:boolean;// 通过页面数据决定按钮是否警用：true禁用；false可用
   usableMatch?:any|((...datas:any[])=>string|boolean|Promise<string|boolean>); //根据表单数据校验按钮可用性 any=>直接比对|函数=>复杂/异步校验 string表示不能使用原因 赋值给tooltip
+  conditionJson?:string;// 条件表达式
   //组件属性
   btnType?:btnType;// 按钮展现类型 "button" | "icon" | "link";
   continueCreate?:boolean;//连续新增 create按钮会出现(undefined不可见 false可见不可用  true可见可用) 

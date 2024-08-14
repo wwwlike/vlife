@@ -57,6 +57,16 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
     public List<SysResources> list(@RequestBody PageQuery req) {
        return service.find(req);
     }
+
+    /**
+     * 按钮可绑定资源
+     */
+    @PostMapping("/listButtons")
+    public List<SysResources> listButtons(@RequestBody PageQuery req) {
+        List<SysResources> buttonResources= service.find(req);
+        return service.buttonFilter(buttonResources);
+    }
+
     /**
      * 资源删除
      */

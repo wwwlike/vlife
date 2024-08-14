@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
 import { IconClose } from "@douyinfe/semi-icons";
-import { Space, Tag } from "@douyinfe/semi-ui";
+import { Space } from "@douyinfe/semi-ui";
 import { FormVo } from "@src/api/Form";
 import { orderObj } from "@src/pages/common/orderPage";
-import { where } from "../types";
 import { FormFieldVo } from "@src/api/FormField";
 import { useAuth } from "@src/context/auth-context";
+import { OptEnum, where } from "@src/dsl/base";
 export interface TagFilterProps {
   where: Partial<where>[]; //查询条件
   order: orderObj[]; //排序信息
@@ -56,8 +56,10 @@ const TagFilter = ({
                   )
                   .map((d) => d.label)
                   .toString()
-              : (w.opt === "loe" && where.map((w) => w.opt).includes("goe")) ||
-                (w.opt === "goe" && where.map((w) => w.opt).includes("loe"))
+              : (w.opt === "loe" &&
+                  where.map((w) => w.opt).includes(OptEnum.goe)) ||
+                (w.opt === "goe" &&
+                  where.map((w) => w.opt).includes(OptEnum.loe))
               ? w.opt === "loe"
                 ? undefined
                 : `${where.filter((w) => w.opt === "goe")[0].value}~${

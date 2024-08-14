@@ -244,7 +244,8 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
             } else if (alljoin.get(entityAlias) == null) {
                 addJoin(rightPath);
                 String leftIdName = entityDto.getFkMap().get(mainClz);
-                if(leftIdName==null&&request.getFkRelation().get(mainClz)!=null){
+                //关联查询(手工方式)
+                if(request!=null&&request.getFkRelation()!=null&&request.getFkRelation().get(mainClz)!=null){
                     leftIdName=request.getFkRelation().get(mainClz).toString();
                 }
                 StringPath leftId =null;

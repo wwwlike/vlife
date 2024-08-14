@@ -8,9 +8,11 @@ import cn.wwwlike.sys.dao.SysResourcesDao;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.annotation.PermissionEnum;
 import cn.wwwlike.vlife.core.VLifeService;
+import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.tag.ApiTag;
 import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 import cn.wwwlike.vlife.query.QueryWrapper;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -211,6 +215,7 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
      */
     public List<String> syncOne(ClzTag action,List<SysResources> dbResources)   {
         List<String> resourceIds=new ArrayList<>();
+        try{
         List<ApiTag> apis=action.getApiTagList();
         //资源更新或者新增
         for(ApiTag api:apis){
@@ -236,6 +241,76 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                 if(currRemark!=null&&!currRemark.equals(bean.getRemark())){
                     bean.setRemark(currRemark);
                     i++;
+                }
+
+                Pattern pattern = Pattern.compile("(\\w+)<(\\w+)>");
+                if(api.getParamWrapper()!=null){
+                    Matcher matcher = pattern.matcher(api.getParamWrapper());
+                    if(!api.getParam().equals(bean.getParam())){
+                        bean.setParam(api.getParam());
+                        i++;
+                    }
+                    if (matcher.find()) {
+                        // 获取类名和泛型参数
+                        String className = matcher.group(1);
+                        String genericType = matcher.group(2);
+                        if(!className.equals(bean.getParamWrapper())||bean.getParamType()==null){
+                            bean.setParamWrapper(className);
+                            bean.setParamType(
+                                    GlobalData.entityNames.contains(api.getParamWrapper())?"entity":
+                                            GlobalData.dtoNames.contains(api.getParamWrapper())?"dto":
+                                                    GlobalData.voNames.contains(api.getParamWrapper())?"vo":
+                                                            GlobalData.reqNames.contains(api.getParamWrapper())?"req":"other"
+                            );
+                            i++;
+                        }
+                        if(!genericType.equals(bean.getParamGeneric())){
+                            i++;
+                            bean.setParamGeneric(genericType);
+                        }
+                    } else {
+                        if(!api.getParamWrapper().equals(bean.getParamWrapper())||bean.getParamType()==null){
+                            bean.setParamWrapper(api.getParamWrapper());
+                            bean.setParamType(
+                                    GlobalData.entityNames.contains(api.getParamWrapper())?"entity":
+                                            GlobalData.dtoNames.contains(api.getParamWrapper())?"dto":
+                                                    GlobalData.voNames.contains(api.getParamWrapper())?"vo":
+                                                            GlobalData.reqNames.contains(api.getParamWrapper())?"req":"other"
+                            );
+                            i++;
+                        }
+                    }
+                }
+                if(api.getReturnClz()!=null){
+                    Matcher returnMatcher = pattern.matcher(api.getReturnClz());
+                    if (returnMatcher.find()) {
+                        String className = returnMatcher.group(1);
+                        String genericType = returnMatcher.group(2);
+                        if(!className.equals(bean.getReturnClz())||bean.getReturnType()==null){
+                            bean.setReturnClz(className);
+                            bean.setReturnType(
+                                    GlobalData.entityNames.contains(api.getReturnClz())?"entity":
+                                            GlobalData.dtoNames.contains(api.getReturnClz())?"dto":
+                                                    GlobalData.voNames.contains(api.getReturnClz())?"vo":
+                                                            GlobalData.reqNames.contains(api.getReturnClz())?"req":"other");
+                            i++;
+                        }
+                        if(!genericType.equals(bean.getReturnGeneric())){
+                            i++;
+                            bean.setReturnGeneric(genericType);
+                        }
+                    }else{
+                        if((bean.getReturnClz()!=null&&!bean.getReturnClz().equals(api.getReturnClz()))||(bean.getReturnClz()==null&& api.getReturnClz()!=null)){
+                            bean.setReturnClz(api.getReturnClz());
+                            bean.setReturnType(
+                                    GlobalData.entityNames.contains(api.getReturnClz())?"entity":
+                                            GlobalData.dtoNames.contains(api.getReturnClz())?"dto":
+                                                    GlobalData.voNames.contains(api.getReturnClz())?"vo":
+                                                            GlobalData.reqNames.contains(api.getReturnClz())?"req":"other");
+                            i++;
+                        }
+
+                    }
                 }
                 if(i>0){
                     save(bean);
@@ -263,14 +338,63 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                 bean.setActionType(action.getEntityName());
                 bean.setMethedType(api.getMethodType());
                 bean.setEntityType(action.getTypeName());
+                Pattern pattern = Pattern.compile("(\\w+)<(\\w+)>");
+                if(api.getParamWrapper()!=null){
+                    Matcher matcher = pattern.matcher(api.getParamWrapper());
+                    bean.setParam(api.getParam());
+
+                    bean.setParamType(
+                            GlobalData.entityNames.contains(api.getParamWrapper())?"entity":
+                                    GlobalData.dtoNames.contains(api.getParamWrapper())?"dto":
+                                            GlobalData.voNames.contains(api.getParamWrapper())?"vo":
+                                                    GlobalData.reqNames.contains(api.getParamWrapper())?"req":"other"
+                    );
+
+                    if (matcher.find()) {
+                        // 获取类名和泛型参数
+                        String className = matcher.group(1);
+                        String genericType = matcher.group(2);
+                        bean.setParamWrapper(className);
+                        bean.setParamGeneric(genericType);
+                        //                    System.out.println("Class Name: " + className);
+                        //                    System.out.println("Generic Type: " + genericType);
+                    } else {
+                        bean.setParamWrapper(api.getParamWrapper());
+                    }
+                }
+                if(api.getReturnClz()!=null){
+                    Matcher returnMatcher = pattern.matcher(api.getReturnClz());
+                    if (returnMatcher.find()) {
+                        String className = returnMatcher.group(1);
+                        String genericType = returnMatcher.group(2);
+                        bean.setReturnClz(className);
+                        bean.setReturnType(
+                                GlobalData.entityNames.contains(api.getReturnClz())?"entity":
+                                        GlobalData.dtoNames.contains(api.getReturnClz())?"dto":
+                                                GlobalData.voNames.contains(api.getReturnClz())?"vo":
+                                                        GlobalData.reqNames.contains(api.getReturnClz())?"req":"other");
+                        bean.setReturnGeneric(genericType);
+                    }else{
+                        bean.setReturnClz(api.getReturnClz());
+                    }
+                }
                 save(bean);
             }
-
             resourceIds.add(bean.getId());
         }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         return resourceIds;
     }
 
+
+    //查询参数类型
+//    public String matchModelType(String modelName){
+//
+//    }
 
     public static String findTitleString(String input) {
         if(input==null){
@@ -305,23 +429,6 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
        return findByIds(menuIds).stream().filter(r->r.isMenuRequired()).collect(Collectors.toList()).stream().map(t->t.getCode()).collect(Collectors.toList());
     }
 
-
-    /**
-     * 批量将指定接口纳入到权限管理state->1
-     */
-    public void batchStateUseState(List<String> ids){
-//        List<SysResources> all=findAll();
-//        all.forEach(sysResources -> {
-//            if(ids.contains(sysResources.getId())&&sysResources.getState().equals(CT.STATE.DISABLE)){
-//                sysResources.setState(CT.STATE.NORMAL);
-//                save(sysResources);
-//            }else if(!ids.contains(sysResources.getId())&&sysResources.getState().equals(CT.STATE.NORMAL)){
-//                sysResources.setState(CT.STATE.DISABLE);
-//                save(sysResources);
-//            }
-//        });
-    }
-
     /**
      * 当资源与菜单取消关联那么也清空它和角色的关联
      */
@@ -331,5 +438,25 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
             r.setSysRoleId(null);
             save(r);
         });
+    }
+
+    /**
+     *  过滤出按钮可以绑定的接口
+     */
+    public List<SysResources> buttonFilter(List<SysResources> resources){
+        //分页返回查询接口过滤掉
+        resources=resources.stream().filter(
+                r->!"PageVo".equals(r.getReturnClz())&&
+                        !"PageQuery".equals(r.getParamWrapper())&&
+                        !"CustomQuery".equals(r.getParamWrapper())&&
+                        r.getMethedType().indexOf("GetMapping")==-1
+        ).collect(Collectors.toList());
+
+        //查询模型作为入参的接口过滤掉
+        List<String> reqModelNames=GlobalData.getReqDtos().keySet().stream().map(t->t.getSimpleName()).collect(Collectors.toList());
+        resources=resources.stream().filter(r->!reqModelNames.contains(r.getParamWrapper())).collect(Collectors.toList());
+        //无入参但是出参是List集合的过滤掉
+        resources=resources.stream().filter(r->!(r.getReturnClz()!=null&&r.getReturnClz().equals("List")&&r.getParamWrapper()==null)).collect(Collectors.toList());
+        return resources;
     }
 }

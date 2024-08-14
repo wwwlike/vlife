@@ -5,7 +5,7 @@ import { list as userList, SysUser } from '@src/api/SysUser';
 import { listAll as groupList } from '@src/api/SysGroup';
 import { listAll as roleList,SysRole } from '@src/api/SysRole';
 import { listAll, listAll as menuList, MenuVo, SysMenu } from '@src/api/SysMenu';
-import { list as resourcesList, SysResources } from '@src/api/SysResources';
+import { list as resourcesList, listButtons, SysResources } from '@src/api/SysResources';
 import { ApiInfo } from '@src/components/compConf/compConf';
 import { DataModel, DataType, OptEnum } from '@src/dsl/base';
 import { ISelect, ITreeData } from '@src/dsl/component';
@@ -570,7 +570,34 @@ export const routeOpenApi:ApiInfo={
       dataModel:'MenuVo',
     }
   }
-
 }
 
-
+export const resourcesButtonOpenApi:ApiInfo= {
+  label: "按钮接口资源",
+  dataType: DataType.array,
+  dataModel:'sysResources',
+  api:listButtons,
+  match:{
+    ButtonResources:{
+      dataType: DataType.array,
+      dataModel:"ISelect",
+      params:{
+        formId:{
+          label:"模块",
+          required:true,
+          dynamicParams:true,
+          dataType:DataType.basic,
+          dataModel:DataModel.string,
+          fromField:true,
+        },
+      },
+      func:(datas:SysResources[],{formId,sysMenuId}:{formId:string,sysMenuId:string}):ISelect[]=>{
+        return datas.map((d)=>{return {
+          value:d.id,
+          label:d.name,
+          extra:d.remark,
+        }})
+      }
+    },
+  }
+}

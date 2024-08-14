@@ -109,4 +109,18 @@ public class SysResources extends DbEntity{
      * add/edit/delete/query/import/export
      */
     public String resourceType;
+    //参数名
+    public String param;
+    //参数模型
+    public String paramWrapper;
+    //参数模型分类
+    public String paramType;//dto,vo,req,bean,other
+    //参数泛型
+    public String paramGeneric;
+    //出参模型
+    public String  returnClz;
+    //出参模型分类
+    public String  returnType;
+    //出参泛型
+    public String returnGeneric;
 }

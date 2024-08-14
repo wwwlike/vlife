@@ -55,6 +55,7 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
             );
             securityUser.setUseDetailVo(detailVo);
             securityUser.setGroupId(user.getSysGroupId());
+            securityUser.setSuperUser(user.getSuperUser());
             return securityUser;
         }
     }
@@ -65,6 +66,7 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
         );
         securityUser.setUseDetailVo(detailVo);
         securityUser.setGroupId(user.getSysGroupId());
+        securityUser.setSuperUser(user.getSuperUser());
         return securityUser;
     }
     /**

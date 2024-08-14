@@ -78,7 +78,7 @@ export const FormModal = createNiceModal(
       if (data?.id && !version.toString().startsWith("v_base")) {
         getFlowInfo(data);
       }
-    }, []);
+    }, [formVo]);
 
     //请求该条记录的流程信息和历史审核信息
     const getFlowInfo = useCallback(
@@ -199,11 +199,17 @@ export const FormModal = createNiceModal(
             )}
 
             <BtnToolBar
-              datas={[{ ...data, flow: recordFlowInfo }]}
-              btns={formBtns}
+              datas={[
+                data?.flow !== undefined
+                  ? data
+                  : { ...data, flow: recordFlowInfo },
+              ]}
+              btns={formBtns.map((f) => {
+                return { ...f, modalOpen: true };
+              })}
               entity={modelInfo?.entityType}
               activeKey={activeKey}
-              formModel={modelInfo?.type}
+              dataType={modelInfo?.type}
               position="formFooter"
               btnType="button"
             />

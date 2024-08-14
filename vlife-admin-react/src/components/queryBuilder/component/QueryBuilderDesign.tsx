@@ -13,8 +13,8 @@ import { useCallback } from "react";
 import Scrollbars from "react-custom-scrollbars";
 
 import Compare from "./Compare";
-import { andOr, FormItemCondition, where } from "../types";
 import QueryBuilder from "../indexFull";
+import { andOr, FormItemCondition, where } from "@src/dsl/base";
 
 export interface QueryDesignProps {
   /** 嵌套脚本对象 */

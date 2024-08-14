@@ -20,6 +20,7 @@ import { findSubs, findTreeRoot } from "@src/util/func";
 import { VFBtn } from "@src/components/button/types";
 import Button from "@src/components/button";
 import { isNull } from "lodash";
+import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 
 const { Sider } = Layout;
 export function renderIcon(icon: any) {
@@ -85,12 +86,21 @@ export const visitTopMenu = (
 };
 
 export default () => {
-  const { user, setMenuState, app, allMenus, setAllMenus } = useAuth();
+  const { user, setMenuState, app, allMenus, setMenu, menu, setAllMenus } =
+    useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [height, setHeight] = useState(window.innerHeight);
   const [openKeys, setOpenKeys] = useState<string[]>([]); //打开节点
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]); //选中节点
+
+  useEffect(() => {
+    if (selectedKeys && selectedKeys.length > 0) {
+      setMenu(selectedKeys[0]);
+    } else if (selectedKeys === undefined || selectedKeys.length === 0) {
+      setMenu(undefined);
+    }
+  }, [selectedKeys]);
 
   //用户当前应用的菜单
   const appMenus = useMemo((): MenuVo[] => {
@@ -100,6 +110,7 @@ export default () => {
       return [];
     }
   }, [allMenus, app]);
+
   //访问应用首页
 
   const visitMenu = (menu?: MenuVo) => {
@@ -214,31 +225,23 @@ export default () => {
                 key={menu.id}
                 className=" group z-10 flex items-center relative w-28"
               >
-                <div className="z-10">
-                  {" "}
-                  {menu.name}
-                  {/* {menu.url !== undefined && menu.formId === null ? (
-                    <Tooltip content={"菜单没有关联模型无法导入相关权限接口"}>
-                      <span className=" text-blue-500 "></span>
-                    </Tooltip>
-                  ) : (
-                    menu.name
-                  )} */}
-                </div>
+                <div className="z-10">{menu.name}</div>
                 <div
-                  className="flex absolute items-center right-0 !z-20 "
+                  className="flex absolute  items-center right-0 !z-20 "
                   onClick={(event) => {
                     event.cancelable = true; //阻止事件冒泡
                     event.stopPropagation();
                   }}
                 >
-                  <BtnToolBar
+                  <BtnResourcesToolBar
                     dropdown={true}
                     key={menu.id + JSON.stringify(selectedKeys)}
                     datas={[menu]}
-                    className={`${classNames({
-                      hidden: !selectedKeys.includes(menu.id),
-                    })} group-hover:block `}
+                    className={classNames({
+                      "hidden group-hover:block": !selectedKeys.includes(
+                        menu.id
+                      ),
+                    })}
                     btns={[
                       {
                         title: "编辑菜单",
@@ -302,16 +305,6 @@ export default () => {
                                 app &&
                                 visitMenu(visitTopMenu(_appMenus, app.code));
                             });
-
-                          // listAll().then((d) => {
-                          //   setAllMenus(d.data || []);
-                          //   if (datas[0] && datas[0].routerAddress) {
-                          //     visitMenu(
-                          //       visitTopMenu(appMenus, app?.code || "")
-                          //     );
-                          //   }
-                          // });
-                          // visitMenu(visitTopMenu(appMenus, app?.code || ""));
                         },
                       },
                       {
@@ -339,35 +332,10 @@ export default () => {
                         loadApi: (d) => detailMenuResourcesDto({ id: d.id }),
                         saveApi: saveMenuResourcesDto,
                       },
-                      {
-                        title: "模型配置",
-                        actionType: "click",
-                        disabledHide: true,
-                        usableMatch: (...datas: MenuVo[]) => {
-                          return (
-                            datas[0]?.formId !== undefined &&
-                            datas[0]?.formId !== null
-                          );
-                        },
-                        onClick: () => {
-                          navigate(`/sysConf/model?formId=${menu.formId}`);
-                        },
-                        icon: <i className="  icon-setting" />,
-                      },
-                      {
-                        title: "页面配置",
-                        actionType: "click",
-                        disabledHide: true,
-                        usableMatch: !isNull(menu.pageLayoutId),
-                        onClick: () => {
-                          navigate(`/page/layout/${menu.pageLayoutId}`);
-                        },
-                        icon: <i className=" icon-hr_webpage" />,
-                      },
                     ]}
                   />
                   {menu.pcode === app?.code && (
-                    <BtnToolBar
+                    <BtnResourcesToolBar
                       key={menu.id + pathname}
                       btns={[
                         {

@@ -10,8 +10,7 @@ import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import RelationTagInput from "@src/components/RelationTagInput";
 import { useAuth } from "@src/context/auth-context";
-import { DataType } from "@src/dsl/base";
-import { where } from "../types";
+import { DataType, where } from "@src/dsl/base";
 import { ISelect } from "@src/dsl/component";
 export interface ConditionProps {
   where: Partial<where>;

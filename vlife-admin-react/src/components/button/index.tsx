@@ -16,6 +16,8 @@ import { isNull } from "lodash";
 import { objectIncludes } from "@src/util/func";
 import { useEffect } from "react";
 import { IconSend } from "@douyinfe/semi-icons";
+import BtnResourcesToolBar from "./component/BtnResourcesToolBar";
+import { remove } from "@src/api/Button";
 
 //封装的按钮组件
 export default (props: Partial<VFBtn>) => {
@@ -24,9 +26,10 @@ export default (props: Partial<VFBtn>) => {
   const vlifeModal = useNiceModal("vlifeModal");
   const confirmModal = useNiceModal("confirmModal");
   const [loading, setLoading] = useState<boolean>();
-  const { checkBtnPermission } = useAuth();
+  const { checkBtnPermission, resources } = useAuth();
   const {
     datas,
+    sysMenuId,
     toActiveTabKey,
     btnType = "button",
     actionType,
@@ -130,7 +133,9 @@ export default (props: Partial<VFBtn>) => {
       _permissionCode === undefined
     );
   }, [_permissionCode]);
-
+  useEffect(() => {
+    // console.log("datas", datas);
+  }, [JSON.stringify(datas)]);
   //设置按钮可用状态
   useEffect(() => {
     const setDisableAndTooltip = (matchResult: string | boolean) => {
@@ -155,7 +160,7 @@ export default (props: Partial<VFBtn>) => {
     } else {
       setDisableAndTooltip(dataMatchTooltip);
     }
-  }, [btnData, props]);
+  }, [btnData, activeKey]); //数据，场景
 
   // 按钮是否可用
   const btnUsableMatch = useCallback(():
@@ -268,41 +273,44 @@ export default (props: Partial<VFBtn>) => {
   );
 
   // 修改了数据才往回传输数据
-  const show = useCallback(() => {
-    const modal = (formData: any) => {
-      // alert(JSON.stringify(formData));
-      const btns = otherBtns
-        ? [props, ...otherBtns.filter((o) => o.model === props.model)]
-        : [props];
-      formModal.show({
-        type: model,
-        formData: formData,
-        activeKey: activeKey,
-        fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
-        btns: modalBtns(formData), //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
-        terse: !saveApi ? true : false, //紧凑
-        fontBold: !saveApi ? true : false, //加粗
-        readPretty: actionType === "api",
-        reaction: reaction,
-      });
-    };
+  const show = useCallback(
+    (_modal: string) => {
+      const modal = (formData: any) => {
+        // alert(JSON.stringify(formData));
+        const btns = otherBtns
+          ? [props, ...otherBtns.filter((o) => o.model === props.model)]
+          : [props];
+        formModal.show({
+          type: _modal,
+          formData: formData,
+          activeKey: activeKey,
+          fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
+          btns: modalBtns(formData), //取消掉btns简化逻辑，弹出层值显示一个按钮(create按钮新增完需要继承存在)
+          terse: !saveApi ? true : false, //紧凑
+          fontBold: !saveApi ? true : false, //加粗
+          readPretty: actionType === "api",
+          reaction: reaction,
+        });
+      };
 
-    if (onFormBefore !== undefined) {
-      //onFormBefore 优先级最高
-      modal(onFormBefore(btnData));
-    } else if (
-      actionType === "create" ||
-      (actionType === "save" && position === "tableToolbar")
-    ) {
-      modal(initData);
-    } else if (loadApi === undefined) {
-      modal(btnData || initData || {});
-    } else if (btnData) {
-      loadApi(btnData).then((d) => {
-        modal(d.data);
-      });
-    }
-  }, [btnData, props, reaction, modalBtns]);
+      if (onFormBefore !== undefined) {
+        //onFormBefore 优先级最高
+        modal(onFormBefore(btnData));
+      } else if (
+        actionType === "create" ||
+        (actionType === "save" && position === "tableToolbar")
+      ) {
+        modal(initData);
+      } else if (loadApi === undefined) {
+        modal(btnData || initData || {});
+      } else if (btnData) {
+        loadApi(btnData).then((d) => {
+          modal(d.data);
+        });
+      }
+    },
+    [btnData, props, reaction, modalBtns]
+  );
 
   // 工作流审核框弹出
   const flowCommentShow = useCallback(() => {
@@ -400,7 +408,7 @@ export default (props: Partial<VFBtn>) => {
       onClick(btnData);
     } else if (position !== "formFooter" && model && modalOpen !== true) {
       //1 页面(非modal)的按钮，model不为空,则触发model的弹出
-      show();
+      show(model);
     } else if (props.comment && position !== "comment") {
       flowCommentShow();
     } else if (saveApi && btnData) {
@@ -505,7 +513,7 @@ export default (props: Partial<VFBtn>) => {
           </Divider>
         )}
         <Btn
-          onClick={() => {
+          onClick={(event: any) => {
             if (!disabled) {
               btnClick();
             }
@@ -522,7 +530,7 @@ export default (props: Partial<VFBtn>) => {
               ? "borderless"
               : "light"
           }`}
-          className={` ${className} hover:cursor-pointer  ${classNames({
+          className={` inline ${className} hover:cursor-pointer  ${classNames({
             "cursor-pointer hover:text-blue-600 hover:font-bold":
               position === "tableLine",
             " !text-gray-900 font-light text-xs ":
@@ -533,7 +541,7 @@ export default (props: Partial<VFBtn>) => {
         >
           <span className=" space-x-2 items-center justify-center">
             {props.children ? props.children : btnTitle}
-          </span>
+          </span>{" "}
         </Btn>
       </>
     ) : (
@@ -581,11 +589,22 @@ export default (props: Partial<VFBtn>) => {
   ]);
   return authPass && !(disabledHide && disabled === true) ? (
     <>
-      {/* {initData.length} */}
-      {tooltip && disabled === true ? (
-        <Tooltip content={tooltip}> {BtnComp}</Tooltip>
+      {/* {btnData?.length || 0} */}
+      {disabled === true &&
+      (tooltip || btnData === undefined || btnData.length === 0) ? (
+        <Tooltip content={tooltip || "请选择数据"}>
+          {"  "}
+          {BtnComp}
+        </Tooltip>
       ) : (
         <>{BtnComp}</>
+      )}
+      {sysMenuId && (
+        <BtnResourcesToolBar
+          btns={[{ title: "删除", actionType: "api", saveApi: remove }]}
+          className=" inline"
+          dropdown={true}
+        />
       )}
     </>
   ) : (

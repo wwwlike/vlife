@@ -18,6 +18,8 @@ import { listAll, SysGroup } from "@src/api/SysGroup";
 import { MenuVo } from "@src/api/SysMenu";
 import { gitToken } from "@src/api/pro/gitee";
 import { varObj } from "@src/api/SysVar";
+import { useMemo } from "react";
+import { Button, list as buttonList } from "@src/api/Button";
 export const localStorageKey = "__auth_provider_token__";
 const mode = import.meta.env.VITE_APP_MODE;
 export interface dictObj {
@@ -50,9 +52,10 @@ const AuthContext = React.createContext<
       //所有菜单
       allMenus: MenuVo[];
       setAllMenus: (allMenus: MenuVo[]) => void;
-
-      app: MenuVo | undefined; //当前应用
+      app?: MenuVo; //当前应用
       setApp: (app: MenuVo | undefined) => void; //当前应用
+      menu?: string; //当前菜单id
+      setMenu: (menu: string | undefined) => void; // 设置当前菜单id
       //当前屏幕大小
       screenSize?: { width: number; height: number; sizeKey: string };
       // 所有字典信息
@@ -79,6 +82,8 @@ const AuthContext = React.createContext<
       getDict: (obj: { emptyLabel?: string; codes?: string[] }) => TranDict[]; //如果codes不传，则返回字典类目
       //按钮权限认证
       checkBtnPermission: (code: string) => boolean; //检查按钮权限
+      resources: { [key: string]: SysResources }; //全部接口权限
+      menuButtons: Button[]; //当前菜单的按钮
       datasInit: () => void;
     }
   | undefined
@@ -96,6 +101,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    * 当前模块menuId
    */
   const [app, setApp] = useState<MenuVo | undefined>();
+
+  /**
+   * 当前模块menuId
+   */
+  const [menu, setMenu] = useState<string | undefined>();
+
   /** 当前用户信息 */
   const [user, setUser] = useState<UserDetailVo>();
   /** 当前菜单状态 */
@@ -103,7 +114,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   /**
    * 权限权限资源信息
    */
-  const [allResources, setAllResources] = useState<SysResources[]>();
+  const [allResources, setAllResources] = useState<SysResources[]>([]);
+  /**
+   * 所有配置按钮
+   */
+  const [allButtons, setAllButtons] = useState<Button[]>([]);
+
   //存模型信息的对象，key是modelName, modelInfoProps
   // 与数据库一致的，有UI场景的模型信息
   const [models, setModels] = useState<{ [key: string]: FormVo | undefined }>(
@@ -174,6 +190,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setDicts(obj);
   }, [dbDicts]);
 
+  const menuButtons = useMemo(() => {
+    return allButtons?.filter((f) => f.sysMenuId === menu);
+  }, [allButtons, menu]);
   /**
    * 登录成功后数据数据提取初始化
    */
@@ -184,7 +203,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
     //同步拉取全量资源信息
     resourcesList().then((d) => {
-      setAllResources(d.data);
+      setAllResources(d.data || []);
+    });
+
+    buttonList().then((d) => {
+      setAllButtons(d.data || []);
     });
     //所有模型信息拉取
     list().then((f) => {
@@ -312,6 +335,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [allModels]
   );
 
+  const resources = useMemo((): { [key: string]: SysResources } => {
+    if (allResources) {
+      return allResources.reduce<Record<string, SysResources>>(
+        (accumulator, item) => {
+          accumulator[item.id] = item;
+          return accumulator;
+        },
+        {}
+      );
+    }
+    return {};
+  }, [allResources]);
   /**
    * @param codes 多条字典信息
    * @returns
@@ -480,6 +515,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setMenuState,
           app,
           setApp,
+          menu,
+          setMenu,
           allMenus,
           setAllMenus,
           findModels,
@@ -494,6 +531,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           giteeLogin,
           loginOut,
           getDict,
+          resources,
+          menuButtons,
           checkBtnPermission,
           datasInit, //数据强制初始化
         }}

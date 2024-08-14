@@ -5,7 +5,7 @@ import { FormVo } from "@src/api/Form";
 import { FormFieldVo } from "@src/api/FormField";
 import { InputNumber } from "@douyinfe/semi-ui/lib/es/inputNumber";
 import RelationTagInput from "@src/components/RelationTagInput";
-import { where } from "../types";
+import { OptEnum, where } from "@src/dsl/base";
 
 interface CompareProps {
   form: FormVo;
@@ -168,7 +168,7 @@ export default ({ data, form, onDataChange }: CompareProps) => {
                 }),
             ]}
             onChange={(data) => {
-              setReData({ ...reData, opt: data as string });
+              setReData({ ...reData, opt: data as OptEnum });
             }}
           />
 
@@ -311,7 +311,7 @@ export default ({ data, form, onDataChange }: CompareProps) => {
               }}
             />
           )}
-          {reData.opt === "fix" && ( //固定值
+          {reData.opt === OptEnum.fix && ( //固定值
             <Select
               placeholder="动态值"
               style={{ width: "130px" }}

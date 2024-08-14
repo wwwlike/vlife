@@ -220,7 +220,7 @@ instance.interceptors.response.use(
       });
       // window.localStorage.removeItem(localStorageKey);
       //统一处理未授权请求，进行403跳转(，勾超级用户，单无权限需要控制)
-       document.location = "/403";
+      //  document.location = "/403";
     }
     return Promise.reject(err);
   }

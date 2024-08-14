@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FormVo } from "@src/api/Form";
 import FormPage from "@src/pages/common/formPage";
-import { FormItemCondition } from "../types";
+import { FormItemCondition } from "@src/dsl/base";
 
 /**
  * 对req模型产生的查询结果适配转换成

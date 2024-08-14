@@ -10,16 +10,16 @@ import Table, { ListProps, TableBean } from "@src/components/table";
 import { useAuth } from "@src/context/auth-context";
 import { IdBean, PageQuery, PageVo, Result } from "@src/api/base";
 import { FormVo } from "@src/api/Form";
+import { save as btnSave } from "@src/api/Button";
 import { find, useDetail, useRemove, useSave } from "@src/api/base/baseService";
 import { FormFieldVo } from "@src/api/FormField";
 import { IconSetting } from "@douyinfe/semi-icons";
 import apiClient from "@src/api/base/apiClient";
-import { VfAction } from "@src/dsl/VF";
+import { VF, VfAction } from "@src/dsl/VF";
 import TagFilter from "@src/components/table/component/TagFilter";
 import { Pagination, SideSheet, Tooltip } from "@douyinfe/semi-ui";
 import { orderObj } from "./orderPage";
 import { useSize } from "ahooks";
-import BtnToolBar from "@src/components/button/BtnToolBar";
 import classNames from "classnames";
 import VfSearch from "@src/components/VfSearch";
 import { useNavigate } from "react-router-dom";
@@ -43,6 +43,8 @@ import Button from "@src/components/button";
 import ImportPage from "../excel/ImportPage";
 import TableHeader, { TableHeaderProps, VfTableTab } from "./TableHeader";
 import { tableFlowBtns, tableFowTabs } from "./TableFlow";
+import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
+import ConfWrapper from "@src/components/compConf/component/ConfWrapper";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
@@ -141,7 +143,7 @@ const TablePage = <T extends TableBean>({
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const pageSizeArray = [15, 30, 50];
   const navigate = useNavigate();
-  const { getFormInfo, user } = useAuth();
+  const { getFormInfo, user, menuButtons, menu } = useAuth();
   const ref = useRef(null);
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
@@ -358,6 +360,7 @@ const TablePage = <T extends TableBean>({
       pager: pager,
     };
     if (pageLoad && (tab === false || tabReq)) {
+      // alert(JSON.stringify(reqParams));
       pageLoad(reqParams)
         .then((data: Result<PageVo<T>>) => {
           if (activeKey) {
@@ -389,7 +392,6 @@ const TablePage = <T extends TableBean>({
         });
     }
   }, [
-    tabReq,
     req,
     order,
     searchAndColumnCondition,
@@ -538,7 +540,7 @@ const TablePage = <T extends TableBean>({
 
   /*页面所有按钮(查找工作流加入进来) */
   const totalBtns = useMemo((): VFBtn[] => {
-    const buttons = btns
+    const _buttons = btns
       ? btns
       : formModel?.flowJson
       ? [...flowBtns]
@@ -547,7 +549,7 @@ const TablePage = <T extends TableBean>({
       : [...defbtn];
 
     return tableModel
-      ? buttons.map((b) =>
+      ? _buttons.map((b) =>
           addMissingButtonAttributes(b, tableModel?.entityType)
         )
       : [];
@@ -721,6 +723,7 @@ const TablePage = <T extends TableBean>({
           {tab === true && (
             <>
               {
+                //从tab页签取得conditions
                 <TableHeader
                   tabList={tabList || (openFlowTab ? tableFowTabs : undefined)}
                   entityModel={tableModel}
@@ -758,17 +761,50 @@ const TablePage = <T extends TableBean>({
             className={`flex bg-white items-center p-2  border-gray-100  justify-start sidesheet-container`}
           >
             {hideToolbar !== true && (
-              <BtnToolBar<T>
-                activeKey={activeKey}
-                entity={tableModel.entityType}
-                key={"tableBtn"}
-                btns={totalBtns}
-                position="tableToolbar"
-                datas={selected}
-                onActiveChange={setActiveKey}
-                {...props}
-              />
+              <>
+                <BtnResourcesToolBar
+                  //@ts-ignore
+                  btns={[
+                    ...(menuButtons && menuButtons.length > 0
+                      ? menuButtons
+                      : totalBtns),
+                  ]}
+                  datas={selected}
+                  dataType={listType}
+                  activeKey={activeKey}
+                  key={"tableBtn"}
+                  onDataChange={(v) => {
+                    setLoadFlag((flag) => flag + 1); //列表重新加载
+                  }}
+                  position="tableToolbar"
+                  onActiveChange={setActiveKey}
+                />
+                {/* <ConfWrapper
+                  confIcon={<i className=" icon-settings" />}
+                  buttons={[
+                    {
+                      title: "创建",
+                      model: "button",
+                      reaction: [VF.then("sysMenuId").value(menu).readPretty()], //model表单级联关系配置
+                      actionType: "save",
+                      saveApi: btnSave,
+                    },
+                  ]}
+                /> */}
+              </>
             )}
+
+            {/* 
+          <BtnToolBar<T>
+                  activeKey={activeKey}
+                  entity={tableModel.entityType}
+                  key={"tableBtn"}
+                  btns={totalBtns}
+                  position="tableToolbar"
+                  datas={selected}
+                  onActiveChange={setActiveKey}
+                  {...props}
+                /> */}
             {/* 搜索 */}
             {tableModel?.fields?.filter((f) => f.listSearch).length > 0 && (
               <VfSearch

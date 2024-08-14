@@ -16,6 +16,8 @@ import { where } from "@src/dsl/base";
 import classNames from "classnames";
 import { VFBtn } from "../button/types";
 import { RecordFlowInfo } from "@src/api/workflow/Flow";
+import { useUpdateEffect } from "ahooks";
+import BtnResourcesToolBar from "../button/component/BtnResourcesToolBar";
 
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
@@ -108,9 +110,11 @@ const TableIndex = <T extends TableBean>({
     return undefined;
   }, [model]);
 
-  useEffect(() => {
-    setSelectedRow(selected || []);
-  }, [selected]);
+  useUpdateEffect(() => {
+    onSelected?.(selectedRow);
+  }, [selectedRow]);
+
+  // useUpdateEffect
 
   //列信息
   const memoColumns = useMemo((): ColumnProps<any>[] => {
@@ -373,11 +377,12 @@ const TableIndex = <T extends TableBean>({
           width: btnWidth,
           render: (text, record, index) => {
             return (
-              <BtnToolBar
+              <BtnResourcesToolBar
                 entity={model.entityType}
                 onBtnNum={(v) => {
                   setListBtnMax((m) => (v > m ? v : m));
                 }}
+                dataType={model.type}
                 key={`lineBtn_${index}`}
                 position="tableLine"
                 line={index}
@@ -422,10 +427,10 @@ const TableIndex = <T extends TableBean>({
               onSelected([record]);
             }
           } else {
-            setSelectedRow([]);
-            if (onSelected) {
-              onSelected([]);
-            }
+            // setSelectedRow([]);
+            // if (onSelected) {
+            //   onSelected([]);
+            // }
           }
         }
       },
@@ -440,13 +445,13 @@ const TableIndex = <T extends TableBean>({
                 return row;
               }),
             ]);
-            if (onSelected) {
-              onSelected([
-                ...selectedRows.map((row) => {
-                  return row;
-                }),
-              ]);
-            }
+            // if (onSelected) {
+            //   onSelected([
+            //     ...selectedRows.map((row) => {
+            //       return row;
+            //     }),
+            //   ]);
+            // }
           }
         }
       },

@@ -1,10 +1,9 @@
+import React, { useEffect, useState } from "react";
 import { SysFile, list, remove, download } from "@src/api/SysFile";
 import Button from "@src/components/button";
 import { ConditionGroup, OptEnum, where } from "@src/dsl/base";
 import { formatDate } from "@src/util/func";
-import React, { useEffect, useState } from "react";
 import ShowUser from "../user/ShowUser";
-import { Document, Page } from "react-pdf";
 
 export interface FileListProps {
   relationId: string; //文件关联业务id
@@ -54,18 +53,6 @@ export default (props: FileListProps) => {
     // />
 
     <div className=" p-2">
-      {pdfUrl && (
-        <div style={{ height: "750px" }}>
-          {pdfUrl}
-          <Document
-            file={`${pdfUrl}`}
-            // onLoadSuccess={this.onDocumentLoadSuccess}
-          >
-            {/* <Page pageNumber={pageNumber} /> */}
-          </Document>
-        </div>
-      )}
-
       {files.map((file) => (
         <div
           key={file.id}

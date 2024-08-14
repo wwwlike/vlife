@@ -21,7 +21,7 @@ public class ReportCondition extends DbEntity {
      */
     public String name;
     /**
-     * 应用
+     * 页面
      */
     public String sysMenuId;
     /**
@@ -43,8 +43,10 @@ public class ReportCondition extends DbEntity {
     @VField(dictCode = "CONDITION_TYPE")
     public String type;
 
-
-    public String filterLevel;
+    /**
+     * 绑定权限组
+     */
+    public String sysGroupIds;
 
     @Column(columnDefinition = "text")
     public String getConditionJson() {
@@ -93,6 +95,15 @@ public class ReportCondition extends DbEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Column(length = 1000)
+    public String getSysGroupIds() {
+        return sysGroupIds;
+    }
+
+    public void setSysGroupIds(String sysGroupIds) {
+        this.sysGroupIds = sysGroupIds;
     }
 }
 

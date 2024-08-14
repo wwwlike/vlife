@@ -1,11 +1,4 @@
-import React, {
-  Children,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FormVo } from "@src/api/Form";
 import { SysDict } from "@src/api/SysDict";
 import { objToConditionWhere, OptEnum, where } from "@src/dsl/base";
@@ -15,6 +8,7 @@ import { save, list, ReportCondition, remove } from "@src/api/ReportCondition";
 import Button from "@src/components/button";
 import { VF } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
+import ConfWrapper from "@src/components/compConf/component/ConfWrapper";
 
 //tab页签
 export interface VfTableTab extends VfTab {
@@ -59,12 +53,18 @@ export default ({ ...props }: TableHeaderProps) => {
   };
   const { user } = useAuth();
   const [contentTab, setContentTab] = React.useState<VfTableTab[]>(); //查询到的页签
+  const [reportCondition, setReportCondition] =
+    React.useState<ReportCondition[]>();
+  //当前激活页签
+  const [_activeKey, setActiveKey] = useState<string>();
 
   const setTabByDb = useCallback(() => {
     list({ formId: entityModel?.id, type: "table" }).then((result) => {
       const conditions: ReportCondition[] = result.data || [];
+      setReportCondition(
+        conditions.sort((a, b) => Number(a.createDate) - Number(b.createDate))
+      );
       if (conditions && conditions.length > 0) {
-        // console.log(conditions);
         setContentTab([
           ...conditions
             .sort((a, b) => Number(a.createDate) - Number(b.createDate))
@@ -183,6 +183,28 @@ export default ({ ...props }: TableHeaderProps) => {
     return [];
   }, [contentTab]);
 
+  //初始化激活页签
+  useEffect(() => {
+    if (_contentTab && _contentTab.length > 0) {
+      const key =
+        activeKey &&
+        _contentTab.filter(
+          (tab) => tab.pKey === activeKey || tab.itemKey === activeKey
+        ).length > 0
+          ? _contentTab.filter((tab) => tab.pKey === activeKey).length > 0
+            ? _contentTab.filter((tab) => tab.pKey === activeKey)?.[0].pKey
+            : activeKey
+          : _contentTab.filter((tab) => tab.pKey === _contentTab[0].itemKey)
+              .length > 0
+          ? _contentTab.filter(
+              (tab) => tab.pKey === _contentTab[0].itemKey
+            )?.[0].itemKey
+          : _contentTab[0].itemKey;
+      setActiveKey(key);
+      onActiveTabChange?.(_contentTab.filter((f) => f.itemKey === key)?.[0]);
+    }
+  }, [activeKey, _contentTab]);
+
   //需要计数的页签查询对象数据回调
   useEffect(() => {
     if (showCount && _contentTab && _contentTab.length > 0) {
@@ -216,44 +238,15 @@ export default ({ ...props }: TableHeaderProps) => {
   return (
     <div className=" flex flex-col item-center bg-white  pt-1">
       <div className=" flex item-center bg-white ">
-        {_contentTab &&
-          (_contentTab.length > 0 ? (
-            <PageTab
-              activeKey={activeKey}
-              contentTab={_contentTab.map((_tab) => {
-                return {
-                  ..._tab,
-                  tab: `${_tab.tab}${showCount ? count(_tab.itemKey) : ""}`,
-                };
-              })}
-              onRemove={(targetKey) => {
-                remove([targetKey]).then(() => {
-                  setContentTab((tab) =>
-                    tab?.filter((t) => t.itemKey !== targetKey)
-                  );
-                });
-              }}
-              onSelected={function (key: string): void {
-                // alert(_contentTab.filter((f) => f.itemKey === key)?.[0].req);
-                onActiveTabChange?.(
-                  _contentTab.filter((f) => f.itemKey === key)?.[0]
-                );
-              }}
-            />
-          ) : (
-            <div className=" h-10 px-4 py-1 text-center text-red-500 font-bold">
-              当前无可用场景！
-            </div>
-          ))}
         {tabList === undefined &&
           tabDictField === undefined &&
           addTabAble === true &&
           user &&
           user.superUser === true && (
-            <div className=" text-center flex items-center pl-10 bg-white  w-20">
+            <div className="  flex items-center justify-end ml-2 ">
               <Button
                 title={`场景创建`}
-                actionType="create"
+                actionType="save"
                 btnType="icon"
                 icon={<i className="icon-task_add-02 font-bold" />}
                 model={"reportCondition"}
@@ -270,6 +263,92 @@ export default ({ ...props }: TableHeaderProps) => {
               />
             </div>
           )}
+        {_contentTab &&
+          (_contentTab.length > 0 ? (
+            <PageTab
+              //activeKey页面传入页签 | _activeKey 当前计算默认的第一个页签
+              activeKey={_activeKey}
+              //@ts-ignore
+              contentTab={_contentTab.map((_tab) => {
+                return {
+                  ..._tab,
+                  tab:
+                    _tab.tab === "全部" ||
+                    reportCondition === undefined ||
+                    reportCondition?.filter((r) => r.id === _tab.itemKey)
+                      .length === 0 ? (
+                      <>
+                        {_tab.tab} {showCount ? count(_tab.itemKey) : ""}
+                      </>
+                    ) : (
+                      <ConfWrapper
+                        buttons={[
+                          {
+                            title: "删除",
+                            actionType: "api",
+                            submitConfirm: true,
+                            saveApi: (d: any) => {
+                              return remove([d.id]);
+                            },
+                            datas: [{ id: _tab.itemKey }],
+                            icon: <i className="  icon-delete_out" />,
+                            onSubmitFinish: () => {
+                              setTabByDb();
+                            },
+                          },
+                          {
+                            title: "编辑",
+                            actionType: "save",
+                            model: "reportCondition",
+                            datas: reportCondition?.filter(
+                              (c) => c.id === _tab.itemKey
+                            ),
+                            reaction: [
+                              VF.then("sysMenuId")
+                                .hide()
+                                .value(entityModel?.sysMenuId),
+                              VF.then("formId").hide().value(entityModel?.id),
+                              VF.then("type").hide().value("table"),
+                              VF.then("name").title("场景页签名称"),
+                            ],
+                            onSubmitFinish: () => {
+                              setTabByDb();
+                            },
+                            saveApi: save,
+                            icon: <i className=" icon-sp_edit_white" />,
+                          },
+                        ]}
+                      >
+                        {_tab.tab}
+                        {showCount ? count(_tab.itemKey) : ""}
+                      </ConfWrapper>
+                    ),
+                };
+              })}
+              // onRemove={
+              //   user?.superUser
+              //     ? (targetKey) => {
+              //         remove([targetKey]).then(() => {
+              //           setContentTab((tab) =>
+              //             tab?.filter((t) => t.itemKey !== targetKey)
+              //           );
+              //           setTabByDb();
+              //         });
+              //       }
+              //     : undefined
+              // }
+              onSelected={function (key: string): void {
+                // alert(_contentTab.filter((f) => f.itemKey === key)?.[0].req);
+                onActiveTabChange?.(
+                  _contentTab.filter((f) => f.itemKey === key)?.[0]
+                );
+              }}
+            />
+          ) : (
+            <div className=" h-10 px-4 py-1 text-center font-bold">
+              当前无可用场景！
+            </div>
+          ))}
       </div>
       {children && (
         <div className=" flex relative m-2 bg-white">{children}</div>

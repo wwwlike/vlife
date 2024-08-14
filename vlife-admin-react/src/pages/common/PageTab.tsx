@@ -1,6 +1,9 @@
 import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import { Tabs } from "@douyinfe/semi-ui";
 import classNames from "classnames";
+import { table } from "console";
+import ConfWrapper from "@src/components/compConf/component/ConfWrapper";
+import { useUpdateEffect } from "ahooks";
 
 /**
  * 两级页签场景
@@ -23,45 +26,30 @@ export interface PageTabProps {
 export default ({ ...props }: PageTabProps) => {
   const { className, contentTab, onSelected, onRemove, activeKey } = props;
   //根据传入的activeKey获取当前激活的页签；
-  const [_activeKey, setActiveKey] = useState<string>();
-
-  useEffect(() => {
-    const key =
-      activeKey &&
-      contentTab.filter(
-        (tab) => tab.pKey === activeKey || tab.itemKey === activeKey
-      ).length > 0
-        ? contentTab.filter((tab) => tab.pKey === activeKey).length > 0
-          ? contentTab.filter((tab) => tab.pKey === activeKey)?.[0].pKey
-          : activeKey
-        : contentTab.filter((tab) => tab.pKey === contentTab[0].itemKey)
-            .length > 0
-        ? contentTab.filter((tab) => tab.pKey === contentTab[0].itemKey)?.[0]
-            .itemKey
-        : contentTab[0].itemKey;
-    setActiveKey(key);
-  }, [activeKey, contentTab]);
-
-  useEffect(() => {
-    if (_activeKey) onSelected(_activeKey);
-  }, [_activeKey]);
 
   //第一层tab页签
   const level1Tabs = useMemo(() => {
-    return contentTab.filter((tab) => tab.pKey === undefined);
-  }, [contentTab]);
+    return contentTab
+      .filter((tab) => tab.pKey === undefined)
+      .map((tab) => {
+        return {
+          ...tab,
+          closable: onRemove && tab.tab !== "全部" ? true : false,
+        };
+      });
+  }, [contentTab, onRemove]);
 
   //第一层选中页签
   const level1Selected = useMemo((): string => {
-    if (_activeKey) {
+    if (activeKey) {
       const selectedTab = contentTab.filter(
-        (tab) => tab.itemKey === _activeKey
+        (tab) => tab.itemKey === activeKey
       )?.[0];
-      return selectedTab?.pKey || selectedTab.itemKey;
+      return selectedTab?.pKey || selectedTab?.itemKey;
     } else {
       return level1Tabs[0]?.itemKey;
     }
-  }, [_activeKey, level1Tabs, contentTab]);
+  }, [activeKey, level1Tabs, contentTab]);
 
   //第二层页签
   const level2Tabs = useMemo(() => {
@@ -81,9 +69,9 @@ export default ({ ...props }: PageTabProps) => {
         onChange={(_key) => {
           const sub = contentTab.filter((tab) => tab.pKey === _key);
           if (sub === undefined || sub.length === 0) {
-            setActiveKey(_key);
+            onSelected(_key);
           } else {
-            setActiveKey(sub?.[0].itemKey);
+            onSelected(sub?.[0].itemKey);
           }
         }}
         onTabClose={onRemove}
@@ -95,11 +83,11 @@ export default ({ ...props }: PageTabProps) => {
             return (
               <div
                 className={` text-sm  cursor-pointer    ${classNames({
-                  "bg-white border font-bold": _activeKey === s.itemKey,
+                  "bg-white border font-bold": activeKey === s.itemKey,
                 })} rounded-2xl  py-1 px-4`}
                 key={s.itemKey}
                 onClick={() => {
-                  setActiveKey(s.itemKey);
+                  onSelected(s.itemKey);
                 }}
               >
                 {s.icon} <span>{s.tab}</span>

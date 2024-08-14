@@ -23,7 +23,14 @@ export interface SysResources extends DbEntity ,ITree,IFkItem {
   remark:string//说明
   formId:string//所属板块
   permission:string;//授权方式
-  methedType:string
+  methedType:string;
+  param:string;//    参数名
+  paramType:string;//参数类别
+  paramWrapper:string; //参数类型
+  paramGeneric:string; //参数泛型
+  returnClz:string; //出参类型
+  returnType:string; //出参类别
+  returnGeneric:string; //出参泛型
 }
 // 类说明
 export interface ResourcesDto extends SaveBean {
@@ -105,6 +112,16 @@ export const roleAllResources = (params: {
 export const list = (params?: PageQuery): Promise<Result<SysResources[]>> => {
   return apiClient.post(`/sysResources/list`,params||{});
 };
+
+
+
+/**
+ * 按钮可绑定资源
+ */
+ export const listButtons = (params?: PageQuery): Promise<Result<SysResources[]>> => {
+  return apiClient.post(`/sysResources/listButtons`,params||{});
+};
+
 
 //请求菜单可访问的资源
 export const listMenuUseableResources = (params:{sysMenuId:string}): Promise<Result<SysResources[]>> => {

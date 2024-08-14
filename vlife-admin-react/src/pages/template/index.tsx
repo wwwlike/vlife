@@ -46,6 +46,8 @@ export default () => {
         key={formType + (pageReqType || "")}
         filterType={pageReqType}
         editType={formVo.type}
+        addTabAble={true}
+        allTabAble={true}
         listType={formVo.entityType}
       />
     )) || <Empty title={`无${formType}模型`} description="没有找到" />

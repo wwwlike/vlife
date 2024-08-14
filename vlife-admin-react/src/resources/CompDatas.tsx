@@ -39,6 +39,7 @@ import UserSelect from "@src/pages/sysManage/user/UserSelect";
 import MemberSelect from "@src/workflow-editor/components/MemberSelect";
 import VfUpload from "@src/components/VfUpload";
 import ResourcesBinding from "@src/pages/sysManage/group/ResourcesBinding";
+import MultipleStringSelect from "@src/components/select/MultipleStringSelect";
 
 //解决预览不正确问题
 const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
@@ -187,6 +188,26 @@ export const FormComponents: CompDatas = {
       outerBottomSlot: <QuickCreate />,
     },
   },
+
+  VfMoreSelect: {
+    component: MultipleStringSelect,
+    icon: "IconDescend2",
+    label: "多项选择",
+    dataType: DataType.basic,
+    dataModel: DataModel.string,
+    props: {
+      showClear: true,
+      filter: true,
+      emptyContent: "请选择",
+      zIndex: 1000,
+      optionList: {
+        label: "选项数据",
+        dataType: DataType.array,
+        dataModel: "ISelect",
+      },
+    },
+  },
+
   RelationTagInput: {
     component: RelationTagInput,
     icon: "IconDescend2",

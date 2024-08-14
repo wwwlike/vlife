@@ -154,7 +154,8 @@ export const tableFlowBtns = ({
           flow?.started === false || //任务没开始可以提交
           (flow?.currTask &&
             flow?.ended === false && //是你的任务并且任务没有结束
-            (flow?.nodeType === "audit" || flow.nodeId === "start"))
+            (flow?.nodeType === "audit" || flow.nodeId === "start")) ||
+          activeKey === "flow_byMe_edit" //待完善
         );
       },
       toActiveTabKey: "flow_byMe_todo",
@@ -362,14 +363,13 @@ export const tableFlowBtns = ({
       usableMatch: ({ flow, id }: TableBean) => {
         //几种可能保存按钮可用的情况
         return (
-          id === undefined ||
-          flow == undefined ||
           (flow?.ended !== true && // 2. 流程没结束&办理人节点&页签是待办&
             flow?.currTask &&
-            flow?.nodeType === "audit" &&
+            (flow?.nodeType === "start" || flow.nodeType === "audit") &&
             activeKey === "flow_todo") ||
           activeKey === "flow_byMe_edit" || // 待完善
           activeKey === "flow_byMe_draft" //草稿
+          //草稿
         );
       },
       reaction: formReaction,

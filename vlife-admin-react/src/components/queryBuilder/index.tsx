@@ -5,7 +5,7 @@ import React from "react";
 import { FormVo } from "@src/api/Form";
 import { useMemo } from "react";
 import Condition from "./component/Condition";
-import { ConditionGroup, where } from "./types";
+import { ConditionGroup, where } from "@src/dsl/base";
 
 interface QueryBuilderProps {
   entityModel: FormVo; //当前实体模型

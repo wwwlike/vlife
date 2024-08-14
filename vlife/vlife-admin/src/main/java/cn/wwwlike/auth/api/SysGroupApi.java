@@ -6,6 +6,7 @@ import cn.wwwlike.auth.dto.GroupDto;
 import cn.wwwlike.auth.dto.GroupResourcesDto;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.req.SysGroupPageReq;
+import cn.wwwlike.auth.service.SysGroupResourcesService;
 import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.common.BaseService;
 import cn.wwwlike.sys.service.SysResourcesService;
@@ -25,7 +26,8 @@ import java.util.List;
 @RequestMapping("/sysGroup")
 public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
   @Autowired
-  public SysResourcesService resourcesService;
+  public SysGroupResourcesService groupResourcesService;
+
   //权限组列表
   @PostMapping("/list/all")
   public List<SysGroup> listAll(@RequestBody PageQuery req) {
@@ -34,8 +36,13 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
   //权限组查询
   @PostMapping("/page")
   public PageVo<SysGroup> page(SysGroupPageReq req) {
+    if(groupResourcesService.findAll().size()==0){
+      groupResourcesService.tran();
+    }
     return service.findPage(req);
   }
+
+
   /**
    * 权限组保存
    */

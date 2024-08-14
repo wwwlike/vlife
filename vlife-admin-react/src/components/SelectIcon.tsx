@@ -476,7 +476,7 @@ interface SelectIconProps extends VfBaseProps<string> {
   tooltip: string;
 }
 
-const icons: { [key: string]: ElementType } = {
+export const icons: { [key: string]: ElementType } = {
   IconAbsoluteStroked: IconAbsoluteStroked,
   IconActivity: IconActivity,
   IconAlarm: IconAlarm,

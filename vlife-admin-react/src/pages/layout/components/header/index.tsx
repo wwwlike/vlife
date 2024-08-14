@@ -21,7 +21,7 @@ import {
   save as userSave,
 } from "@src/api/SysUser";
 import { useLocation, useNavigate } from "react-router-dom";
-import { listAll, MenuVo, save } from "@src/api/SysMenu";
+import { listAll, MenuVo, remove, save } from "@src/api/SysMenu";
 import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
 import LinkMe from "./LinkMe";
@@ -33,6 +33,7 @@ import { useDetail } from "@src/api/base/baseService";
 import { findSubs, findTreeRoot } from "@src/util/func";
 import { urlMenu, visitTopMenu } from "../sider";
 import weilai from "@src/assets/weilai.jpg";
+import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 const { Header } = Layout;
 const APP_TITLE = import.meta.env.VITE_APP_TITLE;
 const Index = () => {
@@ -135,15 +136,64 @@ const Index = () => {
                 event.stopPropagation();
               }}
             >
-              <BtnToolBar
+              <BtnResourcesToolBar
                 dropdown={true}
                 key={`app_${m.id}`}
-                datas={[m]}
                 btns={[
                   {
-                    title: "新增模块",
+                    title: "应用编辑",
+                    icon: <i className=" icon-edit" />,
+                    actionType: "save",
+                    model: "sysMenu",
+                    datas: [m],
+                    reaction: [
+                      VF.then("app").value(true).hide(),
+                      VF.then(
+                        "url",
+                        "formId",
+                        "placeholderUrl",
+                        "pcode",
+                        "confPage",
+                        "pageLayoutId"
+                      )
+                        .hide()
+                        .clearValue(),
+                      VF.then("name").title("应用名称"),
+                    ],
+                    saveApi: save,
+                    onSubmitFinish: (...datas) => {
+                      setAllMenus([
+                        ...(allMenus?.filter((f) => f.id !== datas[0].id) ||
+                          []),
+                        datas[0],
+                      ]);
+                      setApp(datas[0]);
+                    },
+                  },
+                  {
+                    title: "应用删除",
+                    icon: <i className="  icon-delete" />,
+                    actionType: "api",
+                    datas: [[m.id]],
+                    submitConfirm: true,
+                    saveApi: remove,
+                    usableMatch: () => {
+                      return allMenus.filter((f) => f.pcode === m.code).length >
+                        0
+                        ? "应用下有模块不能删除"
+                        : true;
+                    },
+                    onSubmitFinish: (...datas) => {
+                      setAllMenus([
+                        ...(allMenus?.filter((f) => f.code !== m.code) || []),
+                      ]);
+                      setApp(apps[0]);
+                    },
+                  },
+                  {
+                    title: "创建菜单",
                     icon: <i className="  icon-add_software" />,
-                    actionType: "create",
+                    actionType: "save",
                     continueCreate: true,
                     model: "sysMenu",
                     saveApi: save,
@@ -176,48 +226,14 @@ const Index = () => {
                     },
                   },
                   {
-                    title: "应用配置",
-                    icon: <i className="  icon-setting" />,
+                    title: "模型管理",
+                    icon: <i className="  icon-view_module" />,
+                    datas: [m],
                     actionType: "click",
                     onClick: () => {
                       navigate(`/sysConf/model?appCode=${m.code}`);
                     },
                   },
-                  {
-                    title: `添加角色`,
-                    divider: "应用角色",
-                    icon: <i className=" icon-role-approval2" />,
-                    actionType: "create",
-                    model: "roleDto",
-                    continueCreate: false,
-                    reaction: [VF.then("sysMenuId").value(m.id).readPretty()],
-                    saveApi: saveRoleDto,
-                    onSubmitFinish(...datas) {
-                      setRoles((roles) => [...roles, datas[0]]);
-                    },
-                  },
-                  ...roles
-                    ?.filter((r) => r.sysMenuId === m.id)
-                    .map((m) => {
-                      return {
-                        title: `${m.name}(修改)`,
-                        icon: <i className=" icon-role-approval2" />,
-                        saveApi: saveRoleDto,
-                        model: "roleDto",
-                        datas: { id: m.id },
-                        loadApi: (req: {
-                          id: string;
-                        }): Promise<Result<any>> => {
-                          return getDetail(req, "roleDto");
-                        },
-                        actionType: "edit",
-                        onSubmitFinish(...datas: any[]) {
-                          setRoles((roles) =>
-                            roles.map((r) => (r.id === m.id ? datas[0] : r))
-                          );
-                        },
-                      };
-                    }),
                 ]}
               />
             </div>
@@ -239,7 +255,6 @@ const Index = () => {
               actionType="save"
               model="sysMenu"
               btnType="icon"
-              saveApi={save}
               reaction={[
                 VF.then("app").value(true).hide(),
                 VF.then("url", "formId", "placeholderUrl", "pcode")
@@ -247,6 +262,7 @@ const Index = () => {
                   .clearValue(),
                 VF.then("name").title("应用名称"),
               ]}
+              saveApi={save}
               onSubmitFinish={(...datas) => {
                 setAllMenus([
                   ...(allMenus?.filter((f) => f.id !== datas[0].id) || []),

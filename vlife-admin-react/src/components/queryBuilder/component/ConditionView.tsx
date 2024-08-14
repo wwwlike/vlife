@@ -1,5 +1,5 @@
 import React from "react";
-import { ConditionGroup } from "../types";
+import { ConditionGroup } from "@src/dsl/base";
 
 export interface ConditionViewProps {
   className?: string;

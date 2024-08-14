@@ -69,7 +69,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     }
 
 
-
     //模型信息返回
     public BeanDto modelInfo(String modelName) {
         BeanDto<T> dto = null;
@@ -173,7 +172,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         return dao.find(qw);
     }
 
-
     /**
      * 不进行权限过滤的包装查询
      */
@@ -211,7 +209,6 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
         }
         return null;
     }
-
 
     /**
      * 9. vo根据ids集合查询

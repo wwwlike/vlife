@@ -43,6 +43,10 @@ public class GlobalData {
     private static final Map<Class, ReqDto> reqs = new HashMap<>();
     private static final Map<Class, BeanDto> beans = new HashMap<>();
 
+    public static final List<String> dtoNames=new ArrayList<>();
+    public static final List<String> entityNames=new ArrayList<>();
+    public static final List<String> reqNames=new ArrayList<>(Arrays.asList("CustomQuery", "PageQuery", "VlifeQuery"));
+    public static final List<String> voNames=new ArrayList<>();
     public static Map<Class, EntityDto> getEntityDtos() {
         return entitys;
     }
@@ -71,12 +75,16 @@ public class GlobalData {
         for (T dto : dtos) {
             if (dto instanceof SaveDto) {
                 saves.put(dto.getClz(), (SaveDto) dto);
+                dtoNames.add(dto.getClz().getSimpleName());
             } else if (dto instanceof VoDto) {
                 vos.put(dto.getClz(), (VoDto) dto);
+                voNames.add(dto.getClz().getSimpleName());
             } else if (dto instanceof EntityDto) {
                 entitys.put(dto.getClz(), (EntityDto) dto);
+                entityNames.add(dto.getClz().getSimpleName());
             } else if (dto instanceof ReqDto) {
                 reqs.put(dto.getClz(), (ReqDto) dto);
+                reqNames.add(dto.getClz().getSimpleName());
             }else if (dto instanceof BeanDto) {
                 beans.put(dto.getClz(), (BeanDto) dto);
             }

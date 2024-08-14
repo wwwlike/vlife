@@ -1,5 +1,6 @@
 package cn.wwwlike.form.api;
 
+import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.form.entity.ReportCondition;
 import cn.wwwlike.form.req.ReportConditionPageReq;
 import cn.wwwlike.form.service.ReportConditionService;
@@ -8,7 +9,9 @@ import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import cn.wwwlike.web.security.core.SecurityUser;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +40,13 @@ public class ReportConditionApi extends VLifeApi<ReportCondition, ReportConditio
    */
   @PostMapping("/list")
   public List<ReportCondition> list(@RequestBody ReportConditionPageReq req) {
-    return service.find(req);
+    List<ReportCondition> list=service.find(req);
+    //非超级管理员的列表视图需要根据权限组过滤
+    SecurityUser currUser=SecurityConfig.getCurrUser();
+    if("table".equals(req.getType())){
+      return list.stream().filter(item->currUser.getSuperUser()||item.getSysGroupIds()==null||item.getSysGroupIds().indexOf(currUser.getGroupId())!=-1).collect(Collectors.toList());
+    }
+    return list;
   }
 
   /**

@@ -24,19 +24,23 @@ public class SysGroupResourcesService extends BaseService<SysGroupResources, Sys
         List<GroupVo> groupVos=groupService.query(GroupVo.class, QueryWrapper.of(SysGroup.class));
         for(GroupVo groupVo:groupVos)  {
             String  groupId=groupVo.getId();
-            for(String resourcesId:groupVo.getSysRoleGroup_sysRole_sysResources_id()){
-                SysGroupResources gr=new SysGroupResources();
-                gr.setSysGroupId(groupId);
-                gr.setSysResourcesId(resourcesId);
-                save(gr);
+            if(groupVo.getSysRoleGroup_sysRole_sysResources_id()!=null){
+                for(String resourcesId:groupVo.getSysRoleGroup_sysRole_sysResources_id()){
+                    SysGroupResources gr=new SysGroupResources();
+                    gr.setSysGroupId(groupId);
+                    gr.setSysResourcesId(resourcesId);
+                    save(gr);
+                }
             }
             //菜单
-            HashSet<String> set = new HashSet<>(groupVo.getSysRoleGroup_sysRole_sysMenu_id());
-            for(String menuId:set){
-                SysGroupResources gr=new SysGroupResources();
-                gr.setSysGroupId(groupId);
-                gr.setSysMenuId(menuId);
-                save(gr);
+            if(groupVo.getSysRoleGroup_sysRole_sysMenu_id()!=null){
+                HashSet<String> set = new HashSet<>(groupVo.getSysRoleGroup_sysRole_sysMenu_id());
+                for(String menuId:set){
+                    SysGroupResources gr=new SysGroupResources();
+                    gr.setSysGroupId(groupId);
+                    gr.setSysMenuId(menuId);
+                    save(gr);
+                }
             }
         }
     }

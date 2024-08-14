@@ -18,8 +18,10 @@ public class CustomUrlDecisionManager implements AccessDecisionManager {
         if(authentication==null||!(authentication instanceof UserAuthentication)){  //没登录访问到授权页面
             throw new AccessDeniedException("Access Denied");
         }
-
         SecurityUser user=(SecurityUser)authentication.getDetails();
+        if(user.getUsername().equals("manage")){
+            return ;
+        }
         for(ConfigAttribute configAttribute:configAttributes){
             if(configAttribute.getAttribute().indexOf(user.getGroupId())!=-1){
                 return ;

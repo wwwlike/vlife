@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { ReactNode, useEffect, useMemo } from "react";
 import classNames from "classnames";
 import { IdBean } from "@src/api/base";
 import {
@@ -7,7 +7,13 @@ import {
   VFBtn,
 } from "@src/components/button/types";
 import Button from "@src/components/button";
-import { Dropdown } from "@douyinfe/semi-ui";
+import { Dropdown, Empty } from "@douyinfe/semi-ui";
+import { useAuth } from "@src/context/auth-context";
+import { _saveFunc } from "./buttonFuns";
+import { icons } from "@src/components/SelectIcon";
+import { usableDatasMatch } from "@src/components/queryBuilder/funs";
+import { loadApi } from "@src/resources/ApiDatas";
+// import * as Icons from '@ant-design/icons';
 /**
  * 显示场景
  * tableToolbar:列表工具栏|(可新增和支持多数据操作型按钮)
@@ -23,7 +29,7 @@ export interface BtnToolBarProps<T extends IdBean> {
   btns: VFBtn[]; //按钮信息集合
   btnType?: btnType; //按钮展现形式
   className?: string;
-  dropdown?: boolean; //是否下拉类型按钮组
+  dropdown?: boolean | ReactNode; //是否下拉类型按钮组|ReactNode表示下拉图标
   dataType?: string; //传入，则会对btns根据model进行过滤,显示单一模型的按钮
   datas?: T[]; //操作的数据
   position?: BtnToolBarPosition; //显示场景(过滤出满足条件的按钮)
@@ -34,10 +40,9 @@ export interface BtnToolBarProps<T extends IdBean> {
   onBtnNum?: (num: number) => void; //当前按钮数量
   onActiveChange?: (key: string) => void; //当前场景切换
 }
+
 /**
- * 按钮栏组件
- * --------------------------
- * 1. 根据场景筛选按钮
+ * 动态资源按钮组
  */
 export default <T extends IdBean>({
   datas,
@@ -54,22 +59,48 @@ export default <T extends IdBean>({
   position = "page", //默认场景
   onBtnNum,
   onActiveChange,
-  ...props
 }: BtnToolBarProps<T>) => {
-  // useEffect(() => {
-
-  // }, [btns]);
-  // const [btnDatas, setBtnDatas] = useState<T[] | undefined>(datas); //当前操作的数据
-  // const [currBtns, setCurrBtns] = useState<VFBtn[]>([]); //当前页面应该显示的按钮
-  // useEffect(() => {
-  //   setBtnDatas(datas);
-  // }, [datas]);
+  //接口资源
+  const { resources } = useAuth();
+  //按钮数据转换
+  const _btns = useMemo((): VFBtn[] => {
+    //有一个资源id表示当前是配置的按钮则需要进行转换
+    return btns.filter((b) => b.sysResourcesId).length > 0
+      ? btns.map((b) => {
+          const _resources = resources[b.sysResourcesId || ""];
+          const _model =
+            _resources.paramType === "entity" || _resources.paramType === "dto"
+              ? _resources.paramWrapper
+              : undefined;
+          const Icon: any = icons[_resources.icon];
+          const _multiple =
+            _resources.paramWrapper.includes("List") ||
+            _resources.paramWrapper.includes("[]");
+          const _usableMatch = (_data: any) => {
+            return b.conditionJson
+              ? usableDatasMatch(JSON.parse(b.conditionJson), _data)
+              : true;
+          };
+          const _actionType = _model ? "save" : "api";
+          return {
+            ...b,
+            saveApi: _saveFunc(_resources),
+            permissionCode: _resources.url.replaceAll("/", ":"),
+            actionType: _actionType,
+            model: _model,
+            icon: <Icon />,
+            usableMatch: _usableMatch,
+            multiple: _multiple,
+          };
+        })
+      : btns;
+  }, [btns]);
 
   //筛选出应该在当前场景下可以使用的按钮
   const currBtns = useMemo(() => {
     let toolBarBtns: VFBtn[] = [];
     if (position === "tableToolbar") {
-      toolBarBtns = btns.filter(
+      toolBarBtns = _btns.filter(
         (b) =>
           b.actionType !== "flow" &&
           (b.multiple === true ||
@@ -79,7 +110,7 @@ export default <T extends IdBean>({
             (b.actionType === "edit" && b.allowEmpty === true))
       );
     } else if (position === "tableLine") {
-      toolBarBtns = btns.filter(
+      toolBarBtns = _btns.filter(
         (b) =>
           (b.actionType !== "create" && b.multiple !== true) ||
           b.position === "tableLine"
@@ -87,7 +118,7 @@ export default <T extends IdBean>({
     } else if (position === "formFooter") {
       if (datas === undefined || datas?.[0]?.id === undefined) {
         //模型数据为空
-        toolBarBtns = btns.filter(
+        toolBarBtns = _btns.filter(
           (b) =>
             (b.actionType === "create" ||
               b.actionType === "save" ||
@@ -96,7 +127,7 @@ export default <T extends IdBean>({
             (dataType ? b.model === dataType : true)
         );
       } else {
-        toolBarBtns = btns.filter(
+        toolBarBtns = _btns.filter(
           (b) =>
             (b.sysResourcesId || b.saveApi !== undefined) &&
             (b.multiple === false || b.multiple === undefined)
@@ -104,7 +135,7 @@ export default <T extends IdBean>({
       }
     } else {
       //position=page
-      toolBarBtns = btns;
+      toolBarBtns = _btns;
     }
     toolBarBtns = toolBarBtns
       .filter((btn) =>
@@ -112,7 +143,12 @@ export default <T extends IdBean>({
           ? btn.position === position || btn.position === undefined
           : true
       ) //场景过滤
-      .filter((btn) => (dataType ? btn.model === dataType : true)) //模型过滤
+      .filter((btn) =>
+        dataType && btn.model && datas && datas.length > 0
+          ? btn.model.toLocaleLowerCase() === dataType.toLocaleLowerCase() ||
+            btn.loadApi !== undefined
+          : true
+      ) //模型过滤
       .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //只读过滤
       .filter(
         (btn) =>
@@ -122,14 +158,14 @@ export default <T extends IdBean>({
             btn.activeTabKey.includes(activeKey))
       ); //只读过滤
     return toolBarBtns;
-  }, [position, btns, dataType, readPretty, datas]);
+  }, [position, _btns, dataType, readPretty, datas]);
 
   //返回按钮数量
   useEffect(() => {
     onBtnNum && onBtnNum(currBtns.length);
   }, [currBtns]);
 
-  return dropdown !== true ? (
+  return dropdown === false ? (
     <div
       className={`flex ${className} !items-center ${classNames({
         "justify-start": position !== "formFooter",
@@ -176,40 +212,45 @@ export default <T extends IdBean>({
       })}
     </div>
   ) : (
-    <Dropdown
-      // className={" inline"}
-      trigger={"click"}
-      position={"bottom"}
-      clickToHide={true}
-      render={
-        <div className={` flex-col p-2 space-y-1 ${className} `}>
-          {currBtns.map((btn, index) => {
-            return (
-              <div key={`div_${line}_${index}`} className="">
-                <Button
-                  {...btn}
-                  position={"dropdown"}
-                  datas={btn.datas || datas}
-                  onActiveChange={btn.onActiveChange || onActiveChange}
-                  onSubmitFinish={btn.onSubmitFinish || onDataChange}
-                  otherBtns={
-                    btn.actionType === "save" && btn.model ? currBtns : []
-                  }
-                  key={`btn_${line}_${index}`}
-                />
-              </div>
-            );
-          })}
-        </div>
-      }
-    >
-      <i
-        className=" icon-more_vert hover:bg-gray-200 p-1 rounded-md"
-        onClick={(event) => {
-          event.cancelable = true; //阻止事件冒泡
-          event.stopPropagation();
-        }}
-      />
-    </Dropdown>
+    <div className={className}>
+      <Dropdown
+        trigger={"click"}
+        position={"bottom"}
+        clickToHide={true}
+        render={
+          <div className={` flex-col p-2 space-y-1  `}>
+            {currBtns.map((btn, index) => {
+              return (
+                <div key={`div_${line}_${index}`}>
+                  <Button
+                    {...btn}
+                    position={"dropdown"}
+                    datas={btn.datas || datas}
+                    onActiveChange={btn.onActiveChange || onActiveChange}
+                    onSubmitFinish={btn.onSubmitFinish || onDataChange}
+                    otherBtns={
+                      btn.actionType === "save" && btn.model ? currBtns : []
+                    }
+                    key={`btn_${line}_${index}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        }
+      >
+        {dropdown === true ? (
+          <i
+            className="icon-more_vert hover:bg-gray-200 p-1 rounded-md"
+            onClick={(event) => {
+              event.cancelable = true; //阻止事件冒泡
+              event.stopPropagation();
+            }}
+          />
+        ) : (
+          dropdown
+        )}
+      </Dropdown>
+    </div>
   );
 };

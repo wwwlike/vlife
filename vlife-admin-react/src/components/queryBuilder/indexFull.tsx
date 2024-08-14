@@ -8,7 +8,7 @@ import { useAuth } from "@src/context/auth-context";
 import { VfBaseProps } from "@src/dsl/component";
 import { useState } from "react";
 import Design from "./component/QueryBuilderDesign";
-import { FormItemCondition } from "./types";
+import { FormItemCondition } from "@src/dsl/base";
 
 // 将string 转换成 formItemCondition
 export interface QueryBuilderProps extends Partial<VfBaseProps<string>> {
