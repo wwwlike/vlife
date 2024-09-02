@@ -20,8 +20,6 @@ package cn.wwwlike.common;
 
 import cn.wwwlike.auth.common.IBus;
 import cn.wwwlike.auth.common.IDeptUser;
-import cn.wwwlike.auth.config.AuthDict;
-import cn.wwwlike.auth.config.SecurityConfig;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.sys.entity.SysDept;
@@ -34,15 +32,10 @@ import cn.wwwlike.vlife.base.*;
 import cn.wwwlike.vlife.core.DataProcess;
 import cn.wwwlike.vlife.core.VLifeDao;
 import cn.wwwlike.vlife.core.VLifeService;
-import cn.wwwlike.vlife.objship.dto.EntityDto;
-import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.AbstractWrapper;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.tran.LengthTran;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
-import cn.wwwlike.web.exception.enums.CommonResponseEnum;
-import cn.wwwlike.web.security.core.SecurityUser;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -50,7 +43,6 @@ import org.springframework.data.domain.Sort;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * 权限应用的service基类

@@ -17,9 +17,7 @@
  */
 
 package cn.wwwlike.form.vo;
-
-
-import cn.wwwlike.form.dto.FormRuleDto;
+//import cn.wwwlike.form.dto.FormRuleDto;
 import cn.wwwlike.form.dto.FormTabDto;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.sys.entity.SysResources;
@@ -59,7 +57,7 @@ public class FormVo implements VoBean<Form> {
   /**
    * 图标
    */
-  public String  icon;
+  public String icon;
   /**
    * 字段
    */
@@ -69,8 +67,8 @@ public class FormVo implements VoBean<Form> {
    */
   public List<FormTabDto> formTabDtos;
 
-  //业务规则
-  public List<FormRuleDto> rules;
+//  //业务规则
+//  public List<FormRuleDto> rules;
 
   /**
    * 接口
@@ -81,7 +79,7 @@ public class FormVo implements VoBean<Form> {
 
   public Integer modelSize;
 
-  public Integer  pageSize;
+  public Integer pageSize;
 
   /**
    * 版本
@@ -98,13 +96,11 @@ public class FormVo implements VoBean<Form> {
    * 分页列表api代码路径
    */
   public String saveApiPath;
-
   /**
    * 编号前缀
    * 需要模型实现INo接口
    */
   public String prefixNo;
-
   /**
    * 模型的接口类
    */
@@ -120,7 +116,7 @@ public class FormVo implements VoBean<Form> {
   @VField(skip = true)
   public List<FormVo> subForm;
 
-  public String  itemName;
+  public String itemName;
   //模块归属应用
   public String sysMenuId;
   //表单使用说明
@@ -129,6 +125,4 @@ public class FormVo implements VoBean<Form> {
   public String helpDoc;
   //流程脚本
   public String flowJson;
-//  //流程定义key
-//  public String flowDefineKey;
 }
