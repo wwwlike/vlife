@@ -1,5 +1,5 @@
 import React from "react";
-import { move, reset, state, SysUser } from "@src/api/SysUser";
+import { move, reset, save, state, SysUser, remove } from "@src/api/SysUser";
 import { IconPlay, IconForward, IconStop } from "@douyinfe/semi-icons";
 import Content from "../../template/content";
 import { VF } from "@src/dsl/VF";
@@ -43,7 +43,22 @@ export default () => {
       //     req: [{ fieldName: "state", opt: OptEnum.eq, value: ["-1"] }],
       //   },
       // ]}
-      otherBtns={[
+      btns={[
+        {
+          actionType: "save",
+          model: "sysUser",
+          saveApi: save,
+        },
+        {
+          actionType: "api",
+          multiple: false,
+          title: "删除",
+          submitConfirm: true,
+          onSaveBefore(data: SysUser) {
+            return [data.id];
+          },
+          saveApi: remove,
+        },
         {
           title: "密码重置",
           actionType: "api",

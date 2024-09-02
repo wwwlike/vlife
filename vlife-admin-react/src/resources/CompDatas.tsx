@@ -40,6 +40,7 @@ import MemberSelect from "@src/workflow-editor/components/MemberSelect";
 import VfUpload from "@src/components/VfUpload";
 import ResourcesBinding from "@src/pages/sysManage/group/ResourcesBinding";
 import MultipleStringSelect from "@src/components/select/MultipleStringSelect";
+import VfIconSelect from "@src/components/VfIconSelect";
 
 //解决预览不正确问题
 const Input = connect(SemiInput, mapReadPretty(PreviewText.Input));
@@ -282,6 +283,13 @@ export const FormComponents: CompDatas = {
     component: SelectIcon,
     icon: "IconComponent",
     label: "图标选择",
+    dataType: DataType.basic,
+    dataModel: DataModel.string,
+  },
+  VfIconSelect: {
+    component: VfIconSelect,
+    icon: "IconComponent",
+    label: "图标选择2",
     dataType: DataType.basic,
     dataModel: DataModel.string,
   },

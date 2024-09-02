@@ -143,7 +143,7 @@ const TablePage = <T extends TableBean>({
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const pageSizeArray = [15, 30, 50];
   const navigate = useNavigate();
-  const { getFormInfo, user, menuButtons, menu } = useAuth();
+  const { getFormInfo, user, menuButtons, menu, datasInit } = useAuth();
   const ref = useRef(null);
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
@@ -564,6 +564,25 @@ const TablePage = <T extends TableBean>({
     otherBtns,
   ]);
 
+  const tableBtns = useMemo((): VFBtn[] => {
+    const _tableBtns =
+      mode === "view"
+        ? []
+        : [
+            ...(menuButtons && menuButtons.length > 0
+              ? menuButtons
+              : totalBtns),
+          ];
+    //@ts-ignore
+    return _tableBtns.filter(
+      (t) =>
+        t.multiple !== true &&
+        (t.position === "tableLine" ||
+          t.position === null ||
+          t.position === undefined)
+    );
+  }, [totalBtns, menuButtons, read, mode]);
+
   const getFkObj = async (tableData: T[], tableModel: FormVo): Promise<any> => {
     let fkObj: any = {};
     const fkField = tableModel?.fields.filter((f: FormFieldVo) => {
@@ -725,6 +744,7 @@ const TablePage = <T extends TableBean>({
               {
                 //从tab页签取得conditions
                 <TableHeader
+                  key={menu}
                   tabList={tabList || (openFlowTab ? tableFowTabs : undefined)}
                   entityModel={tableModel}
                   tabCount={tabCount}
@@ -762,6 +782,53 @@ const TablePage = <T extends TableBean>({
           >
             {hideToolbar !== true && (
               <>
+                {/* 工具栏配置 */}
+                <ConfWrapper
+                  confIcon={<i className=" icon-task_add-02" />}
+                  className=" mr-4"
+                  buttons={[
+                    {
+                      title: "列表配置",
+                      actionType: "click",
+                      datas: [{ id: "123" }],
+                      icon: <i className="  icon-table" />,
+                      onClick: () => {
+                        navigate(`/sysConf/tableDesign/${listType}`);
+                      },
+                    },
+                    {
+                      code: "tableToolbarBtn",
+                      title: "工具栏按钮",
+                      model: "button",
+                      reaction: [
+                        VF.field("").gt(0).then("").value(""),
+                        VF.then("sysMenuId").value(menu).readPretty(),
+                        VF.then("position").value("tableToolbar").hide(),
+                      ], //model表单级联关系配置
+                      actionType: "save",
+                      icon: <i className="  icon-enterprise_tool" />,
+                      saveApi: btnSave,
+                      onSubmitFinish: () => {
+                        datasInit();
+                      },
+                    },
+                    {
+                      code: "tableBtn",
+                      title: "列表按钮",
+                      model: "button",
+                      reaction: [
+                        VF.then("sysMenuId").value(menu).readPretty(),
+                        VF.then("position").value("tableLine").hide(),
+                      ], //model表单级联关系配置
+                      actionType: "save",
+                      icon: <i className=" icon-subtable" />,
+                      saveApi: btnSave,
+                      onSubmitFinish: () => {
+                        datasInit();
+                      },
+                    },
+                  ]}
+                />
                 <BtnResourcesToolBar
                   //@ts-ignore
                   btns={[
@@ -772,25 +839,15 @@ const TablePage = <T extends TableBean>({
                   datas={selected}
                   dataType={listType}
                   activeKey={activeKey}
-                  key={"tableBtn"}
+                  key={menu}
+                  //通用数据操作后回调
                   onDataChange={(v) => {
-                    setLoadFlag((flag) => flag + 1); //列表重新加载
+                    setLoadFlag((flag) => flag + 1);
+                    setSelected([]);
                   }}
                   position="tableToolbar"
                   onActiveChange={setActiveKey}
                 />
-                {/* <ConfWrapper
-                  confIcon={<i className=" icon-settings" />}
-                  buttons={[
-                    {
-                      title: "创建",
-                      model: "button",
-                      reaction: [VF.then("sysMenuId").value(menu).readPretty()], //model表单级联关系配置
-                      actionType: "save",
-                      saveApi: btnSave,
-                    },
-                  ]}
-                /> */}
               </>
             )}
 
@@ -892,13 +949,14 @@ const TablePage = <T extends TableBean>({
             {/* {sider} */}
           </SideSheet>
           <Table<T>
+            queryFunc={query}
             className={"flex justify-center flex-1 "}
-            key={tableModel.type + pageSize + pager?.page + activeKey}
+            key={tableModel.type + pageSize + pager?.page + activeKey + menu}
             onFieldClick={_onFieldClick}
             model={tableModel} //设计模式时应用实时传入的formVo
             dataSource={tableData}
             selected={selected}
-            btns={mode === "view" ? [] : totalBtns}
+            btns={tableBtns}
             outSelectedColumn={outSelectedColumn}
             onSelected={(data: T[]) => {
               setSelected(data);
@@ -948,6 +1006,7 @@ const TablePage = <T extends TableBean>({
               }
               setOrder(newOrder);
             }}
+            activeKey={activeKey}
             width={width || size?.width}
             height={tableHight}
             {...props}

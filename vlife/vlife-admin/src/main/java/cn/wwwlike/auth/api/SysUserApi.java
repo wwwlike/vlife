@@ -10,6 +10,7 @@ import cn.wwwlike.auth.vo.UserDetailVo;
 import cn.wwwlike.sys.dto.UserDataMoveDto;
 import cn.wwwlike.vlife.annotation.PermissionEnum;
 import cn.wwwlike.vlife.annotation.VMethod;
+import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.req.PageQuery;
@@ -92,9 +93,10 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
      */
     @DeleteMapping("/remove")
     public Long remove(@RequestBody String[] ids) {
-        //把被删除人的数据转移到删除人账号上
         Arrays.stream(ids).forEach(id->{
-            service.dataMove(id,SecurityConfig.getCurrUser().getId());
+          List<Item> items=service.realationData(id);
+            CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(items.size()==0,"请先对"+service.findOne(id).getName()+"的数据进行转移");////每个人检查，数据删除之前先转移
+//            service.dataMove(id,SecurityConfig.getCurrUser().getId());       //把被删除人的数据转移到删除人账号上
         });
         return service.remove(ids);
     }

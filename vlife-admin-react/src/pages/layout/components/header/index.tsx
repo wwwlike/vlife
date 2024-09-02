@@ -170,31 +170,12 @@ const Index = () => {
                       setApp(datas[0]);
                     },
                   },
-                  {
-                    title: "应用删除",
-                    icon: <i className="  icon-delete" />,
-                    actionType: "api",
-                    datas: [[m.id]],
-                    submitConfirm: true,
-                    saveApi: remove,
-                    usableMatch: () => {
-                      return allMenus.filter((f) => f.pcode === m.code).length >
-                        0
-                        ? "应用下有模块不能删除"
-                        : true;
-                    },
-                    onSubmitFinish: (...datas) => {
-                      setAllMenus([
-                        ...(allMenus?.filter((f) => f.code !== m.code) || []),
-                      ]);
-                      setApp(apps[0]);
-                    },
-                  },
+
                   {
                     title: "创建菜单",
                     icon: <i className="  icon-add_software" />,
-                    actionType: "save",
-                    continueCreate: true,
+                    actionType: "create",
+                    continueCreate: false,
                     model: "sysMenu",
                     saveApi: save,
                     reaction: [
@@ -223,6 +204,7 @@ const Index = () => {
                           datas[0],
                         ])
                       );
+                      setApp(m);
                     },
                   },
                   {
@@ -232,6 +214,26 @@ const Index = () => {
                     actionType: "click",
                     onClick: () => {
                       navigate(`/sysConf/model?appCode=${m.code}`);
+                    },
+                  },
+                  {
+                    title: "应用删除",
+                    icon: <i className="  icon-delete" />,
+                    actionType: "api",
+                    datas: [[m.id]],
+                    submitConfirm: true,
+                    saveApi: remove,
+                    usableMatch: () => {
+                      return allMenus.filter((f) => f.pcode === m.code).length >
+                        0
+                        ? "应用下有模块不能删除"
+                        : true;
+                    },
+                    onSubmitFinish: (...datas) => {
+                      setAllMenus([
+                        ...(allMenus?.filter((f) => f.code !== m.code) || []),
+                      ]);
+                      setApp(apps[0]);
                     },
                   },
                 ]}
@@ -252,7 +254,7 @@ const Index = () => {
               key={`createApp_${pathname}`}
               title="新增应用"
               icon={<i className="  icon-task_add-02" />}
-              actionType="save"
+              actionType="create"
               model="sysMenu"
               btnType="icon"
               reaction={[

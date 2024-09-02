@@ -4,6 +4,7 @@ import { BatchModifyDto, DbEntity, ItemType,  Result, SaveBean, VoBean } from "@
 import {  FormFieldDto, FormFieldVo } from "@src/api/FormField";
 import { FormTabDto } from '@src/api/FormTab';
 import { SysResources } from './SysResources';
+import { FormRuleDto } from './FormRule';
 
 /**
  * DB的模型信息
@@ -47,6 +48,7 @@ export interface FormDto extends SaveBean,Form{
  * 2. 关联表数据 FormDto
  */
 export interface FormVo extends VoBean,Omit<FormDto,"fields">  {
+  rules:FormRuleDto[]// 业务规则
   // parentsName:string[];//继承和实现的类的名称
   parentForm:FormVo;//当前form模型作为子表它所在的父表信息
   fields: FormFieldVo[]; //字段信息

@@ -90,7 +90,7 @@ export interface VFBtn{
   modalOpen?:boolean;//是否打开modal
   sysResourcesId?:string;
   // ----------------------------
-  actionType:actionType // 动作类型 (拿掉最好)
+  actionType?:actionType // 动作类型 (拿掉最好)
   datas?: any | any[]; //按钮数据 考虑和loadApi合并
   title?:string;//按钮名
   icon?:ReactNode;//图标
@@ -119,6 +119,10 @@ export interface VFBtn{
   entity?:string;// 实体类型 和权限编码对应
   permissionCode?:string;//权限编码,不传则根据->`实体名:方法名(动作:模型名)`组成 sysUser:save:sysUserDto对应后端sysUser的API下的saveSysUserDto方法
   //表单相关
+
+  btnConf?:boolean;//是否开启按钮配置功能
+  code?:string;//按钮编码
+  formVoJson?:string; //表单json配置
   reaction?:VfAction[],   //model表单级联关系配置
   fieldOutApiParams?: { [fieldName: string]: any }; //指定字段访问api取值的补充外部入参
   //希望移除的

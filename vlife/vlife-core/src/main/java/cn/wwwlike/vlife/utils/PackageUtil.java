@@ -17,11 +17,6 @@
  */
 
 package cn.wwwlike.vlife.utils;
-
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import sun.net.www.protocol.jar.JarURLConnection;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

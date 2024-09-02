@@ -51,7 +51,7 @@ export default ({ ...props }: TableHeaderProps) => {
     icon: <i className=" icon-gallery_view " />,
     tab: "全部",
   };
-  const { user } = useAuth();
+  const { user, menu } = useAuth();
   const [contentTab, setContentTab] = React.useState<VfTableTab[]>(); //查询到的页签
   const [reportCondition, setReportCondition] =
     React.useState<ReportCondition[]>();
@@ -59,7 +59,7 @@ export default ({ ...props }: TableHeaderProps) => {
   const [_activeKey, setActiveKey] = useState<string>();
 
   const setTabByDb = useCallback(() => {
-    list({ formId: entityModel?.id, type: "table" }).then((result) => {
+    list({ sysMenuId: menu, type: "table" }).then((result) => {
       const conditions: ReportCondition[] = result.data || [];
       setReportCondition(
         conditions.sort((a, b) => Number(a.createDate) - Number(b.createDate))
@@ -74,6 +74,7 @@ export default ({ ...props }: TableHeaderProps) => {
                 itemKey: d.id,
                 showCount: true,
                 closable: addTabAble,
+                icon: d.icon,
                 req: {
                   conditionGroups: JSON.parse(conditions?.[0]?.conditionJson),
                 },
@@ -84,7 +85,7 @@ export default ({ ...props }: TableHeaderProps) => {
         setContentTab([]);
       }
     });
-  }, [entityModel]);
+  }, [entityModel, menu]);
   //页签查询组装转换
   useEffect(() => {
     //固定的
@@ -176,9 +177,10 @@ export default ({ ...props }: TableHeaderProps) => {
         }
         return true;
       });
-      return allTabAble || _filterTab.length === 0
-        ? [allTab, ..._filterTab]
-        : [..._filterTab];
+      // return allTabAble || _filterTab.length === 0
+      //   ? [allTab, ..._filterTab]
+      //   : [..._filterTab];
+      return _filterTab.length === 0 ? [allTab] : _filterTab;
     }
     return [];
   }, [contentTab]);
@@ -252,7 +254,7 @@ export default ({ ...props }: TableHeaderProps) => {
                 model={"reportCondition"}
                 saveApi={save}
                 reaction={[
-                  VF.then("sysMenuId").hide().value(entityModel?.sysMenuId),
+                  VF.then("sysMenuId").hide().value(menu),
                   VF.then("formId").hide().value(entityModel?.id),
                   VF.then("type").hide().value("table"),
                   VF.then("name").title("场景页签名称"),
@@ -273,7 +275,7 @@ export default ({ ...props }: TableHeaderProps) => {
                 return {
                   ..._tab,
                   tab:
-                    _tab.tab === "全部" ||
+                    _tab.itemKey === "_all_tab" ||
                     reportCondition === undefined ||
                     reportCondition?.filter((r) => r.id === _tab.itemKey)
                       .length === 0 ? (
@@ -283,19 +285,6 @@ export default ({ ...props }: TableHeaderProps) => {
                     ) : (
                       <ConfWrapper
                         buttons={[
-                          {
-                            title: "删除",
-                            actionType: "api",
-                            submitConfirm: true,
-                            saveApi: (d: any) => {
-                              return remove([d.id]);
-                            },
-                            datas: [{ id: _tab.itemKey }],
-                            icon: <i className="  icon-delete_out" />,
-                            onSubmitFinish: () => {
-                              setTabByDb();
-                            },
-                          },
                           {
                             title: "编辑",
                             actionType: "save",
@@ -316,6 +305,19 @@ export default ({ ...props }: TableHeaderProps) => {
                             },
                             saveApi: save,
                             icon: <i className=" icon-sp_edit_white" />,
+                          },
+                          {
+                            title: "删除",
+                            actionType: "api",
+                            submitConfirm: true,
+                            saveApi: (d: any) => {
+                              return remove([d.id]);
+                            },
+                            datas: [{ id: _tab.itemKey }],
+                            icon: <i className="  icon-delete_out" />,
+                            onSubmitFinish: () => {
+                              setTabByDb();
+                            },
                           },
                         ]}
                       >

@@ -3,7 +3,7 @@ import VlifeForm, { FormProps } from "@src/components/form";
 import { useAuth } from "@src/context/auth-context";
 import { FormVo } from "@src/api/Form";
 import { IdBean } from "@src/api/base";
-import { VfAction } from "@src/dsl/VF";
+import { VF, VfAction } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import { IconSetting } from "@douyinfe/semi-icons";
 import { Empty, Tooltip, Image } from "@douyinfe/semi-ui";
@@ -21,6 +21,7 @@ export interface FormPageProps<T extends IdBean>
   reaction?: VfAction[]; //字段级联配置
   flowHistorys?: FlowNode[]; //审批历史信息
   flowBasic?: RecordFlowInfo; //流程基本信息
+  formSetting?: boolean; //表单是否可以配置开关
 }
 const FormPage = <T extends IdBean>({
   title,
@@ -38,10 +39,11 @@ const FormPage = <T extends IdBean>({
   reaction,
   formData,
   modifyData,
+  formSetting = true,
   ...props
 }: FormPageProps<T>) => {
   const navigate = useNavigate();
-  const { getDict, getFormInfo, groups, user } = useAuth();
+  const { getFormInfo, groups, user } = useAuth();
   //模型信息
   const [model, setModel] = useState<FormVo | undefined>(
     modelInfo && { ...modelInfo }
@@ -111,16 +113,6 @@ const FormPage = <T extends IdBean>({
     return reaction ? [...reaction, ...pageReaction] : pageReaction;
   }, [reaction, model, design, initData]);
 
-  //级联响应设置信息
-  const vfs = useMemo(() => {
-    return [
-      ...(props.vf ? props.vf : []),
-      ...(formPageReaction && formPageReaction.length > 0
-        ? formPageReaction.map((f) => f.getVF())
-        : []),
-    ];
-  }, [props.vf, formPageReaction]);
-
   //整合了流程的模型
   const _model = useMemo((): FormVo | undefined => {
     if (model && flowBasic?.auditInfo?.fields) {
@@ -143,11 +135,32 @@ const FormPage = <T extends IdBean>({
     return model;
   }, [flowBasic, model]);
 
+  //级联响应设置信息
+  const vfs = useMemo((): VF[] => {
+    const dbVF: VF[] = [];
+    if (_model?.rules) {
+      _model.rules?.forEach((r) => {
+        r?.vf?.forEach((_vf) => {
+          const executeScript = new Function("VF", `return ${_vf}`);
+          dbVF.push(executeScript(VF));
+        });
+      });
+    }
+    return [
+      ...dbVF,
+      ...(props.vf ? props.vf : []),
+      ...(formPageReaction && formPageReaction.length > 0
+        ? formPageReaction.map((f) => f.getVF())
+        : []),
+    ];
+  }, [props.vf, formPageReaction, _model]);
+
   return (
     <>
       <FormFlowContainer className={className} historys={flowHistorys}>
         {_model ? (
           <>
+            {/* rule-length-:{_model?.rules?.length} */}
             {/* 内部formPage的id:{(modifyData || formPageData || initData)?.id} */}
             <VlifeForm
               {...props}
@@ -167,7 +180,7 @@ const FormPage = <T extends IdBean>({
               onForm={onForm}
               onSubForm={onSubForm}
             />
-            {user?.superUser === true && (
+            {user?.superUser === true && formSetting && (
               <div
                 onClick={() => {
                   navigate(`/sysConf/formDesign/${type}`);

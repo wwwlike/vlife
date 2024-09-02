@@ -9,11 +9,13 @@ export interface ReportCondition extends DbEntity{
   conditionJson: string;  // 查询条件
   sysUserId: string;  // 视图创建用户
   type:string;// 视图使用场景 table/report
+  icon:string;// 图标
 }
 // 视图配置查询条件
 export interface ReportConditionPageReq extends PageQuery{
   formId: string;  // 数据集
   search: string;  // 查询名称
+  sysMenuId:string;//菜单id
   type:string;//使用场景
 }
 /** 

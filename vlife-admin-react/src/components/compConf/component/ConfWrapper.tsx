@@ -16,9 +16,9 @@ export default (props: ConfWrapperProps) => {
   return (
     <>
       {user?.superUser && buttons && buttons.length > 0 ? (
-        // hover:border-red-400 border-dotted border-red-200 border-2
-        <span className="relative z-50   p-1   rounded-md  ">
-          {props.children}
+        //border-red-200  hover:border-red-400 border-dotted  hover:border-2
+        <span className={`relative z-50 rounded-md p-1 ${props.className}`}>
+          <span>{props.children}</span>
           <BtnResourcesToolBar
             className="inline"
             dropdown={confIcon || true}

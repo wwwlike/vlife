@@ -43,6 +43,9 @@ public class ReportCondition extends DbEntity {
     @VField(dictCode = "CONDITION_TYPE")
     public String type;
 
+    //图标
+    public String icon;
+
     /**
      * 绑定权限组
      */
@@ -104,6 +107,14 @@ public class ReportCondition extends DbEntity {
 
     public void setSysGroupIds(String sysGroupIds) {
         this.sysGroupIds = sysGroupIds;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }
 

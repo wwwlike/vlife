@@ -16,17 +16,26 @@ import { isNull } from "lodash";
 import { objectIncludes } from "@src/util/func";
 import { useEffect } from "react";
 import { IconSend } from "@douyinfe/semi-icons";
+import { moveDown, remove, save, moveUp } from "@src/api/Button";
+import { VF } from "@src/dsl/VF";
+import { useNavigate } from "react-router-dom";
 import BtnResourcesToolBar from "./component/BtnResourcesToolBar";
-import { remove } from "@src/api/Button";
+import { icons } from "../SelectIcon";
+
+export interface BtnGroupInfos {
+  groupIndex: number; //当前分组索引号
+  groupTotal: number; //按钮数量
+}
 
 //封装的按钮组件
-export default (props: Partial<VFBtn>) => {
+export default (props: Partial<VFBtn & BtnGroupInfos>) => {
+  const navigate = useNavigate();
   const { Text } = Typography;
   const formModal = useNiceModal("formModal");
   const vlifeModal = useNiceModal("vlifeModal");
   const confirmModal = useNiceModal("confirmModal");
   const [loading, setLoading] = useState<boolean>();
-  const { checkBtnPermission, resources } = useAuth();
+  const { checkBtnPermission, datasInit } = useAuth();
   const {
     datas,
     sysMenuId,
@@ -51,6 +60,7 @@ export default (props: Partial<VFBtn>) => {
     className,
     entity,
     permissionCode,
+    btnConf = true,
     onFormilySubmitCheck,
     saveApi,
     loadApi,
@@ -133,9 +143,7 @@ export default (props: Partial<VFBtn>) => {
       _permissionCode === undefined
     );
   }, [_permissionCode]);
-  useEffect(() => {
-    // console.log("datas", datas);
-  }, [JSON.stringify(datas)]);
+
   //设置按钮可用状态
   useEffect(() => {
     const setDisableAndTooltip = (matchResult: string | boolean) => {
@@ -282,6 +290,9 @@ export default (props: Partial<VFBtn>) => {
           : [props];
         formModal.show({
           type: _modal,
+          modelInfo: props.formVoJson
+            ? JSON.parse(props.formVoJson)
+            : undefined,
           formData: formData,
           activeKey: activeKey,
           fieldOutApiParams: fieldOutApiParams, //指定字段访问api取值的补充外部入参
@@ -484,8 +495,15 @@ export default (props: Partial<VFBtn>) => {
   }, [title, actionType, btnData, position]);
 
   const btnIcon = useMemo(() => {
-    if (icon) {
+    if (React.isValidElement(icon)) {
       return icon;
+    } else if (typeof icon === "string") {
+      if (icon.startsWith("Icon") && icons[icon]) {
+        const Icon: any = icons[icon];
+        return <Icon />;
+      } else {
+        return <i className={icon} />;
+      }
     } else if (actionType === "create") {
       return <i className="  icon-add_circle_outline" />;
     } else {
@@ -496,7 +514,6 @@ export default (props: Partial<VFBtn>) => {
   const BtnComp = useMemo((): ReactNode => {
     const Btn: any =
       btnType === "link" && position !== "formFooter" ? Text : Button;
-
     // if (position === "dropdown" && disabled === true) {
     //   //dropdown场景不存在不可用但是可见的disable状态
     //   return <></>;
@@ -517,6 +534,7 @@ export default (props: Partial<VFBtn>) => {
             if (!disabled) {
               btnClick();
             }
+            event.stopPropagation();
           }}
           loading={loading}
           theme={`${
@@ -599,11 +617,76 @@ export default (props: Partial<VFBtn>) => {
       ) : (
         <>{BtnComp}</>
       )}
-      {sysMenuId && (
+
+      {sysMenuId && btnConf && (
         <BtnResourcesToolBar
-          btns={[{ title: "删除", actionType: "api", saveApi: remove }]}
-          className=" inline"
           dropdown={true}
+          btns={[
+            {
+              title: "按钮调整",
+              icon: <i className=" icon-edit" />,
+              actionType: "save",
+              model: "button",
+              reaction: [VF.then("sysMenuId").readPretty()], //model表单级联关系配置
+              datas: [{ ...props }],
+              saveApi: save,
+              onSubmitFinish: () => {
+                datasInit();
+              },
+            },
+            {
+              title: "表单配置",
+              actionType: "click",
+              icon: <i className=" icon-table" />,
+              disabledHide: true,
+              usableMatch: (d: any) => {
+                return d.model !== undefined && d.model !== null;
+              },
+              datas: [{ ...props }],
+              onClick: (d) => {
+                // alert(d.model);
+                navigate(`/sysConf/buttonFormConf?buttonId=${d.id}`); // 跳转到 /page-b
+              },
+            },
+            {
+              title: "前移",
+              actionType: "api",
+              disabledHide: true,
+              disabled: props.groupIndex === 0,
+              datas: [{ ...props }],
+              saveApi: moveUp,
+              icon: <i className=" icon-arrow-up" />,
+              onSubmitFinish: () => {
+                datasInit();
+              },
+            },
+            {
+              title: "后移",
+              icon: <i className=" icon-download" />,
+              actionType: "save",
+              disabledHide: true,
+              disabled: (props.groupIndex || 0) + 1 === props.groupTotal,
+              datas: [{ ...props }],
+              saveApi: moveDown,
+              onSubmitFinish: () => {
+                datasInit();
+              },
+            },
+            {
+              title: "移除",
+              datas: [props],
+              submitConfirm: true,
+              actionType: "api",
+              icon: <i className=" icon-delete" />,
+              onSaveBefore: (datas: any) => {
+                return [datas.id];
+              },
+              saveApi: remove,
+              onSubmitFinish: () => {
+                datasInit();
+              },
+            },
+          ]}
         />
       )}
     </>

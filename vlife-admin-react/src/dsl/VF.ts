@@ -235,6 +235,8 @@ export interface reaction{
     return this;
   }
   /** 响应操作 */
+
+  //隐藏
   hide(otherwiseFlag?:boolean):VfAction{
     this.reations.push({
       state:FS_STATE.display,
@@ -245,6 +247,8 @@ export interface reaction{
     }
     return this;
   }
+
+  //显示
   show(otherwiseFlag?:boolean):VfAction{
     this.reations.push({
       state:FS_STATE.display,

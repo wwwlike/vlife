@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Layout, Nav, Tooltip } from "@douyinfe/semi-ui";
+import { Layout, Nav } from "@douyinfe/semi-ui";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@src/context/auth-context";
 import SelectIcon from "@src/components/SelectIcon";
@@ -12,14 +12,12 @@ import {
   saveMenuResourcesDto,
 } from "@src/api/SysMenu";
 import { MenuItem } from "../../types";
-import BtnToolBar from "@src/components/button/BtnToolBar";
 import { IconDelete, IconEditStroked } from "@douyinfe/semi-icons";
 import classNames from "classnames";
 import { VF } from "@src/dsl/VF";
-import { findSubs, findTreeRoot } from "@src/util/func";
+import { findSubs } from "@src/util/func";
 import { VFBtn } from "@src/components/button/types";
 import Button from "@src/components/button";
-import { isNull } from "lodash";
 import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 
 const { Sider } = Layout;

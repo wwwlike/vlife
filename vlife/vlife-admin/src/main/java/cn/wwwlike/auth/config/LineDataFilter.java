@@ -54,6 +54,7 @@ public class LineDataFilter {
     public void beforePageMethod(JoinPoint joinPoint,CustomQuery req) {
         Class<?> actionClazz = getClassOfJoinPoint(joinPoint);
         SecurityUser securityUser = SecurityConfig.getCurrUser();
+        if(securityUser!=null){
         JSONObject userObj=((JSONObject) securityUser.getUseDetailVo());
         String groupFilterType=  userObj.getString("groupFilterType");
         if(!groupFilterType.equals("all")){
@@ -101,6 +102,6 @@ public class LineDataFilter {
                     req.setQueryWrapper(queryWrapper);
                 }
             }
-        }
+        }}
     }
 }

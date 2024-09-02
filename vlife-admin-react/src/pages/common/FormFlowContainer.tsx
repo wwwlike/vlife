@@ -3,9 +3,7 @@
  */
 import React, { ReactNode } from "react";
 import { FlowNode } from "@src/api/workflow/Flow";
-import FlowStep from "../../workflow/component/step/FlowStep";
 import Scrollbars from "react-custom-scrollbars";
-import { Timeline } from "@douyinfe/semi-ui";
 import Step from "@src/workflow/component/step";
 export interface FormContainerProps {
   children: ReactNode; //表单

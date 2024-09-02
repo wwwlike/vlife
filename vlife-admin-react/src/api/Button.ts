@@ -4,9 +4,11 @@ import {PageVo,DbEntity,Result, PageQuery} from '@src/api/base'
 import apiClient from '@src/api/base/apiClient'
 // 按钮
 export interface Button extends DbEntity{
+  code:string;//按钮标识
   sysMenuId: string;  // 所在菜单
   formId: string;  // 模型 id
   sysResourcesId: string;  // 接口
+  position:string;//位置
   icon: string;  // 图标
   title: string;  // 按钮名称
   submitConfirm: boolean;  // 确认提醒
@@ -17,16 +19,24 @@ export interface Button extends DbEntity{
   sort: number;  // 排序号
   btnType: string;  // 样式
   tooltip: string;  // 不可用时提示
-  //------待移除
-  remark: string;  // 按钮说明
+  formVoJson:string;//模型信息
+  activeTabKey:string //按钮能运行的页签
+  //------用户不可见字段
   actionType: string;  // 类型
   model: string;  // 表单模型
   multiple: boolean;  // 处理多条记录
+  remark: string;  // 按钮说明
 }
 /** save*/
 export const save=(dto:Button): Promise<Result<Button>>=>{
   return apiClient.post(`/button/save`,dto);
 };
+
+
+export const moveUp=(dto:Button): Promise<Result<Button>>=>{
+  return apiClient.post(`/button/moveUp`,dto);
+};
+
 /** page*/
 export const page=(req:PageQuery): Promise<Result<PageVo<Button>>>=>{
   return apiClient.post(`/button/page`,req);
@@ -43,4 +53,8 @@ export const remove=(ids:string[]): Promise<Result<number>>=>{
 
 export const list=(req?:PageQuery): Promise<Result<Button[]>>=>{
   return apiClient.post(`/button/list`,req);
+};
+
+export const moveDown=(dto:Button): Promise<Result<Button>>=>{
+  return apiClient.post(`/button/moveDown`,dto);
 };

@@ -14,6 +14,7 @@ import {
   RecordFlowInfo,
 } from "@src/api/workflow/Flow";
 import BtnToolBar from "@src/components/button/BtnToolBar";
+import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 /**
  * 表单弹出层属性
  */
@@ -197,8 +198,8 @@ export const FormModal = createNiceModal(
                 />
               </div>
             )}
-
-            <BtnToolBar
+            <BtnResourcesToolBar
+              btnConf={false}
               datas={[
                 data?.flow !== undefined
                   ? data
@@ -251,6 +252,7 @@ export const FormModal = createNiceModal(
         // onOk={handleSubmit}
       >
         <FormPage
+          formSetting={formBtns.filter((fb) => fb.formVoJson).length === 0}
           key={`${formNumber}`}
           onError={setErrors}
           formData={data}

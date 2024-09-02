@@ -84,6 +84,7 @@ const AuthContext = React.createContext<
       checkBtnPermission: (code: string) => boolean; //检查按钮权限
       resources: { [key: string]: SysResources }; //全部接口权限
       menuButtons: Button[]; //当前菜单的按钮
+      allButtons: Button[]; //所有按钮
       datasInit: () => void;
     }
   | undefined
@@ -191,8 +192,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [dbDicts]);
 
   const menuButtons = useMemo(() => {
-    return allButtons?.filter((f) => f.sysMenuId === menu);
+    return allButtons
+      ?.filter((f) => f.sysMenuId === menu)
+      .sort((a, b) => a.sort - b.sort);
   }, [allButtons, menu]);
+
   /**
    * 登录成功后数据数据提取初始化
    */
@@ -533,6 +537,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           getDict,
           resources,
           menuButtons,
+          allButtons,
           checkBtnPermission,
           datasInit, //数据强制初始化
         }}

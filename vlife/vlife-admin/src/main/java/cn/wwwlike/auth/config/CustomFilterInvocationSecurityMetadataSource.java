@@ -24,7 +24,7 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
     public static Map<String,String> urlRole;
     private Map<String, List<ConfigAttribute>> cachedAttributes = new ConcurrentHashMap<>();
 
-//    这个类的作用是根据用户传来的请求地址，分析请求需要的角色，并将所需要的角色放在 Collection中
+    //根据请求地址，分析请求需要的角色，并将所需要的角色放在 Collection中
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();

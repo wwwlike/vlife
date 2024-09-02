@@ -7,12 +7,10 @@ import {
   VFBtn,
 } from "@src/components/button/types";
 import Button from "@src/components/button";
-import { Dropdown, Empty } from "@douyinfe/semi-ui";
+import { Dropdown } from "@douyinfe/semi-ui";
 import { useAuth } from "@src/context/auth-context";
 import { _saveFunc } from "./buttonFuns";
-import { icons } from "@src/components/SelectIcon";
 import { usableDatasMatch } from "@src/components/queryBuilder/funs";
-import { loadApi } from "@src/resources/ApiDatas";
 // import * as Icons from '@ant-design/icons';
 /**
  * 显示场景
@@ -36,7 +34,8 @@ export interface BtnToolBarProps<T extends IdBean> {
   line?: number; //行号 tableLine模式下使用 临时数据可用行号当索引进行操作
   readPretty?: boolean; //true 则只使用api的按钮
   activeKey?: string; //当前场景
-  onDataChange?: (datas: T[]) => void; //数据修订好传输出去
+  btnConf?: boolean; //按钮是否可配置
+  onDataChange?: (...datas: T[]) => void; //数据修订好传输出去
   onBtnNum?: (num: number) => void; //当前按钮数量
   onActiveChange?: (key: string) => void; //当前场景切换
 }
@@ -55,45 +54,60 @@ export default <T extends IdBean>({
   line,
   dropdown = false,
   activeKey,
+  btnConf = true,
   onDataChange,
   position = "page", //默认场景
   onBtnNum,
   onActiveChange,
 }: BtnToolBarProps<T>) => {
   //接口资源
-  const { resources } = useAuth();
-  //按钮数据转换
+  const { resources, allButtons } = useAuth();
+
+  const customButtons = useMemo(() => {
+    const result = allButtons.reduce<{ [key: string]: object }>((acc, item) => {
+      acc[item.code] = item; // 将 item.value 存入以 item.code 为键的属性中
+      return acc;
+    }, {});
+    return result;
+  }, [allButtons]);
+  //按钮db数据转换
   const _btns = useMemo((): VFBtn[] => {
     //有一个资源id表示当前是配置的按钮则需要进行转换
-    return btns.filter((b) => b.sysResourcesId).length > 0
-      ? btns.map((b) => {
-          const _resources = resources[b.sysResourcesId || ""];
-          const _model =
-            _resources.paramType === "entity" || _resources.paramType === "dto"
-              ? _resources.paramWrapper
-              : undefined;
-          const Icon: any = icons[_resources.icon];
-          const _multiple =
-            _resources.paramWrapper.includes("List") ||
-            _resources.paramWrapper.includes("[]");
-          const _usableMatch = (_data: any) => {
-            return b.conditionJson
-              ? usableDatasMatch(JSON.parse(b.conditionJson), _data)
-              : true;
-          };
-          const _actionType = _model ? "save" : "api";
-          return {
-            ...b,
-            saveApi: _saveFunc(_resources),
-            permissionCode: _resources.url.replaceAll("/", ":"),
-            actionType: _actionType,
-            model: _model,
-            icon: <Icon />,
-            usableMatch: _usableMatch,
-            multiple: _multiple,
-          };
-        })
-      : btns;
+    return btns.map((b) => {
+      if (b.sysResourcesId) {
+        const _resources = resources[b.sysResourcesId || ""];
+        const _model =
+          _resources.paramType === "entity" || _resources.paramType === "dto"
+            ? _resources.paramWrapper
+            : undefined;
+        // const Icon: any = icons[_resources.icon];
+        const _multiple =
+          _resources.paramWrapper.includes("List") ||
+          _resources.paramWrapper.includes("[]");
+        const _usableMatch = (_data: any) => {
+          return b.conditionJson
+            ? usableDatasMatch(JSON.parse(b.conditionJson), _data)
+            : true;
+        };
+        const _actionType = _model ? "save" : "api";
+        return {
+          ...b,
+          saveApi: _saveFunc(_resources),
+          permissionCode: _resources.url.replaceAll("/", ":"),
+          actionType: _actionType,
+          model: _model,
+          // icon: <Icon />,
+          title:
+            b.title || (_actionType === "api" ? _resources.name : undefined),
+          usableMatch: _usableMatch,
+          multiple: _multiple,
+        };
+      } else if (b.code && customButtons[b.code]) {
+        return { ...customButtons[b.code], ...b };
+      } else {
+        return b;
+      }
+    });
   }, [btns]);
 
   //筛选出应该在当前场景下可以使用的按钮
@@ -124,7 +138,9 @@ export default <T extends IdBean>({
               b.actionType === "save" ||
               b.actionType === "flow" ||
               (b.actionType === "edit" && b.multiple)) && //多数据局编辑id可以为空
-            (dataType ? b.model === dataType : true)
+            (dataType
+              ? b.model?.toLocaleLowerCase() === dataType.toLocaleLowerCase()
+              : true)
         );
       } else {
         toolBarBtns = _btns.filter(
@@ -140,7 +156,9 @@ export default <T extends IdBean>({
     toolBarBtns = toolBarBtns
       .filter((btn) =>
         position
-          ? btn.position === position || btn.position === undefined
+          ? btn.position === position ||
+            btn.position === undefined ||
+            btn.position === null
           : true
       ) //场景过滤
       .filter((btn) =>
@@ -148,7 +166,7 @@ export default <T extends IdBean>({
           ? btn.model.toLocaleLowerCase() === dataType.toLocaleLowerCase() ||
             btn.loadApi !== undefined
           : true
-      ) //模型过滤
+      ) //模型过滤 datas的数据类型和模型的数据类型一直
       .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //只读过滤
       .filter(
         (btn) =>
@@ -175,11 +193,14 @@ export default <T extends IdBean>({
       {currBtns.map((btn, index) => {
         return (
           <Button
+            groupIndex={index}
+            groupTotal={currBtns.length}
             key={`btn_${line}_${index}`}
             {...btn}
             activeKey={activeKey}
             btnType={
-              btnType !== undefined && btn.btnType === undefined
+              btnType !== undefined &&
+              (btn.btnType === undefined || btn.btnType === null)
                 ? btnType
                 : btn.btnType
             }
@@ -196,6 +217,7 @@ export default <T extends IdBean>({
               //   ? btn.initData //新增类型按钮使用initData
               //   : btn.datas || btnDatas
             }
+            btnConf={btnConf} //btn.btnConf ||
             entity={btn.entity || entity}
             onSubmitFinish={btn.onSubmitFinish || onDataChange}
             otherBtns={btns.filter(
@@ -225,6 +247,7 @@ export default <T extends IdBean>({
                   <Button
                     {...btn}
                     position={"dropdown"}
+                    btnConf={btn.btnConf || btnConf}
                     datas={btn.datas || datas}
                     onActiveChange={btn.onActiveChange || onActiveChange}
                     onSubmitFinish={btn.onSubmitFinish || onDataChange}

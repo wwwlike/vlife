@@ -80,6 +80,14 @@ public class VCT {
         public final static String NOTHING = "nothing";
     }
 
+    @Named("按钮应用场景")
+    public static final class BUTTON_POSITION {
+        @Named("列表工具栏")
+        public final static String tableToolbar = "tableToolbar";
+        @Named("表格操作列")
+        public final static String tableLine = "tableLine";
+    }
+
     @Named("统计类型")
     public static final class ITEM_FUNC {
         @Named("计数")
@@ -100,4 +108,17 @@ public class VCT {
         public final static String Date_Month3 = "date_month3";
     }
 
+    @Named("规则响应类型")
+    public static final class ActionType {
+        @Named("显示")
+        public final static String SHOW = "show";
+        @Named("隐藏")
+        public final static String HIDE = "hide";
+        @Named("可编辑")
+        public final static String EDITABLE = "editable";
+        @Named("只读")
+        public final static String READPRETTY = "readPretty";
+        @Named("必填")
+        public final static String REQUIRED = "required";
+    }
 }

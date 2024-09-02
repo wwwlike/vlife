@@ -67,7 +67,7 @@ const VfListForm = ({
           return 0;
         })
         ?.map((m, index) => (
-          <div key={(fieldInfo?.fieldType || "") + index}>
+          <div key={(fieldInfo?.fieldType || "") + index} className="group">
             <div className="flex mb-1 justify-between">
               <div className=" text-left text-sm font-bold text-gray-500 hover:text-black  flex items-center  cursor-pointer">
                 <IconChevronRightStroked size="small" />
@@ -76,7 +76,7 @@ const VfListForm = ({
                     listFormModel.title + (data.length > 1 ? index + 1 : "")}
                 </p>
               </div>
-              <div className=" text-right">
+              <div className=" text-right group-hover:block hidden">
                 {((showInput && index > 0) || showInput === false) && (
                   <IconCrossStroked
                     size="small"
@@ -88,6 +88,7 @@ const VfListForm = ({
             </div>
             <FormPage
               className="pl-2"
+              formSetting={false}
               formData={m}
               onVfForm={(formVo: FormVo) => {
                 if (listFormModel === undefined) setListFormModel(formVo);

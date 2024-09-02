@@ -1,16 +1,14 @@
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import React, { ReactNode, useMemo } from "react";
 import { Tabs } from "@douyinfe/semi-ui";
 import classNames from "classnames";
-import { table } from "console";
-import ConfWrapper from "@src/components/compConf/component/ConfWrapper";
-import { useUpdateEffect } from "ahooks";
+import { IconRender, icons } from "@src/components/SelectIcon";
 
 /**
  * 两级页签场景
  */
 export type VfTab = {
   tab?: string; //场景名称
-  icon?: ReactNode; //场景图标
+  icon?: ReactNode | string; //场景图标
   itemKey: string; // 场景标识key
   pKey?: string; //上级场景key
 };
@@ -34,7 +32,8 @@ export default ({ ...props }: PageTabProps) => {
       .map((tab) => {
         return {
           ...tab,
-          closable: onRemove && tab.tab !== "全部" ? true : false,
+          icon: tab.icon ? IconRender(tab.icon) : undefined,
+          closable: onRemove && tab.itemKey !== "_all_tab" ? true : false,
         };
       });
   }, [contentTab, onRemove]);
@@ -90,7 +89,7 @@ export default ({ ...props }: PageTabProps) => {
                   onSelected(s.itemKey);
                 }}
               >
-                {s.icon} <span>{s.tab}</span>
+                {s.icon && IconRender(s.icon)} <span>{s.tab}</span>
               </div>
             );
           })}

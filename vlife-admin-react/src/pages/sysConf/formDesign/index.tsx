@@ -11,6 +11,9 @@ import FlowDesign from "./FlowDesign";
 import { Space } from "@douyinfe/semi-ui";
 import BtnToolBar from "@src/components/button/BtnToolBar";
 import { publish } from "@src/api/workflow/Flow";
+import FormSettingPanel from "./setting/FormSettingPanel";
+import Setting from "./setting";
+import Buttons from "@src/components/button/component/Buttons";
 const Container = styled.div`
   flex: 1;
   display: flex;
@@ -33,6 +36,7 @@ export default memo(() => {
   const type = useMemo<string>(() => {
     return local.pathname.split("/")[local.pathname.split("/").length - 1];
   }, [local.pathname]);
+
   const designType = useMemo<string>(() => {
     return local.pathname.split("/")[local.pathname.split("/").length - 2];
   }, [local.pathname]);
@@ -49,12 +53,12 @@ export default memo(() => {
   const optionsTitle = useMemo(() => {
     const tabTitle = [
       {
-        key: TabType.baseSettings,
-        label: "基础设置",
+        key: TabType.formDesign,
+        label: "编辑字段",
       },
       {
-        key: TabType.formDesign,
-        label: "表单设计",
+        key: TabType.baseSettings,
+        label: "表单设置",
       },
     ];
     //业务模块可以添加工作流
@@ -81,8 +85,9 @@ export default memo(() => {
   }, []);
 
   return (
-    <Container className={"  bg-white"}>
+    <Container className={" bg-white"}>
       <Toolbar
+        key={selectedTab}
         title={
           <Space>
             <i
@@ -109,19 +114,31 @@ export default memo(() => {
           </Space>
         }
         actions={
-          <BtnToolBar
+          <Buttons
             entity="form"
             btns={[
               {
-                actionType: "edit",
+                actionType: "save",
                 title: "保存",
-                disabled: (selectedTab as string) === "flowDesign",
+                disabled: selectedTab !== "formDesign",
                 datas: currModel,
                 disabledHide: true,
                 saveApi: saveFormDto,
                 onSubmitFinish: (data) => {
                   setCurrModel(data);
                   //缓存清除
+                  clearModelInfo(currModel?.type);
+                },
+              },
+              {
+                actionType: "save",
+                title: "另存",
+                disabled: selectedTab !== "formDesign",
+                datas: currModel,
+                disabledHide: true,
+                saveApi: saveFormDto,
+                onSubmitFinish: (data) => {
+                  setCurrModel(data);
                   clearModelInfo(currModel?.type);
                 },
               },
@@ -142,7 +159,7 @@ export default memo(() => {
                 },
               },
             ]}
-          ></BtnToolBar>
+          />
         }
       >
         {currModel?.itemType !== "req" && (
@@ -155,25 +172,28 @@ export default memo(() => {
       </Toolbar>
       {/* 基础设置 */}
       {selectedTab === TabType.baseSettings && currModel && (
-        <BasicSetting
-          formVo={currModel}
-          onDataChange={function (formVo: FormVo): void {
-            setCurrModel((m) => ({
-              ...formVo,
-              unpublishJson: m?.unpublishJson || "",
-            }));
-          }}
-        />
+        <Setting formVo={currModel} onDataChange={() => {}} />
+        // <BasicSetting
+        //   formVo={currModel}
+        //   onDataChange={function (formVo: FormVo): void {
+        //     setCurrModel((m) => ({
+        //       ...formVo,
+        //       unpublishJson: m?.unpublishJson || "",
+        //     }));
+        //   }}
+        // />
       )}
       {/*  */}
       {selectedTab === TabType.formDesign && (
         <FormDesign
+          type={type}
           onModelChange={(formVo: FormVo) => {
             setCurrModel((m) => ({
               ...formVo,
               unpublishJson: m?.unpublishJson || "",
             }));
           }}
+          formVo={undefined}
         />
       )}
       {/* 流程设计json */}

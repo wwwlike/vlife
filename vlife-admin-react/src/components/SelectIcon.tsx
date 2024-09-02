@@ -476,6 +476,18 @@ interface SelectIconProps extends VfBaseProps<string> {
   tooltip: string;
 }
 
+export const IconRender = (icon: ReactNode | string) => {
+  if (typeof icon === "string") {
+    if (icon.startsWith("Icon")) {
+      const Icon: any = icons[icon];
+      return <Icon />;
+    } else {
+      return <i className={icon} />;
+    }
+  }
+  return icon;
+};
+
 export const icons: { [key: string]: ElementType } = {
   IconAbsoluteStroked: IconAbsoluteStroked,
   IconActivity: IconActivity,

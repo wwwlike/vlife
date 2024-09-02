@@ -19,6 +19,7 @@
 package cn.wwwlike.form.vo;
 
 
+import cn.wwwlike.form.dto.FormRuleDto;
 import cn.wwwlike.form.dto.FormTabDto;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.sys.entity.SysResources;
@@ -67,6 +68,9 @@ public class FormVo implements VoBean<Form> {
    * 页签
    */
   public List<FormTabDto> formTabDtos;
+
+  //业务规则
+  public List<FormRuleDto> rules;
 
   /**
    * 接口

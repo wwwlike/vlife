@@ -577,6 +577,20 @@ export const resourcesButtonOpenApi:ApiInfo= {
   dataType: DataType.array,
   dataModel:'sysResources',
   api:listButtons,
+  filters:{
+    tableToolbar:{
+      title:"工具栏可用资源",
+      func:(datas)=>{return datas.filter((f)=>{
+        return f.dataType === "basic" &&(f.fieldType === "number"||f.fieldName==="id")
+      })}
+    },
+    tableLine:{
+      title:"列表可用资源",
+      func:(datas)=>{return datas.filter((f)=>{
+        return f.dataType === "basic" &&(f.fieldType === "number"||f.fieldName==="id")
+      })}
+    }
+  },
   match:{
     ButtonResources:{
       dataType: DataType.array,

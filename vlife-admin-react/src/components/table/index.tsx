@@ -18,6 +18,7 @@ import { VFBtn } from "../button/types";
 import { RecordFlowInfo } from "@src/api/workflow/Flow";
 import { useUpdateEffect } from "ahooks";
 import BtnResourcesToolBar from "../button/component/BtnResourcesToolBar";
+import { allowedNodeEnvironmentFlags } from "process";
 
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
@@ -42,7 +43,9 @@ export interface ListProps<T extends TableBean> {
   onFieldClick?: { [fieldName: string]: (data: any) => void }; //列表指定key字段点击后触发的事件
   onColumnSort?: (orderObj: orderObj) => void;
   dataSource?: T[];
+  queryFunc?: () => void; //列表数据查询
   btns: VFBtn[];
+  activeKey?: string; //场景key
   height?: number;
   pagination?: any;
   wheres?: Partial<where>[]; //按钮的过滤条件
@@ -75,18 +78,25 @@ const TableIndex = <T extends TableBean>({
   outSelectedColumn,
   btns,
   height,
+  queryFunc,
+  activeKey,
   pagination,
   flowFormType,
   wheres = [],
   ...props
 }: ListProps<T>) => {
+  const [_dataSource, setDataSource] = useState<T[]>();
+  useEffect(() => {
+    setDataSource(dataSource);
+  }, [dataSource]);
+
   //字典集
   const { dicts } = useAuth();
-  const [lineBtnMax, setListBtnMax] = useState<number>(0);
+  // const [lineBtnMax, setListBtnMax] = useState<number>(0);
 
   const btnWidth = useMemo((): number => {
-    return lineBtnMax === 0 ? 100 : lineBtnMax * 60 + 30;
-  }, [lineBtnMax]);
+    return btns.length * 80 + 30;
+  }, [btns]);
   // 选中的行记录
   const [selectedRow, setSelectedRow] = useState<T[]>(selected || []);
   useEffect(() => {});
@@ -179,7 +189,6 @@ const TableIndex = <T extends TableBean>({
         list.forEach((f) => {
           columnshow.push({
             ...f,
-
             title: (
               <ColumnTitle
                 entityName={model.entityType}
@@ -378,18 +387,30 @@ const TableIndex = <T extends TableBean>({
           render: (text, record, index) => {
             return (
               <BtnResourcesToolBar
+                btnConf={index === 0 ? true : false} //第一行的按钮可配置
                 entity={model.entityType}
-                onBtnNum={(v) => {
-                  setListBtnMax((m) => (v > m ? v : m));
-                }}
                 dataType={model.type}
                 key={`lineBtn_${index}`}
                 position="tableLine"
                 line={index}
                 btnType="link"
+                activeKey={activeKey}
                 btns={btns}
                 datas={[{ ...record, tableSort: index }]}
                 {...props}
+                onDataChange={(r: any) => {
+                  if (r) {
+                    if (typeof r === "number" || typeof r === "boolean") {
+                      if (queryFunc) queryFunc();
+                    } else {
+                      setDataSource((d: any) =>
+                        d.map((dd: any) => (dd.id === r.id ? r : dd))
+                      );
+                    }
+                  } else {
+                  }
+                  //无数据返回则刷新页面
+                }}
               />
             );
           },
@@ -398,7 +419,7 @@ const TableIndex = <T extends TableBean>({
       return columnshow;
     }
     return [];
-  }, [model, column, fkMap, btns, dataSource, read, selectedColumn, btnWidth]);
+  }, [model, column, fkMap, btns, _dataSource, read, selectedColumn, btnWidth]);
 
   const onRow = useMemo(
     () => (record: any, index: any) => {
@@ -473,7 +494,7 @@ const TableIndex = <T extends TableBean>({
         }}
         bordered={true}
         rowKey={"id"}
-        dataSource={dataSource}
+        dataSource={_dataSource}
         columns={memoColumns}
         onRow={onRow}
         size="middle"

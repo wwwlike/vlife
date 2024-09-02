@@ -3,7 +3,6 @@ import {
   IconGridView,
   IconListView,
   IconPlayCircle,
-  IconSave,
 } from "@douyinfe/semi-icons";
 import { Button, Empty } from "@douyinfe/semi-ui";
 import { FormVo, list, saveFormDto } from "@src/api/Form";
@@ -11,7 +10,7 @@ import { FormFieldVo } from "@src/api/FormField";
 import VfButton from "@src/components/button";
 import { Mode } from "@src/dsl/base";
 import FormPage from "@src/pages/common/formPage";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SiderSetting from "./component/SiderSetting";
 import FieldSelect from "./component/fieldSelect";
 import FormSetting from "./component/formSetting";
@@ -68,6 +67,9 @@ export const formSettingDatas: SchemaClz = {
 };
 
 export interface FormDesignProps {
+  type?: string; //模型标识
+  formVo?: FormVo; //表单信息
+  onDataChange?: (fields: FormFieldVo[]) => void; //字段变更回调
   onModelChange?: (formVo: FormVo) => void; //模型变更回调
   useButton?: boolean; //是否使用本页的按钮
 }
@@ -75,20 +77,25 @@ export interface FormDesignProps {
 /**
  * 表单设计器
  */
-export default ({ onModelChange, useButton = false }: FormDesignProps) => {
+export default ({
+  onModelChange,
+  useButton = false,
+  formVo,
+  type,
+}: FormDesignProps) => {
   const navigate = useNavigate();
   const { clearModelInfo } = useAuth();
-  const local = useLocation();
   const formModal = useNiceModal("formModal");
   /**
    * 模型名称
    */
-  const type = useMemo<string>(() => {
-    const length = local.pathname.split("/").length;
-    return local.pathname.split("/")[length - 1];
-  }, [local.pathname]);
+  //  const local = useLocation();
+  // const _type = useMemo<string>(() => {
+  //   const length = local.pathname.split("/").length;
+  //   return local.pathname.split("/")[length - 1];
+  // }, [local.pathname]);
   /**当前模型,可修订模型,修订currModel的同时需要修订 currField */
-  const [currModel, setCurrModel] = useState<FormVo>();
+  const [currModel, setCurrModel] = useState<FormVo | undefined>(formVo);
   /**当前字段名 */
   const [currField, setCurrField] = useState<string>();
   // 当前模型设置的值
@@ -100,16 +107,18 @@ export default ({ onModelChange, useButton = false }: FormDesignProps) => {
     }
   }, [currField, currModel]);
   useEffect(() => {
-    list({ type }).then((d) => {
-      const f = d.data?.[0];
-      setCurrModel(f);
-      setFormInitData({
-        name: f?.name,
-        prefixNo: f?.prefixNo,
-        formDesc: f?.formDesc,
-        helpDoc: f?.helpDoc,
+    if (type && (currModel === null || currModel === undefined)) {
+      list({ type }).then((d) => {
+        const f = d.data?.[0];
+        setCurrModel(f);
+        setFormInitData({
+          name: f?.name,
+          prefixNo: f?.prefixNo,
+          formDesc: f?.formDesc,
+          helpDoc: f?.helpDoc,
+        });
       });
-    });
+    }
   }, [type]);
 
   const onDataChange = useCallback(
@@ -140,13 +149,12 @@ export default ({ onModelChange, useButton = false }: FormDesignProps) => {
   }, [currModel]);
 
   useEffect(() => {
-    console.log("name", currModel?.name);
     currModel && onModelChange?.(currModel);
   }, [currModel]);
 
   return currModel ? (
     <div className=" h-full w-full  flex  bg-gray-50 flex-col ">
-      {/* {JSON.stringify(currModel?.fields.filter((f) => f.x_hidden).length)} */}
+      {/* 111 {JSON.stringify(formVo)} */}
       <div className="flex w-full bg-white  h-12 p-2  items-center border-b border-gray-100 ">
         {/* 标题 */}
         <div className=" w-64 flex-none font-sans text-md font-bold pl-6">
@@ -361,7 +369,7 @@ export default ({ onModelChange, useButton = false }: FormDesignProps) => {
     <Empty
       className="flex justify-center items-center"
       image={<IllustrationConstruction style={{ width: 150, height: 150 }} />}
-      title={`模型不存在,请检查${type}是否正确`}
+      title={`模型不存在,请检查${type ? type : "type"}是否正确`}
       description={
         <a
           href="#"
