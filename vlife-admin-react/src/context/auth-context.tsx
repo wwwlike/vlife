@@ -54,8 +54,8 @@ const AuthContext = React.createContext<
       setAllMenus: (allMenus: MenuVo[]) => void;
       app?: MenuVo; //当前应用
       setApp: (app: MenuVo | undefined) => void; //当前应用
-      menu?: string; //当前菜单id
-      setMenu: (menu: string | undefined) => void; // 设置当前菜单id
+      menu?: MenuVo; //当前菜单id
+      setMenu: (menu: MenuVo | undefined) => void; // 设置当前菜单
       //当前屏幕大小
       screenSize?: { width: number; height: number; sizeKey: string };
       // 所有字典信息
@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   /**
    * 当前模块menuId
    */
-  const [menu, setMenu] = useState<string | undefined>();
+  const [menu, setMenu] = useState<MenuVo | undefined>();
 
   /** 当前用户信息 */
   const [user, setUser] = useState<UserDetailVo>();
@@ -193,7 +193,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const menuButtons = useMemo(() => {
     return allButtons
-      ?.filter((f) => f.sysMenuId === menu)
+      ?.filter((f) => f.sysMenuId === menu?.id)
       .sort((a, b) => a.sort - b.sort);
   }, [allButtons, menu]);
 
@@ -246,6 +246,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setError("账号已禁用");
         } else {
           setUser(res.data);
+          // alert(res.data?.menus.map((d) => d.routerAddress).join(","));
           datasInit();
           setAllMenus(res.data?.menus || []);
         }
@@ -463,8 +464,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else if (
         //资源权限未纳入权限管理绑定菜单
         allResources &&
-        allResources?.filter((f) => f.code === code && f.sysMenuId === null)
-          .length > 0
+        allResources?.filter(
+          (f) => f.code === code && f.sysMenuId === null && f.pcode === null
+        ).length > 0
       ) {
         return true;
       } else if (!allResources?.map((r) => r.code).includes(code)) {

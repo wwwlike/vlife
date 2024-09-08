@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import Content from "./content";
 import Empty from "../common/Empty";
 import { useTitle } from "ahooks";
+import { useAuth } from "@src/context/auth-context";
 /**
  * 采用content的模版页面
  */
@@ -11,6 +12,7 @@ export default () => {
   const location = useLocation();
   const [formVo, setFormVo] = useState<FormVo>();
   const [pageReqType, setPageReqType] = useState<string>();
+  const { menuButtons, menu } = useAuth();
   useTitle(
     window.localStorage.getItem("menuTitle") !== null
       ? JSON.parse(window.localStorage.getItem("menuTitle") || "")?.title
@@ -43,6 +45,8 @@ export default () => {
   return (
     (formVo && (
       <Content
+        //@ts-ignore
+        btns={menuButtons.length > 0 ? menuButtons : undefined}
         key={formType + (pageReqType || "")}
         filterType={pageReqType}
         editType={formVo.type}

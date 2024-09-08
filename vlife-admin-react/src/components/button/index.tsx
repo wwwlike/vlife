@@ -13,14 +13,15 @@ import { Result } from "@src/api/base";
 import { useNiceModal } from "@src/store";
 import { useAuth } from "@src/context/auth-context";
 import { isNull } from "lodash";
-import { objectIncludes } from "@src/util/func";
+import { objectIncludes, uncapFirst } from "@src/util/func";
 import { useEffect } from "react";
 import { IconSend } from "@douyinfe/semi-icons";
-import { moveDown, remove, save, moveUp } from "@src/api/Button";
+import { moveDown, remove, save, moveUp, detail } from "@src/api/Button";
 import { VF } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import BtnResourcesToolBar from "./component/BtnResourcesToolBar";
 import { icons } from "../SelectIcon";
+import user from "@src/pages/sysManage/user";
 
 export interface BtnGroupInfos {
   groupIndex: number; //当前分组索引号
@@ -29,6 +30,7 @@ export interface BtnGroupInfos {
 
 //封装的按钮组件
 export default (props: Partial<VFBtn & BtnGroupInfos>) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { Text } = Typography;
   const formModal = useNiceModal("formModal");
@@ -60,7 +62,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
     className,
     entity,
     permissionCode,
-    btnConf = true,
+    btnConf = false,
     onFormilySubmitCheck,
     saveApi,
     loadApi,
@@ -72,9 +74,10 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
     onSaveBefore,
   } = props;
   const disabledHide = useMemo(() => {
-    return props.disabledHide ||
-      position === "tableLine" ||
-      position === "formFooter" //这2个位置的按钮如果不可用则默认是隐藏不显示的
+    return user?.superUser !== true &&
+      (props.disabledHide ||
+        position === "tableLine" ||
+        position === "formFooter") //这2个位置的按钮如果不可用则默认是隐藏不显示的
       ? true
       : false;
   }, [position, props.disabledHide]);
@@ -84,32 +87,24 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
   const [btnData, setBtnData] = useState<any>();
   const [comment, setComment] = useState<string>();
 
+  const _permissionCodeKey = ["save", "remove", "detail", "list", "page"];
+
   //权限码计算
   const _permissionCode = useMemo(() => {
     if (permissionCode) {
       return permissionCode;
-    } else if (entity && saveApi && saveApi.name !== "savaApi") {
-      return `${entity}:${saveApi.name}`;
-      // actionType&&["save","delete","remove"].includes(actionType)
-      // save|edit|delete
-      // api
-      // click 不用管权限
-    } else if (entity && model) {
-      return `${entity}:${actionType}:${model}`;
-      // actionType&&["save","delete","remove"].includes(actionType)
-      // save|edit|delete
-      // api
-      // click 不用管权限
-    } else if (entity) {
-      return `${entity}:${actionType}`;
-    } else if (model) {
-      return `${model}:${actionType}`;
+    } else if (saveApi && entity && saveApi.name !== "savaApi") {
+      const apiName = saveApi.name;
+      const key: string | undefined = _permissionCodeKey.find((_key) => {
+        return apiName.startsWith(_key) && apiName !== _key;
+      });
+      if (key === undefined) {
+        return `${entity}:${saveApi.name}`;
+      } else {
+        return `${entity}:${key}:${uncapFirst(apiName.substring(key.length))}`;
+      }
     }
-
-    // return (
-    //   permissionCode ||
-    //   (model && saveApi ? model + `:${saveApi.name}` : undefined)
-    // );
+    return undefined;
   }, [permissionCode, model, entity, actionType, saveApi]);
 
   //按钮数据
@@ -521,6 +516,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
 
     return btnType !== "icon" || position === "formFooter" ? (
       <>
+        {/* {_permissionCode} */}
         {position === "dropdown" && divider === true && (
           <Divider>{divider}</Divider>
         )}
@@ -607,7 +603,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
   ]);
   return authPass && !(disabledHide && disabled === true) ? (
     <>
-      {/* {btnData?.length || 0} */}
+      {/* {_permissionCode} */}
       {disabled === true &&
       (tooltip || btnData === undefined || btnData.length === 0) ? (
         <Tooltip content={tooltip || "请选择数据"}>
@@ -627,8 +623,9 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
               icon: <i className=" icon-edit" />,
               actionType: "save",
               model: "button",
-              reaction: [VF.then("sysMenuId").readPretty()], //model表单级联关系配置
-              datas: [{ ...props }],
+              // reaction: [VF.then("sysMenuId").readPretty()], //model表单级联关系配置
+              datas: props.id,
+              loadApi: (id: string) => detail({ id }),
               saveApi: save,
               onSubmitFinish: () => {
                 datasInit();
@@ -644,7 +641,6 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
               },
               datas: [{ ...props }],
               onClick: (d) => {
-                // alert(d.model);
                 navigate(`/sysConf/buttonFormConf?buttonId=${d.id}`); // 跳转到 /page-b
               },
             },

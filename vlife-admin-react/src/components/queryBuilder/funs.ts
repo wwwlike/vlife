@@ -1,9 +1,10 @@
 // 数据校验是否满足condition里定义的规则
 
 import { ConditionGroup, OptEnum, where } from '@src/dsl/base';
+import { isArray } from 'lodash';
 
 //所有数据进行条件比对
-export const usableDatasMatch=(conditions:ConditionGroup[],datas:any[]):boolean=>{
+export const usableDatasMatch=(conditions:ConditionGroup[],...datas:any[]):boolean=>{
   for (const data of datas) {
     let result=usableMatch(conditions,data);
     if(!result){

@@ -18,22 +18,24 @@ export default () => {
         alignItems: "center",
       }}
     >
-      <Button
-        style={{ padding: "6px 24px", width: " 180px" }}
-        theme="solid"
-        type="primary"
-        onClick={() => navigate(`/`, { replace: true })}
-      >
-        回到首页
-      </Button>
-      <Button
-        style={{ padding: "6px 24px", width: " 180px" }}
+      <div className=" w-full  !flex !items-center !justify-center ">
+        <Button
+          style={{ padding: "6px 24px", width: " 180px" }}
+          theme="solid"
+          type="primary"
+          onClick={() => navigate(`/`, { replace: true })}
+        >
+          回到首页
+        </Button>
+      </div>
+      {/* <Button
+        style={{ padding: "6px 24px", width: " 120px" }}
         theme="solid"
         type="primary"
         onClick={loginOut}
       >
         重新登录
-      </Button>
+      </Button> */}
     </Empty>
   );
 };

@@ -10,17 +10,24 @@ export const _saveFunc=(api:SysResources):((data: any) => Promise<Result<any>>)|
       api.paramType === "entity"
     ) {
       return (data: any) => apiClient.post(api.url, data);
-    } else if (
-      api &&
-      api.methedType.includes("@DeleteMapping") &&
-      api.paramWrapper === "String[]"
-    ) {
-      // export const remove=(ids:String[]): Promise<Result<number>>=>{
-      //   return apiClient.delete(`/sysUser/remove`,{data:ids});
-      //   };
-      return (data: any[]) =>
-        apiClient.delete(api.url, { data: data.map((d) => d.id) });
+    } else if (api!==undefined) {
+      if(api.paramWrapper === "String[]"||api.paramWrapper ==="List<String>"){
+        if( api.methedType.includes("@DeleteMapping")){
+          return (data: any[]) =>apiClient.delete(api.url, { data: data.map((d) => d.id) });
+        } else{
+          return (data: any[]) => apiClient.post(api.url, data.map((d) => d.id));
+        }
+      }else if(api.paramWrapper === "String"){
+        if( api.methedType.includes("@DeleteMapping")){
+          return (data: any) =>apiClient.delete(api.url, { data: data.id });
+        } else{
+          return (data: any) => apiClient.post(api.url, data.id,{  
+            headers: {  
+                'Content-Type': 'text/plain' // 设置请求体类型为纯文本  
+            }  
+        });
+        }
+      }
     }
     return undefined;
-
 }

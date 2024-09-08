@@ -94,7 +94,7 @@ export default () => {
 
   useEffect(() => {
     if (selectedKeys && selectedKeys.length > 0) {
-      setMenu(selectedKeys[0]);
+      setMenu(allMenus.find((m) => m.id === selectedKeys[0]));
     } else if (selectedKeys === undefined || selectedKeys.length === 0) {
       setMenu(undefined);
     }
@@ -192,13 +192,13 @@ export default () => {
         ],
         saveApi: save,
         onSubmitFinish: (...datas) => {
-          listAll().then((d) => setAllMenus(d.data || []));
-          if (datas && datas[0] && datas[0].routerAddress) {
-            visitMenu(datas[0]);
-          }
-
-          // if(datas[0])
-          // menuUrl(datas[0]) && ();
+          listAll()
+            .then((d) => setAllMenus(d.data || []))
+            .then(() => {
+              if (datas && datas[0] && datas[0].routerAddress) {
+                visitMenu(datas[0]);
+              }
+            });
         },
       };
     },

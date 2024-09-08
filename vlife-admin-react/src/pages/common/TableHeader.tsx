@@ -56,10 +56,10 @@ export default ({ ...props }: TableHeaderProps) => {
   const [reportCondition, setReportCondition] =
     React.useState<ReportCondition[]>();
   //当前激活页签
-  const [_activeKey, setActiveKey] = useState<string>();
+  // const [_activeKey, setActiveKey] = useState<string>();
 
   const setTabByDb = useCallback(() => {
-    list({ sysMenuId: menu, type: "table" }).then((result) => {
+    list({ sysMenuId: menu?.id, type: "table" }).then((result) => {
       const conditions: ReportCondition[] = result.data || [];
       setReportCondition(
         conditions.sort((a, b) => Number(a.createDate) - Number(b.createDate))
@@ -75,9 +75,11 @@ export default ({ ...props }: TableHeaderProps) => {
                 showCount: true,
                 closable: addTabAble,
                 icon: d.icon,
-                req: {
-                  conditionGroups: JSON.parse(conditions?.[0]?.conditionJson),
-                },
+                req: d.conditionJson
+                  ? {
+                      conditionGroups: JSON.parse(d.conditionJson),
+                    }
+                  : undefined,
               };
             }),
         ]);
@@ -186,26 +188,27 @@ export default ({ ...props }: TableHeaderProps) => {
   }, [contentTab]);
 
   //初始化激活页签
-  useEffect(() => {
-    if (_contentTab && _contentTab.length > 0) {
-      const key =
-        activeKey &&
-        _contentTab.filter(
-          (tab) => tab.pKey === activeKey || tab.itemKey === activeKey
-        ).length > 0
-          ? _contentTab.filter((tab) => tab.pKey === activeKey).length > 0
-            ? _contentTab.filter((tab) => tab.pKey === activeKey)?.[0].pKey
-            : activeKey
-          : _contentTab.filter((tab) => tab.pKey === _contentTab[0].itemKey)
-              .length > 0
-          ? _contentTab.filter(
-              (tab) => tab.pKey === _contentTab[0].itemKey
-            )?.[0].itemKey
-          : _contentTab[0].itemKey;
-      setActiveKey(key);
-      onActiveTabChange?.(_contentTab.filter((f) => f.itemKey === key)?.[0]);
-    }
-  }, [activeKey, _contentTab]);
+  // useEffect(() => {
+  //   if (_contentTab && _contentTab.length > 0) {
+  //     const key =
+  //       activeKey &&
+  //       _contentTab.filter(
+  //         (tab) => tab.pKey === activeKey || tab.itemKey === activeKey
+  //       ).length > 0
+  //         ? _contentTab.filter((tab) => tab.pKey === activeKey).length > 0
+  //           ? _contentTab.filter((tab) => tab.pKey === activeKey)?.[0].pKey
+  //           : activeKey
+  //         : _contentTab.filter((tab) => tab.pKey === _contentTab[0].itemKey)
+  //             .length > 0
+  //         ? _contentTab.filter(
+  //             (tab) => tab.pKey === _contentTab[0].itemKey
+  //           )?.[0].itemKey
+  //         : _contentTab[0].itemKey;
+  //     setActiveKey(key);
+  //     onActiveTabChange?.(_contentTab.filter((f) => f.itemKey === key)?.[0]);
+  //   }
+  // }, [JSON.stringify(activeKey), _contentTab]);
+  //JSON.stringify(activeKey)
 
   //需要计数的页签查询对象数据回调
   useEffect(() => {
@@ -213,8 +216,6 @@ export default ({ ...props }: TableHeaderProps) => {
       const obj = _contentTab
         .filter((c) => !_contentTab.map((_c) => _c.pKey).includes(c.itemKey)) //多级目录里面的一级目录不需要计数
         .reduce((acc, cur) => ({ ...acc, [cur.itemKey]: cur.req }), {});
-
-      console.log(obj);
       onCountTab?.(obj);
     }
   }, [_contentTab, showCount]);
@@ -254,7 +255,7 @@ export default ({ ...props }: TableHeaderProps) => {
                 model={"reportCondition"}
                 saveApi={save}
                 reaction={[
-                  VF.then("sysMenuId").hide().value(menu),
+                  VF.then("sysMenuId").hide().value(menu?.id),
                   VF.then("formId").hide().value(entityModel?.id),
                   VF.then("type").hide().value("table"),
                   VF.then("name").title("场景页签名称"),
@@ -269,7 +270,7 @@ export default ({ ...props }: TableHeaderProps) => {
           (_contentTab.length > 0 ? (
             <PageTab
               //activeKey页面传入页签 | _activeKey 当前计算默认的第一个页签
-              activeKey={_activeKey}
+              activeKey={activeKey}
               //@ts-ignore
               contentTab={_contentTab.map((_tab) => {
                 return {
@@ -293,9 +294,9 @@ export default ({ ...props }: TableHeaderProps) => {
                               (c) => c.id === _tab.itemKey
                             ),
                             reaction: [
-                              VF.then("sysMenuId")
-                                .hide()
-                                .value(entityModel?.sysMenuId),
+                              // VF.then("sysMenuId")
+                              //   .hide()
+                              //   .value(entityModel?.sysMenuId),
                               VF.then("formId").hide().value(entityModel?.id),
                               VF.then("type").hide().value("table"),
                               VF.then("name").title("场景页签名称"),
@@ -327,20 +328,7 @@ export default ({ ...props }: TableHeaderProps) => {
                     ),
                 };
               })}
-              // onRemove={
-              //   user?.superUser
-              //     ? (targetKey) => {
-              //         remove([targetKey]).then(() => {
-              //           setContentTab((tab) =>
-              //             tab?.filter((t) => t.itemKey !== targetKey)
-              //           );
-              //           setTabByDb();
-              //         });
-              //       }
-              //     : undefined
-              // }
               onSelected={function (key: string): void {
-                // alert(_contentTab.filter((f) => f.itemKey === key)?.[0].req);
                 onActiveTabChange?.(
                   _contentTab.filter((f) => f.itemKey === key)?.[0]
                 );

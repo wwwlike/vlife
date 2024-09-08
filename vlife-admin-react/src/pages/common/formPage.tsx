@@ -39,7 +39,7 @@ const FormPage = <T extends IdBean>({
   reaction,
   formData,
   modifyData,
-  formSetting = true,
+  formSetting = false,
   ...props
 }: FormPageProps<T>) => {
   const navigate = useNavigate();

@@ -132,14 +132,22 @@ public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
     public List<String> findSimpleGroupResourceCodes(String groupId){
         GroupVo vo=queryOne(GroupVo.class,groupId);
         // 权限组关联的资源
-        List<String> code=vo.getSysGroupResources_sysResources_code();
-        //权限能访问到的菜单对应的必选资源一并添加
-        if(code!=null&&vo.getSysGroupResources_sysResources_sysMenuId()!=null){
+        List<String> codes=vo.getSysGroupResources_sysResources_code();
+        //1. 权限能访问到的菜单对应的必选资源一并添加
+        if(codes!=null&&vo.getSysGroupResources_sysResources_sysMenuId()!=null){
             List<String> menuIds=vo.getSysGroupResources_sysResources_sysMenuId();
-            List<String> code1=resourcesService.findMenuRequireResources(menuIds.toArray(new String[menuIds.size()]));
-            code.addAll(code1);
+            menuIds.removeIf(item -> item == null);
+            List<String> requireResourcesCodeList=resourcesService.findMenuRequireResources(menuIds.toArray(new String[menuIds.size()]));
+            codes.addAll(requireResourcesCodeList);
         }
-        return code;
+        List subs=new ArrayList<>();
+        //2. 继承的接口资源 如save->saveXxDto添加
+        for(String code:codes){
+            List<String> subCodes=resourcesService.find("pcode",code).stream().map(item -> item.getCode()).collect(Collectors.toList());
+            subs.addAll(subCodes);
+        }
+        codes.addAll(subs);
+        return codes;
     }
 
 }

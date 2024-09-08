@@ -580,14 +580,15 @@ export const resourcesButtonOpenApi:ApiInfo= {
   filters:{
     tableToolbar:{
       title:"工具栏可用资源",
-      func:(datas)=>{return datas.filter((f)=>{
-        return f.dataType === "basic" &&(f.fieldType === "number"||f.fieldName==="id")
+      func:(datas)=>{return datas.filter((f:SysResources)=>{
+        return (f.paramType==="entity"||f.paramType==="dto"||f.paramWrapper.includes("[]")||f.paramWrapper.includes("List<"))
       })}
     },
     tableLine:{
       title:"列表可用资源",
-      func:(datas)=>{return datas.filter((f)=>{
-        return f.dataType === "basic" &&(f.fieldType === "number"||f.fieldName==="id")
+      func:(datas)=>{return datas.filter((f:SysResources)=>{
+        //单个
+        return (f.paramType==="entity"||f.paramType==="dto" || f.paramWrapper==="String")
       })}
     }
   },

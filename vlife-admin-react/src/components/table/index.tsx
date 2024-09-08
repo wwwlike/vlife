@@ -8,17 +8,14 @@ import { FormFieldVo } from "@src/api/FormField";
 import { formatDate, safeStr } from "@src/util/func";
 import VfImage from "@src/components/VfImage";
 import SelectIcon from "@src/components/SelectIcon";
-import { IconStoryStroked } from "@douyinfe/semi-icons";
 import ColumnTitle from "./component/ColumnTitle";
 import { orderObj } from "@src/pages/common/orderPage";
-import BtnToolBar from "../button/BtnToolBar";
 import { where } from "@src/dsl/base";
 import classNames from "classnames";
-import { VFBtn } from "../button/types";
 import { RecordFlowInfo } from "@src/api/workflow/Flow";
 import { useUpdateEffect } from "ahooks";
 import BtnResourcesToolBar from "../button/component/BtnResourcesToolBar";
-import { allowedNodeEnvironmentFlags } from "process";
+import { VFBtn } from "../button/types";
 
 const formatter = new Intl.NumberFormat("zh-CN", {
   style: "currency",
@@ -86,6 +83,8 @@ const TableIndex = <T extends TableBean>({
   ...props
 }: ListProps<T>) => {
   const [_dataSource, setDataSource] = useState<T[]>();
+  const { user } = useAuth();
+
   useEffect(() => {
     setDataSource(dataSource);
   }, [dataSource]);
@@ -95,18 +94,31 @@ const TableIndex = <T extends TableBean>({
   // const [lineBtnMax, setListBtnMax] = useState<number>(0);
 
   const btnWidth = useMemo((): number => {
-    return btns.length * 80 + 30;
+    const titleTotalLength = btns
+      .map((b) => b.title?.length || 2)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    return (
+      titleTotalLength * 18 + 40 + (user?.superUser ? btns.length * 20 : 0)
+    );
   }, [btns]);
   // 选中的行记录
-  const [selectedRow, setSelectedRow] = useState<T[]>(selected || []);
+  const [selectedRow, setSelectedRow] = useState<T[]>([]);
   useEffect(() => {});
   // 选中的列
   const [selectedColumn, setSelectColumn] = useState<string>();
+
   useEffect(() => {
     if (outSelectedColumn) {
       setSelectColumn(outSelectedColumn);
     }
   }, [outSelectedColumn]);
+
+  useEffect(() => {
+    setSelectedRow(selected || []);
+  }, [selected]);
+  /**
+   * 
   /**
    * 选中记录展示的label
    */
@@ -387,7 +399,7 @@ const TableIndex = <T extends TableBean>({
           render: (text, record, index) => {
             return (
               <BtnResourcesToolBar
-                btnConf={index === 0 ? true : false} //第一行的按钮可配置
+                btnConf={index === 0 && user?.superUser ? true : false} //第一行的按钮可配置
                 entity={model.entityType}
                 dataType={model.type}
                 key={`lineBtn_${index}`}
@@ -403,6 +415,7 @@ const TableIndex = <T extends TableBean>({
                     if (typeof r === "number" || typeof r === "boolean") {
                       if (queryFunc) queryFunc();
                     } else {
+                      //数据替换(必须是同一个type模型)
                       setDataSource((d: any) =>
                         d.map((dd: any) => (dd.id === r.id ? r : dd))
                       );

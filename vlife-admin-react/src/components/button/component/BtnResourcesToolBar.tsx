@@ -57,12 +57,12 @@ export default <T extends IdBean>({
   btnConf = true,
   onDataChange,
   position = "page", //默认场景
-  onBtnNum,
   onActiveChange,
 }: BtnToolBarProps<T>) => {
   //接口资源
   const { resources, allButtons } = useAuth();
 
+  //数据库按钮对象 {key:button}
   const customButtons = useMemo(() => {
     const result = allButtons.reduce<{ [key: string]: object }>((acc, item) => {
       acc[item.code] = item; // 将 item.value 存入以 item.code 为键的属性中
@@ -70,7 +70,8 @@ export default <T extends IdBean>({
     }, {});
     return result;
   }, [allButtons]);
-  //按钮db数据转换
+
+  //db按钮数据转换
   const _btns = useMemo((): VFBtn[] => {
     //有一个资源id表示当前是配置的按钮则需要进行转换
     return btns.map((b) => {
@@ -80,7 +81,6 @@ export default <T extends IdBean>({
           _resources.paramType === "entity" || _resources.paramType === "dto"
             ? _resources.paramWrapper
             : undefined;
-        // const Icon: any = icons[_resources.icon];
         const _multiple =
           _resources.paramWrapper.includes("List") ||
           _resources.paramWrapper.includes("[]");
@@ -90,25 +90,59 @@ export default <T extends IdBean>({
             : true;
         };
         const _actionType = _model ? "save" : "api";
+        const _title =
+          b.title ||
+          (_actionType === "api"
+            ? _resources.methedType.startsWith("@DeleteMapping(")
+              ? "删除"
+              : _resources.name
+            : "savecreate".includes(_actionType)
+            ? b.position === "tableLine"
+              ? "修改"
+              : "新增"
+            : "");
+
+        const _icon =
+          b.icon ||
+          (_title.includes("删除") ? (
+            <i className="  icon-remove_circle_outline1" />
+          ) : _title.includes("新增") ? (
+            <i className=" icon-add_circle_outline" />
+          ) : _title.includes("修改") ? (
+            <i className="  icon-sp_edit_white" />
+          ) : (
+            <i className="  icon-widget_project_empty" />
+          ));
+
+        // const _icon =
+        //   b.icon || _title.includes("删除")
+        //     ? "IconMinus"
+        //     : _title.includes("新增")
+        //     ? "IconPlus"
+        //     : _title.includes("修改")
+        //     ? "IconEdit"
+        //     : "IconArticle";
         return {
           ...b,
           saveApi: _saveFunc(_resources),
-          permissionCode: _resources.url.replaceAll("/", ":"),
+          // permissionCode: _resources.url.replaceAll("/", ":"),
+          permissionCode: _resources.code,
           actionType: _actionType,
           model: _model,
-          // icon: <Icon />,
-          title:
-            b.title || (_actionType === "api" ? _resources.name : undefined),
+          icon: _icon,
+          title: _title,
           usableMatch: _usableMatch,
           multiple: _multiple,
         };
       } else if (b.code && customButtons[b.code]) {
+        // 手写按钮与数据库按钮合并
         return { ...customButtons[b.code], ...b };
       } else {
+        //手写按钮
         return b;
       }
     });
-  }, [btns]);
+  }, [btns, customButtons]);
 
   //筛选出应该在当前场景下可以使用的按钮
   const currBtns = useMemo(() => {
@@ -154,34 +188,33 @@ export default <T extends IdBean>({
       toolBarBtns = _btns;
     }
     toolBarBtns = toolBarBtns
+      //场景过滤
       .filter((btn) =>
         position
           ? btn.position === position ||
             btn.position === undefined ||
             btn.position === null
           : true
-      ) //场景过滤
-      .filter((btn) =>
-        dataType && btn.model && datas && datas.length > 0
-          ? btn.model.toLocaleLowerCase() === dataType.toLocaleLowerCase() ||
-            btn.loadApi !== undefined
-          : true
-      ) //模型过滤 datas的数据类型和模型的数据类型一直
-      .filter((btn) => (readPretty ? btn.actionType === "api" : true)) //只读过滤
+      )
+      //模型过滤 datas的数据类型和模型的数据类型一致(屏蔽)
+      // .filter((btn) =>
+      //   dataType && btn.model && datas && datas.length > 0
+      //     ? btn.model.toLocaleLowerCase() === dataType.toLocaleLowerCase() ||
+      //       btn.loadApi !== undefined
+      //     : true
+      // )
+      //只读过滤
+      .filter((btn) => (readPretty ? btn.actionType === "api" : true))
+      //tab场景签过滤
       .filter(
         (btn) =>
           !btn.activeTabKey ||
           (activeKey &&
             btn.activeTabKey &&
             btn.activeTabKey.includes(activeKey))
-      ); //只读过滤
+      );
     return toolBarBtns;
   }, [position, _btns, dataType, readPretty, datas]);
-
-  //返回按钮数量
-  useEffect(() => {
-    onBtnNum && onBtnNum(currBtns.length);
-  }, [currBtns]);
 
   return dropdown === false ? (
     <div

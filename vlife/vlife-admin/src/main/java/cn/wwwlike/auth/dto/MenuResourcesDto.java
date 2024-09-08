@@ -21,7 +21,7 @@ public class MenuResourcesDto implements SaveBean<SysMenu> {
     public List<String> sysResources_id;
     /**
      * 主要接口
-     * 从关联接口里选择
+     * 从关联接口里选择(待去除)
      */
     @VField(skip = true)
     public List<String> requireIds;

@@ -17,6 +17,7 @@ import cn.wwwlike.vlife.core.VLifeApi;
 import java.lang.Long;
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +56,9 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
       Form form=formService.findOne(dto.getFormId());
       dto.setPlaceholderUrl(form.getType());
     }
+    if(StringUtils.isNotEmpty(dto.getUrl())){
+      dto.setPageLayoutId(null);
+    }
     service.save(dto);
     return service.queryOne(MenuVo.class,dto.getId());
   }
@@ -84,6 +88,9 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
    */
   @DeleteMapping("/remove")
   public Long remove(@RequestBody String[] ids) {
+    Arrays.stream(ids).forEach(id->{
+      service.relationRemove(id);
+    });
     return service.remove(ids);
   }
   /**
@@ -118,19 +125,23 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
   public MenuResourcesDto saveMenuResourcesDto(@RequestBody MenuResourcesDto dto){
     SysMenu menu=service.findOne(dto.getId());
     MenuResourcesDto _dto=service.save(dto,true);
-    //菜单如果关联了权限资源则解除与角色关联
-    if(dto.getSysResources_id()!=null&&menu.getSysRoleId()!=null){
-      menu.setSysRoleId(null);
-      service.save(menu);
+    //有导入的资源则删除菜单与权限组(角色)的关联
+    if(dto.getSysResources_id()!=null){
+      List<SysGroupResources> groupResources=
+          sysGroupResourcesService.find("sysMenuId",dto.getId());
+      if(groupResources!=null){
+        groupResources.forEach(gr->sysGroupResourcesService.remove(gr.getId()));
+      }
     }
-    if(dto.getRequireIds()!=null){
+
+    if(dto.getRequireIds()!=null&&dto.getRequireIds().size()>0){
       sysGroupResourcesService.clearMainGroup(dto.getRequireIds().toArray(new String[dto.getRequireIds().size()]));
     }
     resourcesService.clearRoleWithMenuEmpty();
     String[] requireIds = dto.getRequireIds() != null ? dto.getRequireIds().toArray(new String[0]) : new String[0];
     resourcesService.resourcesRequired(true,requireIds);
     resourcesService.resourcesRequired(false,
-      resourcesService.menuUseableResources(menu.getFormId(),
+    resourcesService.menuUseableResources(menu.getFormId(),
               dto.getId()).stream().map(DbEntity::getId).filter(t->dto.getRequireIds()==null?true:!dto.getRequireIds().contains(t)).collect(Collectors.toList()).toArray(new String[0]));
     return _dto;
   }

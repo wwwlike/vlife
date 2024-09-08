@@ -88,6 +88,7 @@ export interface VFBtn{
   toActiveTabKey?:string; //完成后去到的场景页签key
   onActiveChange?: (key: string) => void; //切换页签后触发
   modalOpen?:boolean;//是否打开modal
+  id?:string;
   sysResourcesId?:string;
   // ----------------------------
   actionType?:actionType // 动作类型 (拿掉最好)
@@ -119,7 +120,6 @@ export interface VFBtn{
   entity?:string;// 实体类型 和权限编码对应
   permissionCode?:string;//权限编码,不传则根据->`实体名:方法名(动作:模型名)`组成 sysUser:save:sysUserDto对应后端sysUser的API下的saveSysUserDto方法
   //表单相关
-
   btnConf?:boolean;//是否开启按钮配置功能
   code?:string;//按钮编码
   formVoJson?:string; //表单json配置

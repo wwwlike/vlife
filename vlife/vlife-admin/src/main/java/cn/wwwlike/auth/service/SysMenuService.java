@@ -1,6 +1,7 @@
 package cn.wwwlike.auth.service;
 
 import cn.wwwlike.auth.dao.SysMenuDao;
+import cn.wwwlike.auth.entity.SysGroupResources;
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.vo.MenuVo;
 import cn.wwwlike.common.BaseService;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
     @Autowired
     public SysResourcesService resourcesService;
+    @Autowired
+    public SysGroupResourcesService groupResourcesService;
     /**
      * 查找角色对应的菜单和资源
      * 1 已经绑定当前角色的接口和菜单
@@ -63,7 +66,10 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
         List<MenuVo> menus=new ArrayList<>();
         //添加有权限资源对应的菜单
         if(userResources!=null&&userResources.size()>0){
-            menus.addAll(queryByIds(MenuVo.class,userResources.stream().map(f->f.getSysMenuId()).collect(Collectors.toList()).toArray(new String[0]))) ;
+            String[] ids=userResources.stream().filter(r->r.getSysMenuId()!=null).map(f->f.getSysMenuId()).collect(Collectors.toList()).toArray(new String[0]);
+            if(ids!=null&&ids.length>0){
+                menus.addAll(queryByIds(MenuVo.class,ids)) ;
+            }
         }
         return findAllMenu(menus);
     }
@@ -83,6 +89,27 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
             return menu;
         }else{
             return appId(find("code", menu.getPcode()).get(0).getId());
+        }
+    }
+
+
+    //级联删除
+    public void relationRemove(String sysMenuId){
+        //1. 权限组绑定菜单级联删除 (优化改为采用注解remove搞定)
+//        List<SysGroupResources> list=groupResourcesService.find("sysMenuId",sysMenuId);
+//        if(list!=null){
+//            list.stream().forEach(f->groupResourcesService.delete(f.getId()));
+//        }
+        List<SysResources> menuResources=resourcesService.find("sysMenuId",sysMenuId);
+        for(SysResources resources:menuResources){
+//          2. 资源绑定菜单关系解除(采用注解clear处理)
+//            resources.setSysMenuId(null);
+//            resourcesService.save(resources);
+//          3. 菜单删除后则其下资源与权限组绑定的关系一并解除
+            List<SysGroupResources> groupResourcesList=groupResourcesService.find("sysResourcesId",resources.getId());
+            groupResourcesList.stream().forEach(f->groupResourcesService.delete(f.getId()));
+
+
         }
     }
 }

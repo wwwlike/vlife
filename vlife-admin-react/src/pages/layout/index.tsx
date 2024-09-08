@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { Layout } from "@douyinfe/semi-ui";
 import Header from "./components/header";
 import Sider from "./components/sider";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import SuspendFallbackLoading from "../../components/fallback-loading";
 import FormModal from "../common/modal/formModal";
 import VlifeModal from "../common/modal/vlifeModal";
@@ -12,13 +12,19 @@ import { useAuth } from "@src/context/auth-context";
 const { Content } = Layout;
 const Index: React.FC = () => {
   const { allMenus, user } = useAuth();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const singlePage =
     pathname !== "/" &&
     !allMenus?.map((m) => m.routerAddress).includes(pathname);
 
+  if (singlePage && pathname.includes("/vlife/")) {
+    navigate("/403");
+  }
+
   return (
     <Layout className="layout-page">
+      {/**/}
       {singlePage ? (
         <>
           {/* <FullScreenHeader title={""} /> */}

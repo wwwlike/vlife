@@ -45,6 +45,7 @@ import TableHeader, { TableHeaderProps, VfTableTab } from "./TableHeader";
 import { tableFlowBtns, tableFowTabs } from "./TableFlow";
 import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 import ConfWrapper from "@src/components/compConf/component/ConfWrapper";
+import Buttons from "@src/components/button/component/Buttons";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
@@ -143,11 +144,21 @@ const TablePage = <T extends TableBean>({
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const pageSizeArray = [15, 30, 50];
   const navigate = useNavigate();
-  const { getFormInfo, user, menuButtons, menu, datasInit } = useAuth();
+  const { getFormInfo, user, menu, datasInit } = useAuth();
   const ref = useRef(null);
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
   const [formModel, setFormModel] = useState<FormVo | undefined>(model); //主要表单模型信息
+  const entityType = useMemo(() => {
+    if (tableModel) {
+      if (tableModel.itemType === "entity") {
+        return tableModel.type;
+      } else {
+        return tableModel.entityType;
+      }
+    }
+    return undefined;
+  }, [tableModel]);
   //当前场景
   const [activeKey, setActiveKey] = useState<string | undefined>(
     props.activeKey
@@ -156,14 +167,16 @@ const TablePage = <T extends TableBean>({
   const [recordFlowInfo, setRecordFlowInfo] = useState<RecordFlowInfo[]>(); //列表记录关联的流程信息
   const [apiError, setApiError] = useState<apiError>(); //接口异常信息
   const [pageNum, setPageNum] = useState(1); //分页
-  const [pageSize, setPageSize] = useState<number>(); //每页条数
+  const [pageSize, setPageSize] = useState<number>(
+    defaultPageSize ? Number(defaultPageSize) : 15
+  ); //每页条数
   const [selected, setSelected] = useState<T[]>(); //列表选中的数据
   const [pageData, setPageData] = useState<PageVo<T>>(); //请求到的分页数据
   const [order, setOrder] = useState<orderObj[]>(); //默认的排序内容
   const [loadFlag, setLoadFlag] = useState(1); //刷新标志
   const [tabReq, setTabReq] = useState(); //当前tab页签的查询条件
   const [tabCount, setTabCount] = useState<{ [tabKey: string]: number }>(); //tab页签数量
-  const [tabReqCount, setTabReqCount] = useState<{ [tabKey: string]: any }>({}); //查询数量页签条件
+  const [tabCountReq, setTabCountReq] = useState<{ [tabKey: string]: any }>({}); //查询数量页签条件
   const [relationMap, setRealationMap] = useState<{
     fkObj: any; //外键数据
     parentObj: any; //code关联数据
@@ -251,7 +264,8 @@ const TablePage = <T extends TableBean>({
   }, [size]);
   const pager = useMemo((): { size: number; page: number } => {
     return {
-      size: pageSize || defaultPageSize || tableModel?.pageSize,
+      //@ts-ignore
+      size: pageSize || tableModel?.pageSize,
       page: pageNum,
     };
   }, [pageSize, pageNum, tableModel]);
@@ -340,7 +354,7 @@ const TablePage = <T extends TableBean>({
     entityType: tableModel?.entityType || "",
   });
 
-  //req, conditionReq, searchAndColumnCondition 这3个为当前 页面预制的固定条件，tabReq为页签条件
+  //req, conditionReq, searchAndColumnCondition 这3个为当前页面预制的固定条件，tabReq为页签条件
   const _params = useCallback(
     (_tabReq: any) => {
       const params = {
@@ -359,8 +373,8 @@ const TablePage = <T extends TableBean>({
       order: { orders: orderStr(order) },
       pager: pager,
     };
+    //无页签||存在页签条件=>进行数据请求
     if (pageLoad && (tab === false || tabReq)) {
-      // alert(JSON.stringify(reqParams));
       pageLoad(reqParams)
         .then((data: Result<PageVo<T>>) => {
           if (activeKey) {
@@ -565,23 +579,15 @@ const TablePage = <T extends TableBean>({
   ]);
 
   const tableBtns = useMemo((): VFBtn[] => {
-    const _tableBtns =
-      mode === "view"
-        ? []
-        : [
-            ...(menuButtons && menuButtons.length > 0
-              ? menuButtons
-              : totalBtns),
-          ];
-    //@ts-ignore
+    const _tableBtns = mode === "view" ? [] : totalBtns;
     return _tableBtns.filter(
       (t) =>
-        t.multiple !== true &&
-        (t.position === "tableLine" ||
-          t.position === null ||
-          t.position === undefined)
+        // t.multiple !== true &&
+        t.position === "tableLine" ||
+        t.position === null ||
+        t.position === undefined
     );
-  }, [totalBtns, menuButtons, read, mode]);
+  }, [totalBtns, read, mode]);
 
   const getFkObj = async (tableData: T[], tableModel: FormVo): Promise<any> => {
     let fkObj: any = {};
@@ -683,9 +689,9 @@ const TablePage = <T extends TableBean>({
   //当前tab页签之外的页签计数查询排除当前页签用户输入的查询条件
   useEffect(() => {
     if (pageLoad) {
-      Object.keys(tabReqCount).forEach((key) => {
+      Object.keys(tabCountReq).forEach((key) => {
         // if (tabReqCount[key] !== undefined) {
-        pageLoad(_params(tabReqCount[key])).then((data: Result<PageVo<T>>) => {
+        pageLoad(_params(tabCountReq[key])).then((data: Result<PageVo<T>>) => {
           setTabCount((tabCount) => {
             return { ...tabCount, [key]: data.data?.total || 0 };
           });
@@ -693,7 +699,7 @@ const TablePage = <T extends TableBean>({
         // }
       });
     }
-  }, [tabReqCount, pageLoad, req, searchAndColumnCondition]);
+  }, [tabCountReq, pageLoad, req, searchAndColumnCondition]);
 
   const [siderVisible, setSiderVisible] = useState(false);
 
@@ -744,7 +750,7 @@ const TablePage = <T extends TableBean>({
               {
                 //从tab页签取得conditions
                 <TableHeader
-                  key={menu}
+                  key={menu?.id}
                   tabList={tabList || (openFlowTab ? tableFowTabs : undefined)}
                   entityModel={tableModel}
                   tabCount={tabCount}
@@ -762,11 +768,12 @@ const TablePage = <T extends TableBean>({
                     //当前选中的页签
                     setActiveKey(tab.itemKey);
                     // @ts-ignore
+                    //tab页签查询条件返回，进行数据查询
                     setTabReq(tab.req || []);
                     setSelected([]);
                   }}
                   onCountTab={(tab) => {
-                    setTabReqCount(tab);
+                    setTabCountReq(tab);
                   }}
                 />
               }
@@ -786,6 +793,7 @@ const TablePage = <T extends TableBean>({
                 <ConfWrapper
                   confIcon={<i className=" icon-task_add-02" />}
                   className=" mr-4"
+                  position="start"
                   buttons={[
                     {
                       title: "列表配置",
@@ -801,8 +809,8 @@ const TablePage = <T extends TableBean>({
                       title: "工具栏按钮",
                       model: "button",
                       reaction: [
-                        VF.field("").gt(0).then("").value(""),
-                        VF.then("sysMenuId").value(menu).readPretty(),
+                        VF.then("sysMenuId").value(menu?.id).readPretty(),
+                        VF.then("formId").value(menu?.formId).readPretty(),
                         VF.then("position").value("tableToolbar").hide(),
                       ], //model表单级联关系配置
                       actionType: "save",
@@ -817,7 +825,8 @@ const TablePage = <T extends TableBean>({
                       title: "列表按钮",
                       model: "button",
                       reaction: [
-                        VF.then("sysMenuId").value(menu).readPretty(),
+                        VF.then("sysMenuId").value(menu?.id).readPretty(),
+                        VF.then("formId").value(menu?.formId).readPretty(),
                         VF.then("position").value("tableLine").hide(),
                       ], //model表单级联关系配置
                       actionType: "save",
@@ -828,26 +837,25 @@ const TablePage = <T extends TableBean>({
                       },
                     },
                   ]}
-                />
-                <BtnResourcesToolBar
-                  //@ts-ignore
-                  btns={[
-                    ...(menuButtons && menuButtons.length > 0
-                      ? menuButtons
-                      : totalBtns),
-                  ]}
-                  datas={selected}
-                  dataType={listType}
-                  activeKey={activeKey}
-                  key={menu}
-                  //通用数据操作后回调
-                  onDataChange={(v) => {
-                    setLoadFlag((flag) => flag + 1);
-                    setSelected([]);
-                  }}
-                  position="tableToolbar"
-                  onActiveChange={setActiveKey}
-                />
+                >
+                  <BtnResourcesToolBar
+                    //@ts-ignore
+                    entity={entityType}
+                    btns={totalBtns}
+                    datas={selected}
+                    dataType={listType}
+                    activeKey={activeKey}
+                    key={`buttons_${menu?.id}`}
+                    btnConf={user?.superUser === true}
+                    //通用数据操作后回调
+                    onDataChange={(v) => {
+                      setLoadFlag((flag) => flag + 1);
+                      setSelected([]);
+                    }}
+                    position="tableToolbar"
+                    onActiveChange={setActiveKey}
+                  />
+                </ConfWrapper>
               </>
             )}
 
@@ -951,7 +959,9 @@ const TablePage = <T extends TableBean>({
           <Table<T>
             queryFunc={query}
             className={"flex justify-center flex-1 "}
-            key={tableModel.type + pageSize + pager?.page + activeKey + menu}
+            key={
+              tableModel.type + pageSize + pager?.page + activeKey + menu?.id
+            }
             onFieldClick={_onFieldClick}
             model={tableModel} //设计模式时应用实时传入的formVo
             dataSource={tableData}

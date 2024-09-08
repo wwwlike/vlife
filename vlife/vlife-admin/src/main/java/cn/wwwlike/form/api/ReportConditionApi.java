@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import cn.wwwlike.web.security.core.SecurityUser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +46,7 @@ public class ReportConditionApi extends VLifeApi<ReportCondition, ReportConditio
     SecurityUser currUser=SecurityConfig.getCurrUser();
     if("table".equals(req.getType())){
       return list.stream().filter(
-              item->(currUser.getSuperUser()!=null&&currUser.getSuperUser())||item.getSysGroupIds()==null||item.getSysGroupIds().indexOf(currUser.getGroupId())!=-1).collect(Collectors.toList());
+              item->(currUser.getSuperUser()!=null&&currUser.getSuperUser())|| StringUtils.isEmpty(item.getSysGroupIds())||item.getSysGroupIds().indexOf(currUser.getGroupId())!=-1).collect(Collectors.toList());
     }
     return list;
   }
