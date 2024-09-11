@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import classNames from "classnames";
 import { IdBean } from "@src/api/base";
 import {
@@ -9,9 +9,9 @@ import {
 import Button from "@src/components/button";
 import { Dropdown } from "@douyinfe/semi-ui";
 import { useAuth } from "@src/context/auth-context";
-import { _saveFunc } from "./buttonFuns";
+import { findModelByResourcesId, _saveFunc } from "./buttonFuns";
 import { usableDatasMatch } from "@src/components/queryBuilder/funs";
-// import * as Icons from '@ant-design/icons';
+import Button2 from "../Button2";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|(可新增和支持多数据操作型按钮)
@@ -57,18 +57,19 @@ export default <T extends IdBean>({
   btnConf = true,
   onDataChange,
   position = "page", //默认场景
-  onBtnNum,
   onActiveChange,
 }: BtnToolBarProps<T>) => {
   //接口资源
-  const { resources, allButtons } = useAuth();
+  const { allButtons } = useAuth();
 
-  //数据库按钮对象 {key:button}
+  // 数据库按钮对象 {key:button}
   const customButtons = useMemo(() => {
-    const result = allButtons.reduce<{ [key: string]: object }>((acc, item) => {
-      acc[item.code] = item; // 将 item.value 存入以 item.code 为键的属性中
-      return acc;
-    }, {});
+    const result = allButtons
+      .filter((b) => b.code !== null)
+      .reduce<{ [key: string]: object }>((acc, item) => {
+        acc[item?.code || ""] = item; // 将 item.value 存入以 item.code 为键的属性中
+        return acc;
+      }, {});
     return result;
   }, [allButtons]);
 
@@ -76,48 +77,10 @@ export default <T extends IdBean>({
   const _btns = useMemo((): VFBtn[] => {
     //有一个资源id表示当前是配置的按钮则需要进行转换
     return btns.map((b) => {
-      if (b.sysResourcesId) {
-        const _resources = resources[b.sysResourcesId || ""];
-        const _model =
-          _resources.paramType === "entity" || _resources.paramType === "dto"
-            ? _resources.paramWrapper
-            : undefined;
-        const _multiple =
-          _resources.paramWrapper.includes("List") ||
-          _resources.paramWrapper.includes("[]");
-        const _usableMatch = (_data: any) => {
-          return b.conditionJson
-            ? usableDatasMatch(JSON.parse(b.conditionJson), _data)
-            : true;
-        };
-        const _actionType = _model ? "save" : "api";
-        return {
-          ...b,
-          saveApi: _saveFunc(_resources),
-          // permissionCode: _resources.url.replaceAll("/", ":"),
-          permissionCode: _resources.code,
-          actionType: _actionType,
-          model: _model,
-          // icon: <Icon />,
-          title:
-            b.title ||
-            (_actionType === "api"
-              ? _resources.methedType.startsWith("@DeleteMapping(")
-                ? "删除"
-                : _resources.name
-              : "savecreate".includes(_actionType)
-              ? b.position === "tableLine"
-                ? "修改"
-                : "新增"
-              : ""),
-          usableMatch: _usableMatch,
-          multiple: _multiple,
-        };
-      } else if (b.code && customButtons[b.code]) {
+      if (b.code && b.sysResourcesId === undefined && customButtons[b.code]) {
         // 手写按钮与数据库按钮合并
         return { ...customButtons[b.code], ...b };
       } else {
-        //手写按钮
         return b;
       }
     });
@@ -195,11 +158,6 @@ export default <T extends IdBean>({
     return toolBarBtns;
   }, [position, _btns, dataType, readPretty, datas]);
 
-  //返回按钮数量
-  useEffect(() => {
-    onBtnNum && onBtnNum(currBtns.length);
-  }, [currBtns]);
-
   return dropdown === false ? (
     <div
       className={`flex ${className} !items-center ${classNames({
@@ -209,7 +167,7 @@ export default <T extends IdBean>({
     >
       {currBtns.map((btn, index) => {
         return (
-          <Button
+          <Button2
             groupIndex={index}
             groupTotal={currBtns.length}
             key={`btn_${line}_${index}`}
@@ -228,7 +186,7 @@ export default <T extends IdBean>({
                 : btn.position
             }
             datas={
-              btn.datas || datas
+              datas
               // btn.actionType === "create" ||
               // (btn.actionType === "save" && position === "tableToolbar")
               //   ? btn.initData //新增类型按钮使用initData
@@ -261,7 +219,7 @@ export default <T extends IdBean>({
             {currBtns.map((btn, index) => {
               return (
                 <div key={`div_${line}_${index}`}>
-                  <Button
+                  <Button2
                     {...btn}
                     position={"dropdown"}
                     btnConf={btn.btnConf || btnConf}

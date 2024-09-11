@@ -12,7 +12,7 @@ export default () => {
   const location = useLocation();
   const [formVo, setFormVo] = useState<FormVo>();
   const [pageReqType, setPageReqType] = useState<string>();
-  const { menuButtons, menu } = useAuth();
+  const { menuButtons } = useAuth();
   useTitle(
     window.localStorage.getItem("menuTitle") !== null
       ? JSON.parse(window.localStorage.getItem("menuTitle") || "")?.title
@@ -52,6 +52,7 @@ export default () => {
         editType={formVo.type}
         addTabAble={true}
         allTabAble={true}
+        templateMode={true}
         listType={formVo.entityType}
       />
     )) || <Empty title={`无${formType}模型`} description="没有找到" />

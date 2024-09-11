@@ -180,7 +180,8 @@ const FormPage = <T extends IdBean>({
               onForm={onForm}
               onSubForm={onSubForm}
             />
-            {user?.superUser === true && formSetting && (
+            {/* && formSetting */}
+            {user?.superUser === true && (
               <div
                 onClick={() => {
                   navigate(`/sysConf/formDesign/${type}`);

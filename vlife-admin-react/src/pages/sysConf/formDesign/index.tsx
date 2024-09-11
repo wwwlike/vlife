@@ -6,14 +6,11 @@ import FormDesign from "./FormDesign";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FormVo, list, saveFormDto } from "@src/api/Form";
 import { useAuth } from "@src/context/auth-context";
-import BasicSetting from "./component/BasicSetting";
 import FlowDesign from "./FlowDesign";
 import { Space } from "@douyinfe/semi-ui";
-import BtnToolBar from "@src/components/button/BtnToolBar";
 import { publish } from "@src/api/workflow/Flow";
-import FormSettingPanel from "./setting/FormSettingPanel";
-import Setting from "./setting";
-import Buttons from "@src/components/button/component/Buttons";
+import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
+import AdvSetting from "@src/plus/page/design/form/advSetting";
 const Container = styled.div`
   flex: 1;
   display: flex;
@@ -21,10 +18,9 @@ const Container = styled.div`
   height: 0;
 `;
 export enum TabType {
-  baseSettings = "baseSettings",
   formDesign = "formDesign",
-  flowDesign = "flowDesign",
   addvancedSettings = "addvancedSettings",
+  flowDesign = "flowDesign",
 }
 
 export default memo(() => {
@@ -57,8 +53,8 @@ export default memo(() => {
         label: "编辑字段",
       },
       {
-        key: TabType.baseSettings,
-        label: "表单设置",
+        key: TabType.addvancedSettings,
+        label: "高级设置",
       },
     ];
     //业务模块可以添加工作流
@@ -114,7 +110,7 @@ export default memo(() => {
           </Space>
         }
         actions={
-          <Buttons
+          <BtnResourcesToolBar
             entity="form"
             btns={[
               {
@@ -127,18 +123,6 @@ export default memo(() => {
                 onSubmitFinish: (data) => {
                   setCurrModel(data);
                   //缓存清除
-                  clearModelInfo(currModel?.type);
-                },
-              },
-              {
-                actionType: "save",
-                title: "另存",
-                disabled: selectedTab !== "formDesign",
-                datas: currModel,
-                disabledHide: true,
-                saveApi: saveFormDto,
-                onSubmitFinish: (data) => {
-                  setCurrModel(data);
                   clearModelInfo(currModel?.type);
                 },
               },
@@ -170,20 +154,8 @@ export default memo(() => {
           />
         )}
       </Toolbar>
-      {/* 基础设置 */}
-      {selectedTab === TabType.baseSettings && currModel && (
-        <Setting formVo={currModel} onDataChange={() => {}} />
-        // <BasicSetting
-        //   formVo={currModel}
-        //   onDataChange={function (formVo: FormVo): void {
-        //     setCurrModel((m) => ({
-        //       ...formVo,
-        //       unpublishJson: m?.unpublishJson || "",
-        //     }));
-        //   }}
-        // />
-      )}
-      {/*  */}
+
+      {/*1. 表单设置  */}
       {selectedTab === TabType.formDesign && (
         <FormDesign
           type={type}
@@ -196,7 +168,11 @@ export default memo(() => {
           formVo={undefined}
         />
       )}
-      {/* 流程设计json */}
+      {/*2. 高级设置 */}
+      {selectedTab === TabType.addvancedSettings && currModel && (
+        <AdvSetting formVo={currModel} onDataChange={() => {}} />
+      )}
+      {/*3. 流程设计json */}
       {selectedTab === TabType.flowDesign && currModel && (
         <FlowDesign
           type={currModel?.type}

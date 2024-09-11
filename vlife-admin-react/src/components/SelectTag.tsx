@@ -84,7 +84,7 @@ const SelectTag = ({
               }}
               size="large"
               key={"dict_select_tag" + d.value}
-              // color="blue"
+              color="blue"
               type={selects.includes(d.value) ? "solid" : "ghost"}
             >
               {d.label}

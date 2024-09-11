@@ -145,14 +145,8 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
       if (typeof matchResult === "string") {
         setDisabled(true);
         setTooltip(matchResult);
-        // setBtn((btn) => {
-        //   return { ...btn, tooltip: matchResult, disabled: true };
-        // });
       } else if (typeof matchResult === "boolean") {
         setDisabled(!matchResult);
-        // setBtn((btn) => {
-        //   return { ...btn, disabled: !matchResult };
-        // });
       }
     };
     let dataMatchTooltip = btnUsableMatch();
@@ -189,7 +183,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
         return false;
       } else if (
         props.usableMatch === undefined ||
-        (props.actionType === "save" && modalOpen !== true) //没打开模型则是新增
+        (props.actionType === "save" && modalOpen !== true && btnData === null) //没打开模型则是新增(待完善注释)
       ) {
         //2 无其他数据动态匹配方式
         return true;
@@ -499,7 +493,10 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
       } else {
         return <i className={icon} />;
       }
-    } else if (actionType === "create") {
+    } else if (
+      actionType === "create" ||
+      (actionType === "save" && position === "tableToolbar")
+    ) {
       return <i className="  icon-add_circle_outline" />;
     } else {
       return <i className="  icon-gantt_chart" />;
@@ -530,7 +527,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
             if (!disabled) {
               btnClick();
             }
-            event.stopPropagation();
+            // event.stopPropagation();
           }}
           loading={loading}
           theme={`${
@@ -603,7 +600,6 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
   ]);
   return authPass && !(disabledHide && disabled === true) ? (
     <>
-      {/* {_permissionCode} */}
       {disabled === true &&
       (tooltip || btnData === undefined || btnData.length === 0) ? (
         <Tooltip content={tooltip || "请选择数据"}>
@@ -632,7 +628,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
               },
             },
             {
-              title: "表单配置",
+              title: "专属表单配置",
               actionType: "click",
               icon: <i className=" icon-table" />,
               disabledHide: true,
@@ -641,7 +637,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
               },
               datas: [{ ...props }],
               onClick: (d) => {
-                navigate(`/sysConf/buttonFormConf?buttonId=${d.id}`); // 跳转到 /page-b
+                navigate(`/sysConf/buttonFormDesign?buttonId=${d.id}`); // 跳转到 /page-b
               },
             },
             {

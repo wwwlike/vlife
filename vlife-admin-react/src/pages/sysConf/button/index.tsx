@@ -9,12 +9,9 @@ import { VF } from "@src/dsl/VF";
 
 export default () => {
   const navigate = useNavigate();
-  // const { resources } = useAuth();
-  // const [data, setData] = useState<any[]>([]);
   return (
     <TablePage
       listType="button"
-      // addTabAble={true}
       btns={[
         {
           title: "表单配置",
@@ -22,23 +19,13 @@ export default () => {
           icon: <i className=" icon-table" />,
           model: "button",
           multiple: false,
-          reaction: [
-            VF.result((a) => {
-              return true;
-            })
-              .then("id", "name")
-              .value("1"),
-          ],
-          // disabledHide: true,
           usableMatch: (d: any) => {
             return d.model !== null;
           },
-          // datas: [{ ...props }],
           onClick: (d) => {
-            // alert(d.model);
-            const el = "navigate(`/sysConf/buttonFormConf?buttonId=${d.id}`);";
+            const el =
+              "navigate(`/sysConf/buttonFormDesign?buttonId=${d.id}`);";
             eval(el);
-            // 跳转到 /page-b
           },
         },
       ]}

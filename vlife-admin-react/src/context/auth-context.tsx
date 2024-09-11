@@ -19,7 +19,9 @@ import { MenuVo } from "@src/api/SysMenu";
 import { gitToken } from "@src/api/pro/gitee";
 import { varObj } from "@src/api/SysVar";
 import { useMemo } from "react";
-import { Button, list as buttonList } from "@src/api/Button";
+import { ButtonVo, list as buttonList } from "@src/api/Button";
+import { VFBtn } from "@src/components/button/types";
+import { buttonToVfBtn } from "@src/components/button/component/buttonFuns";
 export const localStorageKey = "__auth_provider_token__";
 const mode = import.meta.env.VITE_APP_MODE;
 export interface dictObj {
@@ -82,9 +84,9 @@ const AuthContext = React.createContext<
       getDict: (obj: { emptyLabel?: string; codes?: string[] }) => TranDict[]; //如果codes不传，则返回字典类目
       //按钮权限认证
       checkBtnPermission: (code: string) => boolean; //检查按钮权限
-      resources: { [key: string]: SysResources }; //全部接口权限
-      menuButtons: Button[]; //当前菜单的按钮
-      allButtons: Button[]; //所有按钮
+      resources: { [code: string]: SysResources }; //全部接口权限
+      menuButtons: VFBtn[]; //当前菜单的按钮
+      allButtons: VFBtn[]; //所有按钮
       datasInit: () => void;
     }
   | undefined
@@ -115,11 +117,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   /**
    * 权限权限资源信息
    */
-  const [allResources, setAllResources] = useState<SysResources[]>([]);
+  const [resources, setResources] = useState<{ [id: string]: SysResources }>(
+    {}
+  );
+
+  /**
+   * 权限权限资源信息
+   */
+  const [codeResources, setCodeResources] = useState<{
+    [code: string]: SysResources;
+  }>({});
+
   /**
    * 所有配置按钮
    */
-  const [allButtons, setAllButtons] = useState<Button[]>([]);
+  const [allButtons, setAllButtons] = useState<VFBtn[]>([]);
 
   //存模型信息的对象，key是modelName, modelInfoProps
   // 与数据库一致的，有UI场景的模型信息
@@ -191,10 +203,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setDicts(obj);
   }, [dbDicts]);
 
-  const menuButtons = useMemo(() => {
+  const menuButtons = useMemo((): VFBtn[] => {
     return allButtons
       ?.filter((f) => f.sysMenuId === menu?.id)
-      .sort((a, b) => a.sort - b.sort);
+      .sort((a, b) => a.sort || 0 - (b.sort || 0));
   }, [allButtons, menu]);
 
   /**
@@ -207,12 +219,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
     //同步拉取全量资源信息
     resourcesList().then((d) => {
-      setAllResources(d.data || []);
+      const _IdKeyObjectResources: { [key: string]: SysResources } =
+        d?.data?.reduce<Record<string, SysResources>>((accumulator, item) => {
+          accumulator[item.id] = item;
+          return accumulator;
+        }, {}) || {};
+      setResources(_IdKeyObjectResources);
+      const _codeKeyObjectResources: { [key: string]: SysResources } =
+        d?.data?.reduce<Record<string, SysResources>>((accumulator, item) => {
+          accumulator[item.code] = item;
+          return accumulator;
+        }, {}) || {};
+      setResources(_IdKeyObjectResources);
+      setCodeResources(_codeKeyObjectResources);
+      buttonList().then((buttonData) => {
+        const btns =
+          buttonData.data?.map((button) => {
+            return buttonToVfBtn(_IdKeyObjectResources, button);
+          }) || [];
+        setAllButtons(btns);
+      });
     });
 
-    buttonList().then((d) => {
-      setAllButtons(d.data || []);
-    });
     //所有模型信息拉取
     list().then((f) => {
       setAllModels(f.data);
@@ -340,18 +368,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [allModels]
   );
 
-  const resources = useMemo((): { [key: string]: SysResources } => {
-    if (allResources) {
-      return allResources.reduce<Record<string, SysResources>>(
-        (accumulator, item) => {
-          accumulator[item.id] = item;
-          return accumulator;
-        },
-        {}
-      );
-    }
-    return {};
-  }, [allResources]);
+  // const resources = useMemo((): { [key: string]: SysResources } => {
+  //   if (allResources) {
+  //     return allResources.reduce<Record<string, SysResources>>(
+  //       (accumulator, item) => {
+  //         accumulator[item.id] = item;
+  //         return accumulator;
+  //       },
+  //       {}
+  //     );
+  //   }
+  //   return {};
+  // }, [allResources]);
   /**
    * @param codes 多条字典信息
    * @returns
@@ -437,9 +465,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
   }, []);
 
-  // const allPermissionCode = useCallback(() => {
-  //   return  allResources?.filter((f) =>  f.sysMenuId === null)
-  // }, [allResources]);
   /**
    * @param btnObj 检查权限编码是否在用户能访问的范围里
    * 1. 资源绑定了菜单，但没有关联到角色，这样的资源非super也无法访问
@@ -459,24 +484,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         code &&
         user?.resourceCodes?.includes(code)
       ) {
-        //拥有权限
+        //拥有权限可访问
         return true;
       } else if (
-        //资源权限未纳入权限管理绑定菜单
-        allResources &&
-        allResources?.filter(
-          (f) => f.code === code && f.sysMenuId === null && f.pcode === null
-        ).length > 0
+        //没导入资源可访问
+        codeResources?.[code] &&
+        codeResources?.[code].sysMenuId === null &&
+        codeResources?.[code].pcode === null
       ) {
         return true;
-      } else if (!allResources?.map((r) => r.code).includes(code)) {
-        //资源名称有误，也让访问
+      } else if (codeResources?.[code] === undefined) {
+        //资源无法查询到，也让访问
         return true;
       }
       //用户没有此资源，此资源没有绑定模块
       return false;
     },
-    [user?.resourceCodes, allResources]
+    [user?.resourceCodes, codeResources]
   );
   /**
    * 退出

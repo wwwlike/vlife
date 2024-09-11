@@ -121,6 +121,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             //接口资源同步，做更新，不做初始化
             resourcesService.sync();
         }catch (Exception e){
+            e.printStackTrace();
             System.out.println("╔════════════════════════════════════════════════════════════════╗");
             System.out.println("║                                                                ║");
             System.out.println("║                please run 'mvn package' command.               ║");

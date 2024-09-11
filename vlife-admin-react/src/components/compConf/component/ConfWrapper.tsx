@@ -3,6 +3,7 @@ import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesTo
 import { VFBtn } from "@src/components/button/types";
 import { useAuth } from "@src/context/auth-context";
 import classNames from "classnames";
+import Buttons from "@src/components/button/component/Buttons";
 /**
  * 可配置组件的包裹组件
  */
@@ -23,10 +24,10 @@ export default (props: ConfWrapperProps) => {
         // <span className={`relative z-50 rounded-md p-1 ${props.className}`}>
         <>
           {position === "start" && (
-            <BtnResourcesToolBar
+            <Buttons
               className="inline"
               dropdown={confIcon || true}
-              btnConf={false}
+              btnConf={true}
               btns={buttons}
             />
           )}
@@ -39,7 +40,7 @@ export default (props: ConfWrapperProps) => {
             {children}
           </span>
           {position === "end" && (
-            <BtnResourcesToolBar
+            <Buttons
               className="inline"
               dropdown={confIcon || true}
               btns={buttons}

@@ -38,14 +38,13 @@ import {
   startFlow,
 } from "@src/api/workflow/Flow";
 import { useNiceModal } from "@src/store";
-import TableTab, { ActiveTab, TableTabBaseProps } from "./tableTab";
+import TableTab from "./tableTab";
 import Button from "@src/components/button";
 import ImportPage from "../excel/ImportPage";
 import TableHeader, { TableHeaderProps, VfTableTab } from "./TableHeader";
 import { tableFlowBtns, tableFowTabs } from "./TableFlow";
 import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 import ConfWrapper from "@src/components/compConf/component/ConfWrapper";
-import Buttons from "@src/components/button/component/Buttons";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
@@ -98,6 +97,7 @@ export interface TablePageProps<T extends TableBean>
   editType: string | { type: string; reaction: VfAction[] }; //编辑模型，需要和listType有相同的实体模型(entityType)
   req?: any; //查询条件obj  //简单obj对象完全匹配的过滤条件
   conditionReq?: Partial<where>[]; //单组组内and方式的复杂fixed固定的过滤条件
+  templateMode: boolean; //模板配置模式
   design: true | undefined; //true则是设计器模式
   pageSize: number; //默认分页数量
   select_show_field: string; //选中时进行展示的字段，不传则不展示
@@ -122,6 +122,7 @@ const TablePage = <T extends TableBean>({
   conditionReq,
   dataSource,
   mode = "normal",
+  templateMode = false,
   width,
   btns,
   otherBtns,
@@ -144,7 +145,7 @@ const TablePage = <T extends TableBean>({
 }: Partial<TablePageProps<T>> & { listType: string }) => {
   const pageSizeArray = [15, 30, 50];
   const navigate = useNavigate();
-  const { getFormInfo, user, menu, datasInit } = useAuth();
+  const { getFormInfo, user, menu, datasInit, resources } = useAuth();
   const ref = useRef(null);
   const size = useSize(ref);
   const [tableModel, setTableModel] = useState<FormVo | undefined>(model); //列表模型信息
@@ -454,19 +455,6 @@ const TablePage = <T extends TableBean>({
           return getDetail(id, b.model);
         };
       }
-      // if (b.model === undefined && b.saveApi === undefined) {
-      //   b.model = listType;
-      // }
-      // if (b.disabledHide === undefined) {
-      //   b.disabledHide = true;
-      // }
-      // if (
-      //   b.saveApi &&
-      //   (b.permissionCode === undefined || b.permissionCode === null)
-      // ) {
-      //   b.permissionCode =
-      //     entity + ":" + b.saveApi.name === "saveApi" ? b.actionType : "";
-      // }
       return {
         ...b,
         reaction:
@@ -588,6 +576,77 @@ const TablePage = <T extends TableBean>({
         t.position === undefined
     );
   }, [totalBtns, read, mode]);
+
+  //提取按钮信息里需要配置的model
+  const btnsModelConfBtns = useMemo((): VFBtn[] => {
+    //model去重
+    const models = Array.from(
+      new Set(
+        totalBtns
+          .filter(
+            (item) =>
+              item.model !== null ||
+              (item.sysResourcesId &&
+                resources[item.sysResourcesId] &&
+                (resources[item.sysResourcesId].paramType === "entity" ||
+                  resources[item.sysResourcesId].paramType === "dto"))
+          )
+          .map(
+            //@ts-ignore
+            (item) => item.model || resources[item.sysResourcesId]?.paramWrapper
+          )
+      )
+    );
+    return models.map((_model) => {
+      return {
+        title: `表单配置(${_model})`,
+        allowEmpty: true,
+        icon: <i className="  icon-setting" />,
+        onClick: () => {
+          navigate(`/sysConf/formDesign/${_model}`);
+        },
+      };
+    });
+  }, [tableBtns]);
+
+  const templateCreateBtns = useMemo((): VFBtn[] => {
+    return templateMode
+      ? [
+          {
+            code: "tableToolbarBtn",
+            title: "新增工具栏按钮",
+            model: "button",
+            reaction: [
+              VF.then("sysMenuId").value(menu?.id).readPretty(),
+              VF.then("formId").value(menu?.formId).readPretty(),
+              VF.then("position").value("tableToolbar").hide(),
+            ], //model表单级联关系配置
+            actionType: "save",
+            icon: <i className="  icon-setting" />,
+            saveApi: btnSave,
+            onSubmitFinish: () => {
+              datasInit();
+            },
+          },
+          {
+            code: "tableBtn",
+            title: "新增列表栏按钮",
+            model: "button",
+            reaction: [
+              VF.then("sysMenuId").value(menu?.id).readPretty(),
+              VF.then("formId").value(menu?.formId).readPretty(),
+              VF.then("position").value("tableLine").hide(),
+            ], //model表单级联关系配置
+            actionType: "save",
+            icon: <i className="  icon-enterprise_tool" />,
+            saveApi: btnSave,
+            onSubmitFinish: () => {
+              datasInit();
+            },
+          },
+        ]
+      : [];
+  }, [templateMode]);
 
   const getFkObj = async (tableData: T[], tableModel: FormVo): Promise<any> => {
     let fkObj: any = {};
@@ -791,12 +850,13 @@ const TablePage = <T extends TableBean>({
               <>
                 {/* 工具栏配置 */}
                 <ConfWrapper
-                  confIcon={<i className=" icon-task_add-02" />}
+                  confIcon={<i className="  icon-settings1" />}
                   className=" mr-4"
                   position="start"
                   buttons={[
+                    ...templateCreateBtns, //创建按钮
                     {
-                      title: "列表配置",
+                      title: `列表配置(${listType})`,
                       actionType: "click",
                       datas: [{ id: "123" }],
                       icon: <i className="  icon-table" />,
@@ -804,42 +864,10 @@ const TablePage = <T extends TableBean>({
                         navigate(`/sysConf/tableDesign/${listType}`);
                       },
                     },
-                    {
-                      code: "tableToolbarBtn",
-                      title: "工具栏按钮",
-                      model: "button",
-                      reaction: [
-                        VF.then("sysMenuId").value(menu?.id).readPretty(),
-                        VF.then("formId").value(menu?.formId).readPretty(),
-                        VF.then("position").value("tableToolbar").hide(),
-                      ], //model表单级联关系配置
-                      actionType: "save",
-                      icon: <i className="  icon-enterprise_tool" />,
-                      saveApi: btnSave,
-                      onSubmitFinish: () => {
-                        datasInit();
-                      },
-                    },
-                    {
-                      code: "tableBtn",
-                      title: "列表按钮",
-                      model: "button",
-                      reaction: [
-                        VF.then("sysMenuId").value(menu?.id).readPretty(),
-                        VF.then("formId").value(menu?.formId).readPretty(),
-                        VF.then("position").value("tableLine").hide(),
-                      ], //model表单级联关系配置
-                      actionType: "save",
-                      icon: <i className=" icon-subtable" />,
-                      saveApi: btnSave,
-                      onSubmitFinish: () => {
-                        datasInit();
-                      },
-                    },
+                    ...btnsModelConfBtns, //表单模型配置
                   ]}
                 >
                   <BtnResourcesToolBar
-                    //@ts-ignore
                     entity={entityType}
                     btns={totalBtns}
                     datas={selected}
