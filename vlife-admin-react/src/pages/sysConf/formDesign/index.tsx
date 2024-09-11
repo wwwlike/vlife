@@ -10,7 +10,6 @@ import FlowDesign from "./FlowDesign";
 import { Space } from "@douyinfe/semi-ui";
 import { publish } from "@src/api/workflow/Flow";
 import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
-import AdvSetting from "@src/plus/page/design/form/advSetting";
 const Container = styled.div`
   flex: 1;
   display: flex;
@@ -168,9 +167,11 @@ export default memo(() => {
           formVo={undefined}
         />
       )}
-      {/*2. 高级设置 */}
-      {selectedTab === TabType.addvancedSettings && currModel && (
-        <AdvSetting formVo={currModel} onDataChange={() => {}} />
+
+      {selectedTab === TabType.addvancedSettings && (
+        <div className=" text-center py-10 text-red-500 font-bold">
+          企业版提供该设置，开源版可通过低代码方式实现该需求
+        </div>
       )}
       {/*3. 流程设计json */}
       {selectedTab === TabType.flowDesign && currModel && (

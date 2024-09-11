@@ -595,6 +595,7 @@ const TablePage = <T extends TableBean>({
             //@ts-ignore
             (item) => item.model || resources[item.sysResourcesId]?.paramWrapper
           )
+          .filter((modelName) => modelName !== undefined)
       )
     );
     return models.map((_model) => {

@@ -60,7 +60,8 @@ export const remove=(ids:string[]): Promise<Result<number>>=>{
 
 
 export const list=(req?:PageQuery): Promise<Result<ButtonVo[]>>=>{
-  return apiClient.post(`/button/list/buttonVo`,req);
+  return Promise.resolve({ data: [],code: "200", msg: "" }); 
+  // return apiClient.post(`/button/list/buttonVo`,req);
 };
 
 export const moveDown=(dto:Button): Promise<Result<Button>>=>{

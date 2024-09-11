@@ -19,7 +19,7 @@ import { MenuVo } from "@src/api/SysMenu";
 import { gitToken } from "@src/api/pro/gitee";
 import { varObj } from "@src/api/SysVar";
 import { useMemo } from "react";
-import { ButtonVo, list as buttonList } from "@src/api/Button";
+import { list as buttonList } from "@src/api/Button";
 import { VFBtn } from "@src/components/button/types";
 import { buttonToVfBtn } from "@src/components/button/component/buttonFuns";
 export const localStorageKey = "__auth_provider_token__";
