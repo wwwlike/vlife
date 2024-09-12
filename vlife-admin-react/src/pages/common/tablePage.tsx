@@ -45,6 +45,7 @@ import TableHeader, { TableHeaderProps, VfTableTab } from "./TableHeader";
 import { tableFlowBtns, tableFowTabs } from "./TableFlow";
 import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 import ConfWrapper from "@src/components/compConf/component/ConfWrapper";
+import Buttons from "@src/components/button/component/Buttons";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
@@ -868,7 +869,7 @@ const TablePage = <T extends TableBean>({
                     ...btnsModelConfBtns, //表单模型配置
                   ]}
                 >
-                  <BtnResourcesToolBar
+                  <Buttons
                     entity={entityType}
                     btns={totalBtns}
                     datas={selected}

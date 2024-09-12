@@ -75,14 +75,16 @@ export default <T extends IdBean>({
   //db按钮数据转换
   const _btns = useMemo((): VFBtn[] => {
     //有一个资源id表示当前是配置的按钮则需要进行转换
-    return btns.map((b) => {
-      if (b.code && b.sysResourcesId === undefined && customButtons[b.code]) {
-        // 手写按钮与数据库按钮合并
-        return { ...b, ...customButtons[b.code] };
-      } else {
-        return b;
-      }
-    });
+    return btns
+      .sort((a, b) => a.sort || 0 - (b.sort || 0))
+      .map((b) => {
+        if (b.code && b.sysResourcesId === undefined && customButtons[b.code]) {
+          // 手写按钮与数据库按钮合并
+          return { ...b, ...customButtons[b.code] };
+        } else {
+          return b;
+        }
+      });
   }, [btns, customButtons]);
 
   //筛选出应该在当前场景下可以使用的按钮
