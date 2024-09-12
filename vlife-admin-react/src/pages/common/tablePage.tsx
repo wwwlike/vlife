@@ -611,7 +611,7 @@ const TablePage = <T extends TableBean>({
   }, [tableBtns]);
 
   const templateCreateBtns = useMemo((): VFBtn[] => {
-    return templateMode
+    return templateMode && menu
       ? [
           {
             code: "tableToolbarBtn",
@@ -647,7 +647,7 @@ const TablePage = <T extends TableBean>({
           },
         ]
       : [];
-  }, [templateMode]);
+  }, [templateMode, menu]);
 
   const getFkObj = async (tableData: T[], tableModel: FormVo): Promise<any> => {
     let fkObj: any = {};
@@ -859,7 +859,7 @@ const TablePage = <T extends TableBean>({
                     {
                       title: `列表配置(${listType})`,
                       actionType: "click",
-                      datas: [{ id: "123" }],
+                      allowEmpty: true,
                       icon: <i className="  icon-table" />,
                       onClick: () => {
                         navigate(`/sysConf/tableDesign/${listType}`);

@@ -101,6 +101,7 @@ export const buttonToVfBtn =(resources:{[key:string]:SysResources},b:ButtonVo):V
         actionType: _actionType,
         title: _title,
         model: _model,
+        sort: b.sort,
         conditionJson:b.conditionJson,
         usableMatch: _usableMatch,
         multiple: _multiple,

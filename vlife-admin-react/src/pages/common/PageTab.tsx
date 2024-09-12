@@ -14,7 +14,6 @@ export type VfTab = {
   itemKey: string; // 场景标识key
   pKey?: string; //上级场景key
 };
-
 export interface PageTabProps {
   className?: string;
   contentTab: VfTab[]; //页签列表
@@ -22,12 +21,10 @@ export interface PageTabProps {
   onSelected: (key: string) => void; //页签切换回调
   onRemove?: (key: string) => void; //删除页签回调
 }
-
 export default ({ ...props }: PageTabProps) => {
   const { className, contentTab, onSelected, onRemove, activeKey } = props;
   const [_level1Selected, setLevel1Selected] = useState<string>(); //第一层选中的
   const [_level2Selected, setLevel2Selected] = useState<string>(); //第二层选中的
-  // const [_activeKey, setActiveKey] = useState<string | undefined>(activeKey); //外部传入的激活的key
 
   //第一层tab页签集合
   const level1Tabs = useMemo(() => {
@@ -49,53 +46,52 @@ export default ({ ...props }: PageTabProps) => {
     return [];
   }, [_level1Selected, contentTab]);
 
-  //外部传入的页签(level1或者2的页签则让当前页面的相关页签可以选中)
+  //第一级页签选中逻辑
   useEffect(() => {
-    if (activeKey) {
-      const selectedTab = contentTab.find((tab) => tab.itemKey === activeKey);
-      if (selectedTab) {
-        setLevel1Selected(activeKey);
-        const level2SelectedTab = contentTab.find((t) => t.pKey === activeKey);
-        if (level2SelectedTab) {
-          setLevel2Selected(level2SelectedTab.itemKey);
-        }
-      } else {
-        const selected2Tab = contentTab.find(
-          (tab) => tab.itemKey === activeKey
-        );
-        if (selected2Tab) {
-          setLevel2Selected(activeKey);
-          setLevel1Selected(selected2Tab.pKey);
-        }
-      }
-    } else {
-      const _level1_selected_itemKey = level1Tabs[0]?.itemKey;
-      setLevel1Selected(_level1_selected_itemKey);
-      const _level2SelectedTab = contentTab.find(
-        (t) => t.pKey === _level1_selected_itemKey
+    if (!activeKey) {
+      //页签为空默认第一个选中
+      setLevel1Selected(level1Tabs?.[0]?.itemKey);
+    } else if (
+      level1Tabs &&
+      activeKey &&
+      level1Tabs.map((_l1) => _l1.itemKey).includes(activeKey)
+    ) {
+      setLevel1Selected(activeKey);
+    } else if (_level2Selected && !_level1Selected) {
+      setLevel1Selected(
+        contentTab.find((k) => k.itemKey === _level2Selected)?.pKey
       );
-      if (_level2SelectedTab) {
-        setLevel2Selected(_level2SelectedTab.itemKey);
-        onSelected(_level2SelectedTab.itemKey);
-      } else {
-        onSelected(_level1_selected_itemKey);
+    }
+  }, [activeKey, _level2Selected, contentTab]);
+
+  //第二级页签选中逻辑
+  useEffect(() => {
+    if (!activeKey && level2Tabs?.length > 0) {
+      setLevel2Selected(level2Tabs?.[0]?.itemKey);
+    } else if (
+      activeKey &&
+      !_level1Selected &&
+      contentTab.find((k) => k.itemKey === activeKey && k.pKey !== undefined)
+    ) {
+      setLevel2Selected(activeKey);
+    } else if (
+      _level1Selected &&
+      level2Tabs?.length > 0 &&
+      _level2Selected === undefined
+    ) {
+      setLevel2Selected(level2Tabs[0].itemKey);
+    }
+  }, [_level1Selected, level2Tabs, activeKey, contentTab]);
+
+  useEffect(() => {
+    if (!activeKey && (_level2Selected || _level1Selected)) {
+      const selectedValue =
+        _level2Selected !== undefined ? _level2Selected : _level1Selected;
+      if (selectedValue !== undefined) {
+        onSelected(selectedValue);
       }
     }
-  }, [activeKey]);
-  // }, [activeKey, level1Tabs, contentTab]);
-
-  // //第一层选中页签
-  // const level1Selected = useMemo((): string => {
-  //   if (activeKey) {
-  //     const selectedTab = contentTab.filter(
-  //       (tab) => tab.itemKey === activeKey
-  //     )?.[0];
-  //     return selectedTab?.pKey || selectedTab?.itemKey;
-  //   } else {
-  //     return level1Tabs[0]?.itemKey;
-  //   }
-  // }, [activeKey, level1Tabs, contentTab]);
-
+  }, [_level1Selected, _level2Selected, activeKey]);
   return (
     <div className={`${className} w-full`}>
       <Tabs
@@ -105,6 +101,7 @@ export default ({ ...props }: PageTabProps) => {
         tabList={level1Tabs}
         onChange={(_key) => {
           setLevel1Selected(_key);
+          setLevel2Selected(undefined);
           const sub = contentTab.find((tab) => tab.pKey === _key);
           if (sub) {
             setLevel2Selected(sub.itemKey);
@@ -123,7 +120,7 @@ export default ({ ...props }: PageTabProps) => {
             return (
               <div
                 className={` text-sm  cursor-pointer    ${classNames({
-                  "bg-white border font-bold": activeKey === s.itemKey,
+                  "bg-white border font-bold": _level2Selected === s.itemKey,
                 })} rounded-2xl  py-1 px-4`}
                 key={s.itemKey}
                 onClick={() => {

@@ -179,36 +179,10 @@ export default ({ ...props }: TableHeaderProps) => {
         }
         return true;
       });
-      // return allTabAble || _filterTab.length === 0
-      //   ? [allTab, ..._filterTab]
-      //   : [..._filterTab];
       return _filterTab.length === 0 ? [allTab] : _filterTab;
     }
     return [];
   }, [contentTab]);
-
-  //初始化激活页签
-  // useEffect(() => {
-  //   if (_contentTab && _contentTab.length > 0) {
-  //     const key =
-  //       activeKey &&
-  //       _contentTab.filter(
-  //         (tab) => tab.pKey === activeKey || tab.itemKey === activeKey
-  //       ).length > 0
-  //         ? _contentTab.filter((tab) => tab.pKey === activeKey).length > 0
-  //           ? _contentTab.filter((tab) => tab.pKey === activeKey)?.[0].pKey
-  //           : activeKey
-  //         : _contentTab.filter((tab) => tab.pKey === _contentTab[0].itemKey)
-  //             .length > 0
-  //         ? _contentTab.filter(
-  //             (tab) => tab.pKey === _contentTab[0].itemKey
-  //           )?.[0].itemKey
-  //         : _contentTab[0].itemKey;
-  //     setActiveKey(key);
-  //     onActiveTabChange?.(_contentTab.filter((f) => f.itemKey === key)?.[0]);
-  //   }
-  // }, [JSON.stringify(activeKey), _contentTab]);
-  //JSON.stringify(activeKey)
 
   //需要计数的页签查询对象数据回调
   useEffect(() => {
@@ -245,6 +219,7 @@ export default ({ ...props }: TableHeaderProps) => {
           tabDictField === undefined &&
           addTabAble === true &&
           user &&
+          menu &&
           user.superUser === true && (
             <div className="  flex items-center justify-end ml-2 ">
               <Button

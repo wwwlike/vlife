@@ -11,7 +11,6 @@ import { Dropdown } from "@douyinfe/semi-ui";
 import { useAuth } from "@src/context/auth-context";
 import { findModelByResourcesId, _saveFunc } from "./buttonFuns";
 import { usableDatasMatch } from "@src/components/queryBuilder/funs";
-import Button2 from "../Button2";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|(可新增和支持多数据操作型按钮)
@@ -76,14 +75,16 @@ export default <T extends IdBean>({
   //db按钮数据转换
   const _btns = useMemo((): VFBtn[] => {
     //有一个资源id表示当前是配置的按钮则需要进行转换
-    return btns.map((b) => {
-      if (b.code && b.sysResourcesId === undefined && customButtons[b.code]) {
-        // 手写按钮与数据库按钮合并
-        return { ...customButtons[b.code], ...b };
-      } else {
-        return b;
-      }
-    });
+    return btns
+      .sort((a, b) => a.sort || 0 - (b.sort || 0))
+      .map((b) => {
+        if (b.code && b.sysResourcesId === undefined && customButtons[b.code]) {
+          // 手写按钮与数据库按钮合并
+          return { ...b, ...customButtons[b.code] };
+        } else {
+          return b;
+        }
+      });
   }, [btns, customButtons]);
 
   //筛选出应该在当前场景下可以使用的按钮
@@ -167,7 +168,7 @@ export default <T extends IdBean>({
     >
       {currBtns.map((btn, index) => {
         return (
-          <Button2
+          <Button
             groupIndex={index}
             groupTotal={currBtns.length}
             key={`btn_${line}_${index}`}
@@ -186,7 +187,7 @@ export default <T extends IdBean>({
                 : btn.position
             }
             datas={
-              datas
+              btn.datas || datas
               // btn.actionType === "create" ||
               // (btn.actionType === "save" && position === "tableToolbar")
               //   ? btn.initData //新增类型按钮使用initData
@@ -219,7 +220,7 @@ export default <T extends IdBean>({
             {currBtns.map((btn, index) => {
               return (
                 <div key={`div_${line}_${index}`}>
-                  <Button2
+                  <Button
                     {...btn}
                     position={"dropdown"}
                     btnConf={btn.btnConf || btnConf}
