@@ -13,7 +13,6 @@ import {
   queryHistoricInfo,
   RecordFlowInfo,
 } from "@src/api/workflow/Flow";
-import BtnToolBar from "@src/components/button/BtnToolBar";
 import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 /**
  * 表单弹出层属性

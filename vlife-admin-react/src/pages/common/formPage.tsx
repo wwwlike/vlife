@@ -140,7 +140,7 @@ const FormPage = <T extends IdBean>({
     const dbVF: VF[] = [];
     if (_model?.rules) {
       _model.rules?.forEach((r) => {
-        r?.vf?.forEach((_vf) => {
+        r?.vf?.forEach((_vf: any) => {
           const executeScript = new Function("VF", `return ${_vf}`);
           dbVF.push(executeScript(VF));
         });
