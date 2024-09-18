@@ -37,6 +37,7 @@ export interface MenuVo extends DbEntity {
   sysResourcesList: SysResources[]; //接口数据
   roleList:SysRole[];//应用对应的角色
   routerAddress:string;//拼接计算后的路由地址
+  pageLayout:any;//关联页面对象
 }
 
 //菜单资源关联dto

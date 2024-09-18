@@ -3,7 +3,7 @@ import {PageVo,DbEntity,Result, PageQuery} from '@src/api/base'
 
 import apiClient from '@src/api/base/apiClient'
 import { BtnToolBarPosition } from '@src/components/button/types';
-import { FormRuleDto } from './FormRule';
+// import { FormRuleDto } from './FormRule';
 // 按钮
 export interface Button extends DbEntity{
   sysMenuId: string;  // 所在菜单
@@ -30,11 +30,10 @@ export interface Button extends DbEntity{
   // remark: string;  // 按钮说明
 }
 
-
 export interface ButtonVo extends Button{
-  rules:FormRuleDto[]
-  
+  // rules:FormRuleDto[]
 }
+
 /** save*/
 export const save=(dto:Button): Promise<Result<Button>>=>{
   return apiClient.post(`/button/save`,dto);

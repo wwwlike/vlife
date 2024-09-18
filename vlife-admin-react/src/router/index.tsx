@@ -24,9 +24,9 @@ const ModelIndelPage = lazy(() => import("@src/pages/sysConf/model")); //模型�
 const ModelDetailPage = lazy(
   () => import("@src/pages/sysConf/model/ModelDetail")
 );
-const ButtonFormConf = lazy(
-  () => import("@src/pages/sysConf/button/ButtonFormConf")
-); //模型主页
+// const ButtonFormConf = lazy(
+//   () => import("@src/pages/sysConf/button/ButtonFormConf")
+// ); //模型主页
 
 //模型明细页
 const CodeViewPage = lazy(() => import("@src/pages/sysConf/model/CodeView")); //前端代码
@@ -300,16 +300,16 @@ export const allRoute: any[] = [
           />
         ),
       },
-      {
-        path: "buttonFormConf/*",
-        element: (
-          <WrapperRouteComponent
-            element={<ButtonFormConf />}
-            titleId="按钮关联表单配置"
-            auth
-          />
-        ),
-      },
+      // {
+      //   path: "buttonFormConf/*",
+      //   element: (
+      //     <WrapperRouteComponent
+      //       element={<ButtonFormConf />}
+      //       titleId="按钮关联表单配置"
+      //       auth
+      //     />
+      //   ),
+      // },
       {
         path: "flowDesign/*",
         element: (

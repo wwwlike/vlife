@@ -51,7 +51,7 @@ export const findModelByResourcesId = (
 
 
 //数据库按钮信息转换为组件按钮信息
-export const buttonToVfBtn =(resources:{[key:string]:SysResources},b:ButtonVo):VFBtn=>{
+export const buttonToVfBtn =(resources:{[key:string]:SysResources},b:any):VFBtn=>{
   const _model = findModelByResourcesId(resources, b.sysResourcesId);
   const _resources = resources[b.sysResourcesId];
   const _multiple =
@@ -76,8 +76,8 @@ export const buttonToVfBtn =(resources:{[key:string]:SysResources},b:ButtonVo):V
       : "");
       const _dbVF: VfAction[] = [];
       if (b?.rules) {
-        b.rules?.forEach((r) => {
-          r?.vf?.forEach((_vf) => {
+        b.rules?.forEach((r:any) => {
+          r?.vf?.forEach((_vf:any) => {
             const executeScript = new Function("VF", `return ${_vf}`);
             const vf:VF=executeScript(VF);
             // vf.getActions();

@@ -20,7 +20,7 @@ export default (props: ResourcesBindingProps) => {
   const [selected, setSelected] = useState<Partial<SysGroupResources>[]>(
     value || []
   );
-  const [app, setApp] = useState<SysMenu>();
+  const [app, setApp] = useState<MenuVo>();
 
   useEffect(() => {
     if (allMenu?.length > 0 && app === undefined) {
@@ -34,12 +34,12 @@ export default (props: ResourcesBindingProps) => {
 
   //查找当前app下的菜单
   const menus = useCallback(
-    (_app: SysMenu) => {
+    (_app: MenuVo) => {
       if (_app && allMenu && allResources) {
         const _menuIds = allResources
           .filter((r) => r.sysMenuId)
           .map((s) => s.sysMenuId);
-        const _thisAppMenu: SysMenu[] = allMenu
+        const _thisAppMenu: MenuVo[] = allMenu
           ?.filter((item) => item.code.startsWith(_app?.code))
           .filter((m) => _menuIds.includes(m.id));
         return _thisAppMenu;
@@ -67,7 +67,7 @@ export default (props: ResourcesBindingProps) => {
   }, [allResources, app]);
   //选中指定菜单的资源数量
   const appSelectedCount = useCallback(
-    (_app: SysMenu): number => {
+    (_app: MenuVo): number => {
       const appMenuIds: string[] = menus(_app).map((d) => d.id);
       const appResources = allResources?.filter(
         (r) => r.sysMenuId && appMenuIds.includes(r.sysMenuId)
