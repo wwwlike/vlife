@@ -3,9 +3,12 @@ package cn.wwwlike.auth.service;
 import cn.wwwlike.auth.dao.SysGroupResourcesDao;
 import cn.wwwlike.auth.entity.SysGroup;
 import cn.wwwlike.auth.entity.SysGroupResources;
+import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.vo.GroupVo;
 import cn.wwwlike.common.BaseService;
+import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
+import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,11 +16,16 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SysGroupResourcesService extends BaseService<SysGroupResources, SysGroupResourcesDao> {
     @Autowired
     public SysGroupService groupService;
+    @Autowired
+    public SysResourcesService resourcesService;
+    @Autowired
+    public SysMenuService menuService;
 
     //讲所有role的角色转换成简单模式的权限
     public void tran(){
@@ -53,5 +61,16 @@ public class SysGroupResourcesService extends BaseService<SysGroupResources, Sys
         for(SysGroupResources gr:groupResources){
             remove(gr.getId());
         }
+    }
+    //清除掉没有导入但是有关联数据的resources
+    public void clearNoimportResources(){
+        List<String> allImportResourcesId=resourcesService.find(QueryWrapper.of(SysResources.class).isNotNull("sysMenuId")).stream().map(SysResources::getId).collect(Collectors.toList());
+        List<String> allMenuId=menuService.findAll().stream().map(SysMenu::getId).collect(Collectors.toList());
+        List<String> resourcesRelationid=find(QueryWrapper.of(SysGroupResources.class).notIn("sysResourcesId",allImportResourcesId.toArray(new String[0]))).stream().map(SysGroupResources::getId).collect(Collectors.toList());
+        //清除未导入接口
+        remove(resourcesRelationid.toArray(new String[0]));
+        //清除菜单
+        List<String> menuRelationid=find(QueryWrapper.of(SysGroupResources.class).notIn("sysMenuId",allMenuId.toArray(new String[0]))).stream().map(SysGroupResources::getId).collect(Collectors.toList());
+        remove(menuRelationid.toArray(new String[0]));
     }
 }

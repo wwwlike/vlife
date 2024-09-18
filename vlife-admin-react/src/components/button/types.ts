@@ -85,8 +85,8 @@ export interface VFBtn{
   //----------------准备加入new----------
   formTitle?:string;//表单名称
   sort?:number; //排序
-  toActiveTabKey?:string; //完成后去到的场景页签key
-  onActiveChange?: (key: string) => void; //切换页签后触发
+  // toActiveTabKey?:string; //完成后去到的场景页签key
+  // onActiveChange?: (key: string) => void; //切换页签后触发
   modalOpen?:boolean;//是否打开modal
   id?:string;
   sysResourcesId?:string;

@@ -88,6 +88,7 @@ export const tableFlowBtns = ({
   save,
   saveModalOpen,
   flowModalOpen,
+  setActiveTabKey,
   rm,
 }: {
   formType: string;
@@ -97,7 +98,8 @@ export const tableFlowBtns = ({
   datas?: { [key: string]: any; flow?: RecordFlowInfo };
   saveModalOpen?: boolean; //流程表单页面是否打开
   flowModalOpen?: boolean; //工作流明细modal页面是否打开
-  onSubmitFinish?: () => void;
+  onSubmitFinish?: (data: any) => void;
+  setActiveTabKey?: (tabKey: string) => void; //页签切换函数
   save?: (data: any) => Promise<Result<any>>; //通用保存方法
   rm?: (ids: string[]) => Promise<Result<any>>;
 }) => {
@@ -139,7 +141,7 @@ export const tableFlowBtns = ({
     },
     {
       actionType: "flow",
-      onSubmitFinish,
+
       submitConfirm: true,
       allowEmpty: true,
       title: "提交", //保存数据并且当流程流转到下一个节点
@@ -158,7 +160,11 @@ export const tableFlowBtns = ({
           activeKey === "flow_byMe_edit" //待完善
         );
       },
-      toActiveTabKey: "flow_byMe_todo",
+      onSubmitFinish: (d) => {
+        onSubmitFinish?.(d);
+        setActiveTabKey?.("flow_byMe_todo");
+      },
+      // toActiveTabKey:,
       // disabledHide: true,
       saveApi: (data: any) => {
         if (save) {
@@ -341,14 +347,16 @@ export const tableFlowBtns = ({
   if (save) {
     _flowBtns.unshift({
       actionType: "create",
-      onSubmitFinish,
       datas,
       icon: <i className=" icon-add_circle_outline" />,
       multiple: false,
       allowEmpty: true,
       model: formType,
       reaction: formReaction,
-      toActiveTabKey: "flow_byMe_draft",
+      onSubmitFinish: (d) => {
+        onSubmitFinish?.(d);
+        setActiveTabKey?.("flow_byMe_draft");
+      },
       saveApi: save, // save方法需要返回和model一致的数据
     });
 

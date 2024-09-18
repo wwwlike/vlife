@@ -79,11 +79,11 @@ public class SysResources extends DbEntity{
      * 关联后则可以参与与角色的关联
      */
     public String sysMenuId;
-    /**
-     * 主要接口
-     * 进入菜单功能后一定会访问到的接口
-     */
-    public boolean menuRequired;
+//    /**
+//     * 主要接口
+//     * 进入菜单功能后一定会访问到的接口
+//     */
+//    public boolean menuRequired;
     /**
      * 授权方式
      * single(独立授权)/noAuth无需授权/extend继承授权

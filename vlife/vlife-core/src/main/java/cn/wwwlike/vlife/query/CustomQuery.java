@@ -240,14 +240,10 @@ public abstract class CustomQuery<T extends Item, Q extends AbstractWrapper> imp
     private  String flowTab;
 
     /**
-     * 表单字段入参值
-     * 字段关联的组件，如组件属性值源自接口，那么该值就是该接口的必传参数(可不采用)
-     * 目的：接口里存在逻辑，可能新增时候会查询到某条记录，并且程序为字段绑定了这条记录，但是在修改时，根据当时的逻辑查不到这条记录了，所以需要手工传入，单独作为查询；
+     * 组件字段值
+     * 待优化，不容易理解 组件属性数据取自接口，可以通过该值将组件属性值传递给后台，方便后台做相关业务逻辑判断(fieldVal新增时为空接口可以查到一些数据，但是fieldVal有值时却查不到，所以主动传入)
      */
     @VField(skip = true)
     private Object fieldVal;
 
-//    //流程下一级过滤条件
-//    @VField(skip = true)
-//    private String flowNextTab;
 }

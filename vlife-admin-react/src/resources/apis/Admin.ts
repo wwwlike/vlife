@@ -169,6 +169,14 @@ export const resourcesOpenApi:ApiInfo= {
   dataType: DataType.array,
   dataModel:'sysResources',
   api:resourcesList,
+  filters:{
+    importData:{
+      title:"可被导入的资源",
+      func:(datas)=>{return datas.filter((f:SysResources)=>{
+        return (f.permission!=="noAuth"&&f.paramType!=="req"&&!f.methedType.startsWith("@GetMapping"));
+      })}
+    },
+  },
   match:{
     ISelectMenuResources:{
       label:'指定菜单可关联资源',
@@ -177,7 +185,6 @@ export const resourcesOpenApi:ApiInfo= {
       params:{
         sysMenuId:{
           label:"菜单",
-          // required:true,
           send:false,
           dynamicParams:true,
           dataType:DataType.basic,
@@ -186,7 +193,6 @@ export const resourcesOpenApi:ApiInfo= {
         },
         formId:{
           label:"模块",
-          // required:true,
           dynamicParams:true,
           send:false,
           dataType:DataType.basic,

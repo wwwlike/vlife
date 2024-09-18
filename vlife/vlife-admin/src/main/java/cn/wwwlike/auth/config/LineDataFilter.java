@@ -6,6 +6,7 @@ import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.sys.entity.SysDept;
 import cn.wwwlike.vlife.base.IFilter;
 import cn.wwwlike.vlife.base.Item;
+import cn.wwwlike.vlife.bi.ConditionGroup;
 import cn.wwwlike.vlife.objship.dto.EntityDto;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.query.AbstractWrapper;
@@ -21,10 +22,13 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * 行级数据查询拦截器
+ * 动态参数condition转换
  */
 @Aspect
 @Component
@@ -49,6 +53,19 @@ public class LineDataFilter {
         }
     }
 
+    //查询条件表达式动态范围属性值替换
+    public List<ConditionGroup>  updateConditions(List<ConditionGroup> conditions) {
+        SecurityUser securityUser = SecurityConfig.getCurrUser();
+        conditions.forEach(conditionGroup ->
+                conditionGroup.getWhere().forEach(where ->{
+                if(where.getValue()!=null&&where.getValue().length==1&&where.getValue()[0].equals("${currUser}")){
+                    where.setValue(new String[]{securityUser.getId()});
+                }
+           })
+        );
+        return conditions;
+    }
+
     //对所有分页方法 Page且入参是 PageQeuery类型的方法进行拦截
     @Before("pageMethodPointcut(req)")
     public void beforePageMethod(JoinPoint joinPoint,CustomQuery req) {
@@ -57,15 +74,18 @@ public class LineDataFilter {
         if(securityUser!=null){
         JSONObject userObj=((JSONObject) securityUser.getUseDetailVo());
         String groupFilterType=  userObj.getString("groupFilterType");
+        if(req.getConditionGroups()!=null){
+            req.setConditionGroups(updateConditions(req.getConditionGroups()));
+        }
         if(!groupFilterType.equals("all")){
-        Type genericSuperclass = actionClazz.getGenericSuperclass();
-        if (genericSuperclass instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
-            Class<Item> clazz = (Class<Item>) parameterizedType.getActualTypeArguments()[0]; //提取action上泛型实体信息
-            // 1. 继承ifilter类进行行级数据过滤； 2. 对工作流业务的待办场景进行数据拦截只看到
-            if (IFilter.class.isAssignableFrom(clazz)) {
-                AbstractWrapper queryWrapper= req.qw(clazz);
-                String sysDeptId=userObj.getString("sysDeptId");
+            Type genericSuperclass = actionClazz.getGenericSuperclass();
+            if (genericSuperclass instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
+                Class<Item> clazz = (Class<Item>) parameterizedType.getActualTypeArguments()[0]; //提取action上泛型实体信息
+                // 1. 继承ifilter类进行行级数据过滤； 2. 对工作流业务的待办场景进行数据拦截只看到
+                if (IFilter.class.isAssignableFrom(clazz)) {
+                    AbstractWrapper queryWrapper= req.qw(clazz);
+                    String sysDeptId=userObj.getString("sysDeptId");
                 //实现IFilter接口的类需要进行过滤
                     EntityDto entityDto = GlobalData.entityDto(clazz);//当前查询的表
                     if (groupFilterType.equals("sysUser_1")) {

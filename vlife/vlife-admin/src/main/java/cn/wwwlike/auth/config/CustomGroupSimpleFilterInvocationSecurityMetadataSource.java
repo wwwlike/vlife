@@ -31,7 +31,7 @@ public class CustomGroupSimpleFilterInvocationSecurityMetadataSource implements 
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
         if(urlGroup==null){
-            urlGroup=groupService.noRoleResourceGroupMap();
+            urlGroup=groupService.securityMap();
             cachedAttributes= new ConcurrentHashMap<>();
         }
         List<ConfigAttribute> attributes = cachedAttributes.get(requestUrl);

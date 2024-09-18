@@ -27,7 +27,7 @@ export const OPT: {
   [key: string]: {
     label: string; //标签名称
     //满足的字段类型
-    fieldType?: ("string" | "number" | "date" | "boolean")[];
+    fieldType?: ("string" | "number" | "date" | "boolean" | string)[];
     dict?: boolean; //字典类型字段是否可以用
     fk?: boolean; //外键类型字段是否能用
   };
@@ -98,7 +98,7 @@ export const OPT: {
   // fix: { label: "用户匹配", fieldType: [], dict: false, fk: true }, //当前用户 用户表上的外键 可以使用sys系统值进行匹配
 };
 
-export const dates = [
+export const dynamicData: { label: string; value: any }[] = [
   { label: "今天", value: "today" },
   { label: "昨天", value: "yesterday" },
   { label: "本周", value: "this_week" },
@@ -112,10 +112,20 @@ export const dates = [
   { label: "近90天", value: "last_90_days" },
   { label: "近一年", value: "last_1_year" },
 ];
-/**
+
+export const sysUserData: { label: string; value: any }[] = [
+  { label: "当前用户", value: "${currUser}" },
+];
+
+export const sysDeptData: { label: string; value: any }[] = [
+  { label: "当前用户所在部门ID", value: "${deptId}" },
+  { label: "当前用户所在部门编码", value: "${deptCode}" },
+];
+
+export default /**
  * 单行条件信息
  */
-export default ({
+({
   where,
   formVo,
   mode = "build",
@@ -171,14 +181,17 @@ export default ({
     return options;
   }, [formVo, subForms, mode]);
 
+  //计算匹配方式
   const optOptions = useMemo((): { label: string; value: string }[] => {
     if (currField) {
-      return Object.keys(OPT)
+      const opts = Object.keys(OPT)
         .filter(
           //字段类型满足判断
           (k) =>
-            currField.fieldType &&
-            OPT[k].fieldType?.includes(currField.fieldType)
+            (currField.fieldType &&
+              OPT[k].fieldType?.includes(currField.fieldType)) ||
+            (currField.fieldName &&
+              OPT[k].fieldType?.includes(currField.fieldName))
         )
         .filter(
           //字典类型满足判断
@@ -205,6 +218,7 @@ export default ({
             label: OPT[k]["label"],
           };
         });
+      return opts;
     } else {
       return [];
     }
@@ -212,7 +226,7 @@ export default ({
 
   return (
     <div className={`flex ${className} w-full space-x-2 `}>
-      {/* {JSON.stringify(where)} */}
+      {/* 1. 字段选择 */}
       <Select
         className="!w-1/3"
         placeholder="关联应用字段"
@@ -242,6 +256,7 @@ export default ({
           });
         }}
       />
+      {/* 2. 匹配方式 */}
       <Select
         className="!w-1/3"
         placeholder="匹配符"
@@ -261,166 +276,208 @@ export default ({
           });
         }}
       />
-      {/* 匹配值 各类控件的使用场景 */}
-      {/* 1  动态范围*/}
-      {where.opt === "dynamic" ? (
-        <Select
-          className="!w-1/3"
-          optionList={dates}
-          value={where?.value?.[0]}
-          placeholder="匹配值"
-          onChange={(data: any) =>
-            onDataChange({
-              ...where,
-              fieldType: currField?.fieldType,
-              value: [data],
-              desc: {
-                ...where.desc,
-                value: dates.filter((f) => f.value === data)[0]?.label,
-              },
-            })
-          }
-        /> // 外键
-      ) : currField &&
-        currField.pathName.endsWith("Id") &&
-        currField.entityFieldName === "id" &&
-        currField.fieldType === "string" ? (
-        <RelationTagInput
-          req={{ app: true }}
-          className="!w-1/3"
-          key={where.value}
-          value={
-            where.opt === "in" || where.opt === "notIn"
-              ? where?.value
-              : where?.value?.[0]
-          }
-          onObjectlChange={(data: ISelect[]) => {
-            onDataChange({
-              ...where,
-              fieldType: currField?.fieldType,
-              value: data.map((d) => d.value),
-              desc: {
-                ...where.desc,
-                value: data.map((d) => d.label),
-              },
-            });
-          }}
-          fieldInfo={{
-            ...currField,
-            dataType:
-              where.opt === "in" || where.opt === "notIn"
-                ? DataType.array
-                : DataType.basic,
-          }}
-        />
-      ) : currField && currField?.dictCode !== null ? (
-        <Select
-          className="!w-1/3"
-          // onChangeWithObject={true}
-          multiple={where.opt === "in" || where.opt === "notIn"}
-          value={
-            where.opt === "in" || where.opt === "notIn"
-              ? where?.value
-              : where?.value?.[0]
-          }
-          optionList={dicts[currField.dictCode].data}
-          onChange={(data: any) => {
-            onDataChange({
-              ...where,
-              fieldType: currField?.fieldType,
-              value:
-                where.opt === "in" || where.opt === "notIn" ? data : [data],
-              desc: {
-                ...where.desc,
-                value: dicts[currField.dictCode].data.filter(
-                  (f) => f.value === data
-                )[0].label,
-              },
-            });
-          }}
-        />
-      ) : currField?.fieldType === "string" &&
-        (where.opt === undefined ||
-          where.opt === "eq" ||
-          where.opt === "startsWith" ||
-          where.opt === "endsWith" ||
-          where.opt === "like" ||
-          where.opt === "notLike" ||
-          where.opt === "ne") ? (
-        <>
-          <Input
-            placeholder="匹配值"
-            className="!w-1/3"
-            value={where?.value?.[0]}
-            onChange={(data) => {
-              onDataChange({
-                ...where,
-                fieldType: currField?.fieldType,
-                value: [data],
-              });
-            }}
-          />
-        </>
-      ) : (currField?.fieldType === "string" ||
-          currField?.fieldType === "number") &&
-        (where.opt === "in" || where.opt === "notIn") ? (
-        <TagInput
-          className="!w-1/3"
-          // defaultValue={where.value}
-          value={where.value}
-          placeholder="匹配值"
-          onChange={(data) =>
-            onDataChange({
-              ...where,
-              fieldType: currField?.fieldType,
-              value: data,
-            })
-          }
-        />
-      ) : currField?.fieldType === "number" &&
-        where.opt !== "isNull" &&
-        where.opt !== "isNotNull" ? (
-        <InputNumber
-          placeholder="匹配值"
-          className="!w-1/3"
-          value={where?.value?.[0]}
-          onChange={(data) => {
-            onDataChange({
-              ...where,
-              fieldType: currField?.fieldType,
-              value: [data as number],
-            });
-          }}
-        />
-      ) : currField?.fieldType === "date" &&
-        where.opt !== "isNull" &&
-        where.opt !== "isNotNull" ? (
-        <DatePicker
-          type="date"
-          format="yyyy/MM/dd"
-          insetInput
-          placeholder="匹配值"
-          className="!w-1/3"
-          value={where?.value?.[0]}
-          onChange={(data, dataString) => {
-            onDataChange({
-              ...where,
-              fieldType: currField?.fieldType,
-              value: [dataString],
-            });
-          }}
-        />
-      ) : (
-        ""
-        // <Input
-        //   placeholder="匹配值"
-        //   className="!w-1/3"
-        //   value={where.value}
-        //   onChange={(data) => {
-        //     onDataChange({ ...where, value: [data] });
-        //   }}
-        // />
-      )}
+      {/* 3. 匹配值 各类控件的使用场景 */}
+      {where.opt !== "isNull" &&
+        where.opt !== "isNotNull" &&
+        currField &&
+        where.opt && (
+          <>
+            {currField.pathName === "sysUserId" ? (
+              <Select
+                className="!w-1/3"
+                value={where?.value?.[0]}
+                optionList={sysUserData}
+                onChange={(data: any) =>
+                  onDataChange({
+                    ...where,
+                    fieldType: currField?.fieldType,
+                    value: [data],
+                    desc: {
+                      ...where.desc,
+                      value: sysUserData.filter((f) => f.value === data)[0]
+                        ?.label,
+                    },
+                  })
+                }
+              />
+            ) : currField.pathName === "sysDeptId" ? (
+              <Select
+                className="!w-1/3"
+                value={where?.value?.[0]}
+                optionList={sysDeptData}
+                onChange={(data: any) =>
+                  onDataChange({
+                    ...where,
+                    fieldType: currField?.fieldType,
+                    value: [data],
+                    desc: {
+                      ...where.desc,
+                      value: sysDeptData.filter((f) => f.value === data)[0]
+                        ?.label,
+                    },
+                  })
+                }
+              />
+            ) : where.opt === "dynamic" ? (
+              <Select
+                className="!w-1/3"
+                optionList={dynamicData}
+                value={where?.value?.[0]}
+                placeholder="匹配值"
+                onChange={(data: any) =>
+                  onDataChange({
+                    ...where,
+                    fieldType: currField?.fieldType,
+                    value: [data],
+                    desc: {
+                      ...where.desc,
+                      value: dynamicData.filter((f) => f.value === data)[0]
+                        ?.label,
+                    },
+                  })
+                }
+              />
+            ) : // 外键
+            currField &&
+              currField.pathName.endsWith("Id") &&
+              currField.entityFieldName === "id" &&
+              currField.fieldType === "string" ? (
+              <RelationTagInput
+                req={{ app: true }}
+                className="!w-1/3"
+                key={where.value}
+                value={
+                  where.opt === "in" || where.opt === "notIn"
+                    ? where?.value
+                    : where?.value?.[0]
+                }
+                onObjectlChange={(data: ISelect[]) => {
+                  onDataChange({
+                    ...where,
+                    fieldType: currField?.fieldType,
+                    value: data.map((d) => d.value),
+                    desc: {
+                      ...where.desc,
+                      value: data.map((d) => d.label),
+                    },
+                  });
+                }}
+                fieldInfo={{
+                  ...currField,
+                  dataType:
+                    where.opt === "in" || where.opt === "notIn"
+                      ? DataType.array
+                      : DataType.basic,
+                }}
+              />
+            ) : currField && currField?.dictCode !== null ? (
+              <Select
+                className="!w-1/3"
+                // onChangeWithObject={true}
+                multiple={where.opt === "in" || where.opt === "notIn"}
+                value={
+                  where.opt === "in" || where.opt === "notIn"
+                    ? where?.value
+                    : where?.value?.[0]
+                }
+                optionList={dicts[currField.dictCode].data}
+                onChange={(data: any) => {
+                  onDataChange({
+                    ...where,
+                    fieldType: currField?.fieldType,
+                    value:
+                      where.opt === "in" || where.opt === "notIn"
+                        ? data
+                        : [data],
+                    desc: {
+                      ...where.desc,
+                      value: dicts[currField.dictCode].data.filter(
+                        (f) => f.value === data
+                      )[0].label,
+                    },
+                  });
+                }}
+              />
+            ) : currField?.fieldType === "string" &&
+              (where.opt === undefined ||
+                where.opt === "eq" ||
+                where.opt === "startsWith" ||
+                where.opt === "endsWith" ||
+                where.opt === "like" ||
+                where.opt === "notLike" ||
+                where.opt === "ne") ? (
+              <>
+                <Input
+                  placeholder="匹配值"
+                  className="!w-1/3"
+                  value={where?.value?.[0]}
+                  onChange={(data) => {
+                    onDataChange({
+                      ...where,
+                      fieldType: currField?.fieldType,
+                      value: [data],
+                    });
+                  }}
+                />
+              </>
+            ) : (currField?.fieldType === "string" ||
+                currField?.fieldType === "number") &&
+              (where.opt === "in" || where.opt === "notIn") ? (
+              <TagInput
+                className="!w-1/3"
+                // defaultValue={where.value}
+                value={where.value}
+                placeholder="匹配值"
+                onChange={(data) =>
+                  onDataChange({
+                    ...where,
+                    fieldType: currField?.fieldType,
+                    value: data,
+                  })
+                }
+              />
+            ) : currField?.fieldType === "number" ? (
+              <InputNumber
+                placeholder="匹配值"
+                className="!w-1/3"
+                value={where?.value?.[0]}
+                onChange={(data) => {
+                  onDataChange({
+                    ...where,
+                    fieldType: currField?.fieldType,
+                    value: [data as number],
+                  });
+                }}
+              />
+            ) : currField?.fieldType === "date" ? (
+              <DatePicker
+                type="date"
+                format="yyyy/MM/dd"
+                insetInput
+                placeholder="匹配值"
+                className="!w-1/3"
+                value={where?.value?.[0]}
+                onChange={(data, dataString) => {
+                  onDataChange({
+                    ...where,
+                    fieldType: currField?.fieldType,
+                    value: [dataString],
+                  });
+                }}
+              />
+            ) : (
+              ""
+              // <Input
+              //   placeholder="匹配值"
+              //   className="!w-1/3"
+              //   value={where.value}
+              //   onChange={(data) => {
+              //     onDataChange({ ...where, value: [data] });
+              //   }}
+              // />
+            )}
+          </>
+        )}
     </div>
   );
 };

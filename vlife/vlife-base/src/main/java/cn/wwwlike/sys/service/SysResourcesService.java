@@ -1,5 +1,7 @@
 package cn.wwwlike.sys.service;
 
+import cn.wwwlike.auth.dao.SysGroupResourcesDao;
+import cn.wwwlike.auth.entity.SysGroupResources;
 import cn.wwwlike.common.AdminUtils;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
@@ -115,11 +117,11 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
     }
 
     //设置指定资源的菜单必须访问状态
-    public void resourcesRequired(boolean required,String ...ids){
-        findByIds(ids).forEach(r->{
-            r.setMenuRequired(required);
-        });
-    }
+//    public void resourcesRequired(boolean required,String ...ids){
+//        findByIds(ids).forEach(r->{
+//            r.setMenuRequired(required);
+//        });
+//    }
 
     /**
      * 得到菜单下能够访问formId的下的所有资源
@@ -138,6 +140,19 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
         ).collect(Collectors.toList());
     }
 
+    //查找菜单下资源所在api类里的所有查询类的接口
+    public List<SysResources> findQueryResources(List<SysResources> groupResources){
+        //得到所有api类
+        String[] actionTypes = groupResources.stream()
+                .map(g -> g.getActionType())
+                .collect(Collectors.toSet()) // 使用 Set 来确保唯一性
+                .toArray(new String[0]);
+
+        QueryWrapper<SysResources> qw=QueryWrapper.of(SysResources.class);
+        qw.in("actionType",actionTypes).ne("permission","noAuth").ne("permission","single").or(w->w.eq("paramType","req").startsWith("methedType","@GetMapping"));
+        return find(qw);
+    }
+
     /**
      * 失效资源删除
      */
@@ -148,8 +163,8 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                 dbResourceIds.stream().filter(id->!currResourceIds.contains(id)).collect(Collectors.toList());
         batchDel(deleteIds.toArray(new String[0]));
     }
-
     /**
+
      * 将模型与资源进行关联
      */
     private void assignFormToResource(){
@@ -390,12 +405,6 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
         return resourceIds;
     }
 
-
-    //查询参数类型
-//    public String matchModelType(String modelName){
-//
-//    }
-
     public static String findTitleString(String input) {
         if(input==null){
             return "";
@@ -421,13 +430,12 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
         return input;
     }
 
-
-    /**
-     * 获得指定菜单下一定能访问到的资源
-     */
-    public List<String> findMenuRequireResources(String ...menuIds){
-       return findByIds(menuIds).stream().filter(r->r.isMenuRequired()).collect(Collectors.toList()).stream().map(t->t.getCode()).collect(Collectors.toList());
-    }
+//    /**
+//     * 获得指定菜单下一定能访问到的资源
+//     */
+//    public List<String> findMenuRequireResources(String ...menuIds){
+//       return findByIds(menuIds).stream().filter(r->r.isMenuRequired()).collect(Collectors.toList()).stream().map(t->t.getCode()).collect(Collectors.toList());
+//    }
 
     /**
      * 当资源与菜单取消关联那么也清空它和角色的关联
@@ -451,12 +459,17 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                         !"CustomQuery".equals(r.getParamWrapper())&&
                         r.getMethedType().indexOf("GetMapping")==-1
         ).collect(Collectors.toList());
-
         //查询模型作为入参的接口过滤掉
         List<String> reqModelNames=GlobalData.getReqDtos().keySet().stream().map(t->t.getSimpleName()).collect(Collectors.toList());
         resources=resources.stream().filter(r->!reqModelNames.contains(r.getParamWrapper())).collect(Collectors.toList());
         //无入参但是出参是List集合的过滤掉
         resources=resources.stream().filter(r->!(r.getReturnClz()!=null&&r.getReturnClz().equals("List")&&r.getParamWrapper()==null)).collect(Collectors.toList());
         return resources;
+    }
+
+
+    // 查找与权限组有关联但是和菜单里未导入到菜单的资源
+    public List<SysResources> findGroupResourcesWithoutImportMenu(){
+       return null;
     }
 }

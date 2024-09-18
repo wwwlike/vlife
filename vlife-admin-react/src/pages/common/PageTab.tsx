@@ -46,43 +46,39 @@ export default ({ ...props }: PageTabProps) => {
     return [];
   }, [_level1Selected, contentTab]);
 
-  //第一级页签选中逻辑
   useEffect(() => {
-    if (!activeKey) {
-      //页签为空默认第一个选中
+    if (activeKey) {
+      if (activeKey !== _level1Selected && activeKey !== _level2Selected) {
+        const select = contentTab.find((tab) => tab.itemKey === activeKey);
+        if (select) {
+          if (select.pKey) {
+            setLevel1Selected(select.pKey);
+            setLevel2Selected(activeKey);
+          } else {
+            setLevel1Selected(activeKey);
+            const sub = contentTab.find((tab) => tab.pKey === activeKey);
+            if (sub) {
+              setLevel2Selected(sub.itemKey);
+            }
+          }
+        }
+      }
+    } else {
       setLevel1Selected(level1Tabs?.[0]?.itemKey);
-    } else if (
-      level1Tabs &&
-      activeKey &&
-      level1Tabs.map((_l1) => _l1.itemKey).includes(activeKey)
-    ) {
-      setLevel1Selected(activeKey);
-    } else if (_level2Selected && !_level1Selected) {
-      setLevel1Selected(
-        contentTab.find((k) => k.itemKey === _level2Selected)?.pKey
-      );
+      if (level2Tabs && level2Tabs.length > 0) {
+        setLevel2Selected(level2Tabs[0].itemKey);
+      }
     }
-  }, [activeKey, _level2Selected, contentTab]);
+  }, [
+    activeKey,
+    _level1Selected,
+    _level2Selected,
+    contentTab,
+    level1Tabs,
+    level2Tabs,
+  ]);
 
-  //第二级页签选中逻辑
-  useEffect(() => {
-    if (!activeKey && level2Tabs?.length > 0) {
-      setLevel2Selected(level2Tabs?.[0]?.itemKey);
-    } else if (
-      activeKey &&
-      !_level1Selected &&
-      contentTab.find((k) => k.itemKey === activeKey && k.pKey !== undefined)
-    ) {
-      setLevel2Selected(activeKey);
-    } else if (
-      _level1Selected &&
-      level2Tabs?.length > 0 &&
-      _level2Selected === undefined
-    ) {
-      setLevel2Selected(level2Tabs[0].itemKey);
-    }
-  }, [_level1Selected, level2Tabs, activeKey, contentTab]);
-
+  //初始化把页签选中状态同步到回调
   useEffect(() => {
     if (!activeKey && (_level2Selected || _level1Selected)) {
       const selectedValue =
@@ -112,7 +108,6 @@ export default ({ ...props }: PageTabProps) => {
         }}
         onTabClose={onRemove}
       />
-
       {/* 二级页签 */}
       {level2Tabs && level2Tabs.length > 0 && (
         <div className="flex  space-x-1 p-1  bg-gray-50 ">

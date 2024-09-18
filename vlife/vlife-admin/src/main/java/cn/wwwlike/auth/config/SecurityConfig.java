@@ -18,6 +18,7 @@
 
 package cn.wwwlike.auth.config;
 
+import cn.wwwlike.auth.service.SysGroupResourcesService;
 import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.auth.service.SysGroupService;
 import cn.wwwlike.sys.service.SysResourcesService;
@@ -58,6 +59,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private SysUserService userService;
     @Autowired
     SysResourcesService resourcesService;
+    @Autowired
+    SysGroupResourcesService groupResourcesService;
+
+
     @Autowired
     SysGroupService groupService;
     @Autowired
@@ -118,8 +123,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.exceptionHandling().authenticationEntryPoint(new Jwt403AuthenticationEntryPoint())
                 .accessDeniedHandler(new EAccessDeniedHandler());
         try {
-            //接口资源同步，做更新，不做初始化
-            resourcesService.sync();
+            resourcesService.sync();  //接口资源同步，做更新，不做初始化
+            groupResourcesService.clearNoimportResources();//清除无效资源和权限组的绑定关系
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("╔════════════════════════════════════════════════════════════════╗");

@@ -87,16 +87,12 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
         return models.get(type);
     }
 
-
-
-
     protected DataProcess createProcess(IdBean bean) {
         return new VlifeDataProcess(bean);
     }
 
     /**
      * 是否业务实体
-     *
      * @param entity
      * @return
      */

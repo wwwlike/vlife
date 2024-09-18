@@ -61,6 +61,7 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
   @PostMapping("/save/groupResourcesDto")
   public GroupResourcesDto saveGroupResourcesDto(@RequestBody GroupResourcesDto dto) {
     service.save(dto,true);
+    groupResourcesService.clearNoimportResources();//把取消的资源与权限的绑定删除
     BaseService.groups=new HashMap<>();//刷新权限组
     CustomGroupSimpleFilterInvocationSecurityMetadataSource.urlGroup=null;
     return dto;

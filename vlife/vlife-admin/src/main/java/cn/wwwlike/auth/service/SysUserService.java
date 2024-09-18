@@ -72,36 +72,36 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
     /**
      * 用户在客户端里需要的所有详情信息
      */
-    public UserDetailVo getUserDetailVo(SecurityUser currUser){
-        UserDetailVo vo = queryOne(UserDetailVo.class, currUser.getId());
-        List<String> codes =null;
-        List<MenuVo> menus=new ArrayList<>();
-        //权限提取
-        if(vo.getSuperUser()!=null&&vo.getSuperUser()==true){
-            //超级用户所有的菜单和权限
-            menus=menuService.queryAll(MenuVo.class);
-            QueryWrapper qw=QueryWrapper.of(SysResources.class);
-            qw.isNotNull("sysRoleId");
-            List<SysResources> resources=resourcesService.find(qw);
-            codes=resources.stream().map(f->f.getId()).collect(Collectors.toList());
-        }else{
-            //权限组用户
-            codes = groupService.findGroupResourceCodes(vo.getSysGroupId());
-            if(codes!=null){//资源关联的菜单
-                menus.addAll(menuService.findAllMenusByResources(resourcesService.find(QueryWrapper.of(SysResources.class).in("code",codes.toArray(new String[codes.size()])))));
-            }
-            GroupVo groupVo=groupService.queryOne(GroupVo.class,vo.getSysGroupId());
-            //角色直接关联的菜单
-            menus.addAll(
-                    menuService.findAllMenu(
-                menuService.query(MenuVo.class,QueryWrapper.of(SysMenu.class).in("sysRoleId",groupVo.getSysRoleGroup_sysRoleId().toArray(new Object[groupVo.getSysRoleGroup_sysRoleId().size()])))));
-            //去重
-           menus= menus.stream().collect(Collectors.toMap(MenuVo::getId, Function.identity(), (existing, replacement) -> existing)).values().stream().collect(Collectors.toList());
-        }
-        vo.setMenus(menus);
-        vo.setResourceCodes(codes);
-        return vo;
-    }
+//    public UserDetailVo getUserDetailVo(SecurityUser currUser){
+//        UserDetailVo vo = queryOne(UserDetailVo.class, currUser.getId());
+//        List<String> codes =null;
+//        List<MenuVo> menus=new ArrayList<>();
+//        //权限提取
+//        if(vo.getSuperUser()!=null&&vo.getSuperUser()==true){
+//            //超级用户所有的菜单和权限
+//            menus=menuService.queryAll(MenuVo.class);
+//            QueryWrapper qw=QueryWrapper.of(SysResources.class);
+//            qw.isNotNull("sysRoleId");
+//            List<SysResources> resources=resourcesService.find(qw);
+//            codes=resources.stream().map(f->f.getId()).collect(Collectors.toList());
+//        }else{
+//            //权限组用户
+//            codes = groupService.findGroupResourceCodes(vo.getSysGroupId());
+//            if(codes!=null){//资源关联的菜单
+//                menus.addAll(menuService.findAllMenusByResources(resourcesService.find(QueryWrapper.of(SysResources.class).in("code",codes.toArray(new String[codes.size()])))));
+//            }
+//            GroupVo groupVo=groupService.queryOne(GroupVo.class,vo.getSysGroupId());
+//            //角色直接关联的菜单
+//            menus.addAll(
+//                    menuService.findAllMenu(
+//                menuService.query(MenuVo.class,QueryWrapper.of(SysMenu.class).in("sysRoleId",groupVo.getSysRoleGroup_sysRoleId().toArray(new Object[groupVo.getSysRoleGroup_sysRoleId().size()])))));
+//            //去重
+//           menus= menus.stream().collect(Collectors.toMap(MenuVo::getId, Function.identity(), (existing, replacement) -> existing)).values().stream().collect(Collectors.toList());
+//        }
+//        vo.setMenus(menus);
+//        vo.setResourceCodes(codes);
+//        return vo;
+//    }
 
 
     public UserDetailVo getUserDetailVo1(SecurityUser currUser){

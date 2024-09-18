@@ -19,6 +19,8 @@
 package cn.wwwlike.auth.vo;
 
 import cn.wwwlike.auth.entity.SysGroup;
+import cn.wwwlike.sys.entity.SysResources;
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.VoBean;
 import lombok.Data;
 
@@ -44,7 +46,18 @@ public class GroupVo implements VoBean<SysGroup> {
     /**
      * 通过权限组查找对应的资源信息
      */
+    /**
+     * 权限组关联资源
+     */
+    @VField(pathName = "sysGroupResources_sysResources")
+    public List<SysResources> resources;
+    /**
+     * 权限组关联资源code集合
+     */
     public List<String> sysGroupResources_sysResources_code;
+    /**
+     * 权限组关联资源对应的菜单id集合
+     */
     public List<String> sysGroupResources_sysResources_sysMenuId;
 
 

@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService> {
     @Autowired
     public SysRoleService roleService;
-    @Autowired
-    public SysMenuService menuService;
     /**
      * 资源查询
      */
@@ -57,7 +55,6 @@ public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService>
     public List<SysResources> list(@RequestBody PageQuery req) {
        return service.find(req);
     }
-
     /**
      * 按钮可绑定资源
      */

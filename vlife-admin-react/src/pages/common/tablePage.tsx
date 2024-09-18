@@ -532,6 +532,7 @@ const TablePage = <T extends TableBean>({
         formType: formModel.type,
         entity: formModel.entityType,
         activeKey: activeKey,
+        setActiveTabKey: setActiveKey,
         formReaction:
           typeof editType === "object" ? editType.reaction : undefined,
         rm: rm,
@@ -586,7 +587,7 @@ const TablePage = <T extends TableBean>({
         totalBtns
           .filter(
             (item) =>
-              item.model !== null ||
+              (item.model !== undefined && item.model !== null) ||
               (item.sysResourcesId &&
                 resources[item.sysResourcesId] &&
                 (resources[item.sysResourcesId].paramType === "entity" ||
@@ -616,7 +617,7 @@ const TablePage = <T extends TableBean>({
       ? [
           {
             code: "tableToolbarBtn",
-            title: "新增工具栏按钮",
+            title: "工具栏按钮",
             model: "button",
             reaction: [
               VF.then("sysMenuId").value(menu?.id).readPretty(),
@@ -624,7 +625,7 @@ const TablePage = <T extends TableBean>({
               VF.then("position").value("tableToolbar").hide(),
             ], //model表单级联关系配置
             actionType: "save",
-            icon: <i className="  icon-setting" />,
+            icon: <i className=" icon-task_add-02" />,
             saveApi: btnSave,
             onSubmitFinish: () => {
               datasInit();
@@ -632,7 +633,7 @@ const TablePage = <T extends TableBean>({
           },
           {
             code: "tableBtn",
-            title: "新增列表栏按钮",
+            title: "列表栏按钮",
             model: "button",
             reaction: [
               VF.then("sysMenuId").value(menu?.id).readPretty(),
@@ -640,7 +641,7 @@ const TablePage = <T extends TableBean>({
               VF.then("position").value("tableLine").hide(),
             ], //model表单级联关系配置
             actionType: "save",
-            icon: <i className="  icon-enterprise_tool" />,
+            icon: <i className=" icon-task_add-02" />,
             saveApi: btnSave,
             onSubmitFinish: () => {
               datasInit();
@@ -869,7 +870,7 @@ const TablePage = <T extends TableBean>({
                     ...btnsModelConfBtns, //表单模型配置
                   ]}
                 >
-                  <Buttons
+                  <BtnResourcesToolBar
                     entity={entityType}
                     btns={totalBtns}
                     datas={selected}

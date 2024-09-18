@@ -41,7 +41,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
   const {
     datas,
     sysMenuId,
-    toActiveTabKey,
+    // toActiveTabKey,
     btnType = "button",
     actionType,
     position = "page",
@@ -68,7 +68,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
     loadApi,
     onFormBefore,
     onSubmitFinish,
-    onActiveChange,
+    // onActiveChange,
     // onDataChange,
     onClick,
     onSaveBefore,
@@ -229,16 +229,15 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
         return otherBtns
           ? [
               props,
-              ...otherBtns
-                ?.filter(
-                  (o) => o.model === props.model && o.actionType === "flow"
-                )
-                .map((o) => {
-                  return {
-                    onActiveChange: o.onActiveChange || onActiveChange,
-                    ...o,
-                  };
-                }),
+              ...otherBtns?.filter(
+                (o) => o.model === props.model && o.actionType === "flow"
+              ),
+              // .map((o) => {
+              //   return {
+              //     onActiveChange: o.onActiveChange || onActiveChange,
+              //     ...o,
+              //   };
+              // }),
             ]
           : [props];
       } else if (
@@ -249,24 +248,23 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
       ) {
         return [
           props,
-          ...otherBtns
-            .filter(
-              (o) =>
-                o.model === props.model &&
-                (o.actionType === "api" || o.actionType === "flow")
-            )
-            .map((o) => {
-              return {
-                onActiveChange: o.onActiveChange || onActiveChange,
-                ...o,
-              };
-            }),
+          ...otherBtns.filter(
+            (o) =>
+              o.model === props.model &&
+              (o.actionType === "api" || o.actionType === "flow")
+          ),
+          // .map((o) => {
+          //   return {
+          //     onActiveChange: o.onActiveChange || onActiveChange,
+          //     ...o,
+          //   };
+          // }),
         ];
       }
       //其他情况都只显示当前一个按钮
       return [props];
     },
-    [props, otherBtns, onActiveChange]
+    [props, otherBtns] //onActiveChange
   );
 
   // 修改了数据才往回传输数据
@@ -356,12 +354,12 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
             if (onSubmitFinish) {
               onSubmitFinish(data);
             }
-            if (toActiveTabKey) {
-              onActiveChange?.(toActiveTabKey);
-              if (onActiveChange === undefined) {
-                console.error("场景跳转需要使用BtnToolBar的onActiveChange方法");
-              }
-            }
+            // if (toActiveTabKey) {
+            //   onActiveChange?.(toActiveTabKey);
+            //   if (onActiveChange === undefined) {
+            //     console.error("场景跳转需要使用BtnToolBar的onActiveChange方法");
+            //   }
+            // }
             setLoading(undefined);
           }, 500);
         };
@@ -645,7 +643,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
               actionType: "api",
               disabledHide: true,
               disabled: props.groupIndex === 0,
-              datas: [{ ...props }],
+              datas: [{ ...props, activeTabKey: undefined }],
               saveApi: moveUp,
               icon: <i className=" icon-arrow-up" />,
               onSubmitFinish: () => {
@@ -658,7 +656,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
               actionType: "save",
               disabledHide: true,
               disabled: (props.groupIndex || 0) + 1 === props.groupTotal,
-              datas: [{ ...props }],
+              datas: [{ ...props, activeTabKey: undefined }],
               saveApi: moveDown,
               onSubmitFinish: () => {
                 datasInit();

@@ -36,6 +36,7 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
     }
 
     //用户查询
+    @VMethod(permission = PermissionEnum.noAuth)
     @PostMapping("/list")
     public List<SysUser> list(@RequestBody SysUserPageReq req) {
         return service.find(req);

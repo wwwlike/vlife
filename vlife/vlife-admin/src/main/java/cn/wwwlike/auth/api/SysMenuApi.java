@@ -112,38 +112,19 @@ public class SysMenuApi extends VLifeApi<SysMenu, SysMenuService> {
     MenuResourcesDto dto= service.queryOne(MenuResourcesDto.class,id);
     if(dto.getSysResources_id()!=null){
       List<SysResources> resources=resourcesService.findByIds(dto.getSysResources_id().toArray(new String[0]));
-      dto.setRequireIds(resources.stream().filter(r->r.isMenuRequired()).map(SysResources::getId).collect(Collectors.toList())); ;
+//      dto.setRequireIds(resources.stream().filter(r->r.isMenuRequired()).map(SysResources::getId).collect(Collectors.toList())); ;
     }
     return dto;
   }
 
-
   /**
-   * 关联资源保存
+   * 导入资源
    */
   @PostMapping("/save/menuResourcesDto")
   public MenuResourcesDto saveMenuResourcesDto(@RequestBody MenuResourcesDto dto){
-    SysMenu menu=service.findOne(dto.getId());
-    MenuResourcesDto _dto=service.save(dto,true);
-    //有导入的资源则删除菜单与权限组(角色)的关联
-    if(dto.getSysResources_id()!=null){
-      List<SysGroupResources> groupResources=
-          sysGroupResourcesService.find("sysMenuId",dto.getId());
-      if(groupResources!=null){
-        groupResources.forEach(gr->sysGroupResourcesService.remove(gr.getId()));
-      }
-    }
-
-    if(dto.getRequireIds()!=null&&dto.getRequireIds().size()>0){
-      sysGroupResourcesService.clearMainGroup(dto.getRequireIds().toArray(new String[dto.getRequireIds().size()]));
-    }
-    resourcesService.clearRoleWithMenuEmpty();
-    String[] requireIds = dto.getRequireIds() != null ? dto.getRequireIds().toArray(new String[0]) : new String[0];
-    resourcesService.resourcesRequired(true,requireIds);
-    resourcesService.resourcesRequired(false,
-    resourcesService.menuUseableResources(menu.getFormId(),
-              dto.getId()).stream().map(DbEntity::getId).filter(t->dto.getRequireIds()==null?true:!dto.getRequireIds().contains(t)).collect(Collectors.toList()).toArray(new String[0]));
-    return _dto;
+    dto=service.importResources(dto);
+    sysGroupResourcesService.clearNoimportResources();
+    return dto;
   }
 
 }

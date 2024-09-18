@@ -1,6 +1,7 @@
 package cn.wwwlike.auth.service;
 
 import cn.wwwlike.auth.dao.SysMenuDao;
+import cn.wwwlike.auth.dto.MenuResourcesDto;
 import cn.wwwlike.auth.entity.SysGroupResources;
 import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.vo.MenuVo;
@@ -8,6 +9,7 @@ import cn.wwwlike.common.BaseService;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
+import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,8 +110,39 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
 //          3. 菜单删除后则其下资源与权限组绑定的关系一并解除
             List<SysGroupResources> groupResourcesList=groupResourcesService.find("sysResourcesId",resources.getId());
             groupResourcesList.stream().forEach(f->groupResourcesService.delete(f.getId()));
-
-
         }
+        groupResourcesService.clearNoimportResources();
+    }
+
+    //删除与该菜单又权限关联的中间表信息（SysGroupResources）
+    public void clearGroupLink(String sysMenuId){
+        List<SysGroupResources> groupResources=
+                groupResourcesService.find("sysMenuId",sysMenuId);
+        if(groupResources!=null){
+            groupResources.forEach(gr->groupResourcesService.remove(gr.getId()));
+        }
+    }
+
+    //菜单导入资源
+    public MenuResourcesDto importResources(MenuResourcesDto dto){
+        String sysMenuId=dto.getId();
+        MenuResourcesDto _dto=save(dto,true);
+        if(dto.getSysResources_id()!=null){
+            //清除菜单与权限的关联
+          clearGroupLink(sysMenuId);
+        }
+//        if(dto.getRequireIds()!=null&&dto.getRequireIds().size()>0){
+//            //清除主资源与权限组的关联
+//            groupResourcesService.clearMainGroup(dto.getRequireIds().toArray(new String[dto.getRequireIds().size()]));
+//        }
+        //没有关联菜单那的资源也不能和权限组绑定
+//        resourcesService.clearRoleWithMenuEmpty();
+
+//        String[] requireIds = dto.getRequireIds() != null ? dto.getRequireIds().toArray(new String[0]) : new String[0];
+//        resourcesService.resourcesRequired(true,requireIds);
+//        resourcesService.resourcesRequired(false,
+//                resourcesService.menuUseableResources(dto.getFormId(),
+//                        dto.getId()).stream().map(DbEntity::getId).filter(t->dto.getRequireIds()==null?true:!dto.getRequireIds().contains(t)).collect(Collectors.toList()).toArray(new String[0]));
+        return _dto;
     }
 }

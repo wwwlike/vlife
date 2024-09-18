@@ -24,7 +24,7 @@ export default (props: ConfWrapperProps) => {
         // <span className={`relative z-50 rounded-md p-1 ${props.className}`}>
         <>
           {position === "start" && (
-            <Buttons
+            <BtnResourcesToolBar
               className="inline"
               dropdown={confIcon || true}
               btnConf={true}
@@ -40,7 +40,7 @@ export default (props: ConfWrapperProps) => {
             {children}
           </span>
           {position === "end" && (
-            <Buttons
+            <BtnResourcesToolBar
               className="inline"
               dropdown={confIcon || true}
               btns={buttons}

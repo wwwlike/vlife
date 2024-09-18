@@ -24,10 +24,10 @@ import {
   detailMenuResourcesDto,
 } from "@src/api/SysMenu";
 import classNames from "classnames";
-import BtnToolBar from "@src/components/button/BtnToolBar";
 import LinkMe from "@src/pages/layout/components/header/LinkMe";
 import RelationModel from "./component/RelationModel";
 import { VFBtn } from "@src/components/button/types";
+import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 
 export type modelForm = FormVo & {
   list?: FormVo[];
@@ -369,7 +369,7 @@ const Model = () => {
                 </div>
                 <i className=" absolute right-2 icon-sideslip_right text-xl  " />
               </div>
-              <BtnToolBar
+              <BtnResourcesToolBar
                 key={"tableBtn"}
                 btns={btns}
                 position="page"
