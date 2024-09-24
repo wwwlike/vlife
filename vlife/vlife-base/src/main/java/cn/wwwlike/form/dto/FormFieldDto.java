@@ -52,6 +52,10 @@ public class FormFieldDto  implements SaveBean<FormField> {
      * 字段类型
      */
     public String fieldType;
+    /**
+     * java类型
+     */
+    public String javaType;
 
     /**
      * 所属表单
@@ -74,8 +78,8 @@ public class FormFieldDto  implements SaveBean<FormField> {
     public String entityFieldName;
 
 
-    //组件类型
-    public String componentType;
+//    //组件类型
+//    public String componentType;
     /**
      * 字段名
      */

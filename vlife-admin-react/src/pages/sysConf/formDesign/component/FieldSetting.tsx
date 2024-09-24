@@ -11,7 +11,7 @@ import {
 } from "@src/components/compConf/compConf";
 import SelectIcon from "@src/components/SelectIcon";
 import { useAuth } from "@src/context/auth-context";
-import { DataType } from "@src/dsl/base";
+import { DataType, numberFiledType } from "@src/dsl/base";
 import CompConf from "@src/components/compConf";
 
 /**
@@ -90,7 +90,7 @@ export default ({
             //对象继承匹配判断
             component.dataType !== DataType.basic &&
             field.fieldType !== "string" &&
-            field.fieldType !== "number" &&
+            numberFiledType.includes(field.fieldType) &&
             field.fieldType !== "date" &&
             field.fieldType !== "boolean"
           ) {

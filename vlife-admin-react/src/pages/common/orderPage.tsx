@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FormVo } from "@src/api/Form";
 import { Tag } from "@douyinfe/semi-ui";
 import { useUpdateEffect } from "ahooks";
+import { numberFiledType } from "@src/dsl/base";
 /**
  * 可排序字段列表设置组件
  * 1. 数值、日期、字典、外键类型可排序
@@ -34,7 +35,7 @@ const OrderPage = ({
       formVo.fields.filter(
         (f) =>
           f.fieldType === "date" ||
-          f.fieldType === "number" ||
+          numberFiledType.includes(f.fieldType) ||
           f.dictCode ||
           (f.entityFieldName === "id" && f.pathName.endsWith("Id"))
       ) || []

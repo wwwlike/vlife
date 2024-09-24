@@ -106,4 +106,6 @@ public class FormDto implements SaveBean<Form> {
     //最新未发布脚本
     public String unpublishJson;
 
+    public Boolean custom;
+
 }

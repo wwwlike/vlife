@@ -1,3 +1,5 @@
+import { javaType } from '@src/api/FormField';
+
 /**
  * 组件的数据结构
  */
@@ -11,6 +13,9 @@ export enum sourceType{
   fieldInfo='fieldInfo', //取指定字段变量(接口用到的类型)
   fieldValue='fieldValue' //取指定字段变量(接口用到的类型)
 }
+
+//java的数字类型集合
+export const numberFiledType:string[]=["number","int","integer","float","double","long","short"]
 
 export enum OptEnum{
     eq="eq",
@@ -77,7 +82,7 @@ export interface where {
   /** 所在实体类 */
   entityName?:string;
   /** 字段类型 */
-  fieldType?: "string" | "number" | "date" | "boolean";
+  fieldType?: javaType;
   /** 匹配方式 */
   opt: OptEnum;
   /** 转换函数 */

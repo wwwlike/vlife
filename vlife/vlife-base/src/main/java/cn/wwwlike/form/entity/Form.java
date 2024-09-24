@@ -21,7 +21,6 @@ import javax.persistence.*;
 @Table(name = "form")
 @VClazz(remove = {PageComponentProp.class})
 public class Form extends DbEntity {
-    //--------后端解析--------------
     /**
      * 模型代表字段
      * label/title/name/id 按照这个优先级进行设置
@@ -106,14 +105,12 @@ public class Form extends DbEntity {
      * 开发环境时给的开发人员的提示
      */
     public String helpDoc;
-
     //流程脚本
     public String flowJson;
-//    //流程定义key
-//    public String flowDefineKey;
     //待发布的流程脚本
     public String unpublishJson;
-
+    //用户自定义
+    public Boolean custom;
 
     public String getLabelField() {
         return labelField;
@@ -275,5 +272,13 @@ public class Form extends DbEntity {
 
     public void setUnpublishJson(String unpublishJson) {
         this.unpublishJson = unpublishJson;
+    }
+
+    public Boolean getCustom() {
+        return custom;
+    }
+
+    public void setCustom(Boolean custom) {
+        this.custom = custom;
     }
 }

@@ -224,6 +224,17 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
         return url;
     }
 
+    public static boolean startsWithAny(String A, List<String> B) {
+        // 遍历集合 B
+        for (String prefix : B) {
+            // 判断 A 是否以 prefix 开头
+            if (A.startsWith(prefix)) {
+                return true; // 如果是，返回 true
+            }
+        }
+        return false; // 如果没有匹配项，返回 false
+    }
+
     /**
      * 单个接口资源同步
      * @param action
@@ -272,10 +283,10 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                         if(!className.equals(bean.getParamWrapper())||bean.getParamType()==null){
                             bean.setParamWrapper(className);
                             bean.setParamType(
-                                    GlobalData.entityNames.contains(api.getParamWrapper())?"entity":
-                                            GlobalData.dtoNames.contains(api.getParamWrapper())?"dto":
-                                                    GlobalData.voNames.contains(api.getParamWrapper())?"vo":
-                                                            GlobalData.reqNames.contains(api.getParamWrapper())?"req":"other"
+                                    startsWithAny(api.getParamWrapper(),GlobalData.entityNames)?"entity":
+                                    startsWithAny(api.getParamWrapper(),GlobalData.dtoNames)?"dto":
+                                    startsWithAny(api.getParamWrapper(),GlobalData.voNames)?"vo":
+                                    startsWithAny(api.getParamWrapper(),GlobalData.reqNames) ?"req":"other"
                             );
                             i++;
                         }
@@ -287,10 +298,10 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                         if(!api.getParamWrapper().equals(bean.getParamWrapper())||bean.getParamType()==null){
                             bean.setParamWrapper(api.getParamWrapper());
                             bean.setParamType(
-                                    GlobalData.entityNames.contains(api.getParamWrapper())?"entity":
-                                            GlobalData.dtoNames.contains(api.getParamWrapper())?"dto":
-                                                    GlobalData.voNames.contains(api.getParamWrapper())?"vo":
-                                                            GlobalData.reqNames.contains(api.getParamWrapper())?"req":"other"
+                                    startsWithAny(api.getParamWrapper(),GlobalData.entityNames)?"entity":
+                                            startsWithAny(api.getParamWrapper(),GlobalData.dtoNames)?"dto":
+                                                    startsWithAny(api.getParamWrapper(),GlobalData.voNames)?"vo":
+                                                            startsWithAny(api.getParamWrapper(),GlobalData.reqNames) ?"req":"other"
                             );
                             i++;
                         }
@@ -303,11 +314,12 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                         String genericType = returnMatcher.group(2);
                         if(!className.equals(bean.getReturnClz())||bean.getReturnType()==null){
                             bean.setReturnClz(className);
-                            bean.setReturnType(
-                                    GlobalData.entityNames.contains(api.getReturnClz())?"entity":
-                                            GlobalData.dtoNames.contains(api.getReturnClz())?"dto":
-                                                    GlobalData.voNames.contains(api.getReturnClz())?"vo":
-                                                            GlobalData.reqNames.contains(api.getReturnClz())?"req":"other");
+                            bean.setParamType(
+                                    startsWithAny(api.getParamWrapper(),GlobalData.entityNames)?"entity":
+                                            startsWithAny(api.getParamWrapper(),GlobalData.dtoNames)?"dto":
+                                                    startsWithAny(api.getParamWrapper(),GlobalData.voNames)?"vo":
+                                                            startsWithAny(api.getParamWrapper(),GlobalData.reqNames) ?"req":"other"
+                            );
                             i++;
                         }
                         if(!genericType.equals(bean.getReturnGeneric())){
@@ -317,11 +329,12 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                     }else{
                         if((bean.getReturnClz()!=null&&!bean.getReturnClz().equals(api.getReturnClz()))||(bean.getReturnClz()==null&& api.getReturnClz()!=null)){
                             bean.setReturnClz(api.getReturnClz());
-                            bean.setReturnType(
-                                    GlobalData.entityNames.contains(api.getReturnClz())?"entity":
-                                            GlobalData.dtoNames.contains(api.getReturnClz())?"dto":
-                                                    GlobalData.voNames.contains(api.getReturnClz())?"vo":
-                                                            GlobalData.reqNames.contains(api.getReturnClz())?"req":"other");
+                            bean.setParamType(
+                                    startsWithAny(api.getParamWrapper(),GlobalData.entityNames)?"entity":
+                                            startsWithAny(api.getParamWrapper(),GlobalData.dtoNames)?"dto":
+                                                    startsWithAny(api.getParamWrapper(),GlobalData.voNames)?"vo":
+                                                            startsWithAny(api.getParamWrapper(),GlobalData.reqNames) ?"req":"other"
+                            );
                             i++;
                         }
 
@@ -357,12 +370,11 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                 if(api.getParamWrapper()!=null){
                     Matcher matcher = pattern.matcher(api.getParamWrapper());
                     bean.setParam(api.getParam());
-
                     bean.setParamType(
-                            GlobalData.entityNames.contains(api.getParamWrapper())?"entity":
-                                    GlobalData.dtoNames.contains(api.getParamWrapper())?"dto":
-                                            GlobalData.voNames.contains(api.getParamWrapper())?"vo":
-                                                    GlobalData.reqNames.contains(api.getParamWrapper())?"req":"other"
+                            startsWithAny(api.getParamWrapper(),GlobalData.entityNames)?"entity":
+                                    startsWithAny(api.getParamWrapper(),GlobalData.dtoNames)?"dto":
+                                            startsWithAny(api.getParamWrapper(),GlobalData.voNames)?"vo":
+                                                    startsWithAny(api.getParamWrapper(),GlobalData.reqNames) ?"req":"other"
                     );
 
                     if (matcher.find()) {
@@ -383,11 +395,12 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                         String className = returnMatcher.group(1);
                         String genericType = returnMatcher.group(2);
                         bean.setReturnClz(className);
-                        bean.setReturnType(
-                                GlobalData.entityNames.contains(api.getReturnClz())?"entity":
-                                        GlobalData.dtoNames.contains(api.getReturnClz())?"dto":
-                                                GlobalData.voNames.contains(api.getReturnClz())?"vo":
-                                                        GlobalData.reqNames.contains(api.getReturnClz())?"req":"other");
+                        bean.setParamType(
+                                startsWithAny(api.getParamWrapper(),GlobalData.entityNames)?"entity":
+                                        startsWithAny(api.getParamWrapper(),GlobalData.dtoNames)?"dto":
+                                                startsWithAny(api.getParamWrapper(),GlobalData.voNames)?"vo":
+                                                        startsWithAny(api.getParamWrapper(),GlobalData.reqNames) ?"req":"other"
+                        );
                         bean.setReturnGeneric(genericType);
                     }else{
                         bean.setReturnClz(api.getReturnClz());

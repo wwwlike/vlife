@@ -134,7 +134,6 @@ public class GeneratorApi {
                 .addAnnotation(anBuilder.build())
                 .superclass(superClzAndGenic)
                 .addMethods(methodSpecs)
-
                 .build();
         JavaFile javaFile = JavaFile.builder(apiPackageName, apiClazz).build();
         try {
@@ -149,7 +148,6 @@ public class GeneratorApi {
      * 方法名称以Page结尾
      */
     public MethodSpec page(VoDto result, List<ReqDto> req) {
-
         String methodName = calcMethodName(result, result.getEntityClz(), "Page");
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC);
@@ -159,7 +157,7 @@ public class GeneratorApi {
         methodComment.addStatement("@param req 查询条件");
         methodComment.addStatement("@return");
 
-        AnnotationSpec.Builder methodAnnotation = AnnotationSpec.builder(GetMapping.class);
+        AnnotationSpec.Builder methodAnnotation = AnnotationSpec.builder(PostMapping.class);
         methodAnnotation.addMember("value", "\"" + path(methodName) + "\"");
         TypeName returnTypeName = TypeName.get(result.getClz());
         ParameterizedTypeName returnGenic = ParameterizedTypeName.get(ClassName.get(PageVo.class), returnTypeName);
@@ -177,18 +175,13 @@ public class GeneratorApi {
         methodSpec.returns(returnGenic)
                 .addJavadoc(methodComment.build())
                 .addAnnotation(methodAnnotation.build());
-
         return methodSpec.build();
-
     }
-
-    ;
 
     /**
      * 实体类查询
      */
     public MethodSpec page(EntityDto result, List<ReqDto> req) {
-
         String methodName = "page";
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC);
@@ -199,7 +192,7 @@ public class GeneratorApi {
             methodComment.addStatement("@param req 查询条件");
         methodComment.addStatement("@return");
 
-        AnnotationSpec.Builder methodAnnotation = AnnotationSpec.builder(GetMapping.class);
+        AnnotationSpec.Builder methodAnnotation = AnnotationSpec.builder(PostMapping.class);
         methodAnnotation.addMember("value", "\"/" + methodName + "\"");
         TypeName returnTypeName = TypeName.get(result.getClz());
         ParameterizedTypeName returnGenic = ParameterizedTypeName.get(ClassName.get(PageVo.class), returnTypeName);
@@ -424,7 +417,6 @@ public class GeneratorApi {
      * 数据删除
      */
     public MethodSpec delete(EntityDto itemDto) {
-
         String methodName = "delete";
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC);
@@ -433,7 +425,6 @@ public class GeneratorApi {
         methodComment.addStatement(itemDto.getTitle() + "删除");
         methodComment.addStatement("@param id 主键id");
         methodComment.addStatement("@return");
-
         AnnotationSpec.Builder methodAnnotation = AnnotationSpec.builder(DeleteMapping.class);
         methodAnnotation.addMember("value", "\"/delete/{id}\"");
         TypeName returnType = TypeName.get(Long.class);

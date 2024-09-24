@@ -191,11 +191,16 @@ public class FormService extends VLifeService<Form, FormDao> {
                             boolean change = false;
                             //字段属性发生变化进行修订
                             if (dbField.getFieldName().equals(javaField.getFieldName())) {
+                                if(dbField.getJavaType()==null||!dbField.getJavaType().equals(javaField.getType())){
+                                    change=true;
+                                    dbField.setJavaType(javaField.getType());
+                                }
                                 //字段类型发生变化
                                 if (!dbField.getFieldType().equals(getFileType(javaField.getType())) || !dbField.getDataType().equals(getDataType(javaField.getFieldType()))) {
                                     change = true;
                                     dbField.setDataType(getDataType(javaField.getFieldType()));
                                     dbField.setFieldType(getFileType(javaField.getType()));
+                                    initComponent(dbField, formDto.getItemType(), javaDto);
                                 }
                                 FormFieldVo tranField= fieldTran(javaField);
                                 //注解里字典变换
@@ -208,7 +213,6 @@ public class FormService extends VLifeService<Form, FormDao> {
                                     change = true;
                                     BeanUtils.copyProperties(tranField, dbField,"id","formId","sort");
                                 }
-
                                 //更新Java标题和描述说明
                                 String javaTitle = javaField.getTitle();
                                 if (javaTitle != null && !javaTitle.equals("/") && !javaTitle.equals(dbField.getJavaTitle())) {
@@ -222,9 +226,6 @@ public class FormService extends VLifeService<Form, FormDao> {
                                     change = true;
                                     dbField.setX_component_props$placeholder(javaField.getPlaceholder());
                                 }
-
-
-
 //                                // 1. 字典变化， 2. pathName变化
 //                                if (javaField.getDictCode() != null && dbField.getDictCode() == null && "Input".equals(dbField.getX_component())) {
 //                                    change = true;
@@ -247,9 +248,7 @@ public class FormService extends VLifeService<Form, FormDao> {
 //                                        BeanUtils.copyProperties(tranField, dbField);
 //                                    }
 //                                }
-
                                 if (change) {
-                                    initComponent(dbField, formDto.getItemType(), javaDto);
                                     fieldService.save(dbField);
                                 }
                                 exists = true;
@@ -385,6 +384,7 @@ public class FormService extends VLifeService<Form, FormDao> {
         BeanUtils.copyProperties(fieldDto, formFieldVo, "fieldType", "dataType");//
         formFieldVo.setDataType(getDataType(fieldDto.getFieldType()));
         formFieldVo.setFieldType(getFileType(fieldDto.getType()));
+        formFieldVo.setJavaType(fieldDto.getType());
         String pathName = fieldDto.getPathName();
         int last_index = pathName.lastIndexOf("_");
         if (pathName.endsWith("Id")) {

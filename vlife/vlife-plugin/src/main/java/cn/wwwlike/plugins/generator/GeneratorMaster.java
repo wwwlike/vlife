@@ -145,12 +145,12 @@ public class GeneratorMaster extends GeneratorUtils {
             TypeName itemName = TypeName.get(item);
             ClassName daoName = ClassName.get(daoPackageName, item.getSimpleName() + "Dao");
             ParameterizedTypeName clzAndGenic = ParameterizedTypeName.get(superClazz, itemName, daoName);
-            TypeSpec user = TypeSpec.classBuilder(item.getSimpleName() + "Service")
+            TypeSpec service = TypeSpec.classBuilder(item.getSimpleName() + "Service")
                     .addModifiers(Modifier.PUBLIC)
                     .addAnnotation(Service.class)
                     .superclass(clzAndGenic)
                     .build();
-            files.add(JavaFile.builder(servicePackageName, user)
+            files.add(JavaFile.builder(servicePackageName, service)
                     .build());
         }
         return files;

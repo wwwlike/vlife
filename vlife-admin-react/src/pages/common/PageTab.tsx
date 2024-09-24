@@ -63,11 +63,10 @@ export default ({ ...props }: PageTabProps) => {
           }
         }
       }
-    } else {
+    } else if (!_level1Selected && level1Tabs?.length > 0) {
       setLevel1Selected(level1Tabs?.[0]?.itemKey);
-      if (level2Tabs && level2Tabs.length > 0) {
-        setLevel2Selected(level2Tabs[0].itemKey);
-      }
+    } else if (!_level2Selected && level2Tabs?.length > 0) {
+      setLevel2Selected(level2Tabs[0].itemKey);
     }
   }, [
     activeKey,

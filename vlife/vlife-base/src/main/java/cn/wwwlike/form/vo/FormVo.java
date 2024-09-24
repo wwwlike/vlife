@@ -101,6 +101,8 @@ public class FormVo implements VoBean<Form> {
    * 需要模型实现INo接口
    */
   public String prefixNo;
+
+  public Boolean custom;
   /**
    * 模型的接口类
    */

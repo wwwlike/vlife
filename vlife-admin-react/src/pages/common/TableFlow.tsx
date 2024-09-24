@@ -394,11 +394,7 @@ export const tableFlowBtns = ({
       activeTabKey: ["flow_byMe_draft"],
       usableMatch: (datas: TableBean[]) => {
         return datas.every((data) => {
-          return (
-            data.status === "1" &&
-            data?.flow?.started === false &&
-            data?.flow?.ended === false
-          );
+          return data?.flow?.started === false && data?.flow?.ended === false;
         });
       },
       icon: <i className="  icon-remove_circle_outline1" />,

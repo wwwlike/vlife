@@ -24,12 +24,11 @@ export interface TableHeaderProps {
   entityModel?: FormVo; //实体模型
   tabList?: VfTableTab[]; //   1. fixed固定传值
   tabDictField?: string; // 2. 传字典编码的预设固定页签
-  tabReqCount?: { [tabKey: string]: number }; //分页数量
-  children?: any;
   showCount?: boolean; //是否显示数量
-  tabCount?: { [key: string]: number };
+  tabCount?: { [key: string]: number }; //每个页签数量
   onActiveTabChange?: (tab: VfTableTab) => void; //页签场景切换
-  onCountTab?: (countTabReqObj: { [tabKey: string]: any }) => void; //返回当前用户可用的且是需要加载数量的页签
+  onCountTab?: (countTabReqObj: { [tabKey: string]: any }) => void; //所有页签的查询条件返回
+  children?: any;
 }
 
 export default ({ ...props }: TableHeaderProps) => {
@@ -55,6 +54,13 @@ export default ({ ...props }: TableHeaderProps) => {
   const [contentTab, setContentTab] = React.useState<VfTableTab[]>(); //查询到的页签
   const [reportCondition, setReportCondition] =
     React.useState<ReportCondition[]>();
+
+  useEffect(() => {
+    if (activeKey) {
+      const req = _contentTab.find((f) => f.itemKey === activeKey);
+      req && onActiveTabChange?.(req);
+    }
+  }, [activeKey]);
   //当前激活页签
   // const [_activeKey, setActiveKey] = useState<string>();
 
@@ -303,7 +309,7 @@ export default ({ ...props }: TableHeaderProps) => {
                     ),
                 };
               })}
-              onSelected={function (key: string): void {
+              onSelected={(key: string): void => {
                 onActiveTabChange?.(
                   _contentTab.filter((f) => f.itemKey === key)?.[0]
                 );

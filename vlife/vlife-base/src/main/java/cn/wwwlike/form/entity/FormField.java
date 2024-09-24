@@ -33,14 +33,21 @@ public class FormField extends DbEntity {
      */
     public String fieldName;
     /**
-     * 前端数据类型
+     * 数据大类
      * basic,array,object
      */
     public String dataType;
     /**
      * 字段类型
+     * ts类型
      */
     public String fieldType;
+
+    /**
+     * java类型
+     */
+    public String javaType;
+
     /**
      * 所属表单
      */
@@ -89,8 +96,8 @@ public class FormField extends DbEntity {
      */
     public String entityFieldName;
 
-    //组件类型
-    public String componentType;
+//    //组件类型
+//    public String componentType;
 
     /**
      * 全路径

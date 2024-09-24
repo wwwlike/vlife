@@ -62,6 +62,11 @@ public class FormFieldVo  implements VoBean<FormField>{
      * 字段类型
      */
     public String fieldType;
+
+    /**
+     * java类型
+     */
+    public String javaType;
     /**
      * 所属表单
      */
@@ -82,9 +87,9 @@ public class FormFieldVo  implements VoBean<FormField>{
     //实体字段名称
     public String entityFieldName;
 
-
-    //组件类型
-    public String componentType;
+//
+//    //组件类型
+//    public String componentType;
     /**
      * 字段名
      */

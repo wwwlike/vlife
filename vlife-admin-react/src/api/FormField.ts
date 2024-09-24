@@ -7,12 +7,17 @@ import { DataType } from '@src/dsl/base';
 import { PageComponentPropDto } from '@src/api/PageComponentProp';
 import { Form } from './Form';
 
+export type javaNumberType="number"|"long"|"double"|"int"|"integer"|"short"|"float";
+
+export type javaType="string"|"boolean"|"date"|"number"|"long"|"double"|"int"|"integer"|"short"|"float";
+
 // 列表字段
 export interface FormField extends DbEntity {
   title: string; // 客户端设置标题
   javaTitle: string; //java注释标题
   dataType:DataType ; // 数据类型
-  fieldType:"string"|"boolean"|"number"|"date"; // 字段类别
+  fieldType:"string"|"boolean"|"date"|"number"; // 字段类别
+  javaType:javaType;//java类型
   formId: string; // 所属表单
   formGroupCode?: string; //分组code
   formTabCode?: string; //页签code
@@ -20,7 +25,7 @@ export interface FormField extends DbEntity {
   fieldName: string; // 字段名
   entityType: string; //字段实体模型名称
   entityFieldName: string; //数据库模型字段
-  componentType: string; //组件类型（基础组件，业务组件）
+  // componentType: string; //组件类型（基础组件，业务组件）
   description: string; // 描述
   sort: number; // 顺序
   required: boolean; // 必填

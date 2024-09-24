@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { DatePicker, Input, Select } from "@douyinfe/semi-ui";
 import { useAuth } from "@src/context/auth-context";
 import { FormVo } from "@src/api/Form";
-import { FormFieldVo } from "@src/api/FormField";
+import { FormFieldVo, javaType } from "@src/api/FormField";
 import { InputNumber } from "@douyinfe/semi-ui/lib/es/inputNumber";
 import RelationTagInput from "@src/components/RelationTagInput";
 import { OptEnum, where } from "@src/dsl/base";
@@ -19,18 +19,34 @@ export const OPT: {
   [key: string]: {
     label: string; //标签名称
     //满足的字段类型
-    fieldType?: ("string" | "number" | "date" | "boolean")[];
+    fieldType?: javaType[];
     dict?: boolean; //字典类型字段是否可以用
     fk?: boolean; //是否匹配外键
   };
 } = {
   eq: {
     label: "等于",
-    fieldType: ["string", "number", "date", "boolean"],
+    fieldType: [
+      "string",
+      "date",
+      "boolean",
+      "int",
+      "integer",
+      "long",
+      "double",
+    ],
   },
   ne: {
     label: "不等于",
-    fieldType: ["string", "number", "date", "boolean"],
+    fieldType: [
+      "string",
+      "long",
+      "double",
+      "int",
+      "integer",
+      "date",
+      "boolean",
+    ],
   },
   startsWith: {
     label: "开头匹配",
@@ -44,10 +60,30 @@ export const OPT: {
     dict: false,
     fk: false,
   },
-  gt: { label: ">", fieldType: ["date", "number"], dict: false, fk: false },
-  ge: { label: ">=", fieldType: ["date", "number"], dict: false, fk: false },
-  lt: { label: "<", fieldType: ["date", "number"], dict: false, fk: false },
-  le: { label: "<=", fieldType: ["date", "number"], dict: false, fk: false },
+  gt: {
+    label: ">",
+    fieldType: ["date", "long", "double", "int", "integer"],
+    dict: false,
+    fk: false,
+  },
+  ge: {
+    label: ">=",
+    fieldType: ["date", "long", "double", "int", "integer"],
+    dict: false,
+    fk: false,
+  },
+  lt: {
+    label: "<",
+    fieldType: ["date", "long", "double", "int", "integer"],
+    dict: false,
+    fk: false,
+  },
+  le: {
+    label: "<=",
+    fieldType: ["date", "long", "double", "int", "integer"],
+    dict: false,
+    fk: false,
+  },
   like: { label: "模糊匹配", fieldType: ["string"], dict: false, fk: false },
   fix: { label: "用户匹配", fieldType: [], dict: false, fk: true }, //当前用户 用户表上的外键 可以使用sys系统值进行匹配
 };

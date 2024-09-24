@@ -30,6 +30,7 @@ export interface Form extends DbEntity {
   typeParentsStr:string;//模型类接口
   flowJson:string;//已发布流程脚本
   unpublishJson:string;//未发布的流程脚本
+  custom:boolean;//用户定义模型
   // flowDefineKey:string;//流程定义key
 }
 

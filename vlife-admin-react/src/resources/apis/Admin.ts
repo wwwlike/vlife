@@ -7,7 +7,7 @@ import { listAll as roleList,SysRole } from '@src/api/SysRole';
 import { listAll, listAll as menuList, MenuVo, SysMenu } from '@src/api/SysMenu';
 import { list as resourcesList, listButtons, SysResources } from '@src/api/SysResources';
 import { ApiInfo } from '@src/components/compConf/compConf';
-import { DataModel, DataType, OptEnum } from '@src/dsl/base';
+import { DataModel, DataType, numberFiledType, OptEnum } from '@src/dsl/base';
 import { ISelect, ITreeData } from '@src/dsl/component';
 import { allRouter } from '@src/router';
 import { isNull } from 'lodash';
@@ -513,7 +513,7 @@ export const fieldOpenApi:ApiInfo={
     total:{
       title:"可统计字段",
       func:(datas)=>{return datas.filter((f)=>{
-        return f.dataType === "basic" &&(f.fieldType === "number"||f.fieldName==="id")
+        return f.dataType === "basic" &&(numberFiledType.includes(f.fieldType)||f.fieldName==="id")
       })}
     }
   },

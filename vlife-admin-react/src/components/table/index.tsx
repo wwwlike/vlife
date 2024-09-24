@@ -10,7 +10,7 @@ import VfImage from "@src/components/VfImage";
 import SelectIcon from "@src/components/SelectIcon";
 import ColumnTitle from "./component/ColumnTitle";
 import { orderObj } from "@src/pages/common/orderPage";
-import { where } from "@src/dsl/base";
+import { numberFiledType, where } from "@src/dsl/base";
 import classNames from "classnames";
 import { RecordFlowInfo } from "@src/api/workflow/Flow";
 import { useUpdateEffect } from "ahooks";
@@ -325,7 +325,7 @@ const TableIndex = <T extends TableBean>({
               return dateStr;
             }
           };
-        } else if (m.fieldType === "number") {
+        } else if (numberFiledType.includes(m.fieldType)) {
           //数值型处理
           m["render"] = (text, record, index) => {
             return m.money ? formatter.format(text) : text;

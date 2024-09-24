@@ -183,9 +183,6 @@ const TablePage = <T extends TableBean>({
     fkObj: any; //外键数据
     parentObj: any; //code关联数据
   }>();
-
-  // const [queryBuilderCondition, setQueryBuilderCondition] =
-  //   useState<ConditionGroup[]>(); //builder查询条件
   const [columnWheres, setColumnWheres] = useState<Partial<where>[]>([]); //字段的查询条件
   //列表字段上的过滤条件 支持嵌套的查询条件组装inputSearch和columnFilter
   const [condition, setCondition] = useState<Partial<Conditions> | undefined>({
@@ -752,7 +749,6 @@ const TablePage = <T extends TableBean>({
   useEffect(() => {
     if (pageLoad) {
       Object.keys(tabCountReq).forEach((key) => {
-        // if (tabReqCount[key] !== undefined) {
         pageLoad(_params(tabCountReq[key])).then((data: Result<PageVo<T>>) => {
           setTabCount((tabCount) => {
             return { ...tabCount, [key]: data.data?.total || 0 };
@@ -799,7 +795,6 @@ const TablePage = <T extends TableBean>({
       query();
     }
   };
-
   return (
     <>
       {tableModel && apiError === undefined && (
@@ -830,7 +825,7 @@ const TablePage = <T extends TableBean>({
                     //当前选中的页签
                     setActiveKey(tab.itemKey);
                     // @ts-ignore
-                    //tab页签查询条件返回，进行数据查询
+                    // tab页签查询条件返回，进行数据查询
                     setTabReq(tab.req || []);
                     setSelected([]);
                   }}
@@ -1000,7 +995,9 @@ const TablePage = <T extends TableBean>({
             btns={tableBtns}
             outSelectedColumn={outSelectedColumn}
             onSelected={(data: T[]) => {
-              setSelected(data);
+              if (data?.length != selected?.length) {
+                setSelected(data);
+              }
             }}
             flowFormType={
               formModel?.flowJson && version !== "v_base"
