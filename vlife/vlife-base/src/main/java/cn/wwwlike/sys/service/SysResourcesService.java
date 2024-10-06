@@ -3,12 +3,14 @@ package cn.wwwlike.sys.service;
 import cn.wwwlike.auth.dao.SysGroupResourcesDao;
 import cn.wwwlike.auth.entity.SysGroupResources;
 import cn.wwwlike.common.AdminUtils;
+import cn.wwwlike.form.IForm;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.service.FormService;
 import cn.wwwlike.sys.ResourcesType;
 import cn.wwwlike.sys.dao.SysResourcesDao;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.annotation.PermissionEnum;
+import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.objship.read.GlobalData;
 import cn.wwwlike.vlife.objship.read.tag.ApiTag;
@@ -154,16 +156,6 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
     }
 
     /**
-     * 失效资源删除
-     */
-    private void removeExpiredResources(List<String> currResourceIds){
-        List<String> dbResourceIds=findAll()
-                .stream().map(SysResources::getId).collect(Collectors.toList());
-        List<String> deleteIds=
-                dbResourceIds.stream().filter(id->!currResourceIds.contains(id)).collect(Collectors.toList());
-        batchDel(deleteIds.toArray(new String[0]));
-    }
-    /**
 
      * 将模型与资源进行关联
      */
@@ -177,6 +169,15 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                 save(r);
             }
         });
+    }
+
+    //开启所有资源
+    private void enableAllResources(){
+        List<SysResources> resources=find(QueryWrapper.of(SysResources.class).eq("state","2"));
+        for(SysResources _r:resources){
+            _r.setState("1");
+            save(_r);
+        }
     }
 
     /**
@@ -207,11 +208,16 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
     public void sync() throws IOException {
         List<String> currResourceIds=new ArrayList<>();
         List<ClzTag> apitTags= AdminUtils.readApiFile();
-        List dbResources=findAll();
+        //1. 所有导入的资源
+        List<SysResources> dbResources=find(QueryWrapper.of(SysResources.class).or(eq->eq.isNull("custom",Form.class).eq("custom",false,Form.class)));
+        //2. 目前还启用的导入资源
         apitTags.forEach(clzTag -> { currResourceIds.addAll(syncOne(clzTag,dbResources));});
-        removeExpiredResources(currResourceIds);
+        List<String> deleteIds=
+                dbResources.stream().filter(r->!currResourceIds.contains(r.getId())).map(DbEntity::getId).collect(Collectors.toList());
+        batchDel(deleteIds.toArray(new String[0]));
         assignFormToResource();
         createRelationship();
+        enableAllResources();
     }
 
     //计算取出path实际的接口地址
@@ -478,6 +484,26 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
         //无入参但是出参是List集合的过滤掉
         resources=resources.stream().filter(r->!(r.getReturnClz()!=null&&r.getReturnClz().equals("List")&&r.getParamWrapper()==null)).collect(Collectors.toList());
         return resources;
+    }
+
+    //初始化一个实体的最进本接口
+    public void initEntityApi(IForm iForm){
+        String entityType=StringUtils.uncapitalize(iForm.getType());
+        String actionType=StringUtils.capitalize(entityType)+"API";
+        String formId=iForm.getId();
+        String rootUrl="/"+entityType+"/";
+        SysResources detail=new SysResources("详情",entityType,formId,actionType,entityType+":detail",null,
+                "@GetMapping(\"/detail\")","detail","extend",rootUrl+"detail","other","String[]");
+        SysResources save=new SysResources("保存",entityType,formId,actionType,entityType+":save","IconSave",
+                "@PostMapping(\"/save\")","save","extend",rootUrl+"save","entity",entityType);
+        SysResources page=new SysResources("查询",entityType,formId,actionType,entityType+":page",null,
+                "@PostMapping(\"/page\")","page","extend",rootUrl+"page","req",entityType);
+        SysResources remove=new SysResources("删除",entityType,formId,actionType,entityType+":remove","IconDelete",
+                "@DeleteMapping(\"/remove\")","delete","extend",rootUrl+"remove","other","String[]");
+        save(detail);
+        save(save);
+        save(page);
+        save(remove);
     }
 
 

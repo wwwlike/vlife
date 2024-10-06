@@ -30,7 +30,10 @@ export interface Form extends DbEntity {
   typeParentsStr:string;//模型类接口
   flowJson:string;//已发布流程脚本
   unpublishJson:string;//未发布的流程脚本
+  unpublishForm:string;
+  orders:string;
   custom:boolean;//用户定义模型
+  state:string;//可用状态 1可用，0不可用
   // flowDefineKey:string;//流程定义key
 }
 
@@ -81,6 +84,15 @@ export const list = (
   ): Promise<Result<FormVo[]>> => {
     return apiClient.post(`/form/list`,req||{});
 };
+
+/**
+ * dto模型查询
+ */
+ export const listFormDto= (
+  req?:formPageReq
+  ): Promise<Result<FormDto[]>> => {
+    return apiClient.post(`/form/list/formDto`,req||{});
+};
   
 /**
  * 模型分类
@@ -95,6 +107,14 @@ export const save = (form: Form): Promise<Result<Form>> => {
 export const saveFormDto = (dto: Partial<FormDto>): Promise<Result<FormVo>> => {
   return apiClient.post(`/form/save/formDto`, dto);
 };
+
+/**
+ * 模型发布
+ */
+ export const publish = (dto: Partial<FormDto>): Promise<Result<FormDto>> => {
+  return apiClient.post(`/form/publish`, dto);
+};
+
 
 /** 应用归集*/
 export const assignType=(dto:BatchModifyDto): Promise<Result<number>>=>{
@@ -127,7 +147,6 @@ export const assignType=(dto:BatchModifyDto): Promise<Result<number>>=>{
   return apiClient.get(`/form/entityModels`,{params});
   };
 
-
   /**
  * 未编辑的模型信息
  */
@@ -135,4 +154,8 @@ export const models = (uiType: string): Promise<Result<FormVo[]>> => {
   return apiClient.get(`/form/models/${uiType}`);
 };
 
+//单个模型删除
+export const remove = (id: string): Promise<Result<boolean>> => {
+  return apiClient.delete(`/form/remove/${id}`);
+};
 

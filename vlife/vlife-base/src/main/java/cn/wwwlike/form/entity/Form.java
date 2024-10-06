@@ -109,8 +109,17 @@ public class Form extends DbEntity {
     public String flowJson;
     //待发布的流程脚本
     public String unpublishJson;
-    //用户自定义
+    //排序信息
+    public String orders;
+    //待发布的表单JSON
+    public String unpublishForm;
+    //自定义表单标识
     public Boolean custom;
+    /**
+     * 表单发布状态
+     * 0. 待发布 1. 已发布 2. 已发布待重启
+     */
+    public String state;
 
     public String getLabelField() {
         return labelField;
@@ -280,5 +289,29 @@ public class Form extends DbEntity {
 
     public void setCustom(Boolean custom) {
         this.custom = custom;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getOrders() {
+        return orders;
+    }
+
+    public void setOrders(String orders) {
+        this.orders = orders;
+    }
+    @Column(columnDefinition = "text")
+    public String getUnpublishForm() {
+        return unpublishForm;
+    }
+
+    public void setUnpublishForm(String unpublishForm) {
+        this.unpublishForm = unpublishForm;
     }
 }

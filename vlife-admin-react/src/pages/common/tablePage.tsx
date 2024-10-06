@@ -28,15 +28,7 @@ import { VFBtn } from "@src/components/button/types";
 const version = import.meta.env.VITE_APP_VERSION;
 const defaultPageSize = import.meta.env.VITE_APP_PAGESIZE;
 const app_mode = import.meta.env.VITE_APP_MODE;
-import {
-  backProcess,
-  cancelProcess,
-  completeTask,
-  findTableBasicColumns,
-  recall,
-  RecordFlowInfo,
-  startFlow,
-} from "@src/api/workflow/Flow";
+import { findTableBasicColumns, RecordFlowInfo } from "@src/api/workflow/Flow";
 import { useNiceModal } from "@src/store";
 import TableTab from "./tableTab";
 import Button from "@src/components/button";
@@ -45,7 +37,6 @@ import TableHeader, { TableHeaderProps, VfTableTab } from "./TableHeader";
 import { tableFlowBtns, tableFowTabs } from "./TableFlow";
 import BtnResourcesToolBar from "@src/components/button/component/BtnResourcesToolBar";
 import ConfWrapper from "@src/components/compConf/component/ConfWrapper";
-import Buttons from "@src/components/button/component/Buttons";
 
 // 后端排序字符串格式创建
 const orderStr = (orderList: orderObj[] | undefined): string => {
@@ -331,7 +322,10 @@ const TablePage = <T extends TableBean>({
   const pageLoad = useMemo((): PageFuncType<T> | undefined => {
     if (loadApi) {
       return loadApi;
-    } else if (tableModel) {
+    } else if (
+      tableModel &&
+      (tableModel.custom !== true || tableModel.state === "1")
+    ) {
       const { type, entityType } = tableModel;
       return (params: PageQuery): Promise<Result<PageVo<T>>> => {
         return apiClient.post(
@@ -396,12 +390,12 @@ const TablePage = <T extends TableBean>({
           }
         })
         .catch((data) => {
-          setApiError(data);
-          if (onHttpError) {
-            onHttpError(data);
-          } else {
-            console.error("table error " + data.code + data.msg);
-          }
+          // setApiError(data);
+          // if (onHttpError) {
+          //   onHttpError(data);
+          // } else {
+          //   console.error("table error " + data.code + data.msg);
+          // }
         });
     }
   }, [
@@ -797,7 +791,7 @@ const TablePage = <T extends TableBean>({
   };
   return (
     <>
-      {tableModel && apiError === undefined && (
+      {tableModel && (
         <div
           ref={ref}
           className={`${className} relative h-full flex flex-col text-sm  `}

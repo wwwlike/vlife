@@ -17,6 +17,7 @@
  */
 
 package cn.wwwlike.form.dto;
+import cn.wwwlike.form.IField;
 import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
@@ -26,7 +27,18 @@ import java.util.List;
  * 字段信息视图
  */
 @Data
-public class FormFieldDto  implements SaveBean<FormField> {
+public class FormFieldDto  implements SaveBean<FormField>, IField {
+    public FormFieldDto(){};
+
+    public FormFieldDto(String entityType,String fieldName,String title,String javaType,boolean x_hidden){
+        this.entityType=entityType;
+        this.fieldName=fieldName;
+        this.title=title;
+        this.javaType=javaType;
+        this.x_hidden=x_hidden;
+        this.listHide=x_hidden;
+    }
+
 
     public String id;
 
@@ -266,5 +278,7 @@ public class FormFieldDto  implements SaveBean<FormField> {
      * 列搜索
      */
     public boolean listSearch;
+
+    public int dbLength;
 
 }

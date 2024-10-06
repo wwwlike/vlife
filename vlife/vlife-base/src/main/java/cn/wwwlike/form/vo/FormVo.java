@@ -18,6 +18,7 @@
 
 package cn.wwwlike.form.vo;
 //import cn.wwwlike.form.dto.FormRuleDto;
+import cn.wwwlike.form.IForm;
 import cn.wwwlike.form.dto.FormTabDto;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.sys.entity.SysResources;
@@ -31,7 +32,7 @@ import java.util.List;
  * 模型信息视图
  */
 @Data
-public class FormVo implements VoBean<Form> {
+public class FormVo implements VoBean<Form>, IForm {
   public String id;
 
   public String labelField;
@@ -103,6 +104,8 @@ public class FormVo implements VoBean<Form> {
   public String prefixNo;
 
   public Boolean custom;
+
+  public String orders;
   /**
    * 模型的接口类
    */
@@ -127,4 +130,12 @@ public class FormVo implements VoBean<Form> {
   public String helpDoc;
   //流程脚本
   public String flowJson;
+
+  public String unpublishForm;
+
+  //可用状态
+  public String state;
+
+
+
 }

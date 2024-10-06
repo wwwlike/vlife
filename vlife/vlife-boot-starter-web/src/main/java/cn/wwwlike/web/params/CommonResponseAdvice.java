@@ -20,6 +20,7 @@ package cn.wwwlike.web.params;
 import cn.wwwlike.web.exception.pojo.ErrorResponse;
 import cn.wwwlike.web.params.bean.NativeResult;
 import cn.wwwlike.web.params.bean.Result;
+import com.alibaba.fastjson.JSON;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -77,7 +78,7 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
 //            ObjectMapper objectMapper = new ObjectMapper();
 //            return objectMapper.writeValueAsString(request);
 //            return new Gson().toJson(request);
-//            return JSON.toJSONString(result);
+           return JSON.toJSONString(result);
         } else if ("ResponseEntity".equals(returnClassType)) {
             return returnValue;
         } else if (returnValue != null && NativeResult.class == returnValue.getClass()) {

@@ -37,9 +37,16 @@ const APP_TITLE = import.meta.env.VITE_APP_TITLE;
 const Index = () => {
   const navigate = useNavigate();
   const formModal = useNiceModal("formModal");
-  const { loginOut, user, app, sysVar, setApp, allMenus, setAllMenus } =
-    useAuth();
-  const { runAsync: getDetail } = useDetail({ entityType: "sysRole" });
+  const {
+    loginOut,
+    user,
+    app,
+    setApp,
+    allMenus,
+    setMenu,
+    sysVar,
+    setAllMenus,
+  } = useAuth();
   const [roles, setRoles] = useState<SysRole[]>([]);
 
   useEffect(() => {
@@ -350,7 +357,12 @@ const Index = () => {
                   <Button
                     theme="borderless"
                     onClick={() => {
-                      navigate("/sysConf/model");
+                      navigate("/sysConf/dbTableManage");
+                      setMenu(
+                        allMenus.find(
+                          (_m) => _m.url === "/sysConf/dbTableManage"
+                        )
+                      );
                     }}
                     style={{
                       color: "var(--semi-color-text-2)",
@@ -359,7 +371,7 @@ const Index = () => {
                       <i className="icon-settings text-xl text-indigo-500"></i>
                     }
                   >
-                    配置中心
+                    数据库管理
                   </Button>
                   <Button
                     theme="borderless"

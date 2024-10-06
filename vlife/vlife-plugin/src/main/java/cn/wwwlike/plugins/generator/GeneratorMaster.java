@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
  * MVC层代码生成器
  */
 public class GeneratorMaster extends GeneratorUtils {
-
     private String baseServiceClz;
     private String baseApiClz;
     private String baseDaoClz;
@@ -51,7 +50,6 @@ public class GeneratorMaster extends GeneratorUtils {
         this.baseApiClz=baseApiClz;
         this.baseDaoClz=baseDaoClz;
     }
-
     List<String> error = new ArrayList<>();
 
     public  boolean doesClassExist(ClassLoader classLoader, String className) {
@@ -63,7 +61,7 @@ public class GeneratorMaster extends GeneratorUtils {
         }
     }
 
-    public List<JavaFile> generator(String basePath, ClassLoader loader, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> res, List<SaveDto> saves) {
+    public List<JavaFile> generator( ClassLoader loader, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> res, List<SaveDto> saves,String ...sourcesRoot) {
         List<JavaFile> waitCreateFiles = new ArrayList();
         try {
             //fitler的目的是只过滤出当前项目里的实体
@@ -82,17 +80,15 @@ public class GeneratorMaster extends GeneratorUtils {
             List<Class<? extends SaveBean>> saveList = saves.stream().map(saveBean -> {
                 return saveBean.getClz();
             }).collect(Collectors.toList());
-            waitCreateFiles.addAll(apiGenerator(basePath, projectEntitys, vos, res, saves));
-            waitCreateFiles.addAll(daoGenerator(basePath, entityList));
-            waitCreateFiles.addAll(serviceGenerator(basePath, entityList));
+            waitCreateFiles.addAll(apiGenerator( projectEntitys, vos, res, saves,sourcesRoot));
+            waitCreateFiles.addAll(daoGenerator( entityList,sourcesRoot));
+            waitCreateFiles.addAll(serviceGenerator( entityList,sourcesRoot));
             return waitCreateFiles;
         } catch (Exception exception) {
             exception.printStackTrace();
         }
         return waitCreateFiles;
     }
-
-
 
     public static String convertToTargetClass(Class<?> entityClass, String targetType) {
         String entityPackage = entityClass.getPackage().getName();
@@ -105,53 +101,62 @@ public class GeneratorMaster extends GeneratorUtils {
      * api自动创建;
      * 随着需求变化增量的方法也要能够进入到api里,待实现
      */
-    public List<JavaFile> apiGenerator(String basePath, List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> reqs, List<SaveDto> saves) {
+    public List<JavaFile> apiGenerator(List<EntityDto> entitys, List<VoDto> vos, List<ReqDto> reqs, List<SaveDto> saves,String ... basePath) {
         GeneratorAutoApi generatorApi = new GeneratorAutoApi(baseApiClz);
         List<JavaFile> files = new ArrayList<>();
-        entitys.forEach(entityDto -> {
-            String packagePath = entityDto.getClz().getPackage().getName();
-            if (!sourceClzExist(entityDto.getClz(), basePath, CLZ_TYPE.API)) {
-                files.add(generatorApi.apiGenerator(entityDto, vos, reqs, saves));
-            } else {/*增量方法*/
+        for(EntityDto entityDto:entitys){
+            boolean shouldContinue = true; // 标记变量，初始设为 true
+            for (String path : basePath) {
+                if (sourceClzExist(entityDto.getClz(), path, CLZ_TYPE.SERVICE)) {
+                    shouldContinue = false; // 找到条件，设置为 false
+                    break; // 跳出内层循环
+                }
             }
-        });
+            if (shouldContinue) { // 如果标志变量还是 true，执行生成
+                files.add(generatorApi.apiGenerator(entityDto, vos, reqs, saves));
+            }
+        }
         return files;
     }
-
 
     /**
      * 模板service生成
      */
-    public List<JavaFile> serviceGenerator(String basePath, List<Class<? extends Item>> items) {
+    public List<JavaFile> serviceGenerator( List<Class<? extends Item>> items,String... basePath) {
         List<JavaFile> files = new ArrayList<>();
         for (Class item : items) {
-            if (sourceClzExist(item, basePath, CLZ_TYPE.SERVICE)) {
-                continue;
+            boolean shouldContinue = true; // 标记变量，初始设为 true
+            for (String path : basePath) {
+                if (sourceClzExist(item, path, CLZ_TYPE.SERVICE)) {
+                    shouldContinue = false; // 找到条件，设置为 false
+                    break; // 跳出内层循环
+                }
             }
-            String packageName = item.getPackage().getName();
-            int index = packageName.lastIndexOf("entity");
-            String daoPackageName = packageName.substring(0, index) + "dao";
-            String servicePackageName = packageName.substring(0, index) + "service";
-            String daoClzName = daoPackageName + "." + item.getSimpleName() + "Dao";
-            ClassName superClazz =null;
-            if(baseServiceClz!=null){
-                String packagePath = baseServiceClz.substring(0, baseServiceClz.lastIndexOf('.'));
-                String baseServiceName = baseServiceClz.substring(baseServiceClz.lastIndexOf('.') + 1);
-                superClazz= ClassName.get(packagePath, baseServiceName);
-            }else{
-                superClazz=ClassName.get(VLifeService.class);
+            if (shouldContinue) { // 如果标志变量还是 true，执行生
+                String packageName = item.getPackage().getName();
+                int index = packageName.lastIndexOf("entity");
+                String daoPackageName = packageName.substring(0, index) + "dao";
+                String servicePackageName = packageName.substring(0, index) + "service";
+                String daoClzName = daoPackageName + "." + item.getSimpleName() + "Dao";
+                ClassName superClazz =null;
+                if(baseServiceClz!=null){
+                    String packagePath = baseServiceClz.substring(0, baseServiceClz.lastIndexOf('.'));
+                    String baseServiceName = baseServiceClz.substring(baseServiceClz.lastIndexOf('.') + 1);
+                    superClazz= ClassName.get(packagePath, baseServiceName);
+                }else{
+                    superClazz=ClassName.get(VLifeService.class);
+                }
+                TypeName itemName = TypeName.get(item);
+                ClassName daoName = ClassName.get(daoPackageName, item.getSimpleName() + "Dao");
+                ParameterizedTypeName clzAndGenic = ParameterizedTypeName.get(superClazz, itemName, daoName);
+                TypeSpec service = TypeSpec.classBuilder(item.getSimpleName() + "Service")
+                        .addModifiers(Modifier.PUBLIC)
+                        .addAnnotation(Service.class)
+                        .superclass(clzAndGenic)
+                        .build();
+                files.add(JavaFile.builder(servicePackageName, service)
+                        .build());
             }
-
-            TypeName itemName = TypeName.get(item);
-            ClassName daoName = ClassName.get(daoPackageName, item.getSimpleName() + "Dao");
-            ParameterizedTypeName clzAndGenic = ParameterizedTypeName.get(superClazz, itemName, daoName);
-            TypeSpec service = TypeSpec.classBuilder(item.getSimpleName() + "Service")
-                    .addModifiers(Modifier.PUBLIC)
-                    .addAnnotation(Service.class)
-                    .superclass(clzAndGenic)
-                    .build();
-            files.add(JavaFile.builder(servicePackageName, service)
-                    .build());
         }
         return files;
     }
@@ -159,23 +164,30 @@ public class GeneratorMaster extends GeneratorUtils {
     /**
      * dao生成
      */
-    public List<JavaFile> daoGenerator(String basePath, List<Class<? extends Item>> items) {
+    public List<JavaFile> daoGenerator(List<Class<? extends Item>> items,String ... basePath) {
         List<JavaFile> files = new ArrayList<>();
         for (Class item : items) {
-            if (sourceClzExist(item, basePath, CLZ_TYPE.DAO)) {
-                continue;
+
+            boolean shouldContinue = true; // 标记变量，初始设为 true
+            for (String path : basePath) {
+                if (sourceClzExist(item, path, CLZ_TYPE.DAO)) {
+                    shouldContinue = false; // 找到条件，设置为 false
+                    break; // 跳出内层循环
+                }
             }
-            ParameterizedTypeName clzAndGenic = ParameterizedTypeName.get(DslDao.class, item);
-            TypeSpec user = TypeSpec.classBuilder(item.getSimpleName() + "Dao")
-                    .addModifiers(Modifier.PUBLIC)
-                    .addAnnotation(Repository.class)
-                    .superclass(clzAndGenic)
-                    .build();
-            String packageName = item.getPackage().getName();
-            int index = packageName.lastIndexOf("entity");
-            String daoPackageName = packageName.substring(0, index) + "dao";
-            files.add(JavaFile.builder(daoPackageName, user)
-                    .build());
+            if (shouldContinue) {
+                ParameterizedTypeName clzAndGenic = ParameterizedTypeName.get(DslDao.class, item);
+                TypeSpec user = TypeSpec.classBuilder(item.getSimpleName() + "Dao")
+                        .addModifiers(Modifier.PUBLIC)
+                        .addAnnotation(Repository.class)
+                        .superclass(clzAndGenic)
+                        .build();
+                String packageName = item.getPackage().getName();
+                int index = packageName.lastIndexOf("entity");
+                String daoPackageName = packageName.substring(0, index) + "dao";
+                files.add(JavaFile.builder(daoPackageName, user)
+                        .build());
+            }
         }
         return files;
     }

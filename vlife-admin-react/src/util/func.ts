@@ -335,3 +335,10 @@ export function randomStr(length: number): string {
 export function placeholderJoin(...args: (string | undefined | null)[]): string {
   return args.filter(arg => !!arg).join('/');
 }
+
+/**提取文件里的所有汉字 */
+export function extractChineseCharacters(input: string): string {  
+  const chineseCharRegex = /[\u4e00-\u9fa5]/g; // 汉字的Unicode范围  
+  const matches = input.match(chineseCharRegex);  
+  return matches ? matches.join('') : '';  
+} 

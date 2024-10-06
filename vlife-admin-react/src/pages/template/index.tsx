@@ -12,7 +12,7 @@ export default () => {
   const location = useLocation();
   const [formVo, setFormVo] = useState<FormVo>();
   const [pageReqType, setPageReqType] = useState<string>();
-  const { menuButtons } = useAuth();
+  const { menuButtons, menu, allButtons } = useAuth();
   useTitle(
     window.localStorage.getItem("menuTitle") !== null
       ? JSON.parse(window.localStorage.getItem("menuTitle") || "")?.title

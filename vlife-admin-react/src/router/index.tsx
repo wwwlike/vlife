@@ -27,6 +27,7 @@ const ModelDetailPage = lazy(
 // const ButtonFormConf = lazy(
 //   () => import("@src/pages/sysConf/button/ButtonFormConf")
 // ); //模型主页
+const DataTablelManagePage = lazy(() => import("@src/pages/table")); //模型主页
 
 //模型明细页
 const CodeViewPage = lazy(() => import("@src/pages/sysConf/model/CodeView")); //前端代码
@@ -276,6 +277,16 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={<ModelIndelPage />}
             titleId="配置中心"
+            auth
+          />
+        ),
+      },
+      {
+        path: "dbTableManage",
+        element: (
+          <WrapperRouteComponent
+            element={<DataTablelManagePage />}
+            titleId="数据表管理"
             auth
           />
         ),

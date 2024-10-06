@@ -1,15 +1,19 @@
 package cn.wwwlike.form.api;
 import cn.wwwlike.auth.service.SysMenuService;
 import cn.wwwlike.common.BatchModifyDto;
+import cn.wwwlike.form.service.FormFieldService;
 import cn.wwwlike.form.vo.FormVo;
 import cn.wwwlike.form.dto.FormDto;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.req.FormPageReq;
 import cn.wwwlike.form.service.FormEventService;
 import cn.wwwlike.form.service.FormService;
+import cn.wwwlike.generator.GeneratorMvc;
 import cn.wwwlike.vlife.core.VLifeApi;
 import cn.wwwlike.vlife.query.QueryWrapper;
+import cn.wwwlike.vlife.query.req.PageQuery;
 import cn.wwwlike.vlife.utils.FileUtil;
+import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +41,8 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @Autowired
     public FormEventService eventService;
     @Autowired
+    public FormFieldService fieldService;
+    @Autowired
     private RestTemplateBuilder builder;
     @Autowired
     public SysMenuService menuService;
@@ -54,6 +60,15 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @PostMapping("/list")
     public List<FormVo> list(@RequestBody FormPageReq req){
         return service.query(FormVo.class,req);
+    }
+
+
+    /**
+     * 所有模型(表+字段)
+     */
+    @PostMapping("/list/formDto")
+    public List<FormDto> listFormDto(@RequestBody PageQuery req){
+        return service.query(FormDto.class,req);
     }
 
     /**
@@ -97,10 +112,34 @@ public class FormApi extends VLifeApi<Form, FormService> {
     }
 
     /**
+     * 表单发布
+     * @param dto
+     * @return
+     */
+    @PostMapping("/publish")
+    public FormDto publish(@RequestBody FormDto dto){
+        dto=service.customPerfect(dto); //1. 模型完善
+        String appKey=menuService.findOne(dto.getSysMenuId()).getAppKey().toLowerCase();
+        GeneratorMvc.create("cn.vlife."+appKey//2. 创建代码
+                ,dto,appKey,"vlife-admin/target/generated-sources/java");
+        //字符串精度更新
+        fieldService.modifyDbVarLength(dto.getType(),dto.getFields());
+        if("0".equals(dto.getState()))
+            dto.setState("1");
+        dto.setUnpublishForm(null);
+        service.save(dto, false);
+        return dto;
+    }
+
+
+    /**
      * 模型分类
      */
     @PostMapping("/save")
     public Form save(@RequestBody Form form) {
+        if(form.getState()==null){
+            form.setState("0"); //保存状态
+        }
         service.save(form);
         //与实体相关的模型也一同归类
         if(form.getItemType().equals("entity")&&form.getSysMenuId()!=null) {
@@ -119,6 +158,16 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @PostMapping("/assignType")
     public Integer  assignType(@RequestBody  BatchModifyDto dto){
         return service.assignType(dto);
+    }
+
+
+    //删除
+    @DeleteMapping("/remove/{id}")
+    public Boolean remove(@PathVariable String id){
+        Form form=service.findOne(id);
+        CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(form.getCustom()==true&&!"1".equals(form.getState()),"已发布模型不能删除");
+        service.remove(id);
+        return true;
     }
 
 }

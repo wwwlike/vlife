@@ -345,7 +345,7 @@ export const formOpenApi:ApiInfo= {
     entity:{
       title:"过滤实体模型",
       func:(datas:FormVo[])=>{
-        return datas.filter(d=>d.itemType==="entity");
+        return datas.filter(d=>d.itemType==="entity"&&(d.custom===null||(d.custom===true&&(d.state==="1"||d.state==="2"))));
       }
     },
     req:{

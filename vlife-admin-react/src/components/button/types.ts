@@ -108,10 +108,11 @@ export interface VFBtn{
   //组件属性
   btnType?:btnType;// 按钮展现类型 "button" | "icon" | "link";
   continueCreate?:boolean;//连续新增 create按钮会出现(undefined不可见 false可见不可用  true可见可用) 
-  tooltip?:string;// 不可用时候的提醒
+  tooltip?:string;//可用时提示
+  disabledTooltip?:string;//不可用时提示
   className?:string//按钮样式
   multiple?:boolean,//是否是对多条数据操作(和按钮展示位置有关，true:展示在列表上，false 展示在详情页)
-  submitConfirm?:boolean, //提交之前确认
+  submitConfirm?:boolean|string, //提交之前确认,string表示提示信息
   disabledHide?:boolean,  //不可用时隐藏
   submitClose?:boolean,   //modal提交后关闭
   comment?:boolean,       //填报意见弹出层(当前仅支持工作流,未规定是否必填
@@ -129,15 +130,13 @@ export interface VFBtn{
   position?: BtnToolBarPosition; //使用场景(按钮能否在场景里出现，取决于他的actionType类型)
   otherBtns?:VFBtn[], // 关联按钮信息(弹出层的相关按钮)
   allowEmpty?:boolean;//是否允许空值(且是对单挑数据操作则可显示在tableToolbar上，因为是对单体数据操作所以列表选择的数据它不使用)
-
   onFormilySubmitCheck?:()=>Promise<boolean>;//内部方法不用关注，数据【提交】之前的校验，使用fomily的主动检查 在formModal里添加
-  loadApi?:(data:any)=>Promise<Result<any>|any>,//打开form时模型数据的取值接口(和列表的模型不一致时可传,不传则采用通用查询取值)，
-  onFormBefore?:(data:any)=>any;//去到表单之前进行数据处理，例：选中多行数据，然后弹出表单层,这里就是要准备form表单层的数据，将多行数据提取成表单数据;loadapi异步的，这个是同步的
-  onSaveBefore?:(data:any)=>any;//提交之前进行数据处理，返回数据给saveData函数
+  loadApi?:(data:any)=>Promise<Result<any>|any>,//打开form时模型数据的取值接口(和列表的模型不一致时可传,不传则采用通用查询取值)(异步查询表单需要的数据)
+  onFormBefore?:(data:any)=>any;//转换成表单需要的数据
+  onSaveBefore?:(data:any)=>any;//转换成api需要的数据
   saveApi?:(...data:(any&{tableSort:number})[])=>Promise<Result<any>>| any//按钮点击后触发的异步或者同步，必须返回数据，该数据返回到外层并且是onSubmitFinish方法作为入参,提取权限关键字时采用
   onSubmitFinish?:(...saveApiResult:any[])=>void; //提交完成后触发的动作，如：用于关闭弹窗，刷新列表等操作
   onClick?:(...data:(any&{tableSort:number})[])=>void,//一般custom按钮使用，优先级高于saveAPI，一般不做接口类型的操作，不返回数据出去
-//React.ComponentType<any>,
   //不够好
   divider?:boolean|string; // dropdown的分割线
   //发现以下没有用到

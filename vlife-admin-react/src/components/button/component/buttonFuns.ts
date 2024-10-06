@@ -54,6 +54,9 @@ export const findModelByResourcesId = (
 export const buttonToVfBtn =(resources:{[key:string]:SysResources},b:any):VFBtn=>{
   const _model = findModelByResourcesId(resources, b.sysResourcesId);
   const _resources = resources[b.sysResourcesId];
+  if(!_resources){
+    throw new Error("按钮绑定的资源不存在")
+  }
   const _multiple =
     _resources?.paramWrapper?.includes("List") ||
     _resources?.paramWrapper?.includes("[]");
@@ -96,7 +99,7 @@ export const buttonToVfBtn =(resources:{[key:string]:SysResources},b:any):VFBtn=
         activeTabKey:(b?.activeTabKey ? b.activeTabKey.split(","):undefined),
         disabledHide: b.disabledHide,
         submitConfirm: b.submitConfirm,
-        permissionCode: _resources.code,
+        permissionCode: _resources?.code,
         saveApi: _saveFunc(_resources),
         actionType: _actionType,
         title: _title,

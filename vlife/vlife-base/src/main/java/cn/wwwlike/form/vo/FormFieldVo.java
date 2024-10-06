@@ -18,6 +18,7 @@
 
 package cn.wwwlike.form.vo;
 
+import cn.wwwlike.form.IField;
 import cn.wwwlike.form.dto.PageComponentPropDto;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.form.entity.FormField;
@@ -32,7 +33,7 @@ import java.util.List;
  */
 @Data
 @VClazz(orders = "sort_asc")
-public class FormFieldVo  implements VoBean<FormField>{
+public class FormFieldVo  implements VoBean<FormField>, IField {
     /**
      * 模型信息
      */
@@ -52,6 +53,8 @@ public class FormFieldVo  implements VoBean<FormField>{
     public String javaTitle;
 
     public boolean hideLabel;
+
+    public int dbLength;
 
     /**
      * 前端数据类型
@@ -273,8 +276,6 @@ public class FormFieldVo  implements VoBean<FormField>{
      * 列表对其方式
      */
     public String listAlign;
-    /**
-     * 字符串加密
-     */
+
     public boolean safeStr;
 }

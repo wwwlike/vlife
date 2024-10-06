@@ -17,11 +17,9 @@ import { objectIncludes, uncapFirst } from "@src/util/func";
 import { useEffect } from "react";
 import { IconSend } from "@douyinfe/semi-icons";
 import { moveDown, remove, save, moveUp, detail } from "@src/api/Button";
-import { VF } from "@src/dsl/VF";
 import { useNavigate } from "react-router-dom";
 import BtnResourcesToolBar from "./component/BtnResourcesToolBar";
 import { icons } from "../SelectIcon";
-import user from "@src/pages/sysManage/user";
 
 export interface BtnGroupInfos {
   groupIndex: number; //当前分组索引号
@@ -30,7 +28,7 @@ export interface BtnGroupInfos {
 
 //封装的按钮组件
 export default (props: Partial<VFBtn & BtnGroupInfos>) => {
-  const { user } = useAuth();
+  const { user, resources } = useAuth();
   const navigate = useNavigate();
   const { Text } = Typography;
   const formModal = useNiceModal("formModal");
@@ -50,6 +48,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
     modalOpen,
     divider,
     activeKey,
+    // disabledTooltip,
     icon,
     multiple = false,
     model,
@@ -74,16 +73,22 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
     onSaveBefore,
   } = props;
   const disabledHide = useMemo(() => {
-    return user?.superUser !== true &&
-      (props.disabledHide ||
-        position === "tableLine" ||
-        position === "formFooter") //这2个位置的按钮如果不可用则默认是隐藏不显示的
-      ? true
-      : false;
+    if (user?.superUser && props.id) {
+      //超级管理员且是自定义按钮，props.disabledHide无效,默认显示
+      return false;
+    } else if (
+      props.disabledHide === undefined &&
+      (position === "tableLine" || position === "formFooter")
+    ) {
+      return true;
+    }
+    return props.disabledHide;
   }, [position, props.disabledHide]);
 
   const [disabled, setDisabled] = useState<boolean | undefined>(props.disabled);
-  const [tooltip, setTooltip] = useState<string | undefined>(props.tooltip);
+  const [disabledTooltip, setDisabledTooltip] = useState<string | undefined>(
+    props.disabledTooltip
+  );
   const [btnData, setBtnData] = useState<any>();
   const [comment, setComment] = useState<string>();
 
@@ -144,7 +149,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
     const setDisableAndTooltip = (matchResult: string | boolean) => {
       if (typeof matchResult === "string") {
         setDisabled(true);
-        setTooltip(matchResult);
+        setDisabledTooltip(matchResult);
       } else if (typeof matchResult === "boolean") {
         setDisabled(!matchResult);
       }
@@ -157,7 +162,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
     } else {
       setDisableAndTooltip(dataMatchTooltip);
     }
-  }, [btnData, activeKey]); //数据，场景
+  }, [btnData, activeKey, props.disabled]); //数据，场景
 
   // 按钮是否可用
   const btnUsableMatch = useCallback(():
@@ -395,6 +400,11 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
   const [customModalVisiable, setCustomModalVisiable] = useState(true);
   //按钮点击
   const btnClick = useCallback(() => {
+    // if (props.sysResourcesId && resources[props.sysResourcesId].state === "2") {
+    //   alert("请重启服务后使用该功能");
+    //   return;
+    // }
+
     if (props.modal) {
       vlifeModal.show({
         title: title || "提交",
@@ -415,9 +425,12 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
         // 需确认;
         confirmModal
           .show({
-            title: `确认${title}${
-              Array.isArray(btnData) ? btnData.length : "该"
-            }条记录?`,
+            title:
+              typeof submitConfirm === "string"
+                ? submitConfirm
+                : `确认${title}${
+                    Array.isArray(btnData) ? btnData.length : "该"
+                  }条记录?`,
             saveFun: () => {
               return submit();
             },
@@ -504,10 +517,6 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
   const BtnComp = useMemo((): ReactNode => {
     const Btn: any =
       btnType === "link" && position !== "formFooter" ? Text : Button;
-    // if (position === "dropdown" && disabled === true) {
-    //   //dropdown场景不存在不可用但是可见的disable状态
-    //   return <></>;
-    // }
 
     return btnType !== "icon" || position === "formFooter" ? (
       <>
@@ -528,6 +537,12 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
             // event.stopPropagation();
           }}
           loading={loading}
+          type={
+            props.sysResourcesId &&
+            resources[props.sysResourcesId].state === "2" //接口需重启后使用提醒(danger)
+              ? "danger"
+              : "primary"
+          }
           theme={`${
             (actionType === "edit" ||
               actionType === "create" ||
@@ -563,7 +578,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
           }
         }}
       >
-        {tooltip === undefined && title ? (
+        {disabledTooltip === undefined && title ? (
           <Tooltip
             className={`${classNames({
               " text-gray-300": disabled === true,
@@ -599,15 +614,16 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
   return authPass && !(disabledHide && disabled === true) ? (
     <>
       {disabled === true &&
-      (tooltip || btnData === undefined || btnData.length === 0) ? (
-        <Tooltip content={tooltip || "请选择数据"}>
+      (disabledTooltip || btnData === undefined || btnData.length === 0) ? (
+        <Tooltip content={disabledTooltip || "请选择数据"}>
           {"  "}
           {BtnComp}
         </Tooltip>
+      ) : props.tooltip ? (
+        <Tooltip content={props.tooltip}> {BtnComp}</Tooltip>
       ) : (
         <>{BtnComp}</>
       )}
-
       {sysMenuId && btnConf && (
         <BtnResourcesToolBar
           dropdown={true}

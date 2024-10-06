@@ -18,10 +18,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "cn.wwwlike.sys",
         "cn.wwwlike.excel",
         "cn.wwwlike.form",
-        "cn.wwwlike.vlife.ts",
-        "cn.wwwlike.vlife.gitee",
+        "cn.wwwlike.vlife",
         "cn.wwwlike.plus",
-        "cn.vlife.erp"
+        "cn.vlife"
 },nameGenerator =UniqueNameGenerator.class )
 @EntityScan(basePackages = {"cn.wwwlike", "cn.vlife"})
 public class AdminApplication {

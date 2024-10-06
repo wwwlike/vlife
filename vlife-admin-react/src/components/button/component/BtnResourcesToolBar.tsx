@@ -9,8 +9,7 @@ import {
 import Button from "@src/components/button";
 import { Dropdown } from "@douyinfe/semi-ui";
 import { useAuth } from "@src/context/auth-context";
-import { findModelByResourcesId, _saveFunc } from "./buttonFuns";
-import { usableDatasMatch } from "@src/components/queryBuilder/funs";
+import { _saveFunc } from "./buttonFuns";
 /**
  * 显示场景
  * tableToolbar:列表工具栏|(可新增和支持多数据操作型按钮)
@@ -72,7 +71,7 @@ export default <T extends IdBean>({
     return result;
   }, [allButtons]);
 
-  //db按钮数据转换
+  //手工与数据库按钮属性合并(暂缓)
   const _btns = useMemo((): VFBtn[] => {
     //有一个资源id表示当前是配置的按钮则需要进行转换
     return btns;
@@ -196,7 +195,7 @@ export default <T extends IdBean>({
             btnConf={btnConf} //btn.btnConf ||
             entity={btn.entity || entity}
             onSubmitFinish={btn.onSubmitFinish || onDataChange}
-            otherBtns={btns.filter(
+            otherBtns={_btns.filter(
               //排除掉当前按钮
               (b) =>
                 !(
@@ -220,6 +219,7 @@ export default <T extends IdBean>({
             {currBtns.map((btn, index) => {
               return (
                 <div key={`div_${line}_${index}`}>
+                  {btn.sysResourcesId}
                   <Button
                     {...btn}
                     position={"dropdown"}

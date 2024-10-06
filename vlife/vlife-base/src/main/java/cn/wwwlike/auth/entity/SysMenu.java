@@ -24,6 +24,10 @@ public class SysMenu extends DbEntity implements ITree {
      */
     public boolean app;
     /**
+     * 应用标识
+     */
+    public String appKey;
+    /**
      * 菜单名称
      */
     public String name;

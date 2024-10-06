@@ -123,4 +123,28 @@ public class SysResources extends DbEntity{
     public String  returnType;
     //出参泛型
     public String returnGeneric;
+    /**
+     * 按钮状态
+     * 1. 可用 2. 待启用(需程序重启)
+     */
+    public String state;
+
+    public SysResources(){}
+
+    public SysResources(String name, String entityType, String formId, String actionType, String code, String icon,  String methedType, String resourceType,String permission,String url,String paramType,String paramWrapper) {
+        this.name = name;
+        this.entityType = entityType;
+        this.formId = formId;
+        this.actionType = actionType;
+        this.code = code;
+        this.icon = icon;
+        this.methedType = methedType;
+        this.resourceType = resourceType;
+        this.permission=permission;
+        this.url=url;
+        this.paramWrapper=paramWrapper;
+        this.paramType=paramType;
+        this.javaName=name;
+        this.state="2";
+    }
 }

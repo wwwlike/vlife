@@ -59,10 +59,11 @@ export interface FormField extends DbEntity {
   listHide: boolean; //列表展示
   listWidth:number;//列宽
   money:boolean;//是否金额
-  listSort:number;//列排序
+  listSort:number;//表头顺序
   listAlign:string; //对其方式 left|center|right
   safeStr:boolean;//安全展示的字符串（张**）
   listSearch:boolean; //列表的搜索条件模糊搜索
+  dbLength:number;//数据库字段长度
 }
 
 // 字段dto

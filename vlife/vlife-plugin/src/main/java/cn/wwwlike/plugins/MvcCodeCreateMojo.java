@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -78,10 +79,9 @@ public class MvcCodeCreateMojo extends AbstractMojo {
                 //mvc文件生成
                 for(String sourceRoot:sourceRoots){
                     if(sourceRoot.indexOf("target")==-1) {
-//                    URL url=new URL(sourceRoot);
-//                    URLClassLoader classLoader=new URLClassLoader(ArrayUtils.,loader);
-                        List<JavaFile> mvcFiles = generatorMaster.generator(sourceRoot, ClassLoaderUtil.getRuntimeClassLoader(project), modelReadCheck.getItemDtos(),
-                                modelReadCheck.getVoDtos(), modelReadCheck.getReqDtos(), modelReadCheck.getSaveDtos());
+                        String genSourceRoot=new File(sourceRoot).getParent()+"\\mvc"; //添加mvc的源码目录也能自动生成api&dao&service
+                        List<JavaFile> mvcFiles = generatorMaster.generator( ClassLoaderUtil.getRuntimeClassLoader(project), modelReadCheck.getItemDtos(),
+                                modelReadCheck.getVoDtos(), modelReadCheck.getReqDtos(), modelReadCheck.getSaveDtos(),sourceRoot,genSourceRoot);
                         generatorMaster.createJavaFiles(sourceRoot, false, mvcFiles);
                     }
                 }

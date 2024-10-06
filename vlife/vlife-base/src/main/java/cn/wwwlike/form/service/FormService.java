@@ -10,6 +10,8 @@ import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.form.entity.PageApiParam;
 import cn.wwwlike.form.vo.FormFieldVo;
 import cn.wwwlike.form.vo.FormVo;
+import cn.wwwlike.sys.entity.SysResources;
+import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.base.INo;
 import cn.wwwlike.vlife.core.VLifeService;
 import cn.wwwlike.vlife.objship.dto.BeanDto;
@@ -36,6 +38,8 @@ public class FormService extends VLifeService<Form, FormDao> {
     public PageComponentPropService propService;
     @Autowired
     public PageApiParamService paramService;
+    @Autowired
+    public SysResourcesService resourcesService;
 
     //根据模型标识查询模型信息
     public FormVo getModelInfo(String type) {
@@ -148,6 +152,10 @@ public class FormService extends VLifeService<Form, FormDao> {
         Form form = null;
         if (published != null && published.size() > 0) {
             form = findOne(published.get(0).getId());
+            if(!"1".equals(form.getState())){
+                form.setState("1");
+                save(form);
+            }
         }
         BeanDto javaDto = GlobalData.findModel(modelName);
         //有关联title读取到，则进行同步
@@ -155,7 +163,10 @@ public class FormService extends VLifeService<Form, FormDao> {
             if (form != null) {//更新
                 boolean formChange = false;
                 Set<String> set1 = new HashSet<String>(javaDto.getParentsName());
-                Set<String> set2 = new HashSet<String>(Arrays.asList(form.getTypeParentsStr().split(",")));
+                Set<String> set2 = new HashSet<String>();
+                if (form.getTypeParentsStr() != null) {
+                    set2 = new HashSet<String>(Arrays.asList(form.getTypeParentsStr().split(",")));
+                }
                 if (javaDto.getParentsName() != null && !set1.equals(set2)) {
                     form.setTypeParentsStr(String.join(",", javaDto.getParentsName()));
                     formChange = true;
@@ -284,6 +295,7 @@ public class FormService extends VLifeService<Form, FormDao> {
             } else if (javaDto != null && javaDto.getFields() != null && javaDto.getFields().size() > 0) {//模型新增
                 FormVo vo = tran(javaDto);
                 FormDto dto = new FormDto();
+                dto.setState("1");
                 dto.setVersion(0);
                 BeanUtils.copyProperties(vo, dto);
                 dto.setFields(vo.getFields().stream().map(f -> {
@@ -520,6 +532,35 @@ public class FormService extends VLifeService<Form, FormDao> {
         }).collect(Collectors.toList()));
         return dto;
     }
+
+    //custom自定义模型完善
+    public FormDto customPerfect(FormDto formDto){
+        formDto.setModelSize(formDto.getModelSize() != null ? formDto.getModelSize() : 2);
+        formDto.setName(formDto.getName() != null ? formDto.getName() : formDto.getTitle());
+        formDto.setPageSize(15);
+        //添加缺失字段
+        List<FormFieldDto> fields = formDto.getFields();
+       if(formDto.getState()==null||"0".equals(formDto.getState())){
+            fields.add(new FormFieldDto(formDto.getType(),"id","主键","string",true));
+            fields.add(0,new FormFieldDto(formDto.getType(),"status","记录状态","string",true));
+            fields.add(0,new FormFieldDto(formDto.getType(),"createId","创建人","string",true));
+            fields.add(0,new FormFieldDto(formDto.getType(),"modifyId","修改人","string",true));
+            fields.add(0,new FormFieldDto(formDto.getType(),"createDate","创建日期","date",true));
+            fields.add(0,new FormFieldDto(formDto.getType(),"modifyDate","修改日期","date",true));
+       }
+        //第一次发布状态更新
+        if(formDto.getState()==null||formDto.getState().equals("0")){
+            formDto.setState("2");//2已发布未重启 1：正常；0 未发布
+            resourcesService.initEntityApi(formDto);
+        }
+        fields.stream()
+                .map(field ->fieldService.perfect(field,formDto.getType()))
+                .collect(Collectors.toList());
+        formDto.setFields(fields);
+        return formDto;
+    }
+
+
 
     /**
      * 查询form的子表信息

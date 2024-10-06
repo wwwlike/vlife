@@ -98,7 +98,8 @@ public class AdminStartInitializer implements ApplicationRunner {
             }
         });
         List<Form> dbModels = formService.findAll();
-        dbModels.stream().filter(db -> GlobalData.allModels().stream().filter(java -> java.getType().equals(db.getType())).count() == 0).forEach(m -> {
+        //非自定义(custom)的失效模型信息删除
+        dbModels.stream().filter(db ->(db.getCustom()==null||db.getCustom()!=true)&&GlobalData.allModels().stream().filter(java -> java.getType().equals(db.getType())).count() == 0).forEach(m -> {
             formService.remove(m.getId());
         });
     }

@@ -19,7 +19,6 @@ export interface SysResources extends DbEntity ,ITree,IFkItem {
   sysMenuId:string,//关联菜单
   entityType:string, //关联实体
   actionType:string,//所在action  
-  state:string//鉴权状态 1鉴权 0不鉴权 -1 待处理
   remark:string//说明
   formId:string//所属板块
   permission:string;//授权方式
@@ -31,6 +30,7 @@ export interface SysResources extends DbEntity ,ITree,IFkItem {
   returnClz:string; //出参类型
   returnType:string; //出参类别
   returnGeneric:string; //出参泛型
+  state:string;//状态 1正常 2待启用
 }
 // 类说明
 export interface ResourcesDto extends SaveBean {

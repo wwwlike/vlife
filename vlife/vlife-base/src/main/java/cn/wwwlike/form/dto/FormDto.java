@@ -18,6 +18,7 @@
 
 package cn.wwwlike.form.dto;
 
+import cn.wwwlike.form.IForm;
 import cn.wwwlike.form.entity.Form;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.annotation.VField;
@@ -33,7 +34,7 @@ import java.util.List;
  * @date 2022/9/22
  */
 @Data
-public class FormDto implements SaveBean<Form> {
+public class FormDto implements SaveBean<Form>, IForm {
     public String id;
     /**
      * 元素中文信息
@@ -98,14 +99,20 @@ public class FormDto implements SaveBean<Form> {
     public String formDesc;
     //开发帮助文档
     public String helpDoc;
+    public String labelField;
     public List<FormFieldDto> fields;
     public List<FormTabDto> formTabDtos;
     //流程脚本
     public String flowJson;
-
     //最新未发布脚本
     public String unpublishJson;
 
+    public String unpublishForm;
+
     public Boolean custom;
+    //可用状态
+    public String state;
+
+    public String orders;
 
 }

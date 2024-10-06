@@ -173,7 +173,9 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
             } else {
                 sort = GlobalData.voDto((Class<? extends VoBean>) entityVoClz);
             }
-            order.setOrders(sort.getOrders());
+            if(sort!=null){
+                order.setOrders(sort.getOrders());
+            }
         }
         if(!CustomItem.class.isAssignableFrom(entityClz)){
             query = order(model.getMain(), query, order.getOrderReqList());
