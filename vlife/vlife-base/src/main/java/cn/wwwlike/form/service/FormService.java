@@ -548,6 +548,11 @@ public class FormService extends VLifeService<Form, FormDao> {
             fields.add(0,new FormFieldDto(formDto.getType(),"createDate","创建日期","date",true));
             fields.add(0,new FormFieldDto(formDto.getType(),"modifyDate","修改日期","date",true));
        }
+
+       if(Boolean.TRUE.equals(formDto.getSupportNo())&& formDto.getFields()!=null&& formDto.getFields().stream().filter(f->f.getFieldName().equals("no")).count()==0){
+           fields.add(0,new FormFieldDto(formDto.getType(),"no","编号","string",false));
+       }
+
         //第一次发布状态更新
         if(formDto.getState()==null||formDto.getState().equals("0")){
             formDto.setState("2");//2已发布未重启 1：正常；0 未发布

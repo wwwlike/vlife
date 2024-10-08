@@ -52,7 +52,7 @@ public class ApiGenerator extends ICrudCodeCreate {
                 .superclass(superClzAndGenic)
                 .addMethods(methodSpecs)
                 .build();
-        JavaFile javaFile = JavaFile.builder(packageName+".api", apiClazz).build();
+        JavaFile javaFile = JavaFile.builder(packageName+".api", apiClazz).addFileComment(fileComment()).build();
         try {
             generateJavaFIle(javaFile);
         } catch (Exception ex) {

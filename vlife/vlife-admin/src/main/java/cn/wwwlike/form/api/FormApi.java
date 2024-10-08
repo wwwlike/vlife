@@ -120,12 +120,11 @@ public class FormApi extends VLifeApi<Form, FormService> {
     public FormDto publish(@RequestBody FormDto dto){
         dto=service.customPerfect(dto); //1. 模型完善
         String appKey=menuService.findOne(dto.getSysMenuId()).getAppKey().toLowerCase();
+        //二次发布检查类是否还存在
         GeneratorMvc.create("cn.vlife."+appKey//2. 创建代码
                 ,dto,appKey,"vlife-admin/target/generated-sources/java");
         //字符串精度更新
         fieldService.modifyDbVarLength(dto.getType(),dto.getFields());
-        if("0".equals(dto.getState()))
-            dto.setState("1");
         dto.setUnpublishForm(null);
         service.save(dto, false);
         return dto;
@@ -165,7 +164,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @DeleteMapping("/remove/{id}")
     public Boolean remove(@PathVariable String id){
         Form form=service.findOne(id);
-        CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(form.getCustom()==true&&!"1".equals(form.getState()),"已发布模型不能删除");
+        CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(Boolean.TRUE.equals(form.getCustom())&&!"1".equals(form.getState()),"已发布模型不能删除");
         service.remove(id);
         return true;
     }

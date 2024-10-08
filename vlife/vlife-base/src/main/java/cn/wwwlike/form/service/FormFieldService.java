@@ -72,7 +72,9 @@ public class FormFieldService extends VLifeService<FormField, FormFieldDao> {
         dto.setJavaTitle(dto.getTitle());
 
         if(dto.getX_component()==null){
-            if(dto.getJavaType().equals("text")){
+            if(dto.getFieldName().endsWith("Id")){
+                dto.setX_component("RelationTagInput");
+            }else if(dto.getJavaType().equals("text")){
                 dto.setX_component("TextArea");
             }else if(dto.getFieldType().equals("string")){
                 dto.setX_component("Input");

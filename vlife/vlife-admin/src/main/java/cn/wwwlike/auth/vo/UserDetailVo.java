@@ -56,6 +56,11 @@ public class  UserDetailVo implements VoBean<SysUser> {
 
     public SysDept sysDept;
 
+    /**
+     * 用户有的权限资源代码 权限组->角色权限->角色->资源——资源编码
+     */
+    @VField(pathName = "sysGroup_sysGroupResources_sysResources_code")
+    public List<String> resourceCodes;
 
     /**
      * 机构名称
@@ -117,12 +122,6 @@ public class  UserDetailVo implements VoBean<SysUser> {
      * 权限组
      */
     public String sysGroupId;
-
-    /**
-     * 用户有的权限资源代码 权限组->角色权限->角色->资源——资源编码
-     */
-    @VField(pathName = "sysGroup_sysRoleGroup_sysRole_sysResources_code")
-    public List<String> resourceCodes;
 
     /**
      * 用户能够访问到的所有菜单信息

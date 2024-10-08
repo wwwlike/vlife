@@ -838,7 +838,7 @@ const TablePage = <T extends TableBean>({
           <div
             className={`flex bg-white items-center p-2  border-gray-100  justify-start sidesheet-container`}
           >
-            {hideToolbar !== true && (
+            {hideToolbar !== true && mode !== "view" && (
               <>
                 {/* 工具栏配置 */}
                 <ConfWrapper

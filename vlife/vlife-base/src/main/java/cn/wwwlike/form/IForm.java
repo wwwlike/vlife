@@ -9,6 +9,8 @@ public interface IForm {
     public String getItemType();
     public String getName();
     public String getIcon();
+    public Boolean getSupportFilter();
+    public Boolean getSupportNo();
     public Integer getModelSize();
     public Integer getPageSize();
     public String getPrefixNo();

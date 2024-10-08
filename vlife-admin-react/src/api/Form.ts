@@ -34,6 +34,8 @@ export interface Form extends DbEntity {
   orders:string;
   custom:boolean;//用户定义模型
   state:string;//可用状态 1可用，0不可用
+  supportFilter:boolean; //支持过滤
+  supportNo:boolean; //支持序号
   // flowDefineKey:string;//流程定义key
 }
 

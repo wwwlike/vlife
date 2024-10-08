@@ -137,5 +137,14 @@ public class FormVo implements VoBean<Form>, IForm {
   public String state;
 
 
+  //支持过滤
+  public Boolean supportFilter;
+  /**
+   * 支持序号
+   * prefixNo必填
+   */
+  public Boolean supportNo;
+
+
 
 }

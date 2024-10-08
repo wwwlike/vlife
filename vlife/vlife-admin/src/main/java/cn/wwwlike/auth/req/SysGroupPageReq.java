@@ -36,9 +36,4 @@ public class SysGroupPageReq extends PageQuery<SysGroup> {
      */
     @VField(opt = Opt.like)
     public String name;
-    /**
-     * 关联角色
-     */
-    @VField(pathName = "sysRoleGroup_sysRoleId")
-    public List<String> sysRoleId;
 }

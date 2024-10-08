@@ -7,7 +7,6 @@ import FlowSelect, {
 } from "@src/workflow-editor/components/MemberSelect/FlowSelect";
 import { list } from "@src/api/SysDept";
 import { list as userList } from "@src/api/SysUser";
-import { listAll } from "@src/api/SysRole";
 import { listAll as groupList } from "@src/api/SysGroup";
 import { useEffect, useState } from "react";
 
@@ -53,7 +52,6 @@ export default ({
   const [modalSelected, setModalSelected] = useState<Partial<NodeUserInfo>[]>(
     value || []
   );
-  const [roleSelectData, setRoleSelectData] = useState<ISelect[]>(); //角色数据
   const [deptSelectData, setDeptSelectData] = useState<ISelect[]>(); //部门数据
   const [userSelectData, setUserSelectData] = useState<ISelect[]>(); //用户数据
   const [groupSelectData, setGroupSelectData] = useState<ISelect[]>(); //用户数据
@@ -63,13 +61,6 @@ export default ({
       setUserSelectData(
         d.data?.map((r) => {
           return { label: r.name, value: showUser ? r.id : r.username };
-        }) || []
-      );
-    });
-    listAll().then((d) => {
-      setRoleSelectData(
-        d.data?.map((r) => {
-          return { label: r.name, value: r.id };
         }) || []
       );
     });
@@ -117,7 +108,6 @@ export default ({
           className=" bg-slate-400"
           userSelectData={userSelectData}
           deptSelectData={deptSelectData}
-          roleSelectData={roleSelectData}
           groupSelectData={groupSelectData}
           value={modalSelected}
           multiple={multiple}
@@ -164,12 +154,6 @@ export default ({
                     d.userType === "dept" &&
                     deptSelectData &&
                     deptSelectData
-                      .filter((data) => data.value === d.objectId)?.[0]
-                      ?.label?.substring(0, 1)}
-                  {(d.label === undefined || d.label === null) &&
-                    d.userType === "role" &&
-                    roleSelectData &&
-                    roleSelectData
                       .filter((data) => data.value === d.objectId)?.[0]
                       ?.label?.substring(0, 1)}
                 </Avatar>

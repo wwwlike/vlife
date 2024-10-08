@@ -342,3 +342,9 @@ export function extractChineseCharacters(input: string): string {
   const matches = input.match(chineseCharRegex);  
   return matches ? matches.join('') : '';  
 } 
+
+
+//驼峰法字符串转换为用下划线分隔的字符串
+export function camelToSnake(camelStr: string): string {  
+  return camelStr.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();  
+}  

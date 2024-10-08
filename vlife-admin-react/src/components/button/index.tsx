@@ -342,7 +342,7 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
     (flowInfo?: any) => {
       const save = () => {
         setLoading(true);
-        const saveResult = saveApi?.(
+        const saveResult = (saveApi || onClick)?.(
           flowInfo
             ? onSaveBefore
               ? onSaveBefore({ ...btnData, ...flowInfo })
@@ -359,12 +359,6 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
             if (onSubmitFinish) {
               onSubmitFinish(data);
             }
-            // if (toActiveTabKey) {
-            //   onActiveChange?.(toActiveTabKey);
-            //   if (onActiveChange === undefined) {
-            //     console.error("场景跳转需要使用BtnToolBar的onActiveChange方法");
-            //   }
-            // }
             setLoading(undefined);
           }, 500);
         };
@@ -412,11 +406,12 @@ export default (props: Partial<VFBtn & BtnGroupInfos>) => {
         okFun: onClick,
         submitClose: props.submitClose,
       });
-    } else if (onClick) {
-      onClick(btnData);
     } else if (position !== "formFooter" && model && modalOpen !== true) {
       //1 页面(非modal)的按钮，model不为空,则触发model的弹出
       show(model);
+    } else if (onClick) {
+      //同步的
+      onClick(btnData);
     } else if (props.comment && position !== "comment") {
       flowCommentShow();
     } else if (saveApi && btnData) {

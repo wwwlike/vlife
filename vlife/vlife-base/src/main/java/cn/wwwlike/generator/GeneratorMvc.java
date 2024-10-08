@@ -28,5 +28,4 @@ public class GeneratorMvc {
             new ApiGenerator(rootPackage,form,targetDirectory).create();
         }
     }
-
 }

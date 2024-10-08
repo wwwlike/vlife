@@ -28,7 +28,7 @@ public class DaoGenerator extends ICrudCodeCreate {
                 .superclass(clzAndGenic)
                 .build();
 
-        JavaFile javaFile= JavaFile.builder(packageName+".dao", user)
+        JavaFile javaFile= JavaFile.builder(packageName+".dao", user).addFileComment(fileComment())
                 .build();
         try {
             generateJavaFIle(javaFile);

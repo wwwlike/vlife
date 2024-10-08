@@ -1,6 +1,5 @@
 package cn.wwwlike.auth.vo;
 import cn.wwwlike.auth.entity.SysMenu;
-import cn.wwwlike.auth.entity.SysRole;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.annotation.VField;
@@ -19,6 +18,7 @@ public class MenuVo implements VoBean<SysMenu> {
     public String pcode;
     public String url;
     public Integer sort;
+    public String appKey;
     public String icon;
     public boolean app;
     public String sysRoleId;
@@ -28,10 +28,6 @@ public class MenuVo implements VoBean<SysMenu> {
     //路由地址
     @VField(skip = true)
     public String routerAddress;
-    /**
-     * 应用角色
-     */
-    public List<SysRole> roleList;
     /**
      * 权限列表
      */
@@ -139,14 +135,6 @@ public class MenuVo implements VoBean<SysMenu> {
 
     public void setRouterAddress(String routerAddress) {
         this.routerAddress = routerAddress;
-    }
-
-    public List<SysRole> getRoleList() {
-        return roleList;
-    }
-
-    public void setRoleList(List<SysRole> roleList) {
-        this.roleList = roleList;
     }
 
     public List<SysResources> getSysResourcesList() {

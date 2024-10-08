@@ -500,12 +500,22 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
                 "@PostMapping(\"/page\")","page","extend",rootUrl+"page","req",entityType);
         SysResources remove=new SysResources("删除",entityType,formId,actionType,entityType+":remove","IconDelete",
                 "@DeleteMapping(\"/remove\")","delete","extend",rootUrl+"remove","other","String[]");
+       if(find("url",detail.getUrl()).size()==0){
         save(detail);
-        save(save);
-        save(page);
-        save(remove);
+       }
+        if(find("url",save.getUrl()).size()==0) {
+            save(save);
+        }
+        if(find("url",save.getUrl()).size()==0) {
+            save(save);
+        }
+        if(find("url",page.getUrl()).size()==0) {
+            save(page);
+        }
+        if(find("url",remove.getUrl()).size()==0) {
+            save(remove);
+        }
     }
-
 
     // 查找与权限组有关联但是和菜单里未导入到菜单的资源
     public List<SysResources> findGroupResourcesWithoutImportMenu(){

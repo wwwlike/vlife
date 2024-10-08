@@ -1,23 +1,13 @@
 package cn.wwwlike.auth.api;
-import cn.wwwlike.auth.dto.ResourcesStateDto;
-import cn.wwwlike.auth.entity.SysMenu;
 import cn.wwwlike.auth.req.SysResourcesPageReq;
-import cn.wwwlike.auth.service.SysMenuService;
-import cn.wwwlike.auth.service.SysRoleService;
 import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
-import cn.wwwlike.vlife.base.PageableRequest;
 import cn.wwwlike.vlife.bean.PageVo;
 import cn.wwwlike.vlife.core.VLifeApi;
-import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.PageQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 权限资源接口
@@ -25,8 +15,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/sysResources")
 public class SysResourcesApi extends VLifeApi<SysResources, SysResourcesService> {
-    @Autowired
-    public SysRoleService roleService;
     /**
      * 资源查询
      */

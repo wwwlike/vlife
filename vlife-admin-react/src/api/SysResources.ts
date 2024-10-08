@@ -1,17 +1,12 @@
 import apiClient from "@src/api/base/apiClient";
-import { RoleDto } from "@src/api/SysRole";
-import { SysRoleGroup } from "@src/api/SysRoleGroup";
 import { PageVo, DbEntity, SaveBean, PageQuery, VoBean, Result, ITree, IFkItem } from "@src/api/base";
 import qs from "qs";
-import { Options } from 'ahooks/lib/useRequest/src/types';
-import { useRequest } from 'ahooks';
 
 // 权限资源
 export interface SysResources extends DbEntity ,ITree,IFkItem {
   code: string; // 归属菜单
   pcode: string; // 上级权限
   icon: string; // 图标
-  sysRoleId: string; // 归属角色
   resourcesType: string; // 资源类型
   url: string; // 路由地址
   name: string; // 资源名称
@@ -34,10 +29,7 @@ export interface SysResources extends DbEntity ,ITree,IFkItem {
 }
 // 类说明
 export interface ResourcesDto extends SaveBean {
-  sysRole: RoleDto; // 用户角色
   name: string; // 资源名称
-  sysRoleId: string; // 归属角色
-  sysRole_sysRoleGroup: SysRoleGroup[]; // 角色聚合组
 }
 
 
@@ -50,7 +42,6 @@ export interface ResourcesStateDto extends SaveBean {
 // 资源页面
 export interface SysResourcesPageReq extends PageQuery {
   search: string; // 名称/编码/地址
-  sysRoleId: string; // 接口角色
   type: string; // 资源类型
 }
 // 类说明
@@ -85,7 +76,6 @@ export const detail = (id: string): Promise<Result<SysResources>> => {
 /**
  * 角色应该有的资源权限，因该去掉，交给前端过滤
  * params.id 是所有接口调用必须穿的参数
- * @param sysRoleId
  * @return
  */
 export const roleAllResources = (params: {

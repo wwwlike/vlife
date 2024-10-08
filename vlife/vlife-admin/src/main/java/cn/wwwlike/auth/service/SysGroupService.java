@@ -50,13 +50,13 @@ public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
             //与资源角色关联的权限组
             Set<String> groupIds=new HashSet<>();
             groupIds.add("super");//manager 虚拟角色名称，给到manger用户上
-            groups.stream().forEach(g->{
-                roleIds.stream().forEach(roleId->{
-                    if(g.getSysRoleGroup_sysRoleId()!=null&&g.getSysRoleGroup_sysRoleId().contains(roleId)){
-                        groupIds.add(g.getId());
-                    }
-                });
-            });
+//            groups.stream().forEach(g->{
+//                roleIds.stream().forEach(roleId->{
+//                    if(g.getSysRoleGroup_sysRoleId()!=null&&g.getSysRoleGroup_sysRoleId().contains(roleId)){
+//                        groupIds.add(g.getId());
+//                    }
+//                });
+//            });
             map.put(res.getUrl(),StringUtils.join(groupIds,","));
             //当前资源的子资源(子资源时通过路径url确定的)过滤到后也添加到相同的权限组
             List<SysResources> extendRresources=allResources.stream().filter(r->res.getCode().equals(r.getPcode())).filter(r->r.permission.equals(PermissionEnum.extend.name())).collect(Collectors.toList());

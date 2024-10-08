@@ -8,6 +8,7 @@ import {
   Dropdown,
   Input,
   Modal,
+  Popover,
   Select,
   Tag,
 } from "@douyinfe/semi-ui";
@@ -25,7 +26,8 @@ import SelectIcon from "@src/components/SelectIcon";
 import { VF } from "@src/dsl/VF";
 import { extractChineseCharacters, uncapFirst } from "@src/util/func";
 import * as tinyPinyin from "tiny-pinyin";
-import _ from "lodash";
+import _, { pick } from "lodash";
+import TableToolbar from "./component/TableToolbar";
 
 const javaType = [
   {
@@ -50,6 +52,27 @@ const order = [
   { label: "降", value: "desc" },
 ];
 
+const sysFields = [
+  "id",
+  "status",
+  "createId",
+  "modifyId",
+  "no",
+  "createDate",
+  "modifyDate",
+];
+
+const formReaction = [
+  VF.then("sysMenuId").title("归属应用"),
+  VF.then("type").title("表单标识").description("驼峰法命名"),
+  VF.then("name").title("表单名称").description("中文名称"),
+  VF.then("custom").value(true).hide(),
+  VF.then("itemType").value("entity"),
+  VF.then("entityType").value((formData: any) => formData.type),
+  VF.then("title").value((formData: any) => formData.name),
+  VF.field("supportNo").eq(true).then("prefixNo").show(),
+  VF.then("formDesc", "helpDoc").hide(),
+];
 /**
  * 数据表维护
  */
@@ -79,7 +102,7 @@ export default () => {
         setEditorForm(_.cloneDeep({ ...table, unpublishForm: undefined }));
         // setEditorForm({ ...table, unpublishForm: undefined });
       }
-      if (table?.state === "1") {
+      if (table?.state === "1" || table?.state === "2") {
         setPublishForm({ ...table, unpublishForm: undefined });
       } else {
         setPublishForm(undefined);
@@ -109,7 +132,7 @@ export default () => {
       .filter((m) => m.app)
       .map((m) => {
         return {
-          label: m.name,
+          label: `${m.name}`,
           value: m.id,
           children: tables
             ?.filter((t) => t.sysMenuId === m.id && t.id !== editorForm?.id)
@@ -137,12 +160,21 @@ export default () => {
       .filter((m) => m.app)
       .map((m) => {
         return {
-          name: m.name,
+          name: (
+            <div className=" space-x-2">
+              <span>{m.name}</span>
+              <span className=" font-bold text-red-500">
+                {m.id === currApp && "*"}
+              </span>
+            </div>
+          ),
           node: "item",
           id: m.id,
           onClick: () => {
             setCurrApp(m.id);
             setEditorForm(undefined);
+            setCurrFormId(undefined);
+            setUnpublishForm(undefined);
           },
           children: tables?.filter(
             (t) => t.sysMenuId === m.id && t?.custom === true
@@ -150,7 +182,7 @@ export default () => {
         };
       })
       .filter((t) => t.children && t.children.length > 0);
-  }, [allMenus, tables]);
+  }, [allMenus, tables, currApp]);
 
   //tables加载完成之后设置默认的当前应用和表单
   useEffect(() => {
@@ -172,16 +204,7 @@ export default () => {
           title: "创建表",
           actionType: "create",
           model: "form",
-          reaction: [
-            VF.then("sysMenuId").title("归属应用"),
-            VF.then("type").title("表单标识").description("驼峰法命名"),
-            VF.then("name").title("表单名称").description("中文名称"),
-            VF.then("custom").value(true).hide(),
-            VF.then("itemType").value("entity"),
-            VF.then("entityType").value((formData: any) => formData.type),
-            VF.then("title").value((formData: any) => formData.name),
-            VF.then("formDesc", "helpDoc", "prefixNo").hide(),
-          ],
+          reaction: formReaction,
           onSaveBefore: (data: Form) => {
             data.type = uncapFirst(data.type);
             data.entityType = uncapFirst(data.entityType);
@@ -193,8 +216,9 @@ export default () => {
               const _editorForm = _tables.find(
                 (t: FormDto) => t.id === res?.id
               );
+              setCurrFormId(_editorForm.id);
               setCurrApp(_editorForm.sysMenuId);
-              setEditorForm({ ..._editorForm });
+              // setEditorForm({ ..._editorForm });
             });
           },
         },
@@ -234,10 +258,7 @@ export default () => {
   }, [editorForm]);
   return (
     <div className=" flex relative flex-col px-2 h-full ">
-      {editorForm?.unpublishForm}
-
-      {/* {JSON.stringify(editorForm)} */}
-
+      {/* {JSON.stringify(_unpublishForm)} */}
       <div className="flex flex-1 space-x-2 ">
         <div className=" w-52 bg-white border rounded-md ">
           <div className=" flex items-center px-4 py-2 h-16 w-full  border-b mb-2 border-dashed border-gray-400">
@@ -271,16 +292,8 @@ export default () => {
                   <div
                     key={formDto.id}
                     onClick={() => {
-                      // ;
-                      // const _change = () => {
-                      //   setEditorForm(
-                      //     tab?.unpublishForm
-                      //       ? JSON.parse(tab?.unpublishForm)
-                      //       : tab
-                      //   );
-                      // };
                       if (formDto.id !== editorForm?.id) {
-                        if (formChange) {
+                        if (formChange === true) {
                           Modal.confirm({
                             title: "你确定要切换么?",
                             content: "切换后当前表单的修改将丢失",
@@ -298,18 +311,40 @@ export default () => {
                         formDto.id === editorForm?.id,
                     })} h-11 text-sm  flex items-center pl-4 space-x-4   text-slate-700 hover:bg-slate-50 cursor-pointer`}
                   >
-                    <span
-                      className={`text-xl ${classNames({
-                        "text-slate-300": formDto.id !== editorForm?.id,
-                        "text-blue-500": formDto.id === editorForm?.id,
-                      })}`}
-                    >
-                      <SelectIcon read value={formDto.icon} />
-                    </span>
-                    <span>
-                      {formDto.name} {formDto.type}
-                      {formDto.unpublishFields && `(待发布)`}
-                    </span>
+                    <div className=" w-full flex relative space-x-2 items-center">
+                      <span
+                        className={`text-xl ${classNames({
+                          "text-slate-300": formDto.id !== editorForm?.id,
+                          "text-blue-500": formDto.id === editorForm?.id,
+                        })}`}
+                      >
+                        <SelectIcon read value={formDto.icon} />
+                      </span>
+                      <span> {formDto.name}</span>
+                      <span className=" absolute right-6 text-xs text-gray-500 ">
+                        {formDto.state === "1"
+                          ? `已上线`
+                          : formDto.state === "2"
+                          ? `待重启`
+                          : formDto.unpublishForm
+                          ? `待发布`
+                          : "创建中"}
+                      </span>
+                      <Popover
+                        position="right"
+                        className="w-full"
+                        content={
+                          <TableToolbar
+                            formDto={formDto}
+                            className={`w-48  bg-blue-400`}
+                          />
+                        }
+                      >
+                        <span className=" absolute right-2">
+                          <i className=" icon-more_03" />
+                        </span>
+                      </Popover>
+                    </div>
                   </div>
                 );
               })}
@@ -346,21 +381,51 @@ export default () => {
                       },
                     },
                     {
+                      icon: <i className="icon-add_circle" />,
+                      title: "编辑表",
+                      actionType: "save",
+                      model: "form",
+                      datas: pick(editorForm, [
+                        "sysMenuId",
+                        "type",
+                        "id",
+                        "name",
+                        "supportFilter",
+                        "supportNo",
+                        "icon",
+                        "prefixNo",
+                        "state",
+                      ]),
+                      reaction: [
+                        ...formReaction,
+                        VF.field("state").eq("1").then("type").readPretty(),
+                      ],
+                      submitClose: true,
+                      saveApi: (d: FormDto) => {
+                        setEditorForm((_e) => {
+                          return {
+                            ..._e,
+                            ...d,
+                          };
+                        });
+                      },
+                    },
+
+                    {
                       title: "保存",
                       multiple: false,
                       disabledTooltip: "当前没有内容改动",
                       disabled: !formChange,
-                      //全部有值才能保存
-                      // usableMatch: (form: FormDto) => {
-                      //   return form.fields.filter(
-                      //     (f) =>
-                      //       f.javaType?.length > 0 &&
-                      //       f.fieldName?.length > 0 &&
-                      //       f.title?.length > 0
-                      //   ).length === form.fields.length
-                      //     ? true
-                      //     : "字段名/字段标识不能为空";
-                      // },
+                      usableMatch: (form: FormDto) => {
+                        return form?.fields?.filter(
+                          (f) =>
+                            f.javaType?.length > 0 &&
+                            f.fieldName?.length > 0 &&
+                            f.title?.length > 0
+                        ).length === form?.fields?.length
+                          ? true
+                          : "字段名/字段标识不能为空";
+                      },
                       datas: editorForm,
                       icon: <i className="  icon-save" />,
                       onSaveBefore: (d) => {
@@ -436,7 +501,7 @@ export default () => {
                       title: "发布",
                       actionType: "save",
                       disabledHide: false,
-                      tooltip: `发布后将在test源码包下生成该模型的crud后端代码`,
+                      tooltip: `发布后将在mvc源码包下生成该模型的crud后端代码`,
                       submitConfirm: "发布完成后需要重启后台服务",
                       multiple: false,
                       disabled: formChange || _unpublishForm === undefined,
@@ -459,6 +524,7 @@ export default () => {
                         clearModelInfo();
                       },
                     },
+
                     {
                       title: "删除",
                       disabledHide: true,
@@ -512,14 +578,7 @@ export default () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {editorForm.fields?.map((f, index_i) => {
                       return !f.fieldName ||
-                        ![
-                          "id",
-                          "status",
-                          "createId",
-                          "modifyId",
-                          "createDate",
-                          "modifyDate",
-                        ].includes(f.fieldName) ? (
+                        !sysFields.includes(f.fieldName) ? (
                         <tr key={f.id || `temp_${index_i}`}>
                           <td className="px-6 py-1 whitespace-nowrap border text-center border-gray-300">
                             {editorForm.fields &&
@@ -527,58 +586,58 @@ export default () => {
                                 ?.filter(
                                   (field) =>
                                     !field.fieldName ||
-                                    ![
-                                      "id",
-                                      "status",
-                                      "createId",
-                                      "modifyId",
-                                      "createDate",
-                                      "modifyDate",
-                                    ].includes(field.fieldName)
+                                    !sysFields.includes(field.fieldName)
                                 )
                                 .indexOf(f) + 1}
                           </td>
                           <td className="px-6  whitespace-nowrap border border-gray-300">
-                            <Input
-                              size="small"
-                              placeholder="字段名称"
-                              className=" w-full"
-                              value={f.title}
-                              onChange={(v) => {
-                                setTableCell(index_i, "title", v);
-                                const pinyinArr = tinyPinyin
-                                  .convertToPinyin(
-                                    extractChineseCharacters(v),
-                                    "-",
-                                    true
-                                  )
-                                  .split("-")
-                                  .map((item) => item[0])
-                                  .join("");
-                                const record = editorForm?.fields?.find(
-                                  (d, _index) => _index === index_i
-                                );
-                                const fieldName = record?.fieldName;
-                                const id = record?.id;
-                                const _fieldName = id
-                                  ? fieldName
-                                  : fieldName
-                                  ? fieldName ===
-                                      pinyinArr.substring(
-                                        0,
-                                        fieldName.length
-                                      ) ||
-                                    pinyinArr ===
-                                      fieldName.substring(0, pinyinArr.length)
-                                    ? pinyinArr
-                                    : pinyinArr && pinyinArr.length > 0
+                            <div className=" flex items-center justify-center space-x-1 font-bold text-red-500">
+                              <Input
+                                size="small"
+                                placeholder="字段名称"
+                                className=" w-full"
+                                value={f.title}
+                                onChange={(v) => {
+                                  setTableCell(index_i, "title", v);
+                                  const pinyinArr = tinyPinyin
+                                    .convertToPinyin(
+                                      extractChineseCharacters(v),
+                                      "-",
+                                      true
+                                    )
+                                    .split("-")
+                                    .map((item) => item[0])
+                                    .join("");
+                                  const record = editorForm?.fields?.find(
+                                    (d, _index) => _index === index_i
+                                  );
+                                  const fieldName = record?.fieldName;
+                                  const id = record?.id;
+                                  const _fieldName = id
                                     ? fieldName
-                                    : undefined
-                                  : pinyinArr;
-                                setTableCell(index_i, "fieldName", _fieldName);
-                                clearOrders();
-                              }}
-                            />
+                                    : fieldName
+                                    ? fieldName ===
+                                        pinyinArr.substring(
+                                          0,
+                                          fieldName.length
+                                        ) ||
+                                      pinyinArr ===
+                                        fieldName.substring(0, pinyinArr.length)
+                                      ? pinyinArr
+                                      : pinyinArr && pinyinArr.length > 0
+                                      ? fieldName
+                                      : undefined
+                                    : pinyinArr;
+                                  setTableCell(
+                                    index_i,
+                                    "fieldName",
+                                    _fieldName
+                                  );
+                                  clearOrders();
+                                }}
+                              />
+                              <span>*</span>
+                            </div>
                           </td>
                           <td className="px-6  whitespace-nowrap border border-gray-300">
                             {f.id ? (
@@ -648,15 +707,18 @@ export default () => {
                             f.id ? (
                               `${editorForm?.fields?.[index_i]?.fieldName}`
                             ) : (
-                              <Input
-                                size="small"
-                                placeholder="字段标识"
-                                onChange={(e) => {
-                                  setTableCell(index_i, "fieldName", e);
-                                  clearOrders();
-                                }}
-                                value={f.fieldName}
-                              />
+                              <div className=" flex items-center justify-center space-x-1 font-bold text-red-500">
+                                <Input
+                                  size="small"
+                                  placeholder="字段标识"
+                                  onChange={(e) => {
+                                    setTableCell(index_i, "fieldName", e);
+                                    clearOrders();
+                                  }}
+                                  value={f.fieldName}
+                                />
+                                <span>*</span>
+                              </div>
                             )}
                           </td>
 
@@ -673,14 +735,19 @@ export default () => {
                                 )?.label
                               }`
                             ) : (
-                              <Select
-                                size="small"
-                                placeholder="字段类型"
-                                className=" w-full"
-                                value={f.javaType}
-                                optionList={javaType}
-                                onChange={(e) => {}}
-                              />
+                              <div className=" flex items-center justify-center space-x-1 font-bold text-red-500">
+                                <Select
+                                  size="small"
+                                  placeholder="字段类型"
+                                  className=" w-full"
+                                  value={f.javaType}
+                                  optionList={javaType}
+                                  onChange={(e) => {
+                                    setTableCell(index_i, "javaType", e);
+                                  }}
+                                />
+                                <span>*</span>
+                              </div>
                             )}
                           </td>
                           <td className="px-6  whitespace-nowrap border border-gray-300">

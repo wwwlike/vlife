@@ -167,6 +167,7 @@ export default () => {
         fieldOutApiParams: { formId: { sysMenuId: app?.id } },
         reaction: [
           VF.then("app").hide().value(false),
+          VF.then("appKey").hide(),
           VF.then("pcode")
             .value(pcode)
             .readPretty()
@@ -256,7 +257,7 @@ export default () => {
                           });
                         },
                         reaction: [
-                          VF.then("app").hide(),
+                          VF.then("app", "appKey").hide(),
                           VF.field("confPage")
                             .eq(true)
                             .then("url", "formId", "placeholderUrl")
@@ -281,6 +282,11 @@ export default () => {
                             .show()
                             .then("placeholderUrl")
                             .required(),
+
+                          VF.field("formId")
+                            .change()
+                            .then("placeholderUrl")
+                            .clearValue(),
                         ],
                       },
                       {
@@ -308,7 +314,7 @@ export default () => {
                       {
                         title: "权限导入",
                         actionType: "edit",
-                        tooltip: "权限错误",
+                        disabledTooltip: "权限错误",
                         // disabledHide: true,
                         usableMatch: (...datas: MenuVo[]) => {
                           if (datas[0].pageLayoutId) {

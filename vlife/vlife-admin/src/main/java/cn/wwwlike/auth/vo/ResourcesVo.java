@@ -44,10 +44,4 @@ public class ResourcesVo implements VoBean<SysResources> {
     public String url;
 
     public String pcode;
-    /**
-     * 资源对应的角色组
-     */
-    @VField(pathName = "sysRole_sysRoleGroup_sysGroupId")
-    public List<String> groupIds;
-
 }

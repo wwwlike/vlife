@@ -3,7 +3,6 @@ import { list as deptList,SysDept } from '@src/api/SysDept';
 import { list as dictList, SysDict } from '@src/api/SysDict';
 import { list as userList, SysUser } from '@src/api/SysUser';
 import { listAll as groupList } from '@src/api/SysGroup';
-import { listAll as roleList,SysRole } from '@src/api/SysRole';
 import { listAll, listAll as menuList, MenuVo, SysMenu } from '@src/api/SysMenu';
 import { list as resourcesList, listButtons, SysResources } from '@src/api/SysResources';
 import { ApiInfo } from '@src/components/compConf/compConf';
@@ -171,7 +170,7 @@ export const resourcesOpenApi:ApiInfo= {
   api:resourcesList,
   filters:{
     importData:{
-      title:"可被导入的资源",
+      title:"数据录入类相关资源",
       func:(datas)=>{return datas.filter((f:SysResources)=>{
         return (f.permission!=="noAuth"&&f.paramType!=="req"&&!f.methedType.startsWith("@GetMapping"));
       })}
@@ -482,22 +481,6 @@ export const groupOpenApi:ApiInfo={
       dataType: DataType.array,
       dataModel:'ISelect',
       func:(datas:SysMenu[]):ISelect[]=>{
-        return datas.map((d)=>{return {value:d.id,label:d.name}})
-      }
-   }
-  }
-}
-
-export const roleOpenApi:ApiInfo={
-  label:"角色",
-  dataType: DataType.array,
-  dataModel:'SysRole',
-  api: roleList,
-  match:{
-   ISelect:{
-      dataType: DataType.array,
-      dataModel:'ISelect',
-      func:(datas:SysRole[]):ISelect[]=>{
         return datas.map((d)=>{return {value:d.id,label:d.name}})
       }
    }

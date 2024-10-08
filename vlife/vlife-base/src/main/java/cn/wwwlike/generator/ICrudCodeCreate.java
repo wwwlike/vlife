@@ -1,8 +1,6 @@
 package cn.wwwlike.generator;
 
 import cn.wwwlike.form.IForm;
-import cn.wwwlike.form.entity.Form;
-import cn.wwwlike.form.vo.FormVo;
 import com.squareup.javapoet.JavaFile;
 import lombok.Data;
 
@@ -11,7 +9,11 @@ import java.io.IOException;
 
 @Data
 public abstract class ICrudCodeCreate  {
-//    public static String targetDirectory = "vlife-admin/custom";'
+
+    public String  fileComment(){
+        return "请访问http://vlife.cc解锁更多;工作流、图表等设计器引擎插件请关注专业版/企业版";
+    }
+
     public String packageName;
     public IForm formVo;
     public String  targetDirectory = "vlife-admin/src/main/mvc";

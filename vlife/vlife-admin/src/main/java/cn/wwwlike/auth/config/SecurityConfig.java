@@ -61,10 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     SysResourcesService resourcesService;
     @Autowired
     SysGroupResourcesService groupResourcesService;
-
-
-    @Autowired
-    SysGroupService groupService;
     @Autowired
     public CustomUrlDecisionManager customUrlDecisionManager;
     @Autowired

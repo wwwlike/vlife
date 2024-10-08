@@ -114,5 +114,11 @@ public class FormDto implements SaveBean<Form>, IForm {
     public String state;
 
     public String orders;
-
+    //支持过滤
+    public Boolean supportFilter;
+    /**
+     * 支持序号
+     * prefixNo必填
+     */
+    public Boolean supportNo;
 }

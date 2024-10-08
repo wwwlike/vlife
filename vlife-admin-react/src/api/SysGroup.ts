@@ -12,20 +12,14 @@ export interface SysGroup extends DbEntity{
 export interface GroupDto extends SaveBean{
   name: string;  // 组名称
   remark: string;  // 组描述
-  sysRoleId: string[];  // 关联角色
   filterType: string;  // 数据维度
 }
 // 角色组分页查询条件
 export interface SysGroupPageReq extends PageQuery{
   name: string;  // 组名称
-  sysRoleId: string[];  // 关联角色
 }
 // 权限组数据对象封装
 export interface GroupVo extends VoBean{
-  sysRoleGroup_sysRoleId: string[];  // 对应的所有角色id
-  sysRoleGroup_sysRole_sysResources_sysMenuId: string[];  // 归属菜单
-  sysRoleGroup_sysRole_sysResources_code: string[];  // 权限code
-  sysRoleGroup_sysRole_name: string[];  // 权限组关联的角色名称集合
   filterType: string;  //     public Integer scope;
 }
 

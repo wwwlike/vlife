@@ -27,31 +27,31 @@ public class SysGroupResourcesService extends BaseService<SysGroupResources, Sys
     @Autowired
     public SysMenuService menuService;
 
-    //讲所有role的角色转换成简单模式的权限
-    public void tran(){
-        List<GroupVo> groupVos=groupService.query(GroupVo.class, QueryWrapper.of(SysGroup.class));
-        for(GroupVo groupVo:groupVos)  {
-            String  groupId=groupVo.getId();
-            if(groupVo.getSysRoleGroup_sysRole_sysResources_id()!=null){
-                for(String resourcesId:groupVo.getSysRoleGroup_sysRole_sysResources_id()){
-                    SysGroupResources gr=new SysGroupResources();
-                    gr.setSysGroupId(groupId);
-                    gr.setSysResourcesId(resourcesId);
-                    save(gr);
-                }
-            }
-            //菜单
-            if(groupVo.getSysRoleGroup_sysRole_sysMenu_id()!=null){
-                HashSet<String> set = new HashSet<>(groupVo.getSysRoleGroup_sysRole_sysMenu_id());
-                for(String menuId:set){
-                    SysGroupResources gr=new SysGroupResources();
-                    gr.setSysGroupId(groupId);
-                    gr.setSysMenuId(menuId);
-                    save(gr);
-                }
-            }
-        }
-    }
+    //将所有role的角色转换成简单模式的权限
+//    public void tran(){
+//        List<GroupVo> groupVos=groupService.query(GroupVo.class, QueryWrapper.of(SysGroup.class));
+//        for(GroupVo groupVo:groupVos)  {
+//            String  groupId=groupVo.getId();
+//            if(groupVo.getSysRoleGroup_sysRole_sysResources_id()!=null){
+//                for(String resourcesId:groupVo.getSysRoleGroup_sysRole_sysResources_id()){
+//                    SysGroupResources gr=new SysGroupResources();
+//                    gr.setSysGroupId(groupId);
+//                    gr.setSysResourcesId(resourcesId);
+//                    save(gr);
+//                }
+//            }
+//            //菜单
+//            if(groupVo.getSysRoleGroup_sysRole_sysMenu_id()!=null){
+//                HashSet<String> set = new HashSet<>(groupVo.getSysRoleGroup_sysRole_sysMenu_id());
+//                for(String menuId:set){
+//                    SysGroupResources gr=new SysGroupResources();
+//                    gr.setSysGroupId(groupId);
+//                    gr.setSysMenuId(menuId);
+//                    save(gr);
+//                }
+//            }
+//        }
+//    }
 
     //清除作为必选资源的权限组关联
     public void clearMainGroup(String[] requiredResourcesId){

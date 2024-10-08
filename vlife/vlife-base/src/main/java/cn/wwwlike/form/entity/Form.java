@@ -4,6 +4,7 @@ package cn.wwwlike.form.entity;
  * 表单/列表/视图
  */
 
+import cn.wwwlike.form.IForm;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
@@ -20,7 +21,7 @@ import javax.persistence.*;
 //@Data
 @Table(name = "form")
 @VClazz(remove = {PageComponentProp.class})
-public class Form extends DbEntity {
+public class Form extends DbEntity  {
     /**
      * 模型代表字段
      * label/title/name/id 按照这个优先级进行设置
@@ -115,6 +116,16 @@ public class Form extends DbEntity {
     public String unpublishForm;
     //自定义表单标识
     public Boolean custom;
+    /**
+     * 可多维度过滤(权限组里设定)
+     */
+    public Boolean supportFilter;
+    /**
+     * 增加序号(系统自动计算生成)
+     * prefixNo必填
+     */
+    public Boolean supportNo;
+
     /**
      * 表单发布状态
      * 0. 待发布 1. 已发布 2. 已发布待重启
@@ -314,4 +325,22 @@ public class Form extends DbEntity {
     public void setUnpublishForm(String unpublishForm) {
         this.unpublishForm = unpublishForm;
     }
+
+    public Boolean getSupportFilter() {
+        return supportFilter;
+    }
+
+    public void setSupportFilter(Boolean supportFilter) {
+        this.supportFilter = supportFilter;
+    }
+
+    public Boolean getSupportNo() {
+        return supportNo;
+    }
+
+    public void setSupportNo(Boolean supportNo) {
+        this.supportNo = supportNo;
+    }
+
+
 }

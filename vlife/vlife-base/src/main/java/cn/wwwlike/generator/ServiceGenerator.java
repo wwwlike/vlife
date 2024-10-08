@@ -32,7 +32,7 @@ public class ServiceGenerator extends ICrudCodeCreate {
                 .addAnnotation(Service.class)
                 .superclass(superClazz)
                 .build();
-        JavaFile javaFile= JavaFile.builder(servicePackageName, service)
+        JavaFile javaFile= JavaFile.builder(servicePackageName, service).addFileComment(fileComment())
                 .build();
         try {
             generateJavaFIle(javaFile);

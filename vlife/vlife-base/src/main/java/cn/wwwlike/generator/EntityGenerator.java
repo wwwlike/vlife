@@ -2,6 +2,8 @@ package cn.wwwlike.generator;
 
 import cn.wwwlike.form.IField;
 import cn.wwwlike.form.IForm;
+import cn.wwwlike.vlife.base.IFilter;
+import cn.wwwlike.vlife.base.INo;
 import com.squareup.javapoet.*;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
@@ -47,7 +49,6 @@ public class EntityGenerator extends ICrudCodeCreate {
     @Override
     public void create() {
         String[] sysFields={"id","status","modifyDate","modifyId","createId","createDate"};
-//        ParameterizedTypeName superClzAndGenic = (ParameterizedTypeName) ParameterizedTypeName.get(DbEntity.class);
         List<FieldSpec> fieldSpecs = new ArrayList<>();
         List<MethodSpec> getMethodSpecs = new ArrayList<>();
 
@@ -66,6 +67,9 @@ public class EntityGenerator extends ICrudCodeCreate {
                 getMethodSpecs.add(getMethodSpec(f).build());
             }
         });
+
+
+
         TypeSpec.Builder builder = TypeSpec.classBuilder(StringUtils.capitalize(formVo.getType()))
                 .addModifiers(Modifier.PUBLIC)
                 .addJavadoc(formVo.getName())
@@ -75,15 +79,19 @@ public class EntityGenerator extends ICrudCodeCreate {
                 .addFields(fieldSpecs)
                 .superclass(DbEntity.class)
                 .addMethods(getMethodSpecs);
-
+        if(Boolean.TRUE.equals(formVo.getSupportFilter())){
+            builder.addSuperinterface(IFilter.class);
+        }
+        if(Boolean.TRUE.equals(formVo.getSupportNo())){
+            builder.addSuperinterface(INo.class);
+        }
         if(this.formVo.getOrders()!=null){
             AnnotationSpec.Builder vClazzAnnotation = AnnotationSpec.builder(VClazz.class);
             vClazzAnnotation.addMember("orders", "\""+this.formVo.getOrders()+"\"");
             builder.addAnnotation(vClazzAnnotation.build());
         }
-
-
-        JavaFile javaFile = JavaFile.builder(getPackageName()+".entity", builder.build()).build();
+        JavaFile javaFile = JavaFile.builder(getPackageName()+".entity", builder.build()).addFileComment(fileComment())
+                .addFileComment(fileComment()).build();
         try {
             generateJavaFIle(javaFile);
         } catch (Exception ex) {

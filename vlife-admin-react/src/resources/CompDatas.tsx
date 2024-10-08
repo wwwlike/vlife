@@ -10,7 +10,6 @@ import SearchInput from "@src/components/SearchInput";
 import SelectTag from "@src/components/SelectTag";
 import VfTreeSelect from "@src/components/VfTreeSelect";
 import PageSelect from "@src/components/PageSelect";
-import MenuResourcesSelect from "@src/pages/sysManage/role/component/MenuResourcesSelect";
 import VfFormTable from "@src/components/form/component/FormTable";
 import VfListForm from "@src/components/form/component/VfListForm";
 import { FormVo, list } from "@src/api/Form";
@@ -360,30 +359,6 @@ export const FormComponents: CompDatas = {
         label: "空数据时文案",
         dataType: DataType.basic,
         dataModel: DataModel.string,
-      },
-    },
-  },
-  MenuResourcesSelect: {
-    //该组件不能看做是通用组件，和tsx内部访问了接口，一般组件里属性来源于字段(fromField)的一般都不是通用组件，这里需要调整
-    component: MenuResourcesSelect,
-    label: "角色资源绑定模块",
-    dataType: DataType.array,
-    dataModel: DataModel.string,
-    icon: "IconComponent",
-    props: {
-      appId: {
-        required: true,
-        label: "应用ID",
-        dataType: DataType.basic,
-        dataModel: DataModel.string,
-        fromField: { entity: "sysMenu", field: "id" },
-      },
-      roleId: {
-        label: "角色id",
-        required: true,
-        dataType: DataType.basic,
-        dataModel: DataModel.string,
-        fromField: { entity: "sysRole", field: "id" },
       },
     },
   },

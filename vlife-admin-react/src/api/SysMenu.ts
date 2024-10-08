@@ -2,7 +2,6 @@ import apiClient from "@src/api/base/apiClient";
 import { DbEntity, PageQuery, Result, SaveBean } from "@src/api/base";
 import { SysResources } from "@src/api/SysResources";
 import { FormVo } from './Form';
-import { SysRole } from './SysRole';
 // 菜单
 export interface SysMenu extends DbEntity {
   code: string; // 编码
@@ -13,8 +12,8 @@ export interface SysMenu extends DbEntity {
   placeholderUrl: string; //替换通配符
   app: boolean; //是否作为APP
   sort: number; //排序号
-  sysRoleId: string; //绑定的角色
-  formId:string;
+  formId:string; //关联模型
+  appKey:string;//应用标识
   confPage: boolean; //是否连接到配置页面
   pageLayoutId: string; //配置页面信息
 }
@@ -30,12 +29,10 @@ export interface MenuVo extends DbEntity {
   icon: string; // 图标
   url: string; // 路由地址
   sort: number; //排序号
-  sysRoleId: string; //绑定的角色
   placeholderUrl:string;
   pageLayoutId: string; //配置页面信息
   formId:string;
   sysResourcesList: SysResources[]; //接口数据
-  roleList:SysRole[];//应用对应的角色
   routerAddress:string;//拼接计算后的路由地址
   pageLayout:any;//关联页面对象
 }
@@ -94,7 +91,6 @@ export const remove = (ids: string[]): Promise<Result<number>> => {
  * 角色资源接口
  */
 export const roleResources = (req: {
-  sysRoleId: string;
 }): Promise<Result<MenuVo>> => {
   return apiClient.get(`/sysMenu/list/roleResources`, { params: req });
 };

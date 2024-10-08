@@ -14,7 +14,6 @@ const TemplatePage = lazy(() => import("@src/pages/template"));
 //系统管理
 const UserPage = lazy(() => import("@src/pages/sysManage/user"));
 const DeptPage = lazy(() => import("@src/pages/sysManage/dept"));
-const RolePage = lazy(() => import("@src/pages/sysManage/role"));
 const GroupPage = lazy(() => import("@src/pages/sysManage/group"));
 //系统配置
 const FormDesignPage = lazy(() => import("@src/pages/sysConf/formDesign")); //表单设计页
@@ -167,16 +166,6 @@ export const allRoute: any[] = [
           <WrapperRouteComponent
             element={<UserPage />}
             titleId="用户管理"
-            auth
-          />
-        ),
-      },
-      {
-        path: "role",
-        element: (
-          <WrapperRouteComponent
-            element={<RolePage />}
-            titleId="角色管理"
             auth
           />
         ),

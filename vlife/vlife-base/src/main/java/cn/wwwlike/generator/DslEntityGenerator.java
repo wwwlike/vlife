@@ -80,7 +80,7 @@ public class DslEntityGenerator extends ICrudCodeCreate {
 //                .addStaticImport("com.querydsl.core.types.PathMetadataFactory.forVariable") // 添加静态导入
                 .build();
         JavaFile javaFile = JavaFile.builder(getPackageName()+".entity", dls)
-                .addStaticImport(PathMetadataFactory.class, "forVariable").build();
+                .addStaticImport(PathMetadataFactory.class, "forVariable").addFileComment(fileComment()).build();
 
 
         try {

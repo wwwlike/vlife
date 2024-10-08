@@ -35,15 +35,6 @@ public class GroupVo implements VoBean<SysGroup> {
     public String id;
     public String filterType;
     /**
-     * 通过角色查找对应的资源信息
-     */
-    public List<String> sysRoleGroup_sysRoleId;
-    public List<String> sysRoleGroup_sysRole_sysResources_code;
-    public List<String> sysRoleGroup_sysRole_sysResources_sysMenuId;
-    public List<String> sysRoleGroup_sysRole_name;
-    public List<String> sysRoleGroup_sysRole_sysResources_id;
-    public List<String> sysRoleGroup_sysRole_sysMenu_id;
-    /**
      * 通过权限组查找对应的资源信息
      */
     /**

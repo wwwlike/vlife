@@ -10,7 +10,6 @@ import DynamicNodeSelect from "./DynamicNodeSelect";
 export interface FlowSelectProps extends VfBaseProps<Partial<NodeUserInfo>[]> {
   showUser?: boolean; //仅使用用户
   multiple?: boolean; //是否能多选
-  roleSelectData?: ISelect[];
   groupSelectData?: ISelect[];
   deptSelectData?: ISelect[];
   userSelectData?: ISelect[];
@@ -22,7 +21,6 @@ export default (props: FlowSelectProps) => {
     value,
     showUser = false,
     multiple = true,
-    roleSelectData,
     groupSelectData,
     deptSelectData,
     userSelectData,
@@ -30,10 +28,6 @@ export default (props: FlowSelectProps) => {
   const [search, setSearch] = useState<string>(); //搜索的数据
   const [activeKey, setActiveKey] = useState<string>("assignee"); //当前页签
 
-  //角色数据
-  const roles = useMemo((): Partial<NodeUserInfo>[] => {
-    return value?.filter((v) => v.userType === "role") || [];
-  }, [value]);
   //权限组数据
   const groups = useMemo((): Partial<NodeUserInfo>[] => {
     return value?.filter((v) => v.userType === "group") || [];
@@ -121,19 +115,6 @@ export default (props: FlowSelectProps) => {
             </TabPane>
           )}
           {showUser === false && (
-            <TabPane tab="角色" itemKey="role">
-              {roleSelectData && (
-                <MultipleSelect
-                  selectData={roleSelectData || []}
-                  value={roles.map((v) => v.objectId || "")}
-                  onDataChange={(vals?: string[]) => {
-                    selectNode(roleSelectData, "role", ...(vals || []));
-                  }}
-                />
-              )}
-            </TabPane>
-          )}
-          {showUser === false && (
             <TabPane tab="动态" itemKey="dynamic">
               <DynamicNodeSelect
                 value={dynamics}
@@ -200,7 +181,6 @@ export default (props: FlowSelectProps) => {
           <>
             <div className="pl-2 text-gray-400 font-bold">部门</div>
             <div className="flex flex-wrap">
-              {/* {JSON.stringify(roles)} */}
               {depts.map((dept, index) => {
                 return (
                   <div key={`${index}_role`} className="inline-flex p-1 ">
@@ -253,37 +233,6 @@ export default (props: FlowSelectProps) => {
                           (data) => data.value === group.objectId
                         )?.[0]?.label}
 
-                      <i className=" ml-1 icon-clear" />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
-        {/* 4. 角色已选择 */}
-        {roles && roles.length > 0 && (
-          <>
-            <div className="pl-2 text-gray-400 font-bold">角色</div>
-            <div className="flex flex-wrap">
-              {roles.map((role, index) => {
-                return (
-                  <div key={`${index}_role`} className="inline-flex p-1 ">
-                    <div
-                      onClick={() => {
-                        onDataChange(
-                          value?.filter((v) => v.objectId !== role.objectId)
-                        );
-                      }}
-                      className=" text-sm bg-slate-200 hover:bg-slate-300 p-1 rounded font-thin cursor-pointer "
-                    >
-                      {role.label}
-                      {(role.label === undefined || role.label === null) &&
-                        role.userType === "role" &&
-                        roleSelectData &&
-                        roleSelectData.filter(
-                          (data) => data.value === role.objectId
-                        )?.[0]?.label}
                       <i className=" ml-1 icon-clear" />
                     </div>
                   </div>

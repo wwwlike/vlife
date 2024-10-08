@@ -37,11 +37,10 @@ public class SysGroupApi extends VLifeApi<SysGroup, SysGroupService> {
   @PostMapping("/page")
   public PageVo<SysGroup> page(SysGroupPageReq req) {
     if(groupResourcesService.findAll().size()==0){
-      groupResourcesService.tran();
+//      groupResourcesService.tran();
     }
     return service.findPage(req);
   }
-
 
   /**
    * 权限组保存

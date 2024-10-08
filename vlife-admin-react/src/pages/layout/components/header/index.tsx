@@ -26,8 +26,6 @@ import SelectIcon from "@src/components/SelectIcon";
 import { MenuItem } from "../../types";
 import LinkMe from "./LinkMe";
 import VfButton from "@src/components/button";
-import { SysRole, listAll as roleList } from "@src/api/SysRole";
-import { useDetail } from "@src/api/base/baseService";
 import { findSubs, findTreeRoot } from "@src/util/func";
 import { urlMenu, visitTopMenu } from "../sider";
 import weilai from "@src/assets/weilai.jpg";
@@ -47,15 +45,6 @@ const Index = () => {
     sysVar,
     setAllMenus,
   } = useAuth();
-  const [roles, setRoles] = useState<SysRole[]>([]);
-
-  useEffect(() => {
-    if (user?.superUser) {
-      roleList().then((d) => {
-        setRoles(d.data || []);
-      });
-    }
-  }, []);
 
   //所有应用
   const apps = useMemo((): MenuVo[] => {
@@ -212,15 +201,15 @@ const Index = () => {
                       setApp(m);
                     },
                   },
-                  {
-                    title: "模型管理",
-                    icon: <i className="  icon-view_module" />,
-                    datas: [m],
-                    actionType: "click",
-                    onClick: () => {
-                      navigate(`/sysConf/model?appCode=${m.code}`);
-                    },
-                  },
+                  // {
+                  //   title: "模型管理",
+                  //   icon: <i className="  icon-view_module" />,
+                  //   datas: [m],
+                  //   actionType: "click",
+                  //   onClick: () => {
+                  //     navigate(`/sysConf/model?appCode=${m.code}`);
+                  //   },
+                  // },
                   {
                     title: "应用删除",
                     icon: <i className="  icon-delete" />,
@@ -283,7 +272,7 @@ const Index = () => {
       });
     }
     return _apps;
-  }, [apps, pathname, roles]);
+  }, [apps, pathname]);
 
   const editPassword = () => {
     formModal
