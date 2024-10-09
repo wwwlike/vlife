@@ -6,6 +6,9 @@ import { resolve } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {  
+    port: 3000, // 设置为你想要的端口  
+  },  
   resolve: {
     alias: {
       "@src": resolve(__dirname, "./src"),

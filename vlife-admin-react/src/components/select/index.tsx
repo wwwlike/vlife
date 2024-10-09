@@ -1,7 +1,6 @@
 //vlife单一选择器
 
 import { Checkbox, Tag } from "@douyinfe/semi-ui";
-import { IsEmptyObj } from "@reduxjs/toolkit/dist/tsHelpers";
 import { ISelect, ITreeData, VfBaseProps } from "@src/dsl/component";
 import classNames from "classnames";
 import { on } from "process";

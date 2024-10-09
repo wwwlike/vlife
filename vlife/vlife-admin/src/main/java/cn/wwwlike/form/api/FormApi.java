@@ -119,7 +119,10 @@ public class FormApi extends VLifeApi<Form, FormService> {
     @PostMapping("/publish")
     public FormDto publish(@RequestBody FormDto dto){
         dto=service.customPerfect(dto); //1. 模型完善
-        String appKey=menuService.findOne(dto.getSysMenuId()).getAppKey().toLowerCase();
+        String appKey=Optional.ofNullable(menuService.findOne(dto.getSysMenuId()))
+                .map(menu -> menu.getAppKey())
+                .map(String::toLowerCase)
+                .orElse("common");
         //二次发布检查类是否还存在
         GeneratorMvc.create("cn.vlife."+appKey//2. 创建代码
                 ,dto,appKey,"vlife-admin/target/generated-sources/java");

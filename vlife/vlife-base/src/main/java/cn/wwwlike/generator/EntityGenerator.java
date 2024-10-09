@@ -48,7 +48,7 @@ public class EntityGenerator extends ICrudCodeCreate {
 
     @Override
     public void create() {
-        String[] sysFields={"id","status","modifyDate","modifyId","createId","createDate"};
+        String[] sysFields={"id","status","modifyDate","modifyId","createId","createDate","createDeptcode"};
         List<FieldSpec> fieldSpecs = new ArrayList<>();
         List<MethodSpec> getMethodSpecs = new ArrayList<>();
 

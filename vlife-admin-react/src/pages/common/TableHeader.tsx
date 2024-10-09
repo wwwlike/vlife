@@ -316,9 +316,7 @@ export default ({ ...props }: TableHeaderProps) => {
               }}
             />
           ) : (
-            <div className=" h-10 px-4 py-1 text-center font-bold">
-              当前无可用场景！
-            </div>
+            ""
           ))}
       </div>
       {children && (

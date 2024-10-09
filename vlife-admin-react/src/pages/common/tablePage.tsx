@@ -1015,7 +1015,10 @@ const TablePage = <T extends TableBean>({
                   activeKey: activeKey,
                   reaction:
                     typeof editType !== "string" ? editType?.reaction : [],
-                  btns: mode === "view" ? [] : totalBtns,
+                  btns:
+                    mode === "view"
+                      ? []
+                      : totalBtns.filter((t) => t.actionType !== "create"),
                 });
               }
             }}

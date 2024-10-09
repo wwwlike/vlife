@@ -103,16 +103,6 @@ export const tableFlowBtns = ({
   save?: (data: any) => Promise<Result<any>>; //通用保存方法
   rm?: (ids: string[]) => Promise<Result<any>>;
 }) => {
-  // const saveApia: (data: IdBean) => Promise<Result<any>> =
-  //   typeof save === "function" ? save("", "") : save;
-
-  // if (typeof save === "function") {
-  //   const saveApia1: (data: IdBean) => Promise<Result<any>> = save("", "");
-  // } else {
-  //   // save 不是函数类型，则直接赋值给 saveApia
-  //   const saveApia2: (data: IdBean) => Promise<Result<any>> = save;
-  // }
-
   let _flowBtns: VFBtn[] = [
     {
       actionType: "flow",
@@ -141,7 +131,6 @@ export const tableFlowBtns = ({
     },
     {
       actionType: "flow",
-
       submitConfirm: true,
       allowEmpty: true,
       title: "提交", //保存数据并且当流程流转到下一个节点
@@ -150,10 +139,10 @@ export const tableFlowBtns = ({
       icon: <i className="  icon-upload1" />,
       multiple: false,
       model: formType,
-      activeTabKey: ["flow_todo", "flow_byMe_edit", "flow_byMe_draft"], //办理节点
+      // activeTabKey: ["flow_todo", "flow_byMe_edit", "flow_byMe_draft"], //办理节点
       usableMatch: ({ flow }: TableBean) => {
         return (
-          flow?.started === false || //任务没开始可以提交
+          flow?.started !== true || //任务没开始可以提交
           (flow?.currTask &&
             flow?.ended === false && //是你的任务并且任务没有结束
             (flow?.nodeType === "audit" || flow.nodeId === "start")) ||
@@ -353,13 +342,18 @@ export const tableFlowBtns = ({
       allowEmpty: true,
       model: formType,
       reaction: formReaction,
+      usableMatch: ({ flow, id }: TableBean) => {
+        if (flow) {
+          return false;
+        }
+      },
       onSubmitFinish: (d) => {
         onSubmitFinish?.(d);
         setActiveTabKey?.("flow_byMe_draft");
       },
-      saveApi: save, // save方法需要返回和model一致的数据
+      saveApi: save,
     });
-
+    // activeTabKey: ["flow_todo", "flow_byMe_edit", "flow_byMe_draft"], //办理节点
     _flowBtns.unshift({
       actionType: "edit",
       modalOpen: saveModalOpen,

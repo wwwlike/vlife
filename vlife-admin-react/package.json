@@ -79,7 +79,7 @@
     "postcss": "^8.3.6",
     "scss": "^0.2.4",
     "typescript": "^4.6.3",
-    "vite": "^2.9.9",
+    "vite": "^5.4.8",
     "vite-plugin-semi-theme": "^0.2.0"
   }
 }

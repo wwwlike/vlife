@@ -58,6 +58,7 @@ const sysFields = [
   "createId",
   "modifyId",
   "no",
+  "createDeptcode",
   "createDate",
   "modifyDate",
 ];
@@ -258,7 +259,6 @@ export default () => {
   }, [editorForm]);
   return (
     <div className=" flex relative flex-col px-2 h-full ">
-      {/* {JSON.stringify(_unpublishForm)} */}
       <div className="flex flex-1 space-x-2 ">
         <div className=" w-52 bg-white border rounded-md ">
           <div className=" flex items-center px-4 py-2 h-16 w-full  border-b mb-2 border-dashed border-gray-400">

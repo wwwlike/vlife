@@ -1,4 +1,3 @@
-import { ToolFilled } from "@ant-design/icons";
 import { Avatar, Checkbox, Tooltip } from "@douyinfe/semi-ui";
 import { AvatarColor } from "@douyinfe/semi-ui/lib/es/avatar";
 import { ISelect, ITreeData, VfBaseProps } from "@src/dsl/component";

@@ -94,7 +94,7 @@ public class Form extends DbEntity  {
      * 提取vclass的label表达式
      */
     public String itemName;
-    //页面模块appId
+    //归属应用
     public String sysMenuId;
     /**
      * 填报说明
