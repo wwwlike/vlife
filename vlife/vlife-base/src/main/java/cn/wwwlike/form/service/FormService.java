@@ -10,7 +10,6 @@ import cn.wwwlike.form.entity.FormField;
 import cn.wwwlike.form.entity.PageApiParam;
 import cn.wwwlike.form.vo.FormFieldVo;
 import cn.wwwlike.form.vo.FormVo;
-import cn.wwwlike.sys.entity.SysResources;
 import cn.wwwlike.sys.service.SysResourcesService;
 import cn.wwwlike.vlife.base.INo;
 import cn.wwwlike.vlife.core.VLifeService;
