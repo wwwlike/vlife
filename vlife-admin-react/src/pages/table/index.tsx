@@ -27,7 +27,6 @@ import { VF } from "@src/dsl/VF";
 import { extractChineseCharacters, uncapFirst } from "@src/util/func";
 import * as tinyPinyin from "tiny-pinyin";
 import _, { pick } from "lodash";
-import TableToolbar from "./component/TableToolbar";
 
 const javaType = [
   {
@@ -330,20 +329,15 @@ export default () => {
                           ? `待发布`
                           : "创建中"}
                       </span>
-                      <Popover
+                      {/* <Popover
                         position="right"
                         className="w-full"
-                        content={
-                          <TableToolbar
-                            formDto={formDto}
-                            className={`w-48  bg-blue-400`}
-                          />
-                        }
-                      >
-                        <span className=" absolute right-2">
-                          <i className=" icon-more_03" />
-                        </span>
-                      </Popover>
+                        content={<></>}
+                      > */}
+                      <span className=" absolute right-2">
+                        <i className=" icon-more_03" />
+                      </span>
+                      {/* </Popover> */}
                     </div>
                   </div>
                 );
