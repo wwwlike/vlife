@@ -43,7 +43,6 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
     public boolean supports(MethodParameter methodParameter, Class aClass) {
         return filter(methodParameter);
     }
-
     /**
      * 根据返回类型来判断是否需要进行后续操作
      *
@@ -53,8 +52,6 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
     private boolean filter(MethodParameter methodParameter) {
         return true;
     }
-
-
     /**
      * @param returnValue 返回值
      */
@@ -63,7 +60,7 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
         Result result;
         //获取返回值类型
         String returnClassType = returnType.getParameterType().getSimpleName();
-        //1 api方法上加了特定注解，也不需要封装直接 返回（暂时未实现）
+        //1 api方法上加了特定注解，则可不封装直接返回（待实现）
         //2 错误或者有异常直接到前台，无需再次封装
         if (ErrorResponse.class.isAssignableFrom(returnType.getParameterType())) {
             return returnValue;
@@ -78,7 +75,7 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
 //            ObjectMapper objectMapper = new ObjectMapper();
 //            return objectMapper.writeValueAsString(request);
 //            return new Gson().toJson(request);
-           return JSON.toJSONString(result);
+//           return JSON.toJSONString(result);
         } else if ("ResponseEntity".equals(returnClassType)) {
             return returnValue;
         } else if (returnValue != null && NativeResult.class == returnValue.getClass()) {
@@ -92,7 +89,6 @@ public class CommonResponseAdvice implements ResponseBodyAdvice {
                 result = Result.createSuccess(returnValue);
             }
         }
-        //一定要转换为String，否则会报错
         return result;
     }
 }

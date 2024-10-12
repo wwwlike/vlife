@@ -35,6 +35,18 @@ public class FormFieldService extends VLifeService<FormField, FormFieldDao> {
                 )).collect(Collectors.toList());
     }
 
+
+    /**
+     *驼峰转下划线分隔
+     * sysUserName->sys_user_name
+     */
+    private  String convertCamelCaseToUnderscore(String camelCase) {
+        // 使用正则表达式替换大写字母
+        String withUnderscores = camelCase.replaceAll("([a-z])([A-Z])", "$1_$2");
+        // 转换为全小写
+        return withUnderscores.toLowerCase();
+    }
+
     /**
      * 将模型字段信息转成数据表的字段信息集合
      */
@@ -126,7 +138,7 @@ public class FormFieldService extends VLifeService<FormField, FormFieldDao> {
     public void modifyField(String tableName,IField newField) {
         String sql = String.format("ALTER TABLE %s MODIFY %s %s(%s) COMMENT '%s'",
                 tableName,
-                newField.getFieldName(),
+                convertCamelCaseToUnderscore(newField.getFieldName()),//驼峰转下划线分隔
                 mapJavaTypeToSqlType(newField.getJavaType()),
                 newField.getDbLength(),
                 newField.getTitle());
