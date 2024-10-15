@@ -257,666 +257,677 @@ export default () => {
     });
   }, [editorForm]);
   return (
-    <div className=" flex relative flex-col px-2 h-full ">
-      <div className="flex flex-1 space-x-2 ">
-        <div className=" w-52 bg-white border rounded-md ">
-          <div className=" flex items-center px-4 py-2 h-16 w-full  border-b mb-2 border-dashed border-gray-400">
-            <div className=" bg-blue-500 rounded h-7 w-7 flex justify-center items-center  mr-4">
-              <i className="text-xl text-white icon-access_time " />
-            </div>
-            <div className=" flex-1 flex-col flex ">
-              <span className="font-bold">{menu?.name}</span>
-              <div className=" text-gray-400 text-sm">
-                {apps.find((t) => t.id === currApp)?.name || apps?.[0]?.name}
-              </div>
-            </div>
-            <div className="w-4 items-center justify-center">
-              {
-                //@ts-ignore
-                <Dropdown menu={apps}>
-                  <i className=" icon-menu" />
-                </Dropdown>
-              }
+    <div className="flex flex-1 space-x-2 ">
+      <div className=" w-52 flex flex-col bg-white border rounded-md ">
+        <div className=" flex items-center px-4 py-2 h-16 w-full  border-b mb-2 border-dashed border-gray-400">
+          <div className=" bg-blue-500 rounded h-7 w-7 flex justify-center items-center  mr-4">
+            <i className="text-xl text-white icon-access_time " />
+          </div>
+          <div className=" flex-1 flex-col flex ">
+            <span className="font-bold">{menu?.name}</span>
+            <div className=" text-gray-400 text-sm">
+              {apps.find((t) => t.id === currApp)?.name || apps?.[0]?.name}
             </div>
           </div>
-          <Scrollbars autoHide={true}>
-            {tables
-              ?.filter(
-                (t) =>
-                  t.sysMenuId === (currApp || apps?.[0]?.id) &&
-                  t.custom === true
-              )
-              ?.map((formDto: FormDto) => {
-                return (
-                  <div
-                    key={formDto.id}
-                    onClick={() => {
-                      if (formDto.id !== editorForm?.id) {
-                        if (formChange === true) {
-                          Modal.confirm({
-                            title: "你确定要切换么?",
-                            content: "切换后当前表单的修改将丢失",
-                            onOk: () => {
-                              setCurrFormId(formDto.id);
-                            },
-                          });
-                        } else {
-                          setCurrFormId(formDto.id);
-                        }
-                      }
-                    }}
-                    className={` ${classNames({
-                      "border-l-2 border-blue-500 bg-slate-50":
-                        formDto.id === editorForm?.id,
-                    })} h-11 text-sm  flex items-center pl-4 space-x-4   text-slate-700 hover:bg-slate-50 cursor-pointer`}
-                  >
-                    <div className=" w-full flex relative space-x-2 items-center">
-                      <span
-                        className={`text-xl ${classNames({
-                          "text-slate-300": formDto.id !== editorForm?.id,
-                          "text-blue-500": formDto.id === editorForm?.id,
-                        })}`}
-                      >
-                        <SelectIcon read value={formDto.icon} />
-                      </span>
-                      <span> {formDto.name}</span>
-                      <span className=" absolute right-6 text-xs text-gray-500 ">
-                        {formDto.state === "1"
-                          ? `已上线`
-                          : formDto.state === "2"
-                          ? `待重启`
-                          : formDto.unpublishForm
-                          ? `待发布`
-                          : "创建中"}
-                      </span>
-                      {/* <Popover
-                        position="right"
-                        className="w-full"
-                        content={<></>}
-                      > */}
-                      <span className=" absolute right-2">
-                        <i className=" icon-more_03" />
-                      </span>
-                      {/* </Popover> */}
-                    </div>
-                  </div>
-                );
-              })}
-          </Scrollbars>
+          <div className="w-4 items-center justify-center">
+            {
+              //@ts-ignore
+              <Dropdown menu={apps}>
+                <i className=" icon-menu" />
+              </Dropdown>
+            }
+          </div>
         </div>
-        <div className=" w-full h-full flex flex-col relative  flex-1 p-2 bg-white border rounded-md text-center">
-          {editorForm ? (
-            <>
-              <div className="pb-2 relative flex space-x-2 ">
-                <BtnResourcesToolBar
-                  key={editorForm.id}
-                  btns={[
-                    {
-                      title: "加字段",
-                      actionType: "create",
-                      icon: <i className="icon-task_add-02" />,
-                      onClick: () => {
-                        //@ts-ignore
-                        setEditorForm((_editorForm) => {
-                          return _editorForm?.fields &&
-                            _editorForm?.fields?.length > 0
-                            ? {
-                                ...editorForm,
-                                fields: [
-                                  ..._editorForm.fields,
-                                  { javaType: "string", dbLength: 100 },
-                                ],
+        <Scrollbars
+          // className=" !h-48"
+          // style={{ height: "100%" }}
+          autoHide={true}
+        >
+          {tables
+            ?.filter(
+              (t) =>
+                t.sysMenuId === (currApp || apps?.[0]?.id) && t.custom === true
+            )
+            ?.map((formDto: FormDto) => {
+              return (
+                <div
+                  key={formDto.id}
+                  onClick={() => {
+                    if (formDto.id !== editorForm?.id) {
+                      if (formChange === true) {
+                        Modal.confirm({
+                          title: "你确定要切换么?",
+                          content: "切换后当前表单的修改将丢失",
+                          onOk: () => {
+                            setCurrFormId(formDto.id);
+                          },
+                        });
+                      } else {
+                        setCurrFormId(formDto.id);
+                      }
+                    }
+                  }}
+                  className={` ${classNames({
+                    "border-l-2 border-blue-500 bg-slate-50":
+                      formDto.id === editorForm?.id,
+                  })} h-11 text-sm  flex items-center pl-4 space-x-4   text-slate-700 hover:bg-slate-50 cursor-pointer`}
+                >
+                  <div className=" w-full flex relative space-x-2 items-center">
+                    <span
+                      className={`text-xl ${classNames({
+                        "text-slate-300": formDto.id !== editorForm?.id,
+                        "text-blue-500": formDto.id === editorForm?.id,
+                      })}`}
+                    >
+                      <SelectIcon read value={formDto.icon} />
+                    </span>
+                    <span> {formDto.name}</span>
+
+                    <span className=" absolute right-8 text-xs text-gray-500 ">
+                      {formDto.state === "1"
+                        ? `已上线`
+                        : formDto.state === "2"
+                        ? `待重启`
+                        : formDto.unpublishForm
+                        ? `待发布`
+                        : "创建中"}
+                    </span>
+                    <BtnResourcesToolBar
+                      className=" absolute right-2"
+                      dropdown={true}
+                      btns={[
+                        {
+                          title: "dto表单模型",
+                          datas: editorForm,
+                          icon: <i className="  icon-table" />,
+                          actionType: "click",
+                          onClick: () => {},
+                        },
+                        {
+                          title: "vo视图模型",
+                          datas: editorForm,
+                          icon: (
+                            <i className=" icon-custom_chrome_reader_mode" />
+                          ),
+                          actionType: "click",
+                          onClick: () => {},
+                        },
+                        {
+                          title: "req查询模型",
+                          datas: editorForm,
+                          icon: <i className=" icon-workflow_find" />,
+                          actionType: "click",
+                          onClick: () => {},
+                        },
+                      ]}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+        </Scrollbars>
+      </div>
+      <div className=" w-full h-full flex flex-col relative  flex-1 p-2 bg-white border rounded-md text-center">
+        {editorForm ? (
+          <>
+            <div className="pb-2 relative flex space-x-2 ">
+              <BtnResourcesToolBar
+                key={editorForm.id}
+                btns={[
+                  {
+                    title: "加字段",
+                    actionType: "create",
+                    icon: <i className="icon-task_add-02" />,
+                    onClick: () => {
+                      //@ts-ignore
+                      setEditorForm((_editorForm) => {
+                        return _editorForm?.fields &&
+                          _editorForm?.fields?.length > 0
+                          ? {
+                              ...editorForm,
+                              fields: [
+                                ..._editorForm.fields,
+                                { javaType: "string", dbLength: 100 },
+                              ],
+                            }
+                          : {
+                              ...editorForm,
+                              fields: [{ javaType: "string", dbLength: 100 }],
+                            };
+                      });
+                    },
+                  },
+                  {
+                    icon: <i className=" icon-sp_edit_white" />,
+                    title: "编辑表",
+                    actionType: "save",
+                    model: "form",
+                    datas: pick(editorForm, [
+                      "sysMenuId",
+                      "type",
+                      "id",
+                      "name",
+                      "supportFilter",
+                      "supportNo",
+                      "icon",
+                      "prefixNo",
+                      "state",
+                    ]),
+                    reaction: [
+                      ...formReaction,
+                      VF.field("state").eq("1").then("type").readPretty(),
+                    ],
+                    submitClose: true,
+                    saveApi: (d: FormDto) => {
+                      setEditorForm((_e) => {
+                        return {
+                          ..._e,
+                          ...d,
+                        };
+                      });
+                    },
+                  },
+
+                  {
+                    title: "保存",
+                    multiple: false,
+                    disabledTooltip: "当前没有内容改动",
+                    disabled: !formChange,
+                    usableMatch: (form: FormDto) => {
+                      return form?.fields?.filter(
+                        (f) =>
+                          f.javaType?.length > 0 &&
+                          f.fieldName?.length > 0 &&
+                          f.title?.length > 0
+                      ).length === form?.fields?.length
+                        ? true
+                        : "字段名/字段标识不能为空";
+                    },
+                    datas: editorForm,
+                    icon: <i className="  icon-save" />,
+                    onSaveBefore: (d) => {
+                      return {
+                        ...tables?.find((t) => t.id === d.id),
+                        unpublishForm: JSON.stringify(d),
+                      };
+                    },
+                    saveApi: save,
+                    onSubmitFinish: (data: Form) => {
+                      load().then((_tables) => {
+                        setUnpublishForm(data.unpublishForm);
+                      });
+                    },
+                  },
+
+                  {
+                    title: "撤销", // 有缓存_unpublishForm,formChange为true,则撤销回滚到上次保存状态
+                    multiple: false,
+                    disabledHide: true,
+                    tooltip: "取消所有未保存的改动",
+                    submitConfirm: "你确定取消本次所有改动么?",
+                    //满足旗下一种条件则不能撤销
+                    disabled:
+                      !formChange ||
+                      editorForm.state === null ||
+                      editorForm.state === undefined,
+                    datas: editorForm,
+                    icon: <i className=" icon-redo" />,
+                    saveApi: () => {
+                      const _table = tables?.find(
+                        (t) => t.id === editorForm.id
+                      );
+                      if (_table) {
+                        setEditorForm(
+                          _table.unpublishForm
+                            ? JSON.parse(_table.unpublishForm)
+                            : _.cloneDeep({
+                                ..._table,
+                                unpublishForm: undefined,
+                              })
+                        );
+                      }
+                    },
+                  },
+                  {
+                    title: "回滚", // 有缓存_unpublishForm,formChange为true,则撤销回滚到上次发布状态，从未发布过的保存不能回滚
+                    multiple: false,
+                    disabledHide: true,
+                    tooltip: "撤回所有已保存未发布的改动",
+                    submitConfirm: "数据表状态将回到上次发布的状态",
+                    disabled:
+                      formChange ||
+                      _unpublishForm === undefined ||
+                      publishForm === undefined,
+                    datas: editorForm,
+                    icon: <i className=" icon-backspace" />,
+                    onSaveBefore: (d) => {
+                      return {
+                        ...tables?.find((t) => t.id === d.id),
+                        unpublishForm: undefined,
+                      };
+                    },
+                    saveApi: save,
+                    onSubmitFinish: (data: Form) => {
+                      load().then((_tables) => {
+                        setUnpublishForm(undefined);
+                      });
+                    },
+                  },
+                  //  回滚
+                  {
+                    title: "发布",
+                    actionType: "save",
+                    disabledHide: false,
+                    tooltip: `发布后将在mvc源码包下生成该模型的crud后端代码`,
+                    submitConfirm: "发布完成后需要重启后台服务",
+                    multiple: false,
+                    disabled: formChange || _unpublishForm === undefined,
+                    datas: editorForm,
+                    icon: <i className=" icon-calendar-check" />,
+                    onSaveBefore: (_unpublishFields: FormDto) => {
+                      const formDto = {
+                        ...editorForm,
+                        _unpublishForm: undefined, //待发布置空
+                      };
+                      return formDto;
+                    },
+                    saveApi: publish,
+                    onSubmitFinish: (data) => {
+                      setTables((_tables) =>
+                        _tables?.map((t) => (t.id === data.id ? data : t))
+                      );
+                      setEditorForm(data);
+                      //缓存模型刷新
+                      clearModelInfo();
+                    },
+                  },
+
+                  {
+                    title: "删除",
+                    disabledHide: true,
+                    submitConfirm: true,
+                    disabled: editorForm.state === "1",
+                    datas: editorForm.id,
+                    icon: <i className="  icon-delete" />,
+                    saveApi: remove,
+                    onSubmitFinish: (data) => {
+                      load().then((d) => {
+                        setEditorForm(undefined);
+                      });
+                    },
+                  },
+                ]}
+              />
+
+              {addBtn}
+            </div>
+            <div>
+              {/* {JSON.stringify(orderFields?.map((f) => f.listOrder))} */}
+              <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
+                <thead className="">
+                  <tr className=" text-center text-sm">
+                    <th className="px-2 py-2 w-16 font-mediu border  bg-blue-50 border-blue-300">
+                      序号
+                    </th>
+                    <th className=" py-2 w-48    border bg-blue-50 border-blue-300 ">
+                      字段名称
+                    </th>
+                    <th className=" py-2 w-48 border bg-blue-50 border-blue-300 ">
+                      是否外键
+                    </th>
+                    <th className=" py-2 w-48  font-bold   border bg-blue-50 border-blue-300 ">
+                      字段标识
+                    </th>
+                    <th className=" py-2 w-48   font-bold  border bg-blue-50 border-blue-300 ">
+                      字段类型
+                    </th>
+                    <th className="py-2 w-48  font-bold  border bg-blue-50 border-blue-300 ">
+                      字段精度
+                    </th>
+                    <th className="py-2 w-48  font-bold  border bg-blue-50 border-blue-300 ">
+                      查询排序
+                    </th>
+                    <th className="px-6 py-2   font-bold border bg-blue-50 border-blue-300 ">
+                      操作
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {editorForm.fields?.map((f, index_i) => {
+                    return !f.fieldName || !sysFields.includes(f.fieldName) ? (
+                      <tr key={f.id || `temp_${index_i}`}>
+                        <td className="px-6 py-1 whitespace-nowrap border text-center border-gray-300">
+                          {editorForm.fields &&
+                            editorForm.fields
+                              ?.filter(
+                                (field) =>
+                                  !field.fieldName ||
+                                  !sysFields.includes(field.fieldName)
+                              )
+                              .indexOf(f) + 1}
+                        </td>
+                        <td className="px-6  whitespace-nowrap border border-gray-300">
+                          <div className=" flex items-center justify-center space-x-1 font-bold text-red-500">
+                            <Input
+                              size="small"
+                              placeholder="字段名称"
+                              className=" w-full"
+                              value={f.title}
+                              onChange={(v) => {
+                                setTableCell(index_i, "title", v);
+                                const pinyinArr = tinyPinyin
+                                  .convertToPinyin(
+                                    extractChineseCharacters(v),
+                                    "-",
+                                    true
+                                  )
+                                  .split("-")
+                                  .map((item) => item[0])
+                                  .join("");
+                                const record = editorForm?.fields?.find(
+                                  (d, _index) => _index === index_i
+                                );
+                                const fieldName = record?.fieldName;
+                                const id = record?.id;
+                                const _fieldName = id
+                                  ? fieldName
+                                  : fieldName
+                                  ? fieldName ===
+                                      pinyinArr.substring(
+                                        0,
+                                        fieldName.length
+                                      ) ||
+                                    pinyinArr ===
+                                      fieldName.substring(0, pinyinArr.length)
+                                    ? pinyinArr
+                                    : pinyinArr && pinyinArr.length > 0
+                                    ? fieldName
+                                    : undefined
+                                  : pinyinArr;
+                                setTableCell(index_i, "fieldName", _fieldName);
+                                clearOrders();
+                              }}
+                            />
+                            <span>*</span>
+                          </div>
+                        </td>
+                        <td className="px-6  whitespace-nowrap border border-gray-300">
+                          {f.id ? (
+                            (f.entityType &&
+                              f.entityType !== editorForm.type &&
+                              tables?.find((t) => t.type === f.entityType)
+                                ?.title) ||
+                            "否"
+                          ) : (
+                            <Cascader
+                              size="small"
+                              className=" w-full"
+                              treeData={appFkEntitys}
+                              showClear={true}
+                              leafOnly={true}
+                              onChange={(v: any) => {
+                                setTableCell(
+                                  index_i,
+                                  "entityType",
+                                  v.length !== 0 ? v?.[1] : undefined
+                                );
+                                setTableCell(
+                                  index_i,
+                                  "fieldName",
+                                  v.length !== 0 ? v?.[1] + "Id" : undefined
+                                );
+                                setTableCell(
+                                  index_i,
+                                  "title",
+                                  v.length !== 0
+                                    ? tables?.find((t) => t.type === v?.[1])
+                                        ?.title
+                                    : undefined
+                                );
+                                setTableCell(
+                                  index_i,
+                                  "dbLength",
+                                  v.length !== 0 ? 32 : undefined
+                                );
+                                setTableCell(
+                                  index_i,
+                                  "javaType",
+                                  v.length !== 0 ? "string" : undefined
+                                );
+                                clearOrders();
+                              }}
+                              value={
+                                f.entityType &&
+                                f.entityType !== editorForm.type &&
+                                editorForm.sysMenuId
+                                  ? [
+                                      tables?.find(
+                                        (t) => t.type === f.entityType
+                                      )?.sysMenuId || "",
+                                      f.entityType,
+                                    ]
+                                  : []
                               }
-                            : {
-                                ...editorForm,
-                                fields: [{ javaType: "string", dbLength: 100 }],
-                              };
-                        });
-                      },
-                    },
-                    {
-                      icon: <i className="icon-add_circle" />,
-                      title: "编辑表",
-                      actionType: "save",
-                      model: "form",
-                      datas: pick(editorForm, [
-                        "sysMenuId",
-                        "type",
-                        "id",
-                        "name",
-                        "supportFilter",
-                        "supportNo",
-                        "icon",
-                        "prefixNo",
-                        "state",
-                      ]),
-                      reaction: [
-                        ...formReaction,
-                        VF.field("state").eq("1").then("type").readPretty(),
-                      ],
-                      submitClose: true,
-                      saveApi: (d: FormDto) => {
-                        setEditorForm((_e) => {
-                          return {
-                            ..._e,
-                            ...d,
-                          };
-                        });
-                      },
-                    },
-
-                    {
-                      title: "保存",
-                      multiple: false,
-                      disabledTooltip: "当前没有内容改动",
-                      disabled: !formChange,
-                      usableMatch: (form: FormDto) => {
-                        return form?.fields?.filter(
-                          (f) =>
-                            f.javaType?.length > 0 &&
-                            f.fieldName?.length > 0 &&
-                            f.title?.length > 0
-                        ).length === form?.fields?.length
-                          ? true
-                          : "字段名/字段标识不能为空";
-                      },
-                      datas: editorForm,
-                      icon: <i className="  icon-save" />,
-                      onSaveBefore: (d) => {
-                        return {
-                          ...tables?.find((t) => t.id === d.id),
-                          unpublishForm: JSON.stringify(d),
-                        };
-                      },
-                      saveApi: save,
-                      onSubmitFinish: (data: Form) => {
-                        load().then((_tables) => {
-                          setUnpublishForm(data.unpublishForm);
-                        });
-                      },
-                    },
-
-                    {
-                      title: "撤销", // 有缓存_unpublishForm,formChange为true,则撤销回滚到上次保存状态
-                      multiple: false,
-                      disabledHide: true,
-                      tooltip: "取消所有未保存的改动",
-                      submitConfirm: "你确定取消本次所有改动么?",
-                      //满足旗下一种条件则不能撤销
-                      disabled:
-                        !formChange ||
-                        editorForm.state === null ||
-                        editorForm.state === undefined,
-                      datas: editorForm,
-                      icon: <i className=" icon-redo" />,
-                      saveApi: () => {
-                        const _table = tables?.find(
-                          (t) => t.id === editorForm.id
-                        );
-                        if (_table) {
-                          setEditorForm(
-                            _table.unpublishForm
-                              ? JSON.parse(_table.unpublishForm)
-                              : _.cloneDeep({
-                                  ..._table,
-                                  unpublishForm: undefined,
-                                })
-                          );
-                        }
-                      },
-                    },
-                    {
-                      title: "回滚", // 有缓存_unpublishForm,formChange为true,则撤销回滚到上次发布状态，从未发布过的保存不能回滚
-                      multiple: false,
-                      disabledHide: true,
-                      tooltip: "撤回所有已保存未发布的改动",
-                      submitConfirm: "数据表状态将回到上次发布的状态",
-                      disabled:
-                        formChange ||
-                        _unpublishForm === undefined ||
-                        publishForm === undefined,
-                      datas: editorForm,
-                      icon: <i className=" icon-backspace" />,
-                      onSaveBefore: (d) => {
-                        return {
-                          ...tables?.find((t) => t.id === d.id),
-                          unpublishForm: undefined,
-                        };
-                      },
-                      saveApi: save,
-                      onSubmitFinish: (data: Form) => {
-                        load().then((_tables) => {
-                          setUnpublishForm(undefined);
-                        });
-                      },
-                    },
-                    //  回滚
-                    {
-                      title: "发布",
-                      actionType: "save",
-                      disabledHide: false,
-                      tooltip: `发布后将在mvc源码包下生成该模型的crud后端代码`,
-                      submitConfirm: "发布完成后需要重启后台服务",
-                      multiple: false,
-                      disabled: formChange || _unpublishForm === undefined,
-                      datas: editorForm,
-                      icon: <i className=" icon-calendar-check" />,
-                      onSaveBefore: (_unpublishFields: FormDto) => {
-                        const formDto = {
-                          ...editorForm,
-                          _unpublishForm: undefined, //待发布置空
-                        };
-                        return formDto;
-                      },
-                      saveApi: publish,
-                      onSubmitFinish: (data) => {
-                        setTables((_tables) =>
-                          _tables?.map((t) => (t.id === data.id ? data : t))
-                        );
-                        setEditorForm(data);
-                        //缓存模型刷新
-                        clearModelInfo();
-                      },
-                    },
-
-                    {
-                      title: "删除",
-                      disabledHide: true,
-                      submitConfirm: true,
-                      disabled: editorForm.state === "1",
-                      datas: editorForm.id,
-                      icon: <i className="  icon-delete" />,
-                      saveApi: remove,
-                      onSubmitFinish: (data) => {
-                        load().then((d) => {
-                          setEditorForm(undefined);
-                        });
-                      },
-                    },
-                  ]}
-                />
-
-                {addBtn}
-              </div>
-              <div>
-                {/* {JSON.stringify(orderFields?.map((f) => f.listOrder))} */}
-                <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
-                  <thead className="">
-                    <tr className=" text-center text-sm">
-                      <th className="px-2 py-2 w-16 font-mediu border  bg-blue-50 border-blue-300">
-                        序号
-                      </th>
-                      <th className=" py-2 w-48    border bg-blue-50 border-blue-300 ">
-                        字段名称
-                      </th>
-                      <th className=" py-2 w-48 border bg-blue-50 border-blue-300 ">
-                        是否外键
-                      </th>
-                      <th className=" py-2 w-48  font-bold   border bg-blue-50 border-blue-300 ">
-                        字段标识
-                      </th>
-                      <th className=" py-2 w-48   font-bold  border bg-blue-50 border-blue-300 ">
-                        字段类型
-                      </th>
-                      <th className="py-2 w-48  font-bold  border bg-blue-50 border-blue-300 ">
-                        字段精度
-                      </th>
-                      <th className="py-2 w-48  font-bold  border bg-blue-50 border-blue-300 ">
-                        查询排序
-                      </th>
-                      <th className="px-6 py-2   font-bold border bg-blue-50 border-blue-300 ">
-                        操作
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {editorForm.fields?.map((f, index_i) => {
-                      return !f.fieldName ||
-                        !sysFields.includes(f.fieldName) ? (
-                        <tr key={f.id || `temp_${index_i}`}>
-                          <td className="px-6 py-1 whitespace-nowrap border text-center border-gray-300">
-                            {editorForm.fields &&
-                              editorForm.fields
-                                ?.filter(
-                                  (field) =>
-                                    !field.fieldName ||
-                                    !sysFields.includes(field.fieldName)
-                                )
-                                .indexOf(f) + 1}
-                          </td>
-                          <td className="px-6  whitespace-nowrap border border-gray-300">
+                              placeholder="外键表关联"
+                            />
+                          )}
+                        </td>
+                        <td className="px-6  whitespace-nowrap border border-gray-300">
+                          {(editorForm?.fields?.[index_i].entityType &&
+                            editorForm?.fields?.[index_i].entityType !==
+                              editorForm.type) ||
+                          f.id ? (
+                            `${editorForm?.fields?.[index_i]?.fieldName}`
+                          ) : (
                             <div className=" flex items-center justify-center space-x-1 font-bold text-red-500">
                               <Input
                                 size="small"
-                                placeholder="字段名称"
-                                className=" w-full"
-                                value={f.title}
-                                onChange={(v) => {
-                                  setTableCell(index_i, "title", v);
-                                  const pinyinArr = tinyPinyin
-                                    .convertToPinyin(
-                                      extractChineseCharacters(v),
-                                      "-",
-                                      true
-                                    )
-                                    .split("-")
-                                    .map((item) => item[0])
-                                    .join("");
-                                  const record = editorForm?.fields?.find(
-                                    (d, _index) => _index === index_i
-                                  );
-                                  const fieldName = record?.fieldName;
-                                  const id = record?.id;
-                                  const _fieldName = id
-                                    ? fieldName
-                                    : fieldName
-                                    ? fieldName ===
-                                        pinyinArr.substring(
-                                          0,
-                                          fieldName.length
-                                        ) ||
-                                      pinyinArr ===
-                                        fieldName.substring(0, pinyinArr.length)
-                                      ? pinyinArr
-                                      : pinyinArr && pinyinArr.length > 0
-                                      ? fieldName
-                                      : undefined
-                                    : pinyinArr;
-                                  setTableCell(
-                                    index_i,
-                                    "fieldName",
-                                    _fieldName
-                                  );
+                                placeholder="字段标识"
+                                onChange={(e) => {
+                                  setTableCell(index_i, "fieldName", e);
                                   clearOrders();
+                                }}
+                                value={f.fieldName}
+                              />
+                              <span>*</span>
+                            </div>
+                          )}
+                        </td>
+
+                        <td className="px-6  whitespace-nowrap border border-gray-300">
+                          {(editorForm?.fields?.[index_i].entityType &&
+                            editorForm?.fields?.[index_i].entityType !==
+                              editorForm.type) ||
+                          f.id ? (
+                            `${
+                              javaType.find(
+                                (_type) =>
+                                  _type.value ===
+                                  editorForm?.fields?.[index_i].javaType
+                              )?.label
+                            }`
+                          ) : (
+                            <div className=" flex items-center justify-center space-x-1 font-bold text-red-500">
+                              <Select
+                                size="small"
+                                placeholder="字段类型"
+                                className=" w-full"
+                                value={f.javaType}
+                                optionList={javaType}
+                                onChange={(e) => {
+                                  setTableCell(index_i, "javaType", e);
                                 }}
                               />
                               <span>*</span>
                             </div>
-                          </td>
-                          <td className="px-6  whitespace-nowrap border border-gray-300">
-                            {f.id ? (
-                              (f.entityType &&
-                                f.entityType !== editorForm.type &&
-                                tables?.find((t) => t.type === f.entityType)
-                                  ?.title) ||
-                              "否"
-                            ) : (
-                              <Cascader
-                                size="small"
-                                className=" w-full"
-                                treeData={appFkEntitys}
-                                showClear={true}
-                                leafOnly={true}
-                                onChange={(v: any) => {
-                                  setTableCell(
-                                    index_i,
-                                    "entityType",
-                                    v.length !== 0 ? v?.[1] : undefined
-                                  );
-                                  setTableCell(
-                                    index_i,
-                                    "fieldName",
-                                    v.length !== 0 ? v?.[1] + "Id" : undefined
-                                  );
-                                  setTableCell(
-                                    index_i,
-                                    "title",
-                                    v.length !== 0
-                                      ? tables?.find((t) => t.type === v?.[1])
-                                          ?.title
-                                      : undefined
-                                  );
-                                  setTableCell(
-                                    index_i,
-                                    "dbLength",
-                                    v.length !== 0 ? 32 : undefined
-                                  );
-                                  setTableCell(
-                                    index_i,
-                                    "javaType",
-                                    v.length !== 0 ? "string" : undefined
-                                  );
-                                  clearOrders();
-                                }}
-                                value={
-                                  f.entityType &&
-                                  f.entityType !== editorForm.type &&
-                                  editorForm.sysMenuId
-                                    ? [
-                                        tables?.find(
-                                          (t) => t.type === f.entityType
-                                        )?.sysMenuId || "",
-                                        f.entityType,
-                                      ]
-                                    : []
-                                }
-                                placeholder="外键表关联"
-                              />
-                            )}
-                          </td>
-                          <td className="px-6  whitespace-nowrap border border-gray-300">
-                            {(editorForm?.fields?.[index_i].entityType &&
-                              editorForm?.fields?.[index_i].entityType !==
-                                editorForm.type) ||
-                            f.id ? (
-                              `${editorForm?.fields?.[index_i]?.fieldName}`
-                            ) : (
-                              <div className=" flex items-center justify-center space-x-1 font-bold text-red-500">
-                                <Input
-                                  size="small"
-                                  placeholder="字段标识"
-                                  onChange={(e) => {
-                                    setTableCell(index_i, "fieldName", e);
-                                    clearOrders();
-                                  }}
-                                  value={f.fieldName}
-                                />
-                                <span>*</span>
-                              </div>
-                            )}
-                          </td>
-
-                          <td className="px-6  whitespace-nowrap border border-gray-300">
-                            {(editorForm?.fields?.[index_i].entityType &&
-                              editorForm?.fields?.[index_i].entityType !==
-                                editorForm.type) ||
-                            f.id ? (
-                              `${
-                                javaType.find(
-                                  (_type) =>
-                                    _type.value ===
-                                    editorForm?.fields?.[index_i].javaType
-                                )?.label
-                              }`
-                            ) : (
-                              <div className=" flex items-center justify-center space-x-1 font-bold text-red-500">
-                                <Select
-                                  size="small"
-                                  placeholder="字段类型"
-                                  className=" w-full"
-                                  value={f.javaType}
-                                  optionList={javaType}
-                                  onChange={(e) => {
-                                    setTableCell(index_i, "javaType", e);
-                                  }}
-                                />
-                                <span>*</span>
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6  whitespace-nowrap border border-gray-300">
-                            {javaType.find(
-                              (t) =>
-                                t.value ===
-                                editorForm?.fields?.[index_i].javaType
-                            )?.length && (
-                              <Select
-                                size="small"
-                                value={f.dbLength}
-                                optionList={javaType
-                                  .find(
-                                    (t) =>
-                                      t.value ===
-                                      editorForm?.fields?.[index_i].javaType
-                                  )
-                                  ?.length?.filter(
-                                    (d) =>
-                                      !f.id ||
-                                      !f.dbLength ||
-                                      d.value >= f.dbLength
-                                  )}
-                                placeholder="字段长度"
-                                className=" w-full"
-                                onChange={(e) => {
-                                  setTableCell(
-                                    index_i,
-                                    "dbLength",
-                                    e?.toString()
-                                  );
-                                }}
-                              />
-                            )}
-                          </td>
-                          <td className="px-6  whitespace-nowrap border border-gray-300">
-                            <div className="flex w-full space-x-1 justify-center items-center ">
-                              {f.fieldName && (
-                                <>
-                                  <i className=" icon-h5_sort text-xs" />
-                                  {order.map((o) => {
-                                    return (
-                                      <Tag
-                                        key={f.fieldName + o.value}
-                                        color={`${
-                                          editorForm.orders
-                                            ?.split(",")
-                                            .find(
-                                              (_o) =>
-                                                _o ===
-                                                f.fieldName + "_" + o.value
-                                            )
-                                            ? "blue"
-                                            : "white"
-                                        }`}
-                                        onClick={() => {
-                                          let orders =
-                                            editorForm?.orders?.split(",") ||
-                                            [];
-                                          if (
-                                            orders?.includes(
-                                              f.fieldName + "_" + o.value
-                                            )
-                                          ) {
-                                            const index = orders.indexOf(
-                                              f.fieldName + "_" + o.value
-                                            );
-                                            orders?.splice(index, 1);
-                                          } else if (
-                                            orders?.find((o) =>
-                                              o.startsWith(f.fieldName + "_")
-                                            )
-                                          ) {
-                                            orders = orders?.map((item) => {
-                                              if (
-                                                item.startsWith(
-                                                  f.fieldName + "_"
-                                                )
-                                              ) {
-                                                return o.value === "asc"
-                                                  ? f.fieldName + "_" + "asc"
-                                                  : f.fieldName + "_" + "desc";
-                                              } else {
-                                                return item;
-                                              }
-                                            });
-                                          } else {
-                                            orders?.push(
-                                              f.fieldName + "_" + o.value
-                                            );
-                                          }
-
-                                          setEditorForm((_editorForm) => {
-                                            return {
-                                              ..._editorForm,
-                                              orders:
-                                                orders !== null &&
-                                                orders.length > 0
-                                                  ? orders?.join(",")
-                                                  : undefined,
-                                            };
-                                          });
-                                        }}
-                                      >
-                                        {o.label}
-                                      </Tag>
-                                    );
-                                  })}
-
-                                  {editorForm.orders &&
-                                    editorForm.orders.split(",")?.length > 1 &&
-                                    editorForm.orders
-                                      .split(",")
-                                      .find((_order) =>
-                                        _order.startsWith(f.fieldName + "_")
-                                      ) && (
-                                      <Avatar
-                                        className=" text-sm "
-                                        size="extra-extra-small"
-                                        style={{ margin: 4 }}
-                                        alt="User"
-                                      >
-                                        {editorForm.orders
-                                          .split(",")
-                                          .indexOf(f.fieldName + "_desc") !==
-                                          -1 &&
-                                          editorForm.orders
-                                            .split(",")
-                                            .indexOf(f.fieldName + "_desc") + 1}
-                                        {editorForm.orders
-                                          .split(",")
-                                          .indexOf(f.fieldName + "_asc") !==
-                                          -1 &&
-                                          editorForm.orders
-                                            .split(",")
-                                            .indexOf(f.fieldName + "_asc") + 1}
-                                      </Avatar>
-                                    )}
-                                </>
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-6  whitespace-nowrap border border-gray-300 text-center">
-                            <Button
-                              onClick={() => {
-                                setEditorForm((_editorForm) => {
-                                  return {
-                                    ..._editorForm,
-                                    fields: _editorForm?.fields?.filter(
-                                      (f, index_j) => index_i !== index_j
-                                    ),
-                                  };
-                                });
-                                clearOrders();
-                              }}
+                          )}
+                        </td>
+                        <td className="px-6  whitespace-nowrap border border-gray-300">
+                          {javaType.find(
+                            (t) =>
+                              t.value === editorForm?.fields?.[index_i].javaType
+                          )?.length && (
+                            <Select
                               size="small"
-                            >
-                              {f.id ? "删除" : "取消"}
-                            </Button>
-                          </td>
-                        </tr>
-                      ) : (
-                        ""
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="w-full">请选择或者添加一张表 {addBtn}</div>
-            </>
-          )}
-        </div>
+                              value={f.dbLength}
+                              optionList={javaType
+                                .find(
+                                  (t) =>
+                                    t.value ===
+                                    editorForm?.fields?.[index_i].javaType
+                                )
+                                ?.length?.filter(
+                                  (d) =>
+                                    !f.id ||
+                                    !f.dbLength ||
+                                    d.value >= f.dbLength
+                                )}
+                              placeholder="字段长度"
+                              className=" w-full"
+                              onChange={(e) => {
+                                setTableCell(
+                                  index_i,
+                                  "dbLength",
+                                  e?.toString()
+                                );
+                              }}
+                            />
+                          )}
+                        </td>
+                        <td className="px-6  whitespace-nowrap border border-gray-300">
+                          <div className="flex w-full space-x-1 justify-center items-center ">
+                            {f.fieldName && (
+                              <>
+                                <i className=" icon-h5_sort text-xs" />
+                                {order.map((o) => {
+                                  return (
+                                    <Tag
+                                      key={f.fieldName + o.value}
+                                      color={`${
+                                        editorForm.orders
+                                          ?.split(",")
+                                          .find(
+                                            (_o) =>
+                                              _o === f.fieldName + "_" + o.value
+                                          )
+                                          ? "blue"
+                                          : "white"
+                                      }`}
+                                      onClick={() => {
+                                        let orders =
+                                          editorForm?.orders?.split(",") || [];
+                                        if (
+                                          orders?.includes(
+                                            f.fieldName + "_" + o.value
+                                          )
+                                        ) {
+                                          const index = orders.indexOf(
+                                            f.fieldName + "_" + o.value
+                                          );
+                                          orders?.splice(index, 1);
+                                        } else if (
+                                          orders?.find((o) =>
+                                            o.startsWith(f.fieldName + "_")
+                                          )
+                                        ) {
+                                          orders = orders?.map((item) => {
+                                            if (
+                                              item.startsWith(f.fieldName + "_")
+                                            ) {
+                                              return o.value === "asc"
+                                                ? f.fieldName + "_" + "asc"
+                                                : f.fieldName + "_" + "desc";
+                                            } else {
+                                              return item;
+                                            }
+                                          });
+                                        } else {
+                                          orders?.push(
+                                            f.fieldName + "_" + o.value
+                                          );
+                                        }
+
+                                        setEditorForm((_editorForm) => {
+                                          return {
+                                            ..._editorForm,
+                                            orders:
+                                              orders !== null &&
+                                              orders.length > 0
+                                                ? orders?.join(",")
+                                                : undefined,
+                                          };
+                                        });
+                                      }}
+                                    >
+                                      {o.label}
+                                    </Tag>
+                                  );
+                                })}
+
+                                {editorForm.orders &&
+                                  editorForm.orders.split(",")?.length > 1 &&
+                                  editorForm.orders
+                                    .split(",")
+                                    .find((_order) =>
+                                      _order.startsWith(f.fieldName + "_")
+                                    ) && (
+                                    <Avatar
+                                      className=" text-sm "
+                                      size="extra-extra-small"
+                                      style={{ margin: 4 }}
+                                      alt="User"
+                                    >
+                                      {editorForm.orders
+                                        .split(",")
+                                        .indexOf(f.fieldName + "_desc") !==
+                                        -1 &&
+                                        editorForm.orders
+                                          .split(",")
+                                          .indexOf(f.fieldName + "_desc") + 1}
+                                      {editorForm.orders
+                                        .split(",")
+                                        .indexOf(f.fieldName + "_asc") !== -1 &&
+                                        editorForm.orders
+                                          .split(",")
+                                          .indexOf(f.fieldName + "_asc") + 1}
+                                    </Avatar>
+                                  )}
+                              </>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6  whitespace-nowrap border border-gray-300 text-center">
+                          <Button
+                            onClick={() => {
+                              setEditorForm((_editorForm) => {
+                                return {
+                                  ..._editorForm,
+                                  fields: _editorForm?.fields?.filter(
+                                    (f, index_j) => index_i !== index_j
+                                  ),
+                                };
+                              });
+                              clearOrders();
+                            }}
+                            size="small"
+                          >
+                            {f.id ? "删除" : "取消"}
+                          </Button>
+                        </td>
+                      </tr>
+                    ) : (
+                      ""
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="w-full">请选择或者添加一张表 {addBtn}</div>
+          </>
+        )}
       </div>
     </div>
   );

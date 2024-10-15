@@ -550,8 +550,8 @@ export const routeOpenApi:ApiInfo={
         dataModel:'ISelect',
         func:(datas:MenuVo[]):ISelect[]=>{
           const routerList=datas.filter((d:MenuVo)=>d.routerAddress).map(d=>d.routerAddress);
-          //未使用过的路由
-          return allRouter().filter(d=>!routerList.includes(d.value))
+          //未使用过的路由 return allRouter().filter(d=>!routerList.includes(d.value))
+          return allRouter();
         }
     },
     menuVO:{

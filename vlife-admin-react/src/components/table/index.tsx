@@ -399,6 +399,7 @@ const TableIndex = <T extends TableBean>({
           render: (text, record, index) => {
             return (
               <BtnResourcesToolBar
+                className=" flex items-center justify-center"
                 btnConf={index === 0 && user?.superUser ? true : false} //第一行的按钮可配置
                 entity={model.entityType}
                 dataType={model.type}

@@ -175,7 +175,15 @@ const Index = () => {
                     reaction: [
                       VF.then("name").title("模块名称"),
                       VF.then("app").hide().value(false),
-                      VF.then("pcode").value(m.code).readPretty(),
+                      VF.then("appKey").hide(),
+                      VF.then("pcode")
+                        .title("所属应用")
+                        .value(m.code)
+                        .readPretty(),
+                      VF.field("confPage")
+                        .ne(true)
+                        .then("url", "formId", "placeholderUrl")
+                        .show(),
                       VF.field("url").isNotNull().then("formId").show(),
                       VF.result((sysMenu: any) => {
                         return sysMenu?.url && sysMenu.url.indexOf("*") !== -1;
@@ -253,9 +261,17 @@ const Index = () => {
               btnType="icon"
               reaction={[
                 VF.then("app").value(true).hide(),
-                VF.then("url", "formId", "placeholderUrl", "pcode")
+                VF.then(
+                  "url",
+                  "formId",
+                  "placeholderUrl",
+                  "pcode",
+                  "confPage",
+                  "pageLayoutId"
+                )
                   .hide()
                   .clearValue(),
+                VF.then("icon").required(),
                 VF.then("name").title("应用名称"),
               ]}
               saveApi={save}

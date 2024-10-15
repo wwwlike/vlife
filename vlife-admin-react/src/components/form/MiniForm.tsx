@@ -248,7 +248,7 @@ export default ({
         vf={vf}
         labelFieldName={labelFieldName}
         items={items}
-        onDataChange={(data) => {
+        onDataChange={(data: any) => {
           setItems(data);
         }}
         onSortEnd={onSortEnd}

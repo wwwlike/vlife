@@ -26,6 +26,7 @@ export default () => {
           VF.result(user?.superUser === true)
             .then("superUser")
             .show(),
+          VF.then("state").hide(),
         ],
       }}
       // filterType="sysUserPageReq"

@@ -19,7 +19,7 @@ public class CustomUrlDecisionManager implements AccessDecisionManager {
             throw new AccessDeniedException("Access Denied");
         }
         SecurityUser user=(SecurityUser)authentication.getDetails();
-        if(user.getUsername().equals("manage")){
+        if(Boolean.TRUE.equals(user.getSuperUser())){
             return ;
         }
         for(ConfigAttribute configAttribute:configAttributes){
