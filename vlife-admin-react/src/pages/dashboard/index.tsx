@@ -1,9 +1,17 @@
 /**
  * 桌面
  */
-import React, { useEffect, useState } from "react";
-import { Avatar, Banner, Card, Empty, Image, Steps } from "@douyinfe/semi-ui";
+import React from "react";
+import {
+  Avatar,
+  Banner,
+  Button,
+  Card,
+  Image,
+  Tooltip,
+} from "@douyinfe/semi-ui";
 import Meta from "@douyinfe/semi-ui/lib/es/card/meta";
+import wxImage from "@src/assets/wx.jpg";
 import { SysMenu } from "@src/api/SysMenu";
 import { useAuth } from "@src/context/auth-context";
 import { LiveProvider, LiveEditor } from "react-live";
@@ -25,35 +33,39 @@ export default () => {
 
   const featureList = [
     {
-      title: "做研发接受的低码平台",
-      description:
-        "vlife了解开发过程中各环节存在的痛点和繁琐点。提供了全栈解决方案助力研发专注于逻辑和技能提升。",
+      title: "上手简单",
+      description: "平台规约少,上手成本极低",
     },
     {
-      title: "开发流程与原生开发一致",
-      description:
-        "提供与原生企业级开发一致的开发体验。并配合图形化配置+低码开发成倍提升研发效能",
+      title: "简化开发",
+      description: "设计模型、写复杂接口是平台用户主要工作",
     },
     {
-      title: "极简开发",
-      description:
-        "平台规则约束少，能快速上手，复杂的逻辑由开发来，繁琐的vlife搞定",
+      title: "生产力",
+      description: "妥妥的生产力工具，让开发效率翻倍",
     },
     {
-      title: "模型驱动",
-      description:
-        "设计模型(Javabean)、添加注释就能渲染出复杂关系的功能模块，这是vlife已经实现并还在不断深化的平台最显著的特点",
+      title: "研发专注",
+      description: "重复琐碎的工作平台承担，让研发更加专注业务",
     },
     {
-      title: "DSL",
-      description:
-        "vlife平台提供了一套DSL，供开发者使用来进行组件和接口的定义，让复杂的组件与数据不匹配的接口也能组合在一起",
+      title: "源码开放",
+      description: "底层核心源码均开放，本地化部署二开无限制",
     },
     {
-      title: "组件化思想",
-      description:
-        "在前端提供了完善的组件，后端使用它能够轻松完成全栈开发；在后端封装全量数据库操作接口，完全可不写SQL对数据库进行复杂操作",
+      title: "全栈开发",
+      description: "让后端同学轻松上手全栈开发",
     },
+    // {
+    //   title: "DSL",
+    //   description:
+    //     "vlife平台提供了一套DSL，供开发者使用来进行组件和接口的定义，让复杂的组件与数据不匹配的接口也能组合在一起",
+    // },
+    // {
+    //   title: "组件化思想",
+    //   description:
+    //     "在前端提供了完善的组件，后端使用它能够轻松完成全栈开发；在后端封装全量数据库操作接口，完全可不写SQL对数据库进行复杂操作",
+    // },
   ];
 
   const minCard = (menu: SysMenu) => {
@@ -132,12 +144,8 @@ export default () => {
               </p>
               <ul className="list-disc list-inside mb-4">
                 <li>提升研发效能，优化开发流程，聚焦业务能力,沉淀研发资产</li>
-                <li>
-                  模型驱动的思想来实现复杂业务逻辑CRUD为主的信息系统的开发
-                </li>
-                <li>
-                  平台可以方便的进行扩展开发、私有部署；可掌控全部代码和数据
-                </li>
+                <li>开发toB,toG的各类信息化系统，人手不足</li>
+                <li>平台可以方便的进行扩展开发、私有部署</li>
                 <li>可免费使用，也可以付费获得更多技术支持</li>
               </ul>
             </div>
@@ -169,37 +177,42 @@ export default () => {
       </div>
 
       <div className="flex w-full  bg-white">
-        <div className=" w-1/3 p-4  bg-white space-y-4">
+        <div className=" w-1/3 p-4 bg-white">
           <Banner
+            className="h-full"
             fullMode={false}
-            type="danger"
+            type="warning"
             bordered
+            title="商务合作 +V(vlifeboot)"
             icon={null}
             closeIcon={null}
-            title={
-              <div
-                style={{
-                  fontWeight: 600,
-                  fontSize: "14px",
-                  lineHeight: "30px",
-                }}
-              >
-                后台项目运行注意
+            description={
+              <div className="flex">
+                <div className=" w-1/3">
+                  <Image src={wxImage} />
+                  <div className=" font-bold  items-center flex justify-center">
+                    项目合作+V
+                  </div>
+                </div>
+                <div className=" w-2/3">
+                  <ul className=" space-y-1 p-2">
+                    <li>- 专业版/企业版授权服务</li>
+                    <li>- 技术服务，服务外包</li>
+                    <li>- 平台落地咨询与培训</li>
+                  </ul>
+                </div>
               </div>
             }
-            description={
-              <ul>
-                <li>1. 安装jdk8，openJDK会有问题</li>
-                <li>
-                  2. 模型信息发生变化，请务必运行maven
-                  install；以免UI层面渲染数据不准确
-                </li>
-                <li>3. 掌握vlife里的entity,vo,dto,req模型的使用场景;</li>
-                <li>4. 掌握VClass,VField注解的作用</li>
-              </ul>
-            }
           />
-          <Banner
+        </div>
+        <div className=" w-1/3 p-4  bg-white space-y-4">
+          <iframe
+            src="//player.bilibili.com/player.html?aid=113282027362511&amp;bvid=BV1Ms2GYMEKs&amp;cid=26226197694&amp;p=1&amp;high_quality=1&amp;autoplay=0"
+            width="100%"
+            height="600"
+            scrolling="no"
+          ></iframe>
+          {/* <Banner
             fullMode={false}
             type="warning"
             bordered
@@ -225,7 +238,7 @@ export default () => {
                 <li></li>
               </ul>
             }
-          />
+          /> */}
         </div>
         <div className=" w-1/3 p-4">
           <Banner
@@ -238,23 +251,21 @@ export default () => {
               <div
                 style={{
                   fontWeight: 600,
-                  fontSize: "12px",
+                  fontSize: "14px",
                   lineHeight: "24px",
                 }}
               >
-                前端项目运行
+                降低研发难度,掌握以下前端组件联动，后端数据查询的语法就能完成更复杂的业务
               </div>
             }
             description={
               <div>
-                <div className=" font-bold">
+                <div className="  text-xs">
+                  <div className=" mt-6 mb-2 text-xs">
+                    前端主要编写复杂表单逻辑的语法代码
+                  </div>
                   <LiveProvider
-                    code={`
- 1. >> git clone https://gitee.com/wwwlike/vlife-admin-react
- 2. >> cd  vlife-admin-react
- 3. >> yarn
- 4. >> npm run dev
- `}
+                    code={` VF.field("score").gt(95).then("state").value("优秀");`}
                   >
                     <LiveEditor
                       style={{
@@ -264,52 +275,22 @@ export default () => {
                       }}
                     />
                   </LiveProvider>
-                </div>
-              </div>
-            }
-          />
-        </div>
-        <div className=" w-1/3 p-4 bg-white">
-          <Banner
-            className="h-full"
-            fullMode={false}
-            type="warning"
-            bordered
-            icon={null}
-            closeIcon={null}
-            title={
-              <div
-                style={{
-                  fontWeight: 600,
-                  fontSize: "14px",
-                  lineHeight: "30px",
-                }}
-              >
-                技术支持
-              </div>
-            }
-            description={
-              <div className="flex">
-                <div className=" w-1/3">
-                  <div className=" font-bold">商务合作+V</div>
-                  <Image
-                    className={" w-28  h-28 top-4"}
-                    src="https://wwwlike.gitee.io/vlife-img/wx.jpg"
-                  />
-                </div>
-                <div className=" w-1/3">
-                  <div className=" font-bold items-center">QQ群(786134846)</div>
-                  <Image
-                    className={" w-28 h-28 top-4"}
-                    src="https://wwwlike.gitee.io/vlife-img/qqq.png"
-                  />
-                </div>
-                <div className=" w-1/3">
-                  <div className=" font-bold">微信群</div>
-                  <Image
-                    className={" w-28  h-28 top-4"}
-                    src="https://wwwlike.gitee.io/vlife-img/wxq.png"
-                  />
+                  <div className=" mt-6 mb-2 text-xs">
+                    后端主要掌握链式查询的语法代码
+                  </div>
+                  <LiveProvider
+                    code={` QueryWrapper<SysUser> _qw=QueryWrapper.of(SysUser.class);
+                    _qw.gt("age",15).eq("sex","girl");
+                    List<SysUser> _items=dao.find(_qw);`}
+                  >
+                    <LiveEditor
+                      style={{
+                        fontFamily: "Consolas",
+                        fontSize: 14,
+                        lineHeight: "1.5",
+                      }}
+                    />
+                  </LiveProvider>
                 </div>
               </div>
             }

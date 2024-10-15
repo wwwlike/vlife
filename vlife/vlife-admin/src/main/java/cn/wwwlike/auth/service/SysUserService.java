@@ -163,7 +163,7 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
             Form form=formService.findOne(field.getFormId());
             if(form.getItemType().equals("entity")){
                 Class entity=GlobalData.entityDto(form.getEntityType()).getClz();
-                QueryWrapper _qw=QueryWrapper.of(entity);
+                QueryWrapper<SysUser> _qw=QueryWrapper.of(entity);
                 _qw.eq("sysUserId",sourceUserId);
                 List<? extends Item> _items=dao.query(entity,_qw,null);
                 for(Item item:_items){
