@@ -177,24 +177,22 @@ export default () => {
       </div>
 
       <div className="flex w-full  bg-white">
-        <div className=" w-1/3 p-4 bg-white">
+        <div className=" w-1/6 p-4 bg-white">
           <Banner
             className="h-full"
             fullMode={false}
             type="warning"
             bordered
-            title="商务合作 +V(vlifeboot)"
+            title="商务合作"
             icon={null}
             closeIcon={null}
             description={
-              <div className="flex">
-                <div className=" w-1/3">
-                  <Image src={wxImage} />
-                  <div className=" font-bold  items-center flex justify-center">
-                    项目合作+V
-                  </div>
+              <div>
+                <Image src={wxImage} />
+                <div className=" font-bold  items-center flex justify-center">
+                  (vlifeboot)
                 </div>
-                <div className=" w-2/3">
+                <div>
                   <ul className=" space-y-1 p-2">
                     <li>- 专业版/企业版授权服务</li>
                     <li>- 技术服务，服务外包</li>
@@ -205,7 +203,8 @@ export default () => {
             }
           />
         </div>
-        <div className=" w-1/3 p-4  bg-white space-y-4">
+        <div className=" w-3/6 p-4  bg-white space-y-4">
+          <div>快速了解平台是否适合您企业/团队</div>
           <iframe
             src="//player.bilibili.com/player.html?aid=113282027362511&amp;bvid=BV1Ms2GYMEKs&amp;cid=26226197694&amp;p=1&amp;high_quality=1&amp;autoplay=0"
             width="100%"
