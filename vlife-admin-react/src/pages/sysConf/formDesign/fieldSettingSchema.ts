@@ -48,7 +48,7 @@ export const types: { title: string; value: string,icon?:any }[] = [
     name: "默认值",
     type:"input",
     tag: "basic",
-    deps: { field: "x_component", value: ["Input", "Input.TextArea"]  },
+    deps: { field: "x_component", value: ["Input","VfSelect_DICT", "Input.TextArea"]  },
     mode:Mode.form
   },
   x_hidden: {

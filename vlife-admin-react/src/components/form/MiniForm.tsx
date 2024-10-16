@@ -16,21 +16,26 @@ import classNames from "classnames";
 import { useUpdateEffect } from "ahooks";
 import FormPage from "@src/pages/common/formPage";
 import { VF } from "@src/dsl/VF";
+import { useAuth } from "@src/context/auth-context";
+import { FormVo } from "@src/api/Form";
+import { useMemo } from "react";
 
 interface SortableItemProps {
   data: any; //数据
   entityType?: string; //实体模型
-  labelFieldName: string;
+  labelFieldName: string; //主字段
+  subFieldName?: string; //次要字段
   onRemove: () => void;
   onDataChange: (d: any) => void;
   read?: boolean;
   vf?: VF[]; //设置
 }
-//mini表单项
+
 const SortableItem = SortableElement<SortableItemProps>(
   ({
     data,
     labelFieldName,
+    subFieldName,
     onRemove,
     entityType,
     read,
@@ -60,7 +65,14 @@ const SortableItem = SortableElement<SortableItemProps>(
 
   `}
       >
-        <div>{data[labelFieldName]}</div>
+        <div>
+          {data[labelFieldName] +
+            `${
+              subFieldName && data?.[subFieldName]
+                ? "(" + data[subFieldName] + ")"
+                : ""
+            }`}
+        </div>
         <div className=" items-center space-x-1 hidden group-hover:block">
           {/* 编辑 */}
           {read !== true && entityType && (
@@ -127,6 +139,7 @@ const SortableItem = SortableElement<SortableItemProps>(
 interface SortableListProps {
   items: any[]; //已经设置全量数据
   labelFieldName: string; //展示的关键字段
+  subFieldName?: string; //次要字段
   entityType?: string; //实体模型
   onRemove: (items: any[]) => void;
   onDataChange: (items: any[]) => void;
@@ -137,6 +150,7 @@ const SortableList = SortableContainer<SortableListProps>(
   ({
     items,
     labelFieldName,
+    subFieldName,
     entityType,
     onRemove,
     onDataChange,
@@ -155,6 +169,7 @@ const SortableList = SortableContainer<SortableListProps>(
             }}
             entityType={entityType}
             labelFieldName={labelFieldName}
+            subFieldName={subFieldName}
             onRemove={() => {
               const newItems = [...items];
               newItems.splice(index, 1);
@@ -175,13 +190,16 @@ const SortableList = SortableContainer<SortableListProps>(
 export interface MiniFormListProps extends VfBaseProps<any[]> {
   labelFieldName: string; //主要view字段
   valueFieldName: string; //主要意义字段
-  sortFieldName: string; //排序字段
-  max?: number; //指定数量|true或者不限数量(能够添加列表表单的数量)
+  subFieldName?: string; //次要字段
+  sortFieldName: string; //排序字段(未启用,目前也能排序)
+  max?: number; //指定能创建List列表数量|true不限数量(能够添加列表表单的数量)
   options: ISelect[]; //快速选择字段范围的来源
 }
 /**
- * 只选则一个字段就能完成表单数值快速创建的表单列表组
+ * 迷你表单列表组件
+ * 只选则一个字段就能完成一个简单表单主要几个字段的快速创建，支持创建多条数据，形成一个单列的列表
  * 可实现选项和选项值的内容赋值给当前表单的labelFieldName和valueFieldName字段
+ * 1. 支持排序，2支持在单列字段上进行下一步整个表单的配置
  */
 export default ({
   value,
@@ -189,10 +207,19 @@ export default ({
   options,
   labelFieldName,
   valueFieldName,
+  subFieldName,
   vf,
   max,
   onDataChange,
 }: MiniFormListProps) => {
+  const { dicts, getFormInfo } = useAuth();
+  const [formVo, setFormVo] = useState<FormVo>();
+  //表单信息
+  useEffect(() => {
+    getFormInfo({ type: fieldInfo?.fieldType }).then((d) => {
+      setFormVo(d);
+    });
+  }, [fieldInfo]);
   //当前操作的数据信息
   const [items, setItems] = useState<any[]>(value || []);
   useEffect(() => {
@@ -247,6 +274,7 @@ export default ({
       <SortableList
         vf={vf}
         labelFieldName={labelFieldName}
+        subFieldName={subFieldName}
         items={items}
         onDataChange={(data: any) => {
           setItems(data);
@@ -256,6 +284,7 @@ export default ({
         onRemove={setItems}
         useDragHandle={true}
       />
+      {/* {JSON.stringify(vf?.length)} */}
       <Select
         className=" w-full"
         disabled={
@@ -288,12 +317,26 @@ export default ({
                 .indexOf(v);
 
               if (existNum === -1 || existNum === undefined) {
-                return {
+                let obj = {
                   [labelFieldName]: selected.label,
                   [valueFieldName]: selected.value,
                 };
+                // if (
+                //   subFieldName &&
+                //   formVo?.fields.find((f) => f.fieldName === subFieldName)
+                //     ?.initialValues
+                // ) {
+                //   return {
+                //     ...obj,
+                //     [subFieldName]: formVo?.fields.find(
+                //       (f) => f.fieldName === subFieldName
+                //     )?.initialValues,
+                //   };
+                // } else {
+                return obj;
+                // }
               } else {
-                console.log(items, existNum);
+                // console.log(items, existNum);
                 return items[existNum];
               }
             });
