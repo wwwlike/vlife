@@ -17,7 +17,6 @@
     "@formily/semi": "^1.0.1-beta.2",
     "@semi-bot/semi-theme-doucreator": "^1.0.18",
     "@semi-bot/semi-theme-universedesign": "^1.0.12",
-    "@tailwindcss/jit": "^0.1.18",
     "@wangeditor/editor": "^5.1.20",
     "@wangeditor/editor-for-react": "^1.0.5",
     "ahooks": "^3.7.2",
