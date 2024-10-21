@@ -94,12 +94,17 @@ const TableIndex = <T extends TableBean>({
   // const [lineBtnMax, setListBtnMax] = useState<number>(0);
 
   const btnWidth = useMemo((): number => {
-    const titleTotalLength = btns
+    const lineBtns = btns.filter(
+      (b) =>
+        b.multiple !== true &&
+        (b.actionType !== "create" || b.position === "tableLine")
+    );
+    const titleTotalLength = lineBtns
       .map((b) => b.title?.length || 2)
       .reduce((acc, curr) => acc + curr, 0);
 
     return (
-      titleTotalLength * 18 + 40 + (user?.superUser ? btns.length * 20 : 0)
+      titleTotalLength * 18 + 40 + (user?.superUser ? lineBtns.length * 20 : 0)
     );
   }, [btns]);
   // 选中的行记录
