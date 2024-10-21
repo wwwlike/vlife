@@ -112,7 +112,6 @@ function IconList() {
                   <Button
                     size="small"
                     onClick={() => {
-                      // setSearch(icon.split("_")[0].split("-")[0]);
                       setSearch(icon.replaceAll("_", " "));
                     }}
                   >

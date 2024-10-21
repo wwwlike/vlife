@@ -446,7 +446,12 @@ export const FormComponents: CompDatas = {
     dataType: DataType.array,
     dataModel: "IModel",
     props: {
-      showInput: false,
+      showInput: true,
+      max: {
+        label: "最大创建表单数",
+        dataType: DataType.basic,
+        dataModel: DataModel.number,
+      },
     },
   },
   VfNestedSelector: {
@@ -479,7 +484,7 @@ export const FormComponents: CompDatas = {
         label: "选项数据源",
         must: true,
         dataType: DataType.array,
-        dataModel: "ISelect",
+        dataModel: "MiniFormOption",
       },
       labelFieldName: {
         label: "核心显示字段",

@@ -54,10 +54,6 @@ public abstract class DbEntity implements Item {
      * 创建人部门编码
      */
     private String createDeptcode;
-
-
-//    private String areacode;
-
     /**
      * 记录创建日期
      */

@@ -1,7 +1,6 @@
 import React from "react";
 import Content from "../../template/content";
 import { Product } from "@src/api/erp/Product";
-import { useAuth } from "@src/context/auth-context";
 import { VF } from "@src/dsl/VF";
 import { loadApi } from "@src/resources/ApiDatas";
 import { ISelect } from "@src/dsl/component";
@@ -9,7 +8,6 @@ import { ISelect } from "@src/dsl/component";
  * 产品页
  */
 export default () => {
-  const { dicts } = useAuth();
   return (
     <Content<Product>
       listType="product"

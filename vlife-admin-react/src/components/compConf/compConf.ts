@@ -59,9 +59,9 @@ export interface CompInfo{
   dataType?:DataType // onDataChange返回类型
   onDataChange?:string// 数据返回回调事件名称,默认是"onDataChange"
   dataModel?:DataModel|string, // 返回数据明细
-  props?:CompProp//属性配置1 采用编写CompProp的方式
+  props?:CompProp//组件属性配置方式1，在配置文件(CompData)通过props字段定义组件属性信息,后期要能自动读取到数据库里， 
   //以下为页面级组件使用
-  propForm?:any;//属性配置2：采用formily方式配置组件取到props的方式，目前报表页面采用该方式
+  propForm?:any;//组件属性配置方式2：采用表单form为组件属性方式，图表配以(ReportFormDto)表单字段作为属性来配置；props方式后面应该会丢弃，采用当前方式
   propFormComponentProp?:{[field:string]:{[propName:string]:any}};//给指定字段field的组件的指定属性赋值 {name:{options:[],show:true}} 
   key?:string; //组件标识(页面组件使用)
   w?: number,//组件在grid布局里的宽度

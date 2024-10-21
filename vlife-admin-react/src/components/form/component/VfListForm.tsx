@@ -10,6 +10,7 @@ import FormPage from "@src/pages/common/formPage";
 interface VfListFormProps extends VfBaseProps<any[]> {
   modelName: string; //模型名称
   showInput: boolean; //是否至少显示一组表单
+  max?: number; //最大表单数量
 }
 
 const VfListForm = ({
@@ -18,6 +19,7 @@ const VfListForm = ({
   onDataChange,
   formData,
   fieldInfo,
+  max,
   showInput = true,
   ...props
 }: VfListFormProps) => {
@@ -105,7 +107,7 @@ const VfListForm = ({
             />
           </div>
         ))}
-      {props.read !== true && (
+      {props.read !== true && (max === undefined || max > data.length) && (
         <p
           onClick={create}
           className="text-gray-500 hover:text-black cursor-pointer"

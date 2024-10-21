@@ -67,7 +67,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
      * 所有模型(表+字段)
      */
     @PostMapping("/list/formDto")
-    public List<FormDto> listFormDto(@RequestBody PageQuery req){
+    public List<FormDto> listFormDto(@RequestBody FormPageReq req){
         return service.query(FormDto.class,req);
     }
 

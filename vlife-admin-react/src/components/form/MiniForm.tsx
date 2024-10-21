@@ -18,11 +18,11 @@ import FormPage from "@src/pages/common/formPage";
 import { VF } from "@src/dsl/VF";
 import { useAuth } from "@src/context/auth-context";
 import { FormVo } from "@src/api/Form";
-import { useMemo } from "react";
+import FieldLabel from "@src/pages/common/FieldLabel";
 
 interface SortableItemProps {
   data: any; //数据
-  entityType?: string; //实体模型
+  entityType: string; //实体模型
   labelFieldName: string; //主字段
   subFieldName?: string; //次要字段
   onRemove: () => void;
@@ -66,12 +66,18 @@ const SortableItem = SortableElement<SortableItemProps>(
   `}
       >
         <div>
-          {data[labelFieldName] +
-            `${
-              subFieldName && data?.[subFieldName]
-                ? "(" + data[subFieldName] + ")"
-                : ""
-            }`}
+          {data[labelFieldName]}
+          {subFieldName && data?.[subFieldName] && (
+            <span>
+              (
+              <FieldLabel
+                value={data?.[subFieldName]}
+                type={entityType}
+                fieldName={subFieldName}
+              />
+              )
+            </span>
+          )}
         </div>
         <div className=" items-center space-x-1 hidden group-hover:block">
           {/* 编辑 */}
@@ -140,7 +146,7 @@ interface SortableListProps {
   items: any[]; //已经设置全量数据
   labelFieldName: string; //展示的关键字段
   subFieldName?: string; //次要字段
-  entityType?: string; //实体模型
+  entityType: string; //实体模型
   onRemove: (items: any[]) => void;
   onDataChange: (items: any[]) => void;
   vf?: VF[]; //设置
@@ -187,13 +193,20 @@ const SortableList = SortableContainer<SortableListProps>(
   }
 );
 
+export interface MiniFormOption {
+  label: string;
+  value: string;
+  // subLabel?: string; //次要字段显示内容
+  subValue?: string; //次要字段显示意义
+}
+
 export interface MiniFormListProps extends VfBaseProps<any[]> {
   labelFieldName: string; //主要view字段
   valueFieldName: string; //主要意义字段
   subFieldName?: string; //次要字段
   sortFieldName: string; //排序字段(未启用,目前也能排序)
   max?: number; //指定能创建List列表数量|true不限数量(能够添加列表表单的数量)
-  options: ISelect[]; //快速选择字段范围的来源
+  options: MiniFormOption[]; //快速选择字段范围的来源
 }
 /**
  * 迷你表单列表组件
@@ -212,7 +225,7 @@ export default ({
   max,
   onDataChange,
 }: MiniFormListProps) => {
-  const { dicts, getFormInfo } = useAuth();
+  const { getFormInfo } = useAuth();
   const [formVo, setFormVo] = useState<FormVo>();
   //表单信息
   useEffect(() => {
@@ -280,6 +293,7 @@ export default ({
           setItems(data);
         }}
         onSortEnd={onSortEnd}
+        //@ts-ignore
         entityType={fieldInfo?.entityType || fieldInfo?.fieldType}
         onRemove={setItems}
         useDragHandle={true}
@@ -320,21 +334,16 @@ export default ({
                 let obj = {
                   [labelFieldName]: selected.label,
                   [valueFieldName]: selected.value,
+                  // [subFieldName]: selected.subValue,
                 };
-                // if (
-                //   subFieldName &&
-                //   formVo?.fields.find((f) => f.fieldName === subFieldName)
-                //     ?.initialValues
-                // ) {
-                //   return {
-                //     ...obj,
-                //     [subFieldName]: formVo?.fields.find(
-                //       (f) => f.fieldName === subFieldName
-                //     )?.initialValues,
-                //   };
-                // } else {
-                return obj;
-                // }
+                if (subFieldName && selected.subValue) {
+                  return {
+                    ...obj,
+                    [subFieldName]: selected.subValue,
+                  };
+                } else {
+                  return obj;
+                }
               } else {
                 // console.log(items, existNum);
                 return items[existNum];

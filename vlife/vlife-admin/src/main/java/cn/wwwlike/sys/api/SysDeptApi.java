@@ -1,7 +1,5 @@
 package cn.wwwlike.sys.api;
 
-import cn.wwwlike.auth.config.SecurityConfig;
-import cn.wwwlike.auth.entity.SysUser;
 import cn.wwwlike.auth.service.SysUserService;
 import cn.wwwlike.sys.entity.SysDept;
 import cn.wwwlike.sys.req.SysDeptPageReq;
@@ -13,7 +11,6 @@ import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
