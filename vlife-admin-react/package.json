@@ -8,9 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.3.1",
-    "@douyinfe/semi-illustrations": "^2.3.1",
-    "@douyinfe/semi-ui": "^2.3.1",
+    "@douyinfe/semi-foundation": "2.68.2",
+    "@douyinfe/semi-icons": "2.68.2",
+    "@douyinfe/semi-illustrations": "2.68.2",
+    "@douyinfe/semi-ui": "2.68.2",
     "@formily/core": "^2.1.4",
     "@formily/react": "^2.1.4",
     "@formily/semi": "^1.0.1-beta.2",
