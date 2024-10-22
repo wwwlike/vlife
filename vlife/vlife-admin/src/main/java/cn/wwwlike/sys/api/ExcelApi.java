@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +71,7 @@ public class ExcelApi extends VLifeApi<SysExcel,ExcelService> {
 //    }
 
     @PostMapping("/importData")
-    public DataImpResult importData(ExcelUploadFile data) throws InstantiationException, IllegalAccessException, IOException {
+    public DataImpResult importData(ExcelUploadFile data) throws InstantiationException, IllegalAccessException, IOException, ParseException {
         DataImpResult result=new DataImpResult();
         FormVo formVo=formService.query(FormVo.class,new VlifeQuery<Form>().qw(Form.class).eq("type",data.getEntityType())).get(0);
         List<FormFieldVo> uniqueFields = formVo.getFields().stream().filter(field -> field.isValidate_unique()==true).collect(Collectors.toList());

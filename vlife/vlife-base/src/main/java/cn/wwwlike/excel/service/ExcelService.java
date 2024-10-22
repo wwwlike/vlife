@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -156,7 +158,7 @@ public class ExcelService extends  VLifeService<SysExcel, SysExcelDao>{
     /**
      * excel数据转实体数据
      */
-    public List<Item> excelToItems(FormVo form, Workbook workbook, boolean override, DataImpResult result) throws IOException, InstantiationException, IllegalAccessException {
+    public List<Item> excelToItems(FormVo form, Workbook workbook, boolean override, DataImpResult result) throws IOException, InstantiationException, IllegalAccessException, ParseException {
         List<FormFieldVo> fields = getExcelFields(form.getFields(), workbook);
         Class itemClazz = GlobalData.entityDto(form.getEntityType()).getClz();
         List list = excelToList(itemClazz, fields, workbook);
@@ -176,7 +178,7 @@ public class ExcelService extends  VLifeService<SysExcel, SysExcelDao>{
     /**
      * excel数据解析
      */
-    private List<Item> excelToList(Class<Item> entityClz, List<FormFieldVo> fields, Workbook workbook) throws InstantiationException, IllegalAccessException, IOException {
+    private List<Item> excelToList(Class<Item> entityClz, List<FormFieldVo> fields, Workbook workbook) throws InstantiationException, IllegalAccessException, IOException, ParseException {
         Sheet sheet = workbook.getSheetAt(0);
         List<Item> items = new ArrayList<>();
         for (Row row : sheet) {
@@ -188,10 +190,13 @@ public class ExcelService extends  VLifeService<SysExcel, SysExcelDao>{
                     FormFieldVo _field = fields.get(columiIndex);
                     switch (cell.getCellType()) {
                         case STRING: {
+                            String value = cell.getStringCellValue()==null?null:cell.getStringCellValue().replaceAll("\\n", "").replaceAll("\\r", "");
                             if (_field.getFieldType().equals("string")) {
-                                ReflectionUtils.setFieldValue(item, _field.getFieldName(), cell.getStringCellValue());
-                            } else if (_field.getFieldType().equals("date")) {
-                                ReflectionUtils.setFieldValue(item, _field.getFieldName(), cell.getStringCellValue());
+                                ReflectionUtils.setFieldValue(item, _field.getFieldName(),value);
+                            } else if (_field.getFieldType().equals("date")&&value!=null) {
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                                Date date = dateFormat.parse( value.replace("-","/"));
+                                ReflectionUtils.setFieldValue(item, _field.getFieldName(), date);
                             }
                             break;
                         }
