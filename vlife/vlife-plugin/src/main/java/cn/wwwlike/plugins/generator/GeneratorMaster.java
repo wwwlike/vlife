@@ -70,16 +70,15 @@ public class GeneratorMaster extends GeneratorUtils {
             List<Class<? extends Item>> entityList = entitys.stream().map(entityDto -> {
                 return entityDto.getClz();
             }).filter(f->doesClassExist(loader,f.getName())).collect(Collectors.toList());
-
-            List<Class<? extends VoBean>> voList = vos.stream().map(voDto -> {
-                return voDto.getClz();
-            }).collect(Collectors.toList());
-            List<Class<? extends BaseRequest>> reqList = res.stream().map(resDto -> {
-                return resDto.getClz();
-            }).collect(Collectors.toList());
-            List<Class<? extends SaveBean>> saveList = saves.stream().map(saveBean -> {
-                return saveBean.getClz();
-            }).collect(Collectors.toList());
+//            List<Class<? extends VoBean>> voList = vos.stream().map(voDto -> {
+//                return voDto.getClz();
+//            }).collect(Collectors.toList());
+//            List<Class<? extends BaseRequest>> reqList = res.stream().map(resDto -> {
+//                return resDto.getClz();
+//            }).collect(Collectors.toList());
+//            List<Class<? extends SaveBean>> saveList = saves.stream().map(saveBean -> {
+//                return saveBean.getClz();
+//            }).collect(Collectors.toList());
             waitCreateFiles.addAll(apiGenerator( projectEntitys, vos, res, saves,sourcesRoot));
             waitCreateFiles.addAll(daoGenerator( entityList,sourcesRoot));
             waitCreateFiles.addAll(serviceGenerator( entityList,sourcesRoot));
@@ -107,7 +106,7 @@ public class GeneratorMaster extends GeneratorUtils {
         for(EntityDto entityDto:entitys){
             boolean shouldContinue = true; // 标记变量，初始设为 true
             for (String path : basePath) {
-                if (sourceClzExist(entityDto.getClz(), path, CLZ_TYPE.SERVICE)) {
+                if (sourceClzExist(entityDto.getClz(), path, CLZ_TYPE.API)) {
                     shouldContinue = false; // 找到条件，设置为 false
                     break; // 跳出内层循环
                 }

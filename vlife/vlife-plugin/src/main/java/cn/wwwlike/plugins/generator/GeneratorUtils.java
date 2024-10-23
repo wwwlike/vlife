@@ -25,6 +25,8 @@ import org.springframework.core.io.UrlResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class GeneratorUtils {
@@ -58,25 +60,54 @@ public class GeneratorUtils {
         return false;
     }
 
-    public String classPathName(Class itemClz,String basePath, CLZ_TYPE type){
+//    public String classPathName(Class itemClz,String basePath, CLZ_TYPE type){
+//        String packageName = itemClz.getPackage().getName();
+//        int index = packageName.lastIndexOf(".");
+//        String key=type.name().toLowerCase();
+//        String filePath=basePath+"\\"+
+//                (packageName.substring(0, index) +"\\"+ key+"\\"+itemClz.getSimpleName()+StringUtils.capitalize(key)).replaceAll("\\.","\\\\");
+//        return filePath;
+//    }
+//    /**
+//     * 源文件是否存在
+//     * @return
+//     */
+//    public boolean sourceClzExist(Class itemClz,String basePath, CLZ_TYPE type) {
+//        if(new File(classPathName(itemClz,basePath,type)+".java").exists()){
+//            return true;
+//        }
+//        return false;
+//    }
+
+//    public String classPathName(Class itemClz, String basePath, CLZ_TYPE type) {
+//        String packageName = itemClz.getPackage().getName();
+//        int index = packageName.lastIndexOf(".");
+//        String key = type.name().toLowerCase();
+//        // 使用 Paths.get() 方法来构建文件路径
+//        Path path = Paths.get(basePath, packageName.substring(0, index), key, itemClz.getSimpleName() + StringUtils.capitalize(key) + ".java");
+//        return path.toString();
+//    }
+
+
+    public String classPathName(Class<?> itemClz, String basePath, CLZ_TYPE type) {
         String packageName = itemClz.getPackage().getName();
         int index = packageName.lastIndexOf(".");
-        String key=type.name().toLowerCase();
-        String filePath=basePath+"\\"+
-                (packageName.substring(0, index) +"\\"+ key+"\\"+itemClz.getSimpleName()+StringUtils.capitalize(key)).replaceAll("\\.","\\\\");
-        return filePath;
-    }
-    /**
-     * 源文件是否存在
-     * @return
-     */
-    public boolean sourceClzExist(Class itemClz,String basePath, CLZ_TYPE type) {
-        if(new File(classPathName(itemClz,basePath,type)+".java").exists()){
-            return true;
-        }
-        return false;
+        String key = type.name().toLowerCase();
+        String packagePath = packageName.substring(0, index).replace(".", File.separator); // 包名转换为路径 // 类文件名
+        String fileName = itemClz.getSimpleName() + StringUtils.capitalize(key) + ".java"; // 构建完整的文件路径
+        Path path = Paths.get(basePath, packagePath, key, fileName);
+        return path.toString();
     }
 
+
+
+
+    /**
+     * 源文件是否存在 * @return */
+    public boolean sourceClzExist(Class itemClz, String basePath, CLZ_TYPE type) {
+        //直接使用 classPathName 返回的路径来检查文件是否存在
+        return new File(classPathName(itemClz, basePath, type)).exists();
+    }
 
     enum CLZ_TYPE {API, DAO, SERVICE, VITEM, DICT}
 
