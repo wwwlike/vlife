@@ -1,6 +1,0 @@
-org.springframework.context.ApplicationContextInitializer=\
-cn.wwwlike.autoconfiguration.context.VlifeApplicationContextInitializer
-
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-cn.wwwlike.autoconfiguration.VlifeAutoConfiguration
-

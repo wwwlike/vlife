@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationContextInitializer=\
+cn.wwwlike.config.VlifeApplicationContextInitializer

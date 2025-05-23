@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: p6spy:p6spy:3.8.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../maven/repository/p6spy/p6spy/3.8.2/p6spy-3.8.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../maven/repository/p6spy/p6spy/3.8.2/p6spy-3.8.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../maven/repository/p6spy/p6spy/3.8.2/p6spy-3.8.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

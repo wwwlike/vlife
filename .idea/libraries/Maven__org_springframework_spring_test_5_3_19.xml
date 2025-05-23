@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework:spring-test:5.3.19">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../maven/repository/org/springframework/spring-test/5.3.19/spring-test-5.3.19.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../maven/repository/org/springframework/spring-test/5.3.19/spring-test-5.3.19-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../maven/repository/org/springframework/spring-test/5.3.19/spring-test-5.3.19-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

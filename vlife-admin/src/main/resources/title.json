@@ -1,0 +1,5719 @@
+[
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "WwApi",
+    "typeName": "Ww",
+    "title": "的啥课接口",
+    "path": "/ww",
+    "packageName": "cn.vlife.crm.api",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "Ww",
+    "title": "的啥课",
+    "packageName": "cn.vlife.crm.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "姓名",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "ButtonApi",
+    "typeName": "Button",
+    "path": "/button",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "listButtonVo",
+        "path": "/list/buttonVo",
+        "param": "req",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "VlifeQuery",
+        "paramGeneric": "Button",
+        "returnWrapper": "List",
+        "returnGeneric": "ButtonVo",
+        "methodType": "@PostMapping(\"/list/buttonVo\")",
+        "methodName": "listButtonVo",
+        "permission": "noAuth"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "ButtonDtoApi",
+    "typeName": "ButtonDto",
+    "title": "按钮配置dto接口",
+    "path": "/buttonDto",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {
+      "buttonService": {
+        "fieldName": "buttonService",
+        "fieldType": "ButtonService"
+      },
+      "resourcesService": {
+        "fieldName": "resourcesService",
+        "fieldType": "SysResourcesService"
+      }
+    },
+    "apiTagList": [
+      {
+        "title": "create",
+        "path": "/create",
+        "param": "button",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "ButtonDto",
+        "returnWrapper": "ButtonDto",
+        "methodType": "@PostMapping(\"/create\")",
+        "methodName": "create"
+      }
+    ]
+  },
+  {
+    "entityName": "ExcelApi",
+    "title": "Excel导入导出",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {
+      "service": {
+        "fieldName": "service",
+        "fieldType": "ExcelService"
+      },
+      "formService": {
+        "fieldName": "formService",
+        "fieldType": "FormService"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "FormApi",
+    "typeName": "Form",
+    "title": "模型接口",
+    "path": "/form",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {
+      "appService": {
+        "fieldName": "appService",
+        "fieldType": "SysAppService"
+      },
+      "menuService": {
+        "fieldName": "menuService",
+        "fieldType": "SysMenuService"
+      },
+      "packroot": {
+        "fieldName": "packroot",
+        "fieldType": "String"
+      },
+      "generatorPackRoot": {
+        "fieldName": "generatorPackRoot",
+        "fieldType": "String"
+      },
+      "builder": {
+        "fieldName": "builder",
+        "fieldType": "RestTemplateBuilder"
+      }
+    },
+    "apiTagList": [
+      {
+        "title": "模型查询",
+        "remark": "支持创建菜单类模型副本，以及菜单相关联资源按钮信息",
+        "path": "/list/formDto",
+        "param": "req",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "FormPageReq",
+        "returnWrapper": "List",
+        "returnGeneric": "FormDto",
+        "methodType": "@PostMapping(\"/list/formDto\")",
+        "methodName": "listFormDto",
+        "permission": "noAuth"
+      },
+      {
+        "title": "所有模型",
+        "remark": "model=true",
+        "path": "/list/model",
+        "param": "req",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "FormPageReq",
+        "returnWrapper": "List",
+        "returnGeneric": "FormDto",
+        "methodType": "@PostMapping(\"/list/model\")",
+        "methodName": "listModel"
+      },
+      {
+        "title": "查询所有子表模型",
+        "remark": "",
+        "path": "/list/subModels/{entityType}",
+        "param": "entityType",
+        "paramAnnotation": "PathVariable",
+        "paramWrapper": "String",
+        "returnWrapper": "List",
+        "returnGeneric": "FormDto",
+        "methodType": "@PostMapping(\"/list/subModels/{entityType}\")",
+        "methodName": "listSubModels"
+      },
+      {
+        "title": "模型设计",
+        "remark": "和工作流有关的进行工作流发布",
+        "path": "/save/formDto",
+        "param": "dto",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "FormDto",
+        "returnWrapper": "FormDto",
+        "methodType": "@PostMapping(\"/save/formDto\")",
+        "methodName": "saveFormDto"
+      },
+      {
+        "title": "模型发布",
+        "remark": "提交",
+        "path": "/publish",
+        "param": "dto",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "FormDto",
+        "returnWrapper": "FormDto",
+        "methodType": "@PostMapping(\"/publish\")",
+        "methodName": "publish"
+      },
+      {
+        "title": "生成文件包路径地址",
+        "remark": "",
+        "path": "/generatorPackRoot",
+        "returnWrapper": "String",
+        "methodType": "@GetMapping(\"/generatorPackRoot\")",
+        "methodName": "generatorPackRoot",
+        "permission": "noAuth"
+      },
+      {
+        "title": "模型创建",
+        "remark": "暂存",
+        "path": "/save",
+        "param": "form",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "Form",
+        "returnWrapper": "Form",
+        "methodType": "@PostMapping(\"/save\")",
+        "methodName": "save"
+      },
+      {
+        "title": "删除",
+        "remark": "",
+        "path": "/remove/{id}",
+        "param": "id",
+        "paramAnnotation": "PathVariable",
+        "paramWrapper": "String",
+        "returnWrapper": "boolean",
+        "methodType": "@DeleteMapping(\"/remove/{id}\")",
+        "methodName": "remove"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "FormFieldApi",
+    "typeName": "FormField",
+    "title": "元数据字段接口",
+    "path": "/formField",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "字段数据",
+        "remark": "",
+        "path": "/list/all",
+        "param": "req",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "VlifeQuery",
+        "paramGeneric": "FormField",
+        "returnWrapper": "List",
+        "returnGeneric": "FormField",
+        "methodType": "@PostMapping(\"/list/all\")",
+        "methodName": "listAll"
+      },
+      {
+        "title": "列表批量设置",
+        "remark": "",
+        "path": "/save/formFieldList",
+        "param": "fields",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "List",
+        "paramGeneric": "FormField",
+        "returnWrapper": "List",
+        "returnGeneric": "FormField",
+        "methodType": "@PostMapping(\"/save/formFieldList\")",
+        "methodName": "saveFormFieldList"
+      },
+      {
+        "title": "外键的主表字段查询",
+        "remark": "",
+        "path": "/list/relationField",
+        "param": "realationFieldId",
+        "paramWrapper": "String",
+        "returnWrapper": "List",
+        "returnGeneric": "FormField",
+        "methodType": "@GetMapping(\"/list/relationField\")",
+        "methodName": "listRelationField"
+      },
+      {
+        "title": "可分组字段查询",
+        "remark": "查询当前表和其主表能分组的字段",
+        "path": "/list/groupOption",
+        "param": "formId",
+        "paramWrapper": "String",
+        "returnWrapper": "List",
+        "returnGeneric": "FieldSelect",
+        "methodType": "@GetMapping(\"/list/groupOption\")",
+        "methodName": "groupOption"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "FormNoApi",
+    "typeName": "FormNo",
+    "title": "单据号规则接口",
+    "path": "/formNo",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "预览编号",
+        "remark": "查询指定字段的下一组编号(未启用)",
+        "path": "/fieldNo/{formFieldId}",
+        "param": "formFieldId",
+        "paramAnnotation": "PathVariable",
+        "paramWrapper": "String",
+        "returnWrapper": "String",
+        "methodType": "@GetMapping(\"/fieldNo/{formFieldId}\")",
+        "methodName": "fieldNo"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "MenuCrudDtoApi",
+    "typeName": "MenuCrudDto",
+    "path": "/menuCrudDto",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {
+      "formService": {
+        "fieldName": "formService",
+        "fieldType": "FormService"
+      }
+    },
+    "apiTagList": [
+      {
+        "title": "新增crud页面",
+        "remark": "",
+        "path": "/create",
+        "param": "entity",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "MenuCrudDto",
+        "returnWrapper": "MenuCrudDto",
+        "methodType": "@PostMapping(\"/create\")",
+        "methodName": "create"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "MenuGroupDtoApi",
+    "typeName": "MenuCrudDto",
+    "title": "分组菜单dto接口",
+    "path": "/menuGroupDto",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "PageLayoutApi",
+    "typeName": "PageLayout",
+    "title": "自创页面",
+    "path": "/pageLayout",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "设计",
+        "remark": "",
+        "path": "/save/pageConfDto",
+        "param": "dto",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "PageConfDto",
+        "returnWrapper": "PageConfDto",
+        "methodType": "@PostMapping(\"/save/pageConfDto\")",
+        "methodName": "savePageConfDto"
+      },
+      {
+        "title": "明细查询页面布局",
+        "remark": "根据页面路由地址或者id",
+        "path": "/detail/{urlOrId}",
+        "param": "urlOrId",
+        "paramAnnotation": "PathVariable",
+        "paramWrapper": "String",
+        "returnWrapper": "PageConfDto",
+        "methodType": "@GetMapping(\"/detail/{urlOrId}\")",
+        "methodName": "detail"
+      },
+      {
+        "title": "查询",
+        "remark": "",
+        "path": "/list/all",
+        "param": "req",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "VlifeQuery",
+        "paramGeneric": "PageLayout",
+        "returnWrapper": "List",
+        "returnGeneric": "PageConfDto",
+        "methodType": "@PostMapping(\"/list/all\")",
+        "methodName": "listAll"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysAppApi",
+    "typeName": "SysApp",
+    "title": "应用",
+    "path": "/sysApp",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysDeptApi",
+    "typeName": "SysDept",
+    "title": "部门接口",
+    "path": "/sysDept",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {
+      "userService": {
+        "fieldName": "userService",
+        "fieldType": "SysUserService"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysDictApi",
+    "typeName": "SysDict",
+    "title": "字典表接口",
+    "path": "/sysDict",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "批量保存",
+        "remark": "",
+        "path": "/batchSave",
+        "param": "dicts",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "List",
+        "paramGeneric": "SysDict",
+        "returnWrapper": "List",
+        "returnGeneric": "SysDict",
+        "methodType": "@PostMapping(\"/batchSave\")",
+        "methodName": "batchSave"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysFileApi",
+    "typeName": "SysFile",
+    "title": "文件接口",
+    "path": "/sysFile",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {
+      "packroot": {
+        "fieldName": "packroot",
+        "fieldType": "String"
+      },
+      "imgPath": {
+        "fieldName": "imgPath",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": [
+      {
+        "title": "图片上传",
+        "remark": "采用wangEditor上传图片接收,不存数据库",
+        "path": "/upload",
+        "param": "file",
+        "paramAnnotation": "RequestParam",
+        "paramWrapper": "MultipartFile",
+        "returnWrapper": "NativeResult",
+        "returnGeneric": "Map",
+        "methodType": "@PostMapping(\"/upload\")",
+        "methodName": "uploadWangEditor"
+      },
+      {
+        "title": "图片流输出",
+        "remark": "",
+        "path": "\"/image/{id}\"",
+        "param": "id",
+        "paramAnnotation": "PathVariable",
+        "paramWrapper": "String",
+        "returnWrapper": "byte[]",
+        "methodType": "@GetMapping(value = \"/image/{id}\", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.APPLICATION_PDF_VALUE })",
+        "methodName": "image"
+      },
+      {
+        "title": "PDF文件流输出",
+        "remark": "",
+        "path": "\"/pdf/{id}\"",
+        "param": "id",
+        "paramAnnotation": "PathVariable",
+        "paramWrapper": "String",
+        "returnWrapper": "ResponseEntity",
+        "returnGeneric": "byte[]",
+        "methodType": "@GetMapping(value = \"/pdf/{id}\", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.APPLICATION_PDF_VALUE })",
+        "methodName": "pdf"
+      },
+      {
+        "title": "图片上传和入库",
+        "remark": "图片上传组件",
+        "path": "/uploadImg",
+        "param": "file",
+        "paramAnnotation": "RequestParam",
+        "paramWrapper": "MultipartFile",
+        "returnWrapper": "SysFile",
+        "methodType": "@PostMapping(\"/uploadImg\")",
+        "methodName": "uploadImg"
+      },
+      {
+        "title": "文件下载",
+        "remark": "根据文件ID下载指定文件(浏览器弹出方式)",
+        "path": "/download/{id}",
+        "param": "response",
+        "paramWrapper": "HttpServletResponse",
+        "returnWrapper": "void",
+        "methodType": "@GetMapping(\"/download/{id}\")",
+        "methodName": "download"
+      },
+      {
+        "title": "文件保存",
+        "remark": "上传后批量保存",
+        "path": "/batchSave",
+        "param": "files",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "List",
+        "paramGeneric": "SysFile",
+        "returnWrapper": "List",
+        "returnGeneric": "SysFile",
+        "methodType": "@PostMapping(\"/batchSave\")",
+        "methodName": "batchSave"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysGroupApi",
+    "typeName": "SysGroup",
+    "title": "权限组接口",
+    "path": "/sysGroup",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysMenuApi",
+    "typeName": "SysMenu",
+    "title": "菜单接口",
+    "path": "/sysMenu",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {
+      "formService": {
+        "fieldName": "formService",
+        "fieldType": "FormService"
+      }
+    },
+    "apiTagList": [
+      {
+        "title": "菜单资源绑定数据",
+        "remark": "",
+        "path": "/list/menuResourcesDto",
+        "param": "req",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "VlifeQuery",
+        "paramGeneric": "SysMenu",
+        "returnWrapper": "List",
+        "returnGeneric": "MenuResourcesDto",
+        "methodType": "@PostMapping(\"/list/menuResourcesDto\")",
+        "methodName": "listMenuResourcesDto"
+      },
+      {
+        "title": "批量保存",
+        "remark": "",
+        "path": "/batchSave",
+        "param": "dto",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "List",
+        "paramGeneric": "SysMenu",
+        "returnWrapper": "List",
+        "returnGeneric": "SysMenu",
+        "methodType": "@PostMapping(\"/batchSave\")",
+        "methodName": "batchSave"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysNewsApi",
+    "typeName": "SysNews",
+    "title": "通知公告接口",
+    "path": "/sysNews",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysPrintTemplateApi",
+    "typeName": "SysPrintTemplate",
+    "title": "打印模版接口",
+    "path": "/sysPrintTemplate",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysResourcesApi",
+    "typeName": "SysResources",
+    "title": "权限资源接口",
+    "path": "/sysResources",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {
+      "menuService": {
+        "fieldName": "menuService",
+        "fieldType": "SysMenuService"
+      },
+      "formService": {
+        "fieldName": "formService",
+        "fieldType": "FormService"
+      }
+    },
+    "apiTagList": [
+      {
+        "title": "查询菜单可关联接口资源",
+        "remark": "",
+        "path": "/list/menuResources/{menuId}",
+        "param": "menuId",
+        "paramAnnotation": "PathVariable",
+        "paramWrapper": "String",
+        "returnWrapper": "List",
+        "returnGeneric": "SysResources",
+        "methodType": "@GetMapping(\"/list/menuResources/{menuId}\")",
+        "methodName": "listMenuResources"
+      },
+      {
+        "title": "写入类接口查询",
+        "remark": "",
+        "path": "/listButtons",
+        "param": "req",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "VlifeQuery",
+        "paramGeneric": "SysResources",
+        "returnWrapper": "List",
+        "returnGeneric": "SysResources",
+        "methodType": "@PostMapping(\"/listButtons\")",
+        "methodName": "listButtons"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysTabApi",
+    "typeName": "SysTab",
+    "path": "/sysTab",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "排序",
+        "remark": "",
+        "path": "/sort",
+        "param": "ids",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "String[]",
+        "returnWrapper": "String[]",
+        "methodType": "@PostMapping(\"/sort\")",
+        "methodName": "sort"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysTabDtoApi",
+    "typeName": "SysTabDto",
+    "path": "/sysTabDto",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "保存DTO",
+        "remark": "",
+        "path": "/save",
+        "param": "dto",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "SysTabDto",
+        "returnWrapper": "SysTabDto",
+        "methodType": "@PostMapping(\"/save\")",
+        "methodName": "save"
+      },
+      {
+        "title": "请求指定菜单用户可以访问的页签",
+        "remark": "性能不好|页签信息应该导入到",
+        "path": "/list",
+        "param": "req",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "VlifeQuery",
+        "returnWrapper": "List",
+        "returnGeneric": "SysTabDto",
+        "methodType": "@PostMapping(\"/list\")",
+        "methodName": "list",
+        "permission": "noAuth"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysUserApi",
+    "typeName": "SysUser",
+    "title": "用户接口",
+    "path": "/sysUser",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "密码重置",
+        "remark": "",
+        "path": "/reset",
+        "param": "ids",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "String[]",
+        "returnWrapper": "Integer",
+        "methodType": "@PostMapping(\"/reset\")",
+        "methodName": "reset"
+      },
+      {
+        "title": "密码修改",
+        "remark": "",
+        "path": "/save/userPasswordModifyDto",
+        "param": "userPasswordModifyDto",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "UserPasswordModifyDto",
+        "returnWrapper": "UserPasswordModifyDto",
+        "methodType": "@PostMapping(\"/save/userPasswordModifyDto\")",
+        "methodName": "saveUserPasswordModifyDto",
+        "permission": "single"
+      },
+      {
+        "title": "删除",
+        "remark": "",
+        "path": "/remove",
+        "param": "ids",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "String[]",
+        "returnWrapper": "Long",
+        "methodType": "@DeleteMapping(\"/remove\")",
+        "methodName": "remove"
+      },
+      {
+        "title": "数据迁移",
+        "remark": "",
+        "path": "/move",
+        "param": "dto",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "UserDataMoveDto",
+        "returnWrapper": "UserDataMoveDto",
+        "methodType": "@PostMapping(\"/move\")",
+        "methodName": "move"
+      },
+      {
+        "title": "当前用户",
+        "remark": "",
+        "path": "/currUser",
+        "returnWrapper": "UserDetailVo",
+        "methodType": "@GetMapping(\"/currUser\")",
+        "methodName": "currUser",
+        "permission": "noAuth"
+      },
+      {
+        "title": "用户启用",
+        "remark": "",
+        "path": "/enable",
+        "param": "ids",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "String[]",
+        "returnWrapper": "Integer",
+        "methodType": "@PostMapping(\"/enable\")",
+        "methodName": "enable"
+      },
+      {
+        "title": "用户停用",
+        "remark": "",
+        "path": "/disable",
+        "param": "ids",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "String[]",
+        "returnWrapper": "Integer",
+        "methodType": "@PostMapping(\"/disable\")",
+        "methodName": "disable"
+      },
+      {
+        "title": "restart",
+        "path": "/restart",
+        "returnWrapper": "String",
+        "methodType": "@PostMapping(\"/restart\")",
+        "methodName": "restart"
+      }
+    ]
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysUserDtoApi",
+    "typeName": "SysUserDto",
+    "path": "/sysUserDto",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "VLifeApi",
+    "parentsName": [
+      "VLifeApi"
+    ],
+    "entityName": "SysVarApi",
+    "typeName": "SysVar",
+    "title": "系统变量设置",
+    "path": "/sysVar",
+    "packageName": "cn.wwwlike.sys.api",
+    "tags": {},
+    "apiTagList": [
+      {
+        "title": "批量保存",
+        "remark": "",
+        "path": "/save/vals",
+        "param": "vars",
+        "paramAnnotation": "RequestBody",
+        "paramWrapper": "SysVar[]",
+        "returnWrapper": "SysVar[]",
+        "methodType": "@PostMapping(\"/save/vals\")",
+        "methodName": "saveVals"
+      }
+    ]
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "ButtonDto",
+    "typeName": "Button",
+    "title": "按钮信息dto",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "actionType": {
+        "fieldName": "actionType",
+        "fieldType": "String"
+      },
+      "resourcesEntityId": {
+        "fieldName": "resourcesEntityId",
+        "fieldType": "String"
+      },
+      "sysBtn": {
+        "fieldName": "sysBtn",
+        "fieldType": "Boolean"
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String"
+      },
+      "tooltip": {
+        "fieldName": "tooltip",
+        "fieldType": "String"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String"
+      },
+      "model": {
+        "fieldName": "model",
+        "fieldType": "String"
+      },
+      "formFields": {
+        "fieldName": "formFields",
+        "fieldType": "String"
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String"
+      },
+      "fields": {
+        "fieldName": "fields",
+        "fieldType": "List<ButtonField>"
+      },
+      "sysResourcesId": {
+        "fieldName": "sysResourcesId",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "entityName": "DataImpResult",
+    "title": "数据导入结果",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "msg": {
+        "fieldName": "msg",
+        "fieldType": "String"
+      },
+      "result": {
+        "fieldName": "result",
+        "fieldType": "boolean",
+        "title": "导入结果",
+        "placeholder": ""
+      },
+      "add": {
+        "fieldName": "add",
+        "fieldType": "Integer",
+        "title": " 新增条数",
+        "placeholder": ""
+      },
+      "total": {
+        "fieldName": "total",
+        "fieldType": "Integer",
+        "title": "总数据条数",
+        "placeholder": ""
+      },
+      "success": {
+        "fieldName": "success",
+        "fieldType": "Integer",
+        "title": "导入成功条数",
+        "placeholder": ""
+      },
+      "update": {
+        "fieldName": "update",
+        "fieldType": "Integer",
+        "title": " 覆盖条数",
+        "placeholder": ""
+      },
+      "skip": {
+        "fieldName": "skip",
+        "fieldType": "Integer",
+        "title": " 因数据重复跳过数据条数",
+        "placeholder": ""
+      },
+      "error": {
+        "fieldName": "error",
+        "fieldType": "Integer",
+        "title": " 异常数据条数",
+        "placeholder": ""
+      },
+      "error_null": {
+        "fieldName": "error_null",
+        "fieldType": "Integer",
+        "title": " 必填数据异常",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean",
+      "IForm"
+    ],
+    "entityName": "FormDto",
+    "typeName": "Form",
+    "title": "表单保存对象",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "formDesc": {
+        "fieldName": "formDesc",
+        "fieldType": "String"
+      },
+      "terse": {
+        "fieldName": "terse",
+        "fieldType": "Boolean"
+      },
+      "itemType": {
+        "fieldName": "itemType",
+        "fieldType": "String"
+      },
+      "flowJson": {
+        "fieldName": "flowJson",
+        "fieldType": "String",
+        "title": "pro",
+        "placeholder": ""
+      },
+      "entityType": {
+        "fieldName": "entityType",
+        "fieldType": "String"
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String"
+      },
+      "typeParentsStr": {
+        "fieldName": "typeParentsStr",
+        "fieldType": "String"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String"
+      },
+      "entityId": {
+        "fieldName": "entityId",
+        "fieldType": "String"
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String"
+      },
+      "type": {
+        "fieldName": "type",
+        "fieldType": "String"
+      },
+      "modelSize": {
+        "fieldName": "modelSize",
+        "fieldType": "Integer"
+      },
+      "tableName": {
+        "fieldName": "tableName",
+        "fieldType": "String"
+      },
+      "sysAppId": {
+        "fieldName": "sysAppId",
+        "fieldType": "String"
+      },
+      "helpDoc": {
+        "fieldName": "helpDoc",
+        "fieldType": "String"
+      },
+      "unpublishJson": {
+        "fieldName": "unpublishJson",
+        "fieldType": "String"
+      },
+      "unpublishForm": {
+        "fieldName": "unpublishForm",
+        "fieldType": "String"
+      },
+      "typeClass": {
+        "fieldName": "typeClass",
+        "fieldType": "String"
+      },
+      "orders": {
+        "fieldName": "orders",
+        "fieldType": "String"
+      },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String"
+      },
+      "fields": {
+        "fieldName": "fields",
+        "fieldType": "List<FormFieldDto>"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean",
+      "IField"
+    ],
+    "entityName": "FormFieldDto",
+    "typeName": "FormField",
+    "title": "字段信息视图",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "pathName": {
+        "fieldName": "pathName",
+        "fieldType": "String"
+      },
+      "x_decorator_props$gridSpan": {
+        "fieldName": "x_decorator_props$gridSpan",
+        "fieldType": "Integer",
+        "title": "对应 x-decorator-props.gridSpan属性",
+        "placeholder": ""
+      },
+      "fieldName": {
+        "fieldName": "fieldName",
+        "fieldType": "String"
+      },
+      "x_decorator_props$labelAlign": {
+        "fieldName": "x_decorator_props$labelAlign",
+        "fieldType": "String",
+        "title": "label位置 对齐 left",
+        "placeholder": ""
+      },
+      "minLength": {
+        "fieldName": "minLength",
+        "fieldType": "Integer",
+        "title": "最小长度",
+        "placeholder": ""
+      },
+      "description": {
+        "fieldName": "description",
+        "fieldType": "String",
+        "title": "描述",
+        "placeholder": ""
+      },
+      "entityFieldName": {
+        "fieldName": "entityFieldName",
+        "fieldType": "String"
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String"
+      },
+      "x_component_props$placeholder": {
+        "fieldName": "x_component_props$placeholder",
+        "fieldType": "String",
+        "title": "描述信息",
+        "placeholder": ""
+      },
+      "required": {
+        "fieldName": "required",
+        "fieldType": "boolean",
+        "title": "必填",
+        "placeholder": ""
+      },
+      "pageComponentPropDtos": {
+        "fieldName": "pageComponentPropDtos",
+        "fieldType": "List<PageComponentPropDto>",
+        "title": "字段属性配置",
+        "placeholder": ""
+      },
+      "dbLength": {
+        "fieldName": "dbLength",
+        "fieldType": "Integer"
+      },
+      "modify_read": {
+        "fieldName": "modify_read",
+        "fieldType": "boolean"
+      },
+      "dictCode": {
+        "fieldName": "dictCode",
+        "fieldType": "String"
+      },
+      "x_decorator_props$layout": {
+        "fieldName": "x_decorator_props$layout",
+        "fieldType": "String",
+        "title": "label位置 水平 vertical",
+        "placeholder": ""
+      },
+      "divider": {
+        "fieldName": "divider",
+        "fieldType": "boolean",
+        "title": "加入分割线",
+        "placeholder": ""
+      },
+      "dataIndex": {
+        "fieldName": "dataIndex",
+        "fieldType": "String",
+        "title": "formliy里的字段名称，默认一致",
+        "placeholder": ""
+      },
+      "dividerLabel": {
+        "fieldName": "dividerLabel",
+        "fieldType": "String",
+        "title": "分割线标签名称",
+        "placeholder": ""
+      },
+      "x_decorator": {
+        "fieldName": "x_decorator",
+        "fieldType": "String",
+        "title": "包裹组件",
+        "placeholder": ""
+      },
+      "disabled": {
+        "fieldName": "disabled",
+        "fieldType": "Boolean",
+        "title": "禁用",
+        "placeholder": ""
+      },
+      "x_disabled": {
+        "fieldName": "x_disabled",
+        "fieldType": "boolean"
+      },
+      "formReactions": {
+        "fieldName": "formReactions",
+        "fieldType": "List<FormReaction>",
+        "title": "组件联动配置",
+        "placeholder": ""
+      },
+      "hideLabel": {
+        "fieldName": "hideLabel",
+        "fieldType": "boolean"
+      },
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String"
+      },
+      "entityType": {
+        "fieldName": "entityType",
+        "fieldType": "String",
+        "title": "    public String javaTitle;",
+        "placeholder": ""
+      },
+      "dataType": {
+        "fieldName": "dataType",
+        "fieldType": "String",
+        "title": "前端数据类型",
+        "placeholder": "basic,array,object"
+      },
+      "x_read_pretty": {
+        "fieldName": "x_read_pretty",
+        "fieldType": "Boolean",
+        "title": "只读",
+        "placeholder": ""
+      },
+      "create_hide": {
+        "fieldName": "create_hide",
+        "fieldType": "boolean"
+      },
+      "readOnly": {
+        "fieldName": "readOnly",
+        "fieldType": "Boolean",
+        "title": "只读",
+        "placeholder": ""
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "顺序",
+        "placeholder": ""
+      },
+      "sysField": {
+        "fieldName": "sysField",
+        "fieldType": "Boolean"
+      },
+      "javaType": {
+        "fieldName": "javaType",
+        "fieldType": "String",
+        "title": "java类型",
+        "placeholder": "简单类型存类名|包装类型存包名+类名|text是特例"
+      },
+      "initialValues": {
+        "fieldName": "initialValues",
+        "fieldType": "String",
+        "title": "默认值",
+        "placeholder": ""
+      },
+      "formNos": {
+        "fieldName": "formNos",
+        "fieldType": "List<FormNo>",
+        "title": "序号生成策略配置",
+        "placeholder": ""
+      },
+      "vf": {
+        "fieldName": "vf",
+        "fieldType": "List<String>"
+      },
+      "validate_unique": {
+        "fieldName": "validate_unique",
+        "fieldType": "boolean",
+        "title": "唯一不重复",
+        "placeholder": "validate是内置远程校验规则，触发form内部远程数据校验"
+      },
+      "x_display": {
+        "fieldName": "x_display",
+        "fieldType": "String",
+        "title": "显示状态2",
+        "placeholder": ""
+      },
+      "x_component": {
+        "fieldName": "x_component",
+        "fieldType": "String",
+        "title": "采用组件",
+        "placeholder": ""
+      },
+      "maximum": {
+        "fieldName": "maximum",
+        "fieldType": "Double",
+        "title": "最大值",
+        "placeholder": ""
+      },
+      "fieldType": {
+        "fieldName": "fieldType",
+        "fieldType": "String",
+        "title": "字段类型",
+        "placeholder": ""
+      },
+      "minimum": {
+        "fieldName": "minimum",
+        "fieldType": "Double",
+        "title": "最小值",
+        "placeholder": ""
+      },
+      "maxLength": {
+        "fieldName": "maxLength",
+        "fieldType": "Integer",
+        "title": "最大长度",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean",
+      "ITree"
+    ],
+    "entityName": "MenuCrudDto",
+    "typeName": "SysMenu",
+    "title": "curd菜单dto",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "sysAppId": {
+        "fieldName": "sysAppId",
+        "fieldType": "String"
+      },
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String"
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String"
+      },
+      "pageType": {
+        "fieldName": "pageType",
+        "fieldType": "String"
+      },
+      "pcode": {
+        "fieldName": "pcode",
+        "fieldType": "String"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String"
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean",
+      "ITree"
+    ],
+    "entityName": "MenuGroupDto",
+    "typeName": "SysMenu",
+    "title": "应用菜单分组",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "sysAppId": {
+        "fieldName": "sysAppId",
+        "fieldType": "String"
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String"
+      },
+      "pcode": {
+        "fieldName": "pcode",
+        "fieldType": "String"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "分组名称",
+        "placeholder": ""
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean",
+      "ITree"
+    ],
+    "entityName": "MenuResourcesDto",
+    "typeName": "SysMenu",
+    "title": "权限导入",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "sysAppId": {
+        "fieldName": "sysAppId",
+        "fieldType": "String"
+      },
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String"
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String"
+      },
+      "pageType": {
+        "fieldName": "pageType",
+        "fieldType": "String"
+      },
+      "sysResources_id": {
+        "fieldName": "sysResources_id",
+        "fieldType": "List<String>",
+        "title": "导入权限",
+        "placeholder": ""
+      },
+      "pcode": {
+        "fieldName": "pcode",
+        "fieldType": "String"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String"
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer"
+      },
+      "pageLayoutId": {
+        "fieldName": "pageLayoutId",
+        "fieldType": "String"
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "PageComponentDto",
+    "typeName": "PageComponent",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "more": {
+        "fieldName": "more",
+        "fieldType": "String",
+        "title": "查看更多",
+        "placeholder": "路由地址"
+      },
+      "h": {
+        "fieldName": "h",
+        "fieldType": "Integer",
+        "title": "栅格高度",
+        "placeholder": ""
+      },
+      "i": {
+        "fieldName": "i",
+        "fieldType": "String",
+        "title": "layout布局索引",
+        "placeholder": "在div里用key设置"
+      },
+      "pageKey": {
+        "fieldName": "pageKey",
+        "fieldType": "String",
+        "title": "单元编号",
+        "placeholder": ""
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "排序号",
+        "placeholder": ""
+      },
+      "props": {
+        "fieldName": "props",
+        "fieldType": "List<PageComponentPropDto>",
+        "title": "组件属性配置",
+        "placeholder": "自定义prop方式配置组件属性"
+      },
+      "component": {
+        "fieldName": "component",
+        "fieldType": "String",
+        "title": "单元组件类型",
+        "placeholder": "关联展示型视图"
+      },
+      "w": {
+        "fieldName": "w",
+        "fieldType": "Integer",
+        "title": "栅格宽度",
+        "placeholder": ""
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "单元名称",
+        "placeholder": ""
+      },
+      "x": {
+        "fieldName": "x",
+        "fieldType": "Integer",
+        "title": "栅格横向位置",
+        "placeholder": ""
+      },
+      "layoutTop": {
+        "fieldName": "layoutTop",
+        "fieldType": "Boolean",
+        "title": "组件置顶",
+        "placeholder": ""
+      },
+      "componentPropJson": {
+        "fieldName": "componentPropJson",
+        "fieldType": "String",
+        "title": "组件属性数据",
+        "placeholder": "待移除"
+      },
+      "y": {
+        "fieldName": "y",
+        "fieldType": "Integer",
+        "title": "栅格纵坐标位置",
+        "placeholder": ""
+      },
+      "z": {
+        "fieldName": "z",
+        "fieldType": "Integer",
+        "title": "布局的层次",
+        "placeholder": ""
+      },
+      "pageLayoutId": {
+        "fieldName": "pageLayoutId",
+        "fieldType": "String",
+        "title": "组件单元所在页面",
+        "placeholder": ""
+      },
+      "moduleId": {
+        "fieldName": "moduleId",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "PageComponentPropDto",
+    "typeName": "PageComponentProp",
+    "title": "组件属性dto",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "filterConnectionType": {
+        "fieldName": "filterConnectionType",
+        "fieldType": "String"
+      },
+      "relateVal": {
+        "fieldName": "relateVal",
+        "fieldType": "String"
+      },
+      "formFieldId": {
+        "fieldName": "formFieldId",
+        "fieldType": "String"
+      },
+      "pageComponentId": {
+        "fieldName": "pageComponentId",
+        "fieldType": "String"
+      },
+      "sourceType": {
+        "fieldName": "sourceType",
+        "fieldType": "String"
+      },
+      "subName": {
+        "fieldName": "subName",
+        "fieldType": "String"
+      },
+      "listNo": {
+        "fieldName": "listNo",
+        "fieldType": "Integer"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String"
+      },
+      "filterFunc": {
+        "fieldName": "filterFunc",
+        "fieldType": "String",
+        "title": "待移除",
+        "placeholder": ""
+      },
+      "propVal": {
+        "fieldName": "propVal",
+        "fieldType": "String"
+      },
+      "params": {
+        "fieldName": "params",
+        "fieldType": "List<PageApiParam>"
+      },
+      "propName": {
+        "fieldName": "propName",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "PageConfDto",
+    "typeName": "PageLayout",
+    "title": "页面配置模型",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "border": {
+        "fieldName": "border",
+        "fieldType": "Boolean"
+      },
+      "img": {
+        "fieldName": "img",
+        "fieldType": "String"
+      },
+      "pageType": {
+        "fieldName": "pageType",
+        "fieldType": "String"
+      },
+      "componentOver": {
+        "fieldName": "componentOver",
+        "fieldType": "Boolean"
+      },
+      "bigScreen": {
+        "fieldName": "bigScreen",
+        "fieldType": "Boolean"
+      },
+      "module": {
+        "fieldName": "module",
+        "fieldType": "Boolean"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String"
+      },
+      "h": {
+        "fieldName": "h",
+        "fieldType": "Integer"
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String"
+      },
+      "content": {
+        "fieldName": "content",
+        "fieldType": "List<PageComponentDto>"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "SysTabDto",
+    "typeName": "SysTab",
+    "title": "视图数据",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "orderType": {
+        "fieldName": "orderType",
+        "fieldType": "String"
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String",
+        "title": "数据范围",
+        "placeholder": ""
+      },
+      "entityId": {
+        "fieldName": "entityId",
+        "fieldType": "String"
+      },
+      "formShowType": {
+        "fieldName": "formShowType",
+        "fieldType": "String"
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer"
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String"
+      },
+      "sysTabVisitDtos": {
+        "fieldName": "sysTabVisitDtos",
+        "fieldType": "List<SysTabVisitDto>"
+      },
+      "sysTabFields": {
+        "fieldName": "sysTabFields",
+        "fieldType": "List<SysTabField>"
+      },
+      "viewType": {
+        "fieldName": "viewType",
+        "fieldType": "String"
+      },
+      "orderFieldName": {
+        "fieldName": "orderFieldName",
+        "fieldType": "String"
+      },
+      "orderDirection": {
+        "fieldName": "orderDirection",
+        "fieldType": "String"
+      },
+      "sysTabButtons": {
+        "fieldName": "sysTabButtons",
+        "fieldType": "List<SysTabButton>"
+      },
+      "dataLevel": {
+        "fieldName": "dataLevel",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "SysTabVisitDto",
+    "typeName": "SysTabVisit",
+    "title": "视图角色对象绑定表单",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "sysTabId": {
+        "fieldName": "sysTabId",
+        "fieldType": "String"
+      },
+      "buttons": {
+        "fieldName": "buttons",
+        "fieldType": "List<SysTabVisitButton>"
+      },
+      "allButton": {
+        "fieldName": "allButton",
+        "fieldType": "Boolean"
+      },
+      "sysDeptId": {
+        "fieldName": "sysDeptId",
+        "fieldType": "String"
+      },
+      "sysUserId": {
+        "fieldName": "sysUserId",
+        "fieldType": "String"
+      },
+      "sysGroupId": {
+        "fieldName": "sysGroupId",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "SysUserDto",
+    "typeName": "SysUser",
+    "title": "用户信息",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String"
+      },
+      "sysUserGroup_sysGroupId": {
+        "fieldName": "sysUserGroup_sysGroupId",
+        "fieldType": "List<String>"
+      },
+      "tel": {
+        "fieldName": "tel",
+        "fieldType": "String"
+      },
+      "sysDeptId": {
+        "fieldName": "sysDeptId",
+        "fieldType": "String"
+      },
+      "avatar": {
+        "fieldName": "avatar",
+        "fieldType": "String"
+      },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String"
+      },
+      "idno": {
+        "fieldName": "idno",
+        "fieldType": "String"
+      },
+      "email": {
+        "fieldName": "email",
+        "fieldType": "String"
+      },
+      "username": {
+        "fieldName": "username",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "UserDataMoveDto",
+    "typeName": "SysUser",
+    "title": "数据迁移对象",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "ids": {
+        "fieldName": "ids",
+        "fieldType": "List<String>",
+        "title": "来源多个用户id",
+        "placeholder": ""
+      },
+      "targetUserId": {
+        "fieldName": "targetUserId",
+        "fieldType": "String",
+        "title": "目标用户",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "SaveBean",
+    "parentsName": [
+      "SaveBean"
+    ],
+    "entityName": "UserPasswordModifyDto",
+    "typeName": "SysUser",
+    "title": "密码修改dto",
+    "packageName": "cn.wwwlike.sys.dto",
+    "tags": {
+      "password": {
+        "fieldName": "password",
+        "fieldType": "String",
+        "title": "原密码",
+        "placeholder": ""
+      },
+      "newPassword": {
+        "fieldName": "newPassword",
+        "fieldType": "String",
+        "title": "新密码",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "Button",
+    "title": "按钮",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "resourcesEntityId": {
+        "fieldName": "resourcesEntityId",
+        "fieldType": "String",
+        "title": "目标实体",
+        "placeholder": "和当前页面对应实体有关"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String",
+        "title": "所在页面",
+        "placeholder": "有值表示为该页面用户手动创建的按钮，菜单清除时按钮清除"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String",
+        "title": "图标",
+        "placeholder": ""
+      },
+      "tooltip": {
+        "fieldName": "tooltip",
+        "fieldType": "String",
+        "title": "按钮说明",
+        "placeholder": ""
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String",
+        "title": "按钮启用条件",
+        "placeholder": ""
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String",
+        "title": "按钮名称",
+        "placeholder": ""
+      },
+      "sysResourcesId": {
+        "fieldName": "sysResourcesId",
+        "fieldType": "String",
+        "title": "触发动作",
+        "placeholder": "采用接口"
+      },
+      "actionType": {
+        "fieldName": "actionType",
+        "fieldType": "String",
+        "title": "动作类型",
+        "placeholder": "create|edit|api"
+      },
+      "sysBtn": {
+        "fieldName": "sysBtn",
+        "fieldType": "Boolean",
+        "title": "",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "model": {
+        "fieldName": "model",
+        "fieldType": "String",
+        "title": "表单模型",
+        "placeholder": ""
+      },
+      "formFields": {
+        "fieldName": "formFields",
+        "fieldType": "String",
+        "title": "表单可见字段",
+        "placeholder": "如果是表单可指定仅修改部分字段可见,多字段之间逗号分隔"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "ButtonField",
+    "title": "按钮字段配置",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "val": {
+        "fieldName": "val",
+        "fieldType": "String",
+        "title": "字段值",
+        "placeholder": ""
+      },
+      "formFieldId": {
+        "fieldName": "formFieldId",
+        "fieldType": "String",
+        "title": "字段",
+        "placeholder": ""
+      },
+      "fieldName": {
+        "fieldName": "fieldName",
+        "fieldType": "String"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "buttonId": {
+        "fieldName": "buttonId",
+        "fieldType": "String",
+        "title": "所在按钮",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "Form",
+    "title": "模型表",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "formDesc": {
+        "fieldName": "formDesc",
+        "fieldType": "String",
+        "title": "填报说明",
+        "placeholder": "表单填报指导说明"
+      },
+      "itemType": {
+        "fieldName": "itemType",
+        "fieldType": "String",
+        "title": "模型分类",
+        "placeholder": ""
+      },
+      "flowJson": {
+        "fieldName": "flowJson",
+        "fieldType": "String",
+        "title": "流程脚本",
+        "placeholder": ""
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String",
+        "title": "已关联菜单",
+        "placeholder": ""
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String",
+        "title": "图标",
+        "placeholder": ""
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String",
+        "title": "模型名称",
+        "placeholder": ""
+      },
+      "type": {
+        "fieldName": "type",
+        "fieldType": "String",
+        "title": "模型标识",
+        "placeholder": ""
+      },
+      "tableName": {
+        "fieldName": "tableName",
+        "fieldType": "String",
+        "title": "表名",
+        "placeholder": ""
+      },
+      "unpublishJson": {
+        "fieldName": "unpublishJson",
+        "fieldType": "String",
+        "title": "待发布的流程脚本",
+        "placeholder": ""
+      },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String",
+        "title": "发布状态",
+        "placeholder": "0.创建中 1.已发布 2. 待重启发布 3. 待重启更新"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      },
+      "terse": {
+        "fieldName": "terse",
+        "fieldType": "Boolean",
+        "title": "紧凑布局",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "entityType": {
+        "fieldName": "entityType",
+        "fieldType": "String",
+        "title": "关联实体type",
+        "placeholder": ""
+      },
+      "typeParentsStr": {
+        "fieldName": "typeParentsStr",
+        "fieldType": "String",
+        "title": "父类集合",
+        "placeholder": ""
+      },
+      "entityId": {
+        "fieldName": "entityId",
+        "fieldType": "String",
+        "title": "关联实体",
+        "placeholder": "实体存id"
+      },
+      "modelSize": {
+        "fieldName": "modelSize",
+        "fieldType": "Integer",
+        "title": "每行列数",
+        "placeholder": ""
+      },
+      "sysAppId": {
+        "fieldName": "sysAppId",
+        "fieldType": "String",
+        "title": "所属应用",
+        "placeholder": ""
+      },
+      "helpDoc": {
+        "fieldName": "helpDoc",
+        "fieldType": "String",
+        "title": "帮助文档",
+        "placeholder": "开发环境时给的开发人员的提示"
+      },
+      "unpublishForm": {
+        "fieldName": "unpublishForm",
+        "fieldType": "String",
+        "title": "待发布的表单JSON",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "typeClass": {
+        "fieldName": "typeClass",
+        "fieldType": "String",
+        "title": "完整类名",
+        "placeholder": ""
+      },
+      "orders": {
+        "fieldName": "orders",
+        "fieldType": "String",
+        "title": "默认排序",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "FormField",
+    "title": "模型字段信息",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "pathName": {
+        "fieldName": "pathName",
+        "fieldType": "String",
+        "title": "全路径",
+        "placeholder": ""
+      },
+      "x_decorator_props$gridSpan": {
+        "fieldName": "x_decorator_props$gridSpan",
+        "fieldType": "Integer",
+        "title": "对应 x-decorator-props.gridSpan属性",
+        "placeholder": ""
+      },
+      "fieldName": {
+        "fieldName": "fieldName",
+        "fieldType": "String",
+        "title": "字段标识",
+        "placeholder": ""
+      },
+      "x_decorator_props$labelAlign": {
+        "fieldName": "x_decorator_props$labelAlign",
+        "fieldType": "String",
+        "title": "label位置 对齐 left",
+        "placeholder": ""
+      },
+      "minLength": {
+        "fieldName": "minLength",
+        "fieldType": "Integer",
+        "title": "最小长度",
+        "placeholder": ""
+      },
+      "description": {
+        "fieldName": "description",
+        "fieldType": "String",
+        "title": "描述",
+        "placeholder": ""
+      },
+      "entityFieldName": {
+        "fieldName": "entityFieldName",
+        "fieldType": "String",
+        "title": "字段来源实体对应字段名",
+        "placeholder": ""
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String",
+        "title": "字段名",
+        "placeholder": ""
+      },
+      "x_component_props$placeholder": {
+        "fieldName": "x_component_props$placeholder",
+        "fieldType": "String",
+        "title": "描述信息 对应 x-component-props.placeholder",
+        "placeholder": ""
+      },
+      "required": {
+        "fieldName": "required",
+        "fieldType": "boolean",
+        "title": "必填",
+        "placeholder": ""
+      },
+      "modify_read": {
+        "fieldName": "modify_read",
+        "fieldType": "boolean",
+        "title": "修改时只读",
+        "placeholder": "不可修改"
+      },
+      "dbLength": {
+        "fieldName": "dbLength",
+        "fieldType": "Integer",
+        "title": "数据库字段长度",
+        "placeholder": ""
+      },
+      "dictCode": {
+        "fieldName": "dictCode",
+        "fieldType": "String",
+        "title": "字典的code",
+        "placeholder": ""
+      },
+      "x_decorator_props$layout": {
+        "fieldName": "x_decorator_props$layout",
+        "fieldType": "String",
+        "title": "label位置 水平 vertical",
+        "placeholder": ""
+      },
+      "divider": {
+        "fieldName": "divider",
+        "fieldType": "boolean",
+        "title": "分组",
+        "placeholder": ""
+      },
+      "dataIndex": {
+        "fieldName": "dataIndex",
+        "fieldType": "String",
+        "title": "formliy里的字段名称，默认一致",
+        "placeholder": ""
+      },
+      "dividerLabel": {
+        "fieldName": "dividerLabel",
+        "fieldType": "String",
+        "title": "分组名称",
+        "placeholder": ""
+      },
+      "x_decorator": {
+        "fieldName": "x_decorator",
+        "fieldType": "String",
+        "title": "包裹组件",
+        "placeholder": ""
+      },
+      "disabled": {
+        "fieldName": "disabled",
+        "fieldType": "Boolean",
+        "title": "禁用",
+        "placeholder": ""
+      },
+      "x_disabled": {
+        "fieldName": "x_disabled",
+        "fieldType": "boolean",
+        "title": "只读",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "hideLabel": {
+        "fieldName": "hideLabel",
+        "fieldType": "boolean",
+        "title": "标签隐藏",
+        "placeholder": ""
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      },
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所属模型",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "entityType": {
+        "fieldName": "entityType",
+        "fieldType": "String",
+        "title": "字段值实际来源实体名称",
+        "placeholder": "如:sysUser的sysDeptId外键创建在user表里，但是实际数据来自sysDept"
+      },
+      "dataType": {
+        "fieldName": "dataType",
+        "fieldType": "String",
+        "title": "字段类别",
+        "placeholder": "basic,array,object"
+      },
+      "x_read_pretty": {
+        "fieldName": "x_read_pretty",
+        "fieldType": "Boolean",
+        "title": "只读",
+        "placeholder": ""
+      },
+      "create_hide": {
+        "fieldName": "create_hide",
+        "fieldType": "boolean",
+        "title": "新增时隐藏",
+        "placeholder": ""
+      },
+      "readOnly": {
+        "fieldName": "readOnly",
+        "fieldType": "Boolean",
+        "title": "只读",
+        "placeholder": ""
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "顺序",
+        "placeholder": ""
+      },
+      "javaType": {
+        "fieldName": "javaType",
+        "fieldType": "String",
+        "title": "java类型",
+        "placeholder": ""
+      },
+      "sysField": {
+        "fieldName": "sysField",
+        "fieldType": "Boolean",
+        "title": "系统字段",
+        "placeholder": ""
+      },
+      "initialValues": {
+        "fieldName": "initialValues",
+        "fieldType": "String",
+        "title": "默认值",
+        "placeholder": ""
+      },
+      "validate_unique": {
+        "fieldName": "validate_unique",
+        "fieldType": "boolean",
+        "title": "唯一不重复",
+        "placeholder": "validate是内置远程校验规则，触发form内部远程数据校验"
+      },
+      "x_display": {
+        "fieldName": "x_display",
+        "fieldType": "String",
+        "title": "显示状态",
+        "placeholder": ""
+      },
+      "x_component": {
+        "fieldName": "x_component",
+        "fieldType": "String",
+        "title": "采用组件",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "maximum": {
+        "fieldName": "maximum",
+        "fieldType": "Double",
+        "title": "最大值",
+        "placeholder": ""
+      },
+      "fieldType": {
+        "fieldName": "fieldType",
+        "fieldType": "String",
+        "title": "字段类型",
+        "placeholder": "ts类型"
+      },
+      "minimum": {
+        "fieldName": "minimum",
+        "fieldType": "Double",
+        "title": "最小值",
+        "placeholder": ""
+      },
+      "maxLength": {
+        "fieldName": "maxLength",
+        "fieldType": "Integer",
+        "title": "最大长度",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "FormNo",
+    "title": "单据编号规则",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "formFieldId": {
+        "fieldName": "formFieldId",
+        "fieldType": "String",
+        "title": "单据字段",
+        "placeholder": ""
+      },
+      "fieldName": {
+        "fieldName": "fieldName",
+        "fieldType": "String",
+        "title": "表单字段",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "snLength": {
+        "fieldName": "snLength",
+        "fieldType": "Integer",
+        "title": "流水号位数",
+        "placeholder": ""
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "规则排序",
+        "placeholder": ""
+      },
+      "type": {
+        "fieldName": "type",
+        "fieldType": "String",
+        "title": "序号类型",
+        "placeholder": ""
+      },
+      "snStart": {
+        "fieldName": "snStart",
+        "fieldType": "Integer",
+        "title": "流水号初始值",
+        "placeholder": ""
+      },
+      "dateType": {
+        "fieldName": "dateType",
+        "fieldType": "String"
+      },
+      "dateLast": {
+        "fieldName": "dateLast",
+        "fieldType": "String",
+        "title": "上一个编号的日期",
+        "placeholder": ""
+      },
+      "resetRule": {
+        "fieldName": "resetRule",
+        "fieldType": "String",
+        "title": "重置规则",
+        "placeholder": "目前未启用，当前是根据日期类型，当日期到新的一天(月/年)时，自动重置"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "staticText": {
+        "fieldName": "staticText",
+        "fieldType": "String",
+        "title": "静态文本",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "snLast": {
+        "fieldName": "snLast",
+        "fieldType": "Integer",
+        "title": "流水号最近值",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "entityName": "FormNoConf",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity",
+      "IFormReaction"
+    ],
+    "entityName": "FormReaction",
+    "title": "表单响应规则",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "formFieldId": {
+        "fieldName": "formFieldId",
+        "fieldType": "String",
+        "title": "联动字段",
+        "placeholder": ""
+      },
+      "fieldName": {
+        "fieldName": "fieldName",
+        "fieldType": "String",
+        "title": "字段标识",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String",
+        "title": "依赖条件",
+        "placeholder": "依赖其他字段数据值逻辑满足的情况"
+      },
+      "label": {
+        "fieldName": "label",
+        "fieldType": "String",
+        "title": "标题",
+        "placeholder": ""
+      },
+      "propName": {
+        "fieldName": "propName",
+        "fieldType": "String",
+        "title": "联动属性",
+        "placeholder": ""
+      },
+      "regexStr": {
+        "fieldName": "regexStr",
+        "fieldType": "String",
+        "title": "限定输入格式",
+        "placeholder": "正则表达式(fieldName本身值满足正则规则的情况)"
+      },
+      "conditionArray": {
+        "fieldName": "conditionArray",
+        "fieldType": "String",
+        "title": "用户条件数组",
+        "placeholder": "用户属性,in/notIn,用户属性值-> sysUserIds,in,userId1,userId2,userid3 ->表示当用户在user1,2,3条件下当前联动属性成立"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "propValue": {
+        "fieldName": "propValue",
+        "fieldType": "String",
+        "title": "联动属性值",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "PageApiParam",
+    "title": "API参数设置",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "pageComponentPropId": {
+        "fieldName": "pageComponentPropId",
+        "fieldType": "String",
+        "title": "组件属性",
+        "placeholder": ""
+      },
+      "sourceType": {
+        "fieldName": "sourceType",
+        "fieldType": "String",
+        "title": "参数值来源",
+        "placeholder": "系统值/常量值/对象字段取值field/接口取值"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "paramVal": {
+        "fieldName": "paramVal",
+        "fieldType": "String",
+        "title": "参数值",
+        "placeholder": "取值是sourceType=field时则存在 key:value形式，key表示父表单type，参数来源于表单的字段"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "paramName": {
+        "fieldName": "paramName",
+        "fieldType": "String",
+        "title": "参数名称",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "PageComponent",
+    "title": "单元组件信息",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "more": {
+        "fieldName": "more",
+        "fieldType": "String",
+        "title": "查看更多",
+        "placeholder": "路由地址"
+      },
+      "h": {
+        "fieldName": "h",
+        "fieldType": "Integer",
+        "title": "栅格高度",
+        "placeholder": ""
+      },
+      "i": {
+        "fieldName": "i",
+        "fieldType": "String"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String",
+        "title": "视图过滤",
+        "placeholder": ""
+      },
+      "pageKey": {
+        "fieldName": "pageKey",
+        "fieldType": "String",
+        "title": "单元编号",
+        "placeholder": "系统命名comp开头"
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "排序号",
+        "placeholder": ""
+      },
+      "component": {
+        "fieldName": "component",
+        "fieldType": "String",
+        "title": "组件标识",
+        "placeholder": "英文组件名称 compData里配置"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "w": {
+        "fieldName": "w",
+        "fieldType": "Integer",
+        "title": "栅格宽度",
+        "placeholder": ""
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "单元名称",
+        "placeholder": ""
+      },
+      "x": {
+        "fieldName": "x",
+        "fieldType": "Integer",
+        "title": "栅格横向位置",
+        "placeholder": ""
+      },
+      "layoutTop": {
+        "fieldName": "layoutTop",
+        "fieldType": "Boolean",
+        "title": "固定放置在顶端",
+        "placeholder": "页面级有效"
+      },
+      "componentPropJson": {
+        "fieldName": "componentPropJson",
+        "fieldType": "String",
+        "title": "组件属性数据",
+        "placeholder": ""
+      },
+      "y": {
+        "fieldName": "y",
+        "fieldType": "Integer",
+        "title": "栅格纵坐标位置",
+        "placeholder": ""
+      },
+      "z": {
+        "fieldName": "z",
+        "fieldType": "Integer",
+        "title": "布局的层次",
+        "placeholder": ""
+      },
+      "pageLayoutId": {
+        "fieldName": "pageLayoutId",
+        "fieldType": "String",
+        "title": "组件单元所在页面",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "moduleId": {
+        "fieldName": "moduleId",
+        "fieldType": "String",
+        "title": "模块id(pageLayoutId)",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "PageComponentProp",
+    "title": "组件属性",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "relateVal": {
+        "fieldName": "relateVal",
+        "fieldType": "String",
+        "title": "接口数据适配",
+        "placeholder": "match->func-key jie"
+      },
+      "formFieldId": {
+        "fieldName": "formFieldId",
+        "fieldType": "String",
+        "title": "关联字段",
+        "placeholder": "FormField里选择x_component后，其属性信息在本表里存储"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String",
+        "title": "接口过滤条件",
+        "placeholder": "来源于接口则可以配置一个通用的过滤条件组"
+      },
+      "propVal": {
+        "fieldName": "propVal",
+        "fieldType": "String",
+        "title": "属性值",
+        "placeholder": ""
+      },
+      "propName": {
+        "fieldName": "propName",
+        "fieldType": "String",
+        "title": "属性名称",
+        "placeholder": ""
+      },
+      "filterConnectionType": {
+        "fieldName": "filterConnectionType",
+        "fieldType": "String",
+        "title": "过滤条件的连接方式",
+        "placeholder": "(准备移除，采用conditionJson方式后端过滤)"
+      },
+      "pageComponentId": {
+        "fieldName": "pageComponentId",
+        "fieldType": "String",
+        "title": "关联组件",
+        "placeholder": "与关联字段二选1,pageComponentId有值的场景是组件配置"
+      },
+      "sourceType": {
+        "fieldName": "sourceType",
+        "fieldType": "String",
+        "title": "属性值来源",
+        "placeholder": "系统值/常量值/对象字段取值/接口取值"
+      },
+      "subName": {
+        "fieldName": "subName",
+        "fieldType": "String",
+        "title": "子属性名称",
+        "placeholder": "(数组属性)"
+      },
+      "listNo": {
+        "fieldName": "listNo",
+        "fieldType": "Integer",
+        "title": "数组排序号",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "filterFunc": {
+        "fieldName": "filterFunc",
+        "fieldType": "String",
+        "title": "数据过滤",
+        "placeholder": "(准备移除，采用conditionJson方式后端过滤)"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "PageLayout",
+    "title": "页面布局",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "border": {
+        "fieldName": "border",
+        "fieldType": "Boolean",
+        "title": "card布局",
+        "placeholder": "有刷新和放大按钮，且页面会有一定的间隔"
+      },
+      "img": {
+        "fieldName": "img",
+        "fieldType": "String",
+        "title": "图标",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "componentOver": {
+        "fieldName": "componentOver",
+        "fieldType": "Boolean",
+        "title": "组件覆盖",
+        "placeholder": ""
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "module": {
+        "fieldName": "module",
+        "fieldType": "Boolean",
+        "title": "作为模块使用",
+        "placeholder": ""
+      },
+      "h": {
+        "fieldName": "h",
+        "fieldType": "Integer",
+        "title": "组件页面高度",
+        "placeholder": ""
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String",
+        "title": "访问地址",
+        "placeholder": ""
+      },
+      "pageType": {
+        "fieldName": "pageType",
+        "fieldType": "String",
+        "title": "类面类型",
+        "placeholder": ""
+      },
+      "bigScreen": {
+        "fieldName": "bigScreen",
+        "fieldType": "Boolean",
+        "title": "大屏模式",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "页面名称",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysApp",
+    "title": "应用",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "应用名称",
+        "placeholder": ""
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String",
+        "title": "图标",
+        "placeholder": ""
+      },
+      "appKey": {
+        "fieldName": "appKey",
+        "fieldType": "String",
+        "title": "应用标识",
+        "placeholder": ""
+      },
+      "remark": {
+        "fieldName": "remark",
+        "fieldType": "String",
+        "title": "描述",
+        "placeholder": ""
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "排序号",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity",
+      "ITree"
+    ],
+    "entityName": "SysDept",
+    "title": "科室部门",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "编码",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "pcode": {
+        "fieldName": "pcode",
+        "fieldType": "String",
+        "title": "上级部门",
+        "placeholder": ""
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "部门名称",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysDict",
+    "title": "字典表",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "val": {
+        "fieldName": "val",
+        "fieldType": "String",
+        "title": "选项值",
+        "placeholder": ""
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "字典项编码",
+        "placeholder": "直接绑定字段路径如：实体_字段名,如果字段上有code就使用系统的字典"
+      },
+      "color": {
+        "fieldName": "color",
+        "fieldType": "String",
+        "title": "列表色块",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "level": {
+        "fieldName": "level",
+        "fieldType": "Integer",
+        "title": "字典层级",
+        "placeholder": ""
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String",
+        "title": "归属应用",
+        "placeholder": ""
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "排序号",
+        "placeholder": ""
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String",
+        "title": "选项名",
+        "placeholder": ""
+      },
+      "sys": {
+        "fieldName": "sys",
+        "fieldType": "Boolean",
+        "title": "系统项",
+        "placeholder": "通过类文件导入的都是系统项，不能删除"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysFile",
+    "title": "文件",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "fileName": {
+        "fieldName": "fileName",
+        "fieldType": "String",
+        "title": "系统唯一名",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "relationId": {
+        "fieldName": "relationId",
+        "fieldType": "String",
+        "title": "关联业务id",
+        "placeholder": "多对1时使用该字段"
+      },
+      "viewMode": {
+        "fieldName": "viewMode",
+        "fieldType": "String",
+        "title": "文件展现形式",
+        "placeholder": "预留"
+      },
+      "type": {
+        "fieldName": "type",
+        "fieldType": "String",
+        "title": "文件类别",
+        "placeholder": "归类，同一业务可以有不同类别场景的文件，如人才关联了合同类，基本信息类"
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String",
+        "title": "文件访问地址",
+        "placeholder": ""
+      },
+      "fileSize": {
+        "fieldName": "fileSize",
+        "fieldType": "long",
+        "title": "文件大小",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "原文件名",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "projectId": {
+        "fieldName": "projectId",
+        "fieldType": "String",
+        "title": "业务id",
+        "placeholder": "主体业务id(relation是实际业务的，project是该业务挂载关联的如：project是客户，relation是客户下的订单,那么要看客户所有的文件就只用project)"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysGroup",
+    "title": "权限组",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "权限组名称",
+        "placeholder": ""
+      },
+      "remark": {
+        "fieldName": "remark",
+        "fieldType": "String",
+        "title": "描述",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity",
+      "ITree"
+    ],
+    "entityName": "SysMenu",
+    "title": "菜单",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "列表模型",
+        "placeholder": ""
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "编码",
+        "placeholder": "(系统自动生成)"
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "pcode": {
+        "fieldName": "pcode",
+        "fieldType": "String",
+        "title": "上级菜单",
+        "placeholder": ""
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String",
+        "title": "图标",
+        "placeholder": ""
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String",
+        "title": "视图查询条件",
+        "placeholder": ""
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "排序号",
+        "placeholder": ""
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String",
+        "title": "路由地址",
+        "placeholder": "路由信息在router/index.tsx里定义"
+      },
+      "sysAppId": {
+        "fieldName": "sysAppId",
+        "fieldType": "String",
+        "title": "应用",
+        "placeholder": ""
+      },
+      "pageType": {
+        "fieldName": "pageType",
+        "fieldType": "String",
+        "title": "页面类型",
+        "placeholder": "模板|视图|自定义页面"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "菜单名称",
+        "placeholder": ""
+      },
+      "pageLayoutId": {
+        "fieldName": "pageLayoutId",
+        "fieldType": "String",
+        "title": "图表看板页面",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysNews",
+    "title": "通知公告",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String",
+        "title": "标题",
+        "placeholder": ""
+      },
+      "content": {
+        "fieldName": "content",
+        "fieldType": "String",
+        "title": "内容",
+        "placeholder": ""
+      },
+      "total": {
+        "fieldName": "total",
+        "fieldType": "Integer",
+        "title": "查看次数",
+        "placeholder": ""
+      },
+      "pdf": {
+        "fieldName": "pdf",
+        "fieldType": "String",
+        "title": "政策文件",
+        "placeholder": ""
+      },
+      "top": {
+        "fieldName": "top",
+        "fieldType": "Boolean",
+        "title": "置顶",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "Boolean",
+        "title": "是否发布",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "sysGroupIds": {
+        "fieldName": "sysGroupIds",
+        "fieldType": "String",
+        "title": "发现",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysPrintTemplate",
+    "title": "打印模版",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "关联模型",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "模版名称",
+        "placeholder": ""
+      },
+      "stamp": {
+        "fieldName": "stamp",
+        "fieldType": "String",
+        "title": "电子印章",
+        "placeholder": ""
+      },
+      "templateHtml": {
+        "fieldName": "templateHtml",
+        "fieldType": "String",
+        "title": "模版内容",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysResources",
+    "title": "权限资源",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "权限code",
+        "placeholder": "接口URL用“：”分隔的形式 sysUser:save ->sysUser/save"
+      },
+      "pcode": {
+        "fieldName": "pcode",
+        "fieldType": "String",
+        "title": "上级资源",
+        "placeholder": "当前地址包涵的地址对应的接口及上级资源 /sysUser/save/userDto的上级资源是 /save/sysUser"
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String",
+        "title": "归属菜单",
+        "placeholder": "关联后则可以参与与角色的关联"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String",
+        "title": "图标",
+        "placeholder": ""
+      },
+      "remark": {
+        "fieldName": "remark",
+        "fieldType": "String",
+        "title": "接口说明",
+        "placeholder": "请简洁描述接口的使用场景"
+      },
+      "sysRoleId": {
+        "fieldName": "sysRoleId",
+        "fieldType": "String",
+        "title": "归属角色",
+        "placeholder": "资源与菜单关联后则可以参与与角色的关联"
+      },
+      "returnGeneric": {
+        "fieldName": "returnGeneric",
+        "fieldType": "String",
+        "title": "出参泛型",
+        "placeholder": ""
+      },
+      "paramType": {
+        "fieldName": "paramType",
+        "fieldType": "String",
+        "title": "dto,vo,req,bean,other",
+        "placeholder": ""
+      },
+      "param": {
+        "fieldName": "param",
+        "fieldType": "String",
+        "title": "参数名",
+        "placeholder": ""
+      },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String",
+        "title": "按钮状态",
+        "placeholder": "1. 可用 2. 待启用(需程序重启)"
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "javaName": {
+        "fieldName": "javaName",
+        "fieldType": "String",
+        "title": "接口注释",
+        "placeholder": ""
+      },
+      "methedType": {
+        "fieldName": "methedType",
+        "fieldType": "String",
+        "title": "请求方式",
+        "placeholder": ""
+      },
+      "paramGeneric": {
+        "fieldName": "paramGeneric",
+        "fieldType": "String",
+        "title": "参数泛型",
+        "placeholder": ""
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      },
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "所属模型",
+        "placeholder": ""
+      },
+      "fullClassName": {
+        "fieldName": "fullClassName",
+        "fieldType": "String",
+        "title": "控制器名",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "entityType": {
+        "fieldName": "entityType",
+        "fieldType": "String",
+        "title": "实体标识",
+        "placeholder": ""
+      },
+      "methodName": {
+        "fieldName": "methodName",
+        "fieldType": "String",
+        "title": "方法名",
+        "placeholder": ""
+      },
+      "permission": {
+        "fieldName": "permission",
+        "fieldType": "String",
+        "title": "授权方式",
+        "placeholder": "single(独立授权)/noAuth无需授权/extend继承授权"
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String",
+        "title": "接口地址",
+        "placeholder": "全局唯一"
+      },
+      "paramAnnotation": {
+        "fieldName": "paramAnnotation",
+        "fieldType": "String",
+        "title": "参数注解",
+        "placeholder": ""
+      },
+      "returnWrapper": {
+        "fieldName": "returnWrapper",
+        "fieldType": "String",
+        "title": "出参模型",
+        "placeholder": ""
+      },
+      "actionType": {
+        "fieldName": "actionType",
+        "fieldType": "String",
+        "title": "接口文件",
+        "placeholder": "className"
+      },
+      "paramWrapper": {
+        "fieldName": "paramWrapper",
+        "fieldType": "String",
+        "title": "参数模型",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "资源名称",
+        "placeholder": ""
+      },
+      "returnType": {
+        "fieldName": "returnType",
+        "fieldType": "String",
+        "title": "出参模型分类",
+        "placeholder": ""
+      },
+      "resourceType": {
+        "fieldName": "resourceType",
+        "fieldType": "String",
+        "title": "接口分类",
+        "placeholder": "add/edit/delete/query/import/export"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysTab",
+    "title": "视图页签",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "orderType": {
+        "fieldName": "orderType",
+        "fieldType": "String",
+        "title": "排序方式",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String",
+        "title": "所属页面",
+        "placeholder": ""
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String",
+        "title": "图标",
+        "placeholder": ""
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String",
+        "title": "数据范围",
+        "placeholder": ""
+      },
+      "formShowType": {
+        "fieldName": "formShowType",
+        "fieldType": "String",
+        "title": "列表按钮展示位置",
+        "placeholder": ""
+      },
+      "entityId": {
+        "fieldName": "entityId",
+        "fieldType": "String",
+        "title": "实体id",
+        "placeholder": "冗余方便数据范围取模型"
+      },
+      "sort": {
+        "fieldName": "sort",
+        "fieldType": "Integer",
+        "title": "视图顺序",
+        "placeholder": ""
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String",
+        "title": "视图标题",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "orderFieldName": {
+        "fieldName": "orderFieldName",
+        "fieldType": "String",
+        "title": "排序字段",
+        "placeholder": ""
+      },
+      "viewType": {
+        "fieldName": "viewType",
+        "fieldType": "String",
+        "title": "视图类型",
+        "placeholder": ""
+      },
+      "orderDirection": {
+        "fieldName": "orderDirection",
+        "fieldType": "String",
+        "title": "排序方向",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "dataLevel": {
+        "fieldName": "dataLevel",
+        "fieldType": "String",
+        "title": "数据范围",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysTabButton",
+    "title": "视图按钮",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "sysTabId": {
+        "fieldName": "sysTabId",
+        "fieldType": "String",
+        "title": "视图",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "buttonId": {
+        "fieldName": "buttonId",
+        "fieldType": "String",
+        "title": "视图绑定按钮",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "buttonSort": {
+        "fieldName": "buttonSort",
+        "fieldType": "Integer",
+        "title": "按钮排序",
+        "placeholder": ""
+      },
+      "buttonPosition": {
+        "fieldName": "buttonPosition",
+        "fieldType": "String",
+        "title": "按钮位置",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysTabField",
+    "title": "视图字段",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "sysTabId": {
+        "fieldName": "sysTabId",
+        "fieldType": "String",
+        "title": "视图",
+        "placeholder": ""
+      },
+      "formFieldId": {
+        "fieldName": "formFieldId",
+        "fieldType": "String",
+        "title": "显示字段",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "formFieldSort": {
+        "fieldName": "formFieldSort",
+        "fieldType": "Integer",
+        "title": "字段排序",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysTabVisit",
+    "title": "视图访问授权",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "sysTabId": {
+        "fieldName": "sysTabId",
+        "fieldType": "String",
+        "title": "视图",
+        "placeholder": ""
+      },
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "allButton": {
+        "fieldName": "allButton",
+        "fieldType": "Boolean",
+        "title": " 是否拥有所有按钮权限",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "sysDeptId": {
+        "fieldName": "sysDeptId",
+        "fieldType": "String",
+        "title": " 部门",
+        "placeholder": ""
+      },
+      "sysUserId": {
+        "fieldName": "sysUserId",
+        "fieldType": "String",
+        "title": " 用户",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "sysGroupId": {
+        "fieldName": "sysGroupId",
+        "fieldType": "String",
+        "title": " 权限组",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysTabVisitButton",
+    "title": "视图授权详情",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "sysTabButtonId": {
+        "fieldName": "sysTabButtonId",
+        "fieldType": "String",
+        "title": "对象访问的按钮",
+        "placeholder": ""
+      },
+      "sysTabVisitId": {
+        "fieldName": "sysTabVisitId",
+        "fieldType": "String",
+        "title": "视图访问对象",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity",
+      "IUser"
+    ],
+    "entityName": "SysUser",
+    "title": "用户表",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "thirdId": {
+        "fieldName": "thirdId",
+        "fieldType": "String",
+        "title": "第三方id",
+        "placeholder": ""
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "sysDeptId": {
+        "fieldName": "sysDeptId",
+        "fieldType": "String",
+        "title": "部门",
+        "placeholder": ""
+      },
+      "avatar": {
+        "fieldName": "avatar",
+        "fieldType": "String",
+        "title": "头像",
+        "placeholder": ""
+      },
+      "idno": {
+        "fieldName": "idno",
+        "fieldType": "String",
+        "title": "证件号",
+        "placeholder": "请填写18位身份证号码"
+      },
+      "superUser": {
+        "fieldName": "superUser",
+        "fieldType": "Boolean",
+        "title": "超级用户",
+        "placeholder": ""
+      },
+      "password": {
+        "fieldName": "password",
+        "fieldType": "String",
+        "title": "密码",
+        "placeholder": ""
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "姓名",
+        "placeholder": ""
+      },
+      "tel": {
+        "fieldName": "tel",
+        "fieldType": "String",
+        "title": "电话",
+        "placeholder": ""
+      },
+      "userType": {
+        "fieldName": "userType",
+        "fieldType": "String",
+        "title": "用户类型",
+        "placeholder": ""
+      },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String",
+        "title": "启用状态",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "email": {
+        "fieldName": "email",
+        "fieldType": "String",
+        "title": "邮箱",
+        "placeholder": ""
+      },
+      "age": {
+        "fieldName": "age",
+        "fieldType": "Integer",
+        "title": "年龄",
+        "placeholder": ""
+      },
+      "username": {
+        "fieldName": "username",
+        "fieldType": "String",
+        "title": "用户名",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysUserGroup",
+    "title": "用户角色关联",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "sysUserId": {
+        "fieldName": "sysUserId",
+        "fieldType": "String",
+        "title": "用户",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "sysGroupId": {
+        "fieldName": "sysGroupId",
+        "fieldType": "String",
+        "title": "角色",
+        "placeholder": ""
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "DbEntity",
+    "parentsName": [
+      "DbEntity"
+    ],
+    "entityName": "SysVar",
+    "title": "系统变量",
+    "packageName": "cn.wwwlike.sys.entity",
+    "tags": {
+      "modifyDate": {
+        "fieldName": "modifyDate",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "修改时间"
+      },
+      "modifyId": {
+        "fieldName": "modifyId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "修订人"
+      },
+      "createId": {
+        "fieldName": "createId",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "创建人"
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "平台名称",
+        "placeholder": ""
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String",
+        "title": "图标1234444",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "主键id"
+      },
+      "status": {
+        "fieldName": "status",
+        "fieldType": "string",
+        "extendsField": true,
+        "title": "删除状态"
+      },
+      "createDate": {
+        "fieldName": "status",
+        "fieldType": "Date",
+        "extendsField": true,
+        "title": "创建时间"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "FormPageReq",
+    "typeName": "Form",
+    "packageName": "cn.wwwlike.sys.req",
+    "tags": {
+      "sysAppId": {
+        "fieldName": "sysAppId",
+        "fieldType": "String",
+        "title": "所属应用",
+        "placeholder": ""
+      },
+      "itemType": {
+        "fieldName": "itemType",
+        "fieldType": "String",
+        "title": "模型类型",
+        "placeholder": ""
+      },
+      "entityType": {
+        "fieldName": "entityType",
+        "fieldType": "String",
+        "title": "关联实体名称",
+        "placeholder": ""
+      },
+      "pager = new PageableRequest()": {
+        "fieldName": "pager = new PageableRequest()",
+        "fieldType": "PageableRequest",
+        "title": "post提交查询后去除了 @JsonIgnore",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "String",
+        "extendsField": true,
+        "title": "模型id",
+        "placeholder": ""
+      },
+      "type": {
+        "fieldName": "type",
+        "fieldType": "String",
+        "title": "模型标识",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "SysDeptPageReq",
+    "typeName": "SysDept",
+    "title": "部门查询条件",
+    "packageName": "cn.wwwlike.sys.req",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "部门结构",
+        "placeholder": ""
+      },
+      "pager = new PageableRequest()": {
+        "fieldName": "pager = new PageableRequest()",
+        "fieldType": "PageableRequest",
+        "title": "post提交查询后去除了 @JsonIgnore",
+        "placeholder": ""
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "SysDictPageReq",
+    "typeName": "SysDict",
+    "title": "字典查询",
+    "packageName": "cn.wwwlike.sys.req",
+    "tags": {
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String"
+      },
+      "pager = new PageableRequest()": {
+        "fieldName": "pager = new PageableRequest()",
+        "fieldType": "PageableRequest",
+        "title": "post提交查询后去除了 @JsonIgnore",
+        "placeholder": ""
+      },
+      "sys": {
+        "fieldName": "sys",
+        "fieldType": "Boolean"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "SysResourcesPageReq",
+    "typeName": "SysResources",
+    "title": "资源页面",
+    "packageName": "cn.wwwlike.sys.req",
+    "tags": {
+      "formId": {
+        "fieldName": "formId",
+        "fieldType": "String",
+        "title": "模型",
+        "placeholder": ""
+      },
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "名称/编码/地址",
+        "placeholder": ""
+      },
+      "code": {
+        "fieldName": "code",
+        "fieldType": "String",
+        "title": "归属菜单",
+        "placeholder": ""
+      },
+      "pager = new PageableRequest()": {
+        "fieldName": "pager = new PageableRequest()",
+        "fieldType": "PageableRequest",
+        "title": "post提交查询后去除了 @JsonIgnore",
+        "placeholder": ""
+      },
+      "sysRoleId": {
+        "fieldName": "sysRoleId",
+        "fieldType": "String",
+        "title": "分配角色",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "PageQuery",
+    "parentsName": [
+      "PageQuery"
+    ],
+    "entityName": "SysUserPageReq",
+    "typeName": "SysUser",
+    "title": "用户列表查询",
+    "packageName": "cn.wwwlike.sys.req",
+    "tags": {
+      "search": {
+        "fieldName": "search",
+        "fieldType": "String",
+        "title": "姓名/手机/证件/用户名",
+        "placeholder": ""
+      },
+      "sysDept_code": {
+        "fieldName": "sysDept_code",
+        "fieldType": "String",
+        "title": "部门",
+        "placeholder": ""
+      },
+      "pager = new PageableRequest()": {
+        "fieldName": "pager = new PageableRequest()",
+        "fieldType": "PageableRequest",
+        "title": "post提交查询后去除了 @JsonIgnore",
+        "placeholder": ""
+      },
+      "id": {
+        "fieldName": "id",
+        "fieldType": "List<String>",
+        "extendsField": true
+      },
+      "username": {
+        "fieldName": "username",
+        "fieldType": "List<String>"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VoBean",
+    "parentsName": [
+      "VoBean"
+    ],
+    "entityName": "ButtonVo",
+    "typeName": "Button",
+    "packageName": "cn.wwwlike.sys.vo",
+    "tags": {
+      "resourcesEntityId": {
+        "fieldName": "resourcesEntityId",
+        "fieldType": "String"
+      },
+      "sysMenuId": {
+        "fieldName": "sysMenuId",
+        "fieldType": "String"
+      },
+      "icon": {
+        "fieldName": "icon",
+        "fieldType": "String"
+      },
+      "tooltip": {
+        "fieldName": "tooltip",
+        "fieldType": "String"
+      },
+      "conditionJson": {
+        "fieldName": "conditionJson",
+        "fieldType": "String"
+      },
+      "title": {
+        "fieldName": "title",
+        "fieldType": "String"
+      },
+      "sysResourcesId": {
+        "fieldName": "sysResourcesId",
+        "fieldType": "String"
+      },
+      "actionType": {
+        "fieldName": "actionType",
+        "fieldType": "String"
+      },
+      "sysBtn": {
+        "fieldName": "sysBtn",
+        "fieldType": "Boolean"
+      },
+      "model": {
+        "fieldName": "model",
+        "fieldType": "String"
+      },
+      "sysResources": {
+        "fieldName": "sysResources",
+        "fieldType": "SysResources"
+      },
+      "formFields": {
+        "fieldName": "formFields",
+        "fieldType": "String"
+      },
+      "fields": {
+        "fieldName": "fields",
+        "fieldType": "List<ButtonField>"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "entityName": "FieldSelect",
+    "title": "关联字段选择的",
+    "packageName": "cn.wwwlike.sys.vo",
+    "tags": {
+      "label": {
+        "fieldName": "label",
+        "fieldType": "String"
+      },
+      "value": {
+        "fieldName": "value",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VoBean",
+    "parentsName": [
+      "VoBean"
+    ],
+    "entityName": "SysResourcesVo",
+    "typeName": "SysResources",
+    "title": "权限视图",
+    "packageName": "cn.wwwlike.sys.vo",
+    "tags": {
+      "paramType": {
+        "fieldName": "paramType",
+        "fieldType": "String"
+      },
+      "permission": {
+        "fieldName": "permission",
+        "fieldType": "String"
+      },
+      "form_sysApp_appKey": {
+        "fieldName": "form_sysApp_appKey",
+        "fieldType": "String",
+        "title": "应用key",
+        "placeholder": ""
+      },
+      "url": {
+        "fieldName": "url",
+        "fieldType": "String"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VoBean",
+    "parentsName": [
+      "VoBean"
+    ],
+    "entityName": "SysTabButtonVo",
+    "typeName": "SysTabButton",
+    "packageName": "cn.wwwlike.sys.vo",
+    "tags": {
+      "sysTab_sysTabVisit": {
+        "fieldName": "sysTab_sysTabVisit",
+        "fieldType": "List<SysTabVisit>",
+        "title": "按钮所在页面的授权对象",
+        "placeholder": ""
+      },
+      "button_sysResources": {
+        "fieldName": "button_sysResources",
+        "fieldType": "SysResources",
+        "title": "页签绑定按钮对应的资源信息",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VoBean",
+    "parentsName": [
+      "VoBean"
+    ],
+    "entityName": "UserDetailVo",
+    "typeName": "SysUser",
+    "title": "用户详细信息",
+    "packageName": "cn.wwwlike.sys.vo",
+    "tags": {
+      "sysUserGroup_sysGroupId": {
+        "fieldName": "sysUserGroup_sysGroupId",
+        "fieldType": "List<String>",
+        "title": "权限组",
+        "placeholder": ""
+      },
+      "avatar": {
+        "fieldName": "avatar",
+        "fieldType": "String",
+        "title": "头像",
+        "placeholder": ""
+      },
+      "sysDeptId": {
+        "fieldName": "sysDeptId",
+        "fieldType": "String",
+        "title": "部门",
+        "placeholder": ""
+      },
+      "btnIds": {
+        "fieldName": "btnIds",
+        "fieldType": "Set<String>",
+        "title": "按钮id集合",
+        "placeholder": "(待加入)"
+      },
+      "codeDept": {
+        "fieldName": "codeDept",
+        "fieldType": "String",
+        "title": "部门编码",
+        "placeholder": ""
+      },
+      "sysDept": {
+        "fieldName": "sysDept",
+        "fieldType": "SysDept",
+        "title": "部门",
+        "placeholder": ""
+      },
+      "superUser": {
+        "fieldName": "superUser",
+        "fieldType": "Boolean",
+        "title": "是否超级管理员",
+        "placeholder": ""
+      },
+      "tabIds": {
+        "fieldName": "tabIds",
+        "fieldType": "Set<String>",
+        "title": "可用视图",
+        "placeholder": ""
+      },
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "姓名",
+        "placeholder": ""
+      },
+      "userType": {
+        "fieldName": "userType",
+        "fieldType": "String",
+        "title": "用户类型(职位)",
+        "placeholder": ""
+      },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String",
+        "title": "用户状态",
+        "placeholder": ""
+      },
+      "menus": {
+        "fieldName": "menus",
+        "fieldType": "List<MenuResourcesDto>",
+        "title": "可用菜单",
+        "placeholder": ""
+      },
+      "username": {
+        "fieldName": "username",
+        "fieldType": "String",
+        "title": "账号",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "VoBean",
+    "parentsName": [
+      "VoBean"
+    ],
+    "entityName": "UserVo",
+    "typeName": "SysUser",
+    "title": "用户列表信息",
+    "packageName": "cn.wwwlike.sys.vo",
+    "tags": {
+      "name": {
+        "fieldName": "name",
+        "fieldType": "String",
+        "title": "用户名",
+        "placeholder": ""
+      },
+      "tel": {
+        "fieldName": "tel",
+        "fieldType": "String",
+        "title": "联系电话",
+        "placeholder": ""
+      },
+      "avatar": {
+        "fieldName": "avatar",
+        "fieldType": "String",
+        "title": "头像",
+        "placeholder": ""
+      },
+      "userType": {
+        "fieldName": "userType",
+        "fieldType": "String",
+        "title": "用户类型",
+        "placeholder": ""
+      },
+      "state": {
+        "fieldName": "state",
+        "fieldType": "String"
+      },
+      "idno": {
+        "fieldName": "idno",
+        "fieldType": "String",
+        "title": "证件号码",
+        "placeholder": ""
+      },
+      "username": {
+        "fieldName": "username",
+        "fieldType": "String",
+        "title": "账号",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "ItemInfo",
+    "parentsName": [
+      "ItemInfo"
+    ],
+    "entityName": "BeanDto",
+    "title": "所有模型dto信息基类",
+    "packageName": "cn.wwwlike.vlife.objship.dto",
+    "tags": {
+      "clz": {
+        "fieldName": "clz",
+        "fieldType": "Class<? extends T>",
+        "title": "",
+        "placeholder": ""
+      },
+      "commentRead": {
+        "fieldName": "commentRead",
+        "fieldType": "boolean",
+        "title": "注释信息是否读取完成",
+        "placeholder": "没有运行maven package则无法提取到注释"
+      },
+      "fields": {
+        "fieldName": "fields",
+        "fieldType": "List<FieldDto>",
+        "title": "",
+        "placeholder": ""
+      },
+      "parents": {
+        "fieldName": "parents",
+        "fieldType": "List<Class<? extends IdBean>>",
+        "title": "所有父类集合，包涵间接关系的",
+        "placeholder": ""
+      },
+      "parentsName": {
+        "fieldName": "parentsName",
+        "fieldType": "List<String>",
+        "title": "所有父类的字符串形式集合",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "BeanDto",
+    "parentsName": [
+      "BeanDto",
+      "ISort"
+    ],
+    "entityName": "EntityDto",
+    "typeName": "DbEntity",
+    "title": "实体类信息读取DTO",
+    "packageName": "cn.wwwlike.vlife.objship.dto",
+    "tags": {
+      "fkFields = new ArrayList<>()": {
+        "fieldName": "fkFields = new ArrayList<>()",
+        "fieldType": "List<FieldDto>",
+        "title": "外键字段信息",
+        "placeholder": ""
+      },
+      "fkMap = new HashMap<>()": {
+        "fieldName": "fkMap = new HashMap<>()",
+        "fieldType": "Map<Class<? extends Item>,String>",
+        "title": "外键map(key外键类clz,val字段名)",
+        "placeholder": ""
+      },
+      "tableName": {
+        "fieldName": "tableName",
+        "fieldType": "String"
+      },
+      "fkTableClz": {
+        "fieldName": "fkTableClz",
+        "fieldType": "List<Class<? extends Item>>",
+        "title": "外键模型信息",
+        "placeholder": ""
+      },
+      "clz": {
+        "fieldName": "clz",
+        "fieldType": "Class<? extends T>",
+        "title": "",
+        "placeholder": ""
+      },
+      "relationFields = new ArrayList<>()": {
+        "fieldName": "relationFields = new ArrayList<>()",
+        "fieldType": "List<FieldDto>",
+        "title": "关联字段信息(id作为他表外键)",
+        "placeholder": ""
+      },
+      "itemName": {
+        "fieldName": "itemName",
+        "fieldType": "String",
+        "title": "标题表达式 对应->vclazz label",
+        "placeholder": ""
+      },
+      "commentRead": {
+        "fieldName": "commentRead",
+        "fieldType": "boolean",
+        "title": "注释信息是否读取完成",
+        "placeholder": "没有运行maven package则无法提取到注释"
+      },
+      "orders": {
+        "fieldName": "orders",
+        "fieldType": "String",
+        "title": "排序字段",
+        "placeholder": ""
+      },
+      "relationTableClz": {
+        "fieldName": "relationTableClz",
+        "fieldType": "List<Class<? extends Item>>",
+        "title": "关联模型信息",
+        "placeholder": ""
+      },
+      "fields": {
+        "fieldName": "fields",
+        "fieldType": "List<FieldDto>",
+        "title": "",
+        "placeholder": ""
+      },
+      "deleteMap = new HashMap<>()": {
+        "fieldName": "deleteMap = new HashMap<>()",
+        "fieldType": "Map<Class<? extends Item>,String>",
+        "title": "级联删除map key级联类clz,val级联删除方式(remove,clear,nothing)",
+        "placeholder": ""
+      },
+      "parents": {
+        "fieldName": "parents",
+        "fieldType": "List<Class<? extends IdBean>>",
+        "title": "所有父类集合，包涵间接关系的",
+        "placeholder": ""
+      },
+      "parentsName": {
+        "fieldName": "parentsName",
+        "fieldType": "List<String>",
+        "title": "所有父类的字符串形式集合",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "FieldInfo",
+    "parentsName": [
+      "FieldInfo",
+      "ISort"
+    ],
+    "entityName": "FieldDto",
+    "title": "模型字段解析后的信息",
+    "packageName": "cn.wwwlike.vlife.objship.dto",
+    "tags": {
+      "clz": {
+        "fieldName": "clz",
+        "fieldType": "Class",
+        "title": "字段类型（集合字段是泛型clz)",
+        "placeholder": ""
+      },
+      "opt": {
+        "fieldName": "opt",
+        "fieldType": "Opt",
+        "title": "作为查询条件的匹配方式，B端设置功能后期因该可以对他进行覆盖",
+        "placeholder": ""
+      },
+      "vField": {
+        "fieldName": "vField",
+        "fieldType": "VField",
+        "title": "注解信息",
+        "placeholder": ""
+      },
+      "entityClz": {
+        "fieldName": "entityClz",
+        "fieldType": "Class<? extends Item>",
+        "title": "字段所在实体类clz",
+        "placeholder": "不是字段所在VO类对应的entity是字段数值来源的实体；"
+      },
+      "queryPath": {
+        "fieldName": "queryPath",
+        "fieldType": "List",
+        "title": "到达该字段的路径clz信息，list里存clz和集合clz",
+        "placeholder": "集合clz说明有子查询"
+      },
+      "orders": {
+        "fieldName": "orders",
+        "fieldType": "String",
+        "title": "字段排序方式(注解方式可以进行设置)",
+        "placeholder": ""
+      },
+      "itemClz": {
+        "fieldName": "itemClz",
+        "fieldType": "Class<? extends IdBean>",
+        "title": "字段所在item的类clz",
+        "placeholder": ""
+      },
+      "value": {
+        "fieldName": "value",
+        "fieldType": "Object",
+        "title": "字段值(当前没有用到，可以作为默认初始值)",
+        "placeholder": ""
+      },
+      "tran": {
+        "fieldName": "tran",
+        "fieldType": "DataExpressTran",
+        "title": "字段查询和展示时使用的转换方式",
+        "placeholder": ""
+      },
+      "itemDto": {
+        "fieldName": "itemDto",
+        "fieldType": "T",
+        "title": "字段所在类模型信息",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "entityName": "ModelDto",
+    "title": "不是entity类信息应该包含的数据字段",
+    "packageName": "cn.wwwlike.vlife.objship.dto",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "ReqVoDto",
+    "parentsName": [
+      "ReqVoDto"
+    ],
+    "entityName": "ReqDto",
+    "typeName": "BaseRequest",
+    "title": "查询条件DTO信息",
+    "packageName": "cn.wwwlike.vlife.objship.dto",
+    "tags": {
+      "entityClz": {
+        "fieldName": "entityClz",
+        "fieldType": "Class<? extends Item>",
+        "title": "关联实体模型clz",
+        "placeholder": ""
+      },
+      "entityDto": {
+        "fieldName": "entityDto",
+        "fieldType": "EntityDto",
+        "title": "关联实体模型信息",
+        "placeholder": ""
+      },
+      "leftPathClz": {
+        "fieldName": "leftPathClz",
+        "fieldType": "List<List<Class<? extends Item>>>",
+        "title": "所有打平字段的查询路径",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "BeanDto",
+    "parentsName": [
+      "BeanDto",
+      "ModelDto"
+    ],
+    "entityName": "ReqVoDto",
+    "typeName": "T",
+    "title": "req和VO类型dto基类",
+    "packageName": "cn.wwwlike.vlife.objship.dto",
+    "tags": {
+      "clz": {
+        "fieldName": "clz",
+        "fieldType": "Class<? extends T>",
+        "title": "",
+        "placeholder": ""
+      },
+      "entityClz": {
+        "fieldName": "entityClz",
+        "fieldType": "Class<? extends Item>",
+        "title": "关联实体模型clz",
+        "placeholder": ""
+      },
+      "commentRead": {
+        "fieldName": "commentRead",
+        "fieldType": "boolean",
+        "title": "注释信息是否读取完成",
+        "placeholder": "没有运行maven package则无法提取到注释"
+      },
+      "entityDto": {
+        "fieldName": "entityDto",
+        "fieldType": "EntityDto",
+        "title": "关联实体模型信息",
+        "placeholder": ""
+      },
+      "leftPathClz": {
+        "fieldName": "leftPathClz",
+        "fieldType": "List<List<Class<? extends Item>>>",
+        "title": "所有打平字段的查询路径",
+        "placeholder": ""
+      },
+      "fields": {
+        "fieldName": "fields",
+        "fieldType": "List<FieldDto>",
+        "title": "",
+        "placeholder": ""
+      },
+      "parents": {
+        "fieldName": "parents",
+        "fieldType": "List<Class<? extends IdBean>>",
+        "title": "所有父类集合，包涵间接关系的",
+        "placeholder": ""
+      },
+      "parentsName": {
+        "fieldName": "parentsName",
+        "fieldType": "List<String>",
+        "title": "所有父类的字符串形式集合",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "BeanDto",
+    "parentsName": [
+      "BeanDto",
+      "ModelDto"
+    ],
+    "entityName": "SaveDto",
+    "typeName": "SaveBean",
+    "title": "保存类型的dto扩展非数据库能存储的属性",
+    "packageName": "cn.wwwlike.vlife.objship.dto",
+    "tags": {
+      "clz": {
+        "fieldName": "clz",
+        "fieldType": "Class<? extends T>",
+        "title": "",
+        "placeholder": ""
+      },
+      "entityClz": {
+        "fieldName": "entityClz",
+        "fieldType": "Class<? extends Item>",
+        "title": "对应实体类对象",
+        "placeholder": ""
+      },
+      "commentRead": {
+        "fieldName": "commentRead",
+        "fieldType": "boolean",
+        "title": "注释信息是否读取完成",
+        "placeholder": "没有运行maven package则无法提取到注释"
+      },
+      "entityDto": {
+        "fieldName": "entityDto",
+        "fieldType": "EntityDto"
+      },
+      "fields": {
+        "fieldName": "fields",
+        "fieldType": "List<FieldDto>",
+        "title": "",
+        "placeholder": ""
+      },
+      "parents": {
+        "fieldName": "parents",
+        "fieldType": "List<Class<? extends IdBean>>",
+        "title": "所有父类集合，包涵间接关系的",
+        "placeholder": ""
+      },
+      "parentsName": {
+        "fieldName": "parentsName",
+        "fieldType": "List<String>",
+        "title": "所有父类的字符串形式集合",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "ReqVoDto",
+    "parentsName": [
+      "ReqVoDto",
+      "ISort"
+    ],
+    "entityName": "VoDto",
+    "typeName": "VoBean",
+    "title": "VO的dto应该扩展的属性",
+    "packageName": "cn.wwwlike.vlife.objship.dto",
+    "tags": {
+      "clz": {
+        "fieldName": "clz",
+        "fieldType": "Class<? extends T>",
+        "title": "",
+        "placeholder": ""
+      },
+      "entityClz": {
+        "fieldName": "entityClz",
+        "fieldType": "Class<? extends Item>",
+        "title": "关联实体模型clz",
+        "placeholder": ""
+      },
+      "commentRead": {
+        "fieldName": "commentRead",
+        "fieldType": "boolean",
+        "title": "注释信息是否读取完成",
+        "placeholder": "没有运行maven package则无法提取到注释"
+      },
+      "entityDto": {
+        "fieldName": "entityDto",
+        "fieldType": "EntityDto",
+        "title": "关联实体模型信息",
+        "placeholder": ""
+      },
+      "leftPathClz": {
+        "fieldName": "leftPathClz",
+        "fieldType": "List<List<Class<? extends Item>>>",
+        "title": "所有打平字段的查询路径",
+        "placeholder": ""
+      },
+      "loseIds = new HashMap<>()": {
+        "fieldName": "loseIds = new HashMap<>()",
+        "fieldType": "Map<String,Integer>",
+        "title": "vo对象里缺失的id字段，和索引号(索引是放在元组里的序列号，从1开始)",
+        "placeholder": ""
+      },
+      "orders": {
+        "fieldName": "orders",
+        "fieldType": "String"
+      },
+      "fields": {
+        "fieldName": "fields",
+        "fieldType": "List<FieldDto>",
+        "title": "",
+        "placeholder": ""
+      },
+      "parents": {
+        "fieldName": "parents",
+        "fieldType": "List<Class<? extends IdBean>>",
+        "title": "所有父类集合，包涵间接关系的",
+        "placeholder": ""
+      },
+      "parentsName": {
+        "fieldName": "parentsName",
+        "fieldType": "List<String>",
+        "title": "所有父类的字符串形式集合",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "entityName": "ComponentParam",
+    "title": "组件数据异步加载所需要的数据",
+    "packageName": "cn.wwwlike.vlife.query.req",
+    "tags": {
+      "entityType": {
+        "fieldName": "entityType",
+        "fieldType": "String",
+        "title": "组件所在实体名称",
+        "placeholder": ""
+      },
+      "ids": {
+        "fieldName": "ids",
+        "fieldType": "Object"
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "superName": "CustomQuery",
+    "parentsName": [
+      "CustomQuery",
+      "IPage"
+    ],
+    "entityName": "PageQuery",
+    "typeName": "T",
+    "title": "支持分页的查询模型",
+    "packageName": "cn.wwwlike.vlife.query.req",
+    "tags": {
+      "pager = new PageableRequest()": {
+        "fieldName": "pager = new PageableRequest()",
+        "fieldType": "PageableRequest",
+        "title": "post提交查询后去除了 @JsonIgnore",
+        "placeholder": ""
+      }
+    },
+    "apiTagList": []
+  },
+  {
+    "entityName": "QueryUtils",
+    "title": "客户端查询脚本转queryWrapper",
+    "packageName": "cn.wwwlike.vlife.query.req",
+    "tags": {},
+    "apiTagList": []
+  },
+  {
+    "superName": "CustomQuery",
+    "parentsName": [
+      "CustomQuery"
+    ],
+    "entityName": "VlifeQuery",
+    "typeName": "T",
+    "title": "一般查询模型",
+    "packageName": "cn.wwwlike.vlife.query.req",
+    "tags": {},
+    "apiTagList": []
+  }
+]

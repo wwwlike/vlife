@@ -1,0 +1,57 @@
+server:
+  port: 8288
+  address: 0.0.0.0
+  servlet:
+    context-path: /
+spring:
+  jpa:
+    properties:
+      hibernate:
+        default_read_only: true # 查询后修改数据不会提交
+  mvc:
+    throw-exception-if-no-handler-found: true
+#  resources:
+#    add-mappings: false  # 关闭工程中的资源文件建立映射(前端项目发布在项目里就需要注释掉)
+#    static-locations: classpath:/static/, classpath:/templates/
+  profiles:
+    active: mysql
+  datasource:
+  　type: com.alibaba.druid.pool.DruidDataSource   #配置当前要使用的数据源的操作类型那个
+#  　driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver  #org.gjt.mm.mysql.Driver       #配置MySQL的驱动程序类
+  　filters: stat,wall,log4j     #druid监控配置
+  　dbcp2:
+    　min-idle: 5         #数据库连接池的最小维持连接数
+    　initial-size: 5     #初始化提供的连接数
+    　max-total: 5          #最大的连接数
+    　max-wait-millis: 20000        #等待连接获取的最大超时时间
+  aop:
+    proxy-target-class: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write-dates-as-timestamps: false
+  activiti:
+    check-process-definitions: false
+    # 历史记录级别使用完整版
+    history-level: full
+    # 启动项目检测表，不存在即创建
+    db-history-used: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+security:
+  basic:
+    enable: true # 避免跳到security的登录界面
+logging:
+  config: classpath:log4j2.yml
+  level:
+    com:
+      th: debug
+vlife: # 前端代码同步地址
+  packroot: http://localhost:8288/oa
+  packages: cn.wwwlike,cn.vlife # 平台启用模型所在的多个路径逗号分隔
+  generatorPackRoot: cn.vlife # 代码生成的包路径(该路径必须被AdminApplication启动类注解里配置)
+file: # 上传图片存储路径
+  image:
+    path: img

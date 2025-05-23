@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7c8f1c69-5771-4f19-a834-ae0c677463d9" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="enabledProfiles">
+      <list>
+        <option value="release" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="2ok8cL0eEv47XBqHHdbUndGkXl5" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/vlife-base/src/main/java/cn/wwwlike" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/docs/static" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.35632184" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\vlife-2025\vlife\docs\static" />
+      <recent name="D:\vlife-2025\vlife\vlife-admin\src\main\resources\initData" />
+      <recent name="D:\vlife-2025\vlife\vlife-admin\src\main\java\cn\wwwlike\config" />
+      <recent name="D:\vlife-2025\vlife\vlife-base\src\main\resources" />
+      <recent name="D:\vlife-2025\vlife\vlife-plugin" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\vlife-2025\vlife\vlife-base\src\main\resources" />
+      <recent name="D:\0-VLIFE-CODE\v-life\vlife\vlife-base\src\main\java\cn\wwwlike\sys\service" />
+      <recent name="D:\0-VLIFE-CODE\v-life\vlife\vlife-base\src\main\java\cn\wwwlike\sys\entity" />
+      <recent name="D:\0-VLIFE-CODE\v-life\vlife\vlife-pro\src\main\java\cn\wwwlike\auth\service" />
+      <recent name="D:\0-VLIFE-CODE\v-life\vlife\vlife-pro\src\main\java\cn\wwwlike\auth\req" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="cn.wwwlike.sys.entity" />
+      <recent name="cn.wwwlike.form" />
+      <recent name="cn.wwwlike.plus" />
+      <recent name="cn.wwwlike.auth.entity" />
+      <recent name="cn.wwwlike.form.entity" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="cn.wwwlike.config" />
+      <recent name="cn.vlife.sync" />
+      <recent name="cn.wwwlike.sys.api" />
+      <recent name="cn.wwwlike.sys.dto" />
+      <recent name="cn.wwwlike.sys.entity" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.AdminApplication">
+    <configuration name="AdminApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cn.wwwlike.AdminApplication" />
+      <module name="vlife-admin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.wwwlike.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ReqTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="vlife-admin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.wwwlike.auth.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="cn.wwwlike.auth.test" />
+      <option name="MAIN_CLASS_NAME" value="cn.wwwlike.auth.test.ReqTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ReqTest.modelTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="vlife-admin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.wwwlike.auth.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="cn.wwwlike.auth.test" />
+      <option name="MAIN_CLASS_NAME" value="cn.wwwlike.auth.test.ReqTest" />
+      <option name="METHOD_NAME" value="modelTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ReqTest.subQueryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="vlife-admin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.wwwlike.auth.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="cn.wwwlike.auth.test" />
+      <option name="MAIN_CLASS_NAME" value="cn.wwwlike.auth.test.ReqTest" />
+      <option name="METHOD_NAME" value="subQueryTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ReqTest.subQueryTest1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="vlife-admin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.wwwlike.auth.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="cn.wwwlike.auth.test" />
+      <option name="MAIN_CLASS_NAME" value="cn.wwwlike.auth.test.ReqTest" />
+      <option name="METHOD_NAME" value="subQueryTest1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.AdminApplication" />
+        <item itemvalue="JUnit.ReqTest.subQueryTest1" />
+        <item itemvalue="JUnit.ReqTest.subQueryTest" />
+        <item itemvalue="JUnit.ReqTest.modelTest" />
+        <item itemvalue="JUnit.ReqTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7c8f1c69-5771-4f19-a834-ae0c677463d9" name="Changes" comment="" />
+      <created>1731402300026</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731402300026</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$PROJECT_DIR$/vlife-base/src/main/resources/vlife-utils-1.0.7.jar!/cn/vlife/utils/VlifePathUtils.class</url>
+          <line>15</line>
+          <option name="timeStamp" value="121" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-core/src/main/java/cn/wwwlike/vlife/utils/ReflectionUtils.java</url>
+          <line>158</line>
+          <option name="timeStamp" value="127" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-core/src/main/java/cn/wwwlike/vlife/core/dsl/VoModel.java</url>
+          <line>415</line>
+          <option name="timeStamp" value="151" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-core/src/main/java/cn/wwwlike/vlife/objship/read/ItemReadTemplate.java</url>
+          <line>398</line>
+          <option name="timeStamp" value="176" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-base/src/main/java/cn/wwwlike/config/ResourcesFilter.java</url>
+          <line>93</line>
+          <option name="timeStamp" value="233" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-base/src/main/java/cn/wwwlike/sys/dto/FormFieldDto.java</url>
+          <line>175</line>
+          <option name="timeStamp" value="259" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-base/src/main/java/cn/wwwlike/sys/service/ButtonService.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="268" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-core/src/main/java/cn/wwwlike/vlife/bi/ConditionUtils.java</url>
+          <line>62</line>
+          <option name="timeStamp" value="283" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-core/src/main/java/cn/wwwlike/vlife/core/VLifeService.java</url>
+          <line>441</line>
+          <option name="timeStamp" value="299" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-core/src/main/java/cn/wwwlike/vlife/core/VLifeService.java</url>
+          <line>609</line>
+          <option name="timeStamp" value="300" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-core/src/main/java/cn/wwwlike/vlife/core/VLifeService.java</url>
+          <line>688</line>
+          <option name="timeStamp" value="301" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/vlife-base/src/main/java/cn/wwwlike/config/LineTabFilter.java</url>
+          <line>193</line>
+          <option name="timeStamp" value="314" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="cn.wwwlike.vlife.objship.read.tag.ClzTag" memberName="packageName" />
+        <PinnedItemInfo parentTag="cn.wwwlike.vlife.objship.read.tag.ClzTag" memberName="tags" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/vlife$ReqTest_subQueryTest.ic" NAME="ReqTest.subQueryTest Coverage Results" MODIFIED="1744814709917" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>cn.wwwlike.auth.test.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/vlife$AdminApplication.ic" NAME="AdminApplication Coverage Results" MODIFIED="1747729500567" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>cn.wwwlike.*</FILTER>
+    </SUITE>
+  </component>
+</project>
