@@ -1,1 +1,0 @@
-import{r as n,aI as u,aJ as o}from"./index-MyzntyvH.js";var s={restoreOnUnmount:!1};function a(t,e){e===void 0&&(e=s);var r=n.useRef(u?document.title:"");n.useEffect(function(){document.title=t},[t]),o(function(){e.restoreOnUnmount&&(document.title=r.current)})}export{a as u};

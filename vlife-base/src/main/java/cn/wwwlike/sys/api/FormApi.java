@@ -79,6 +79,7 @@ public class FormApi extends VLifeApi<Form, FormService> {
         QueryWrapper<Form> qw=QueryWrapper.of(Form.class);
         qw.eq("itemType","entity").ne("type",entityType).andSub(FormField.class, qw1->qw1.eq("fieldName",entityType+"Id"));
         List<FormDto> forms= service.query(FormDto.class,qw);
+        //有接口的关联子表(排除多对多)
         return forms.stream().filter(f->resourcesService.count(QueryWrapper.of(SysResources.class).eq("formId",f.getId()))>0).collect(Collectors.toList());
     }
 

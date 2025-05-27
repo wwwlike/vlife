@@ -47,12 +47,13 @@ public class Button extends DbEntity {
     public String model;
     //按钮启用条件
     public String conditionJson;
-
     /**
      * 表单可见字段
      * 如果是表单可指定仅修改部分字段可见,多字段之间逗号分隔
      */
     public String formFields;
+    //不可用时隐藏
+    public Boolean disabledHide;
     /*
      * 系统按钮
      */
