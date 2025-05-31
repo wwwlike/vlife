@@ -19,4 +19,5 @@ public class MenuCrudDto  extends SaveBean<SysMenu> implements ITree {
     public String url;
     public String formId;
     public Integer sort;
+    public String groupIds;
 }

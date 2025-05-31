@@ -18,23 +18,13 @@ import javax.persistence.Table;
 public class SysMenu extends DbEntity implements ITree {
     //应用
     public String sysAppId;
-    /**
-     * 菜单名称
-     */
+    //菜单名称
     public String name;
-    /**
-     * 编码
-     * (系统自动生成)
-     */
+    //菜单编码
     public String code;
-    /**
-     * 上级菜单
-     */
+    //上级菜单
     public String pcode;
-    /**
-     * 路由地址
-     * 路由信息在router/index.tsx里定义
-     */
+    //路由地址
     public String url;
     //排序号
     public Integer sort;
@@ -52,7 +42,8 @@ public class SysMenu extends DbEntity implements ITree {
     public String pageType;
     //图表看板页面
     public String pageLayoutId;
-
+    //授权角色组
+    public String groupIds;
     public String getName() {
         return name;
     }
@@ -86,13 +77,8 @@ public class SysMenu extends DbEntity implements ITree {
     public Boolean getSys() {
         return sys;
     }
-    public void setSys(Boolean sys) {
-        this.sys = sys;
+    @Column(length = 512)
+    public String getGroupIds() {
+        return groupIds;
     }
-//    //业务实体
-//    public String entityId;
-//    public String getEntityId() {
-//        return entityId;
-//    }
-
 }

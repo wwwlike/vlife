@@ -76,9 +76,9 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
 
     @Override
     public SysMenu save(SysMenu dto) {
-        if(StringUtils.isNotEmpty(dto.getUrl())){
-            dto.setPageLayoutId(null);
-        }
+//        if(StringUtils.isNotEmpty(dto.getUrl())){
+//            dto.setPageLayoutId(null);
+//        }
         SysMenu menu= dao.save(dto);
         Form form=formService.findOne(menu.getFormId());
         if(AuthDict.PAGE_TYPE.crudPage.equals(menu.getPageType())&&form.getSysMenuId()==null){
@@ -113,7 +113,16 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
     //根据页签绑定的访问权限对象查询可以访问的菜单(给到前端的)
     List<SysMenu> findMenusUser(UserDetailVo userDetailVo){
         List<String> sysGroupIds=userDetailVo.getSysUserGroup_sysGroup().stream().map(DbEntity::getId).collect(Collectors.toList());
-        return find(QueryWrapper.of(SysMenu.class).andSub( SysTab.class,qw->qw.andSub(SysTabVisit.class,qw2->qw2.in("sysGroupId",sysGroupIds.toArray(new String[0])))));
+        //增删改查里有权限的菜单
+        List<SysMenu> crudMenus= find(QueryWrapper.of(SysMenu.class).andSub( SysTab.class,qw->qw.andSub(SysTabVisit.class,qw2->qw2.in("sysGroupId",sysGroupIds.toArray(new String[0])))));
+        //chart菜单加入
+        for(String groupId:sysGroupIds){
+           List<SysMenu> _chartMenus= find(QueryWrapper.of(SysMenu.class).like("groupIds",groupId));
+           if(_chartMenus!=null&&_chartMenus.size()>0){
+               crudMenus.addAll(_chartMenus);
+           }
+        }
+        return crudMenus;
     }
 
     /**

@@ -19,8 +19,8 @@ public class FormFieldApi extends VLifeApi<FormField, FormFieldService> {
      * 字段数据
      */
     @PostMapping("/list/all")
-    public List<FormField> listAll(@RequestBody VlifeQuery<FormField> req) {
-        return service.find(req);
+    public <Q extends VlifeQuery> List<FormField> listAll(@RequestBody Q req) {
+        return super.list(req);
     }
 
     /**

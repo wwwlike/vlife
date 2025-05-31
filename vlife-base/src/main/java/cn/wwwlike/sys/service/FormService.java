@@ -243,13 +243,15 @@ public class FormService extends VLifeService<Form, FormDao> {
             //开发模式新增模型
             FormDto devModeCreateFormDto=javaDtoToFormDto(javaDto,tag);
             devModeCreateFormDto.setTitle(tag.getTitle()!=null?tag.getTitle():javaDto.getType());
-            devModeCreateFormDto.setSysAppId(sysAppService.getAppByClassPath(javaDto.getClz()).getId());
             if(!devModeCreateFormDto.getItemType().equals("entity")){
                 String entityId=getModelByType(javaDto.getEntityType()).getId();
                 devModeCreateFormDto.setEntityId(entityId);
             }
+            if(!devModeCreateFormDto.getItemType().equals("bean")){
+                devModeCreateFormDto.setSysAppId(sysAppService.getAppByClassPath(javaDto.getClz()).getId());
+                dbSync(devModeCreateFormDto,null);
+            }
             save(devModeCreateFormDto);
-            dbSync(devModeCreateFormDto,null);
         }else {
             for(FormDto lastFormDto:dtos){
                 boolean publishStateFlag=false;//模型发布状态更新标志

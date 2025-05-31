@@ -18,10 +18,7 @@
 
 package cn.wwwlike.vlife.objship.read;
 
-import cn.wwwlike.vlife.base.IdBean;
-import cn.wwwlike.vlife.base.Item;
-import cn.wwwlike.vlife.base.SaveBean;
-import cn.wwwlike.vlife.base.VoBean;
+import cn.wwwlike.vlife.base.*;
 import cn.wwwlike.vlife.bean.DbEntity;
 import cn.wwwlike.vlife.dict.VCT;
 import cn.wwwlike.vlife.objship.dto.*;
@@ -238,7 +235,13 @@ public abstract class ItemReadTemplate<T extends BeanDto> implements ClazzRead<T
     }
 
     public static boolean isModel(Class model){
-        return DbEntity.class.isAssignableFrom(model)||SaveBean.class.isAssignableFrom(model)||VoBean.class.isAssignableFrom(model)|| CustomQuery.class.isAssignableFrom(model);
+        return
+                DbEntity.class.isAssignableFrom(model)||
+                        SaveBean.class.isAssignableFrom(model)||
+                        IModel.class.isAssignableFrom(model)||
+                        SaveBean.class.isAssignableFrom(model)||
+                        VoBean.class.isAssignableFrom(model)||
+                        CustomQuery.class.isAssignableFrom(model);
     }
     /**
      * bean类型通用处理

@@ -8,6 +8,7 @@ import javax.persistence.Table;
 /**
  * 页面布局
  * 具体元素存在于pageComponent
+ * 看板报表的简单场景下sysMenu是可以替换该实体模型
  */
 @Entity
 @Data

@@ -25,7 +25,9 @@ public class MenuCrudDtoApi extends VLifeApi<MenuCrudDto, SysMenuService> {
     @Override
     public MenuCrudDto create(@RequestBody MenuCrudDto entity) {
         MenuCrudDto dto=super.create(entity);
-        formService.createMenuRelation(dto.getId(),entity.getFormId());
+        if(entity.getFormId()!=null&& entity.getPageType().equals("crudPage")){
+            formService.createMenuRelation(dto.getId(),entity.getFormId());
+        }
         return dto;
     }
 }

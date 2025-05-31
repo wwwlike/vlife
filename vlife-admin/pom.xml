@@ -26,14 +26,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.github.wwwlike</groupId>-->
-<!--            <artifactId>vlife-boot-starter-web</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.github.wwwlike</groupId>-->
-<!--            <artifactId>vlife-spring-boot-starter</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>io.github.wwwlike</groupId>
             <artifactId>vlife-base</artifactId>
@@ -41,10 +33,6 @@
         <dependency>
             <groupId>io.github.wwwlike</groupId>
             <artifactId>vlife-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.wwwlike</groupId>
-            <artifactId>vlife-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.wwwlike</groupId>
