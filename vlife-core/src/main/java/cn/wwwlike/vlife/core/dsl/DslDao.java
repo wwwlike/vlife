@@ -236,6 +236,9 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     @Override
     public <W extends QueryWrapper<T>, R extends CustomQuery<T, W>> Long count(R request) {
+        if(request.getEntityClz()==null){
+            request.setEntityClz(entityClz);
+        }
         return dslQuery(entityClz, request.qw(), null, null).fetchCount();
     }
 
@@ -244,6 +247,9 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     @Override
     public <W extends QueryWrapper<T>, R extends CustomQuery<T, W>> List<T> find(R request) {
+        if(request.getEntityClz()==null){
+            request.setEntityClz(entityClz);
+        }
         return dslQuery(entityClz, request.qw(), null, request.getOrder()).fetch();
     }
 

@@ -1,11 +1,8 @@
 <p align="center">
-	<img alt="logo" src="https://gitee.com/wwwlike/vlife/raw/master/docs/static/logo1.jpg">
+	<img alt="logo" src="https://gitee.com/wwwlike/vlife/raw/master/docs/static/logo1.jpg" width="50" height="75">
 </p>
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">微徕零代码</h1>
-<h2 align="center">极简开发+极致效率</h2>
-<h4 align="center">vlife专注零代码开发，用精简的配置构建复杂的应用</h4>
-<h6 align="center">官网<a target="_blank" href="http://vlife.cc">http://vlife.cc</a>&nbsp;&nbsp;
-&nbsp;<a target="_blank" href="http://admin.vlife.cc/login">平台体验</a></h6>
+<h1 align="center">微徕零代码</h1>
+<h4 align="center">上手简单、配置简洁、功能完备</h4>
 <p align="center">
     <a href="https://gitee.com/wwwlike/vlife" target="_blank">
       <img src="https://gitee.com/wwwlike/vlife/badge/star.svg?theme=dark" alt="star" />
@@ -19,9 +16,9 @@
 - 项目文档:   [http://vlife.cc](http://vlife.cc)
 
 ## 平台特点
-1. **轻松上手**：倡导一切从简，业务人员也能轻松掌握。
-2. **准零代码**：组件丰富，无需前端开发，复杂逻辑写java接口即可。
-3. **对标顶流**：向轻流、简道等零代码平台看齐，可本地化的平替产品。
+1. **轻松上手**：一切从简，业务人员也能轻松掌握。
+2. **准零代码**：告别前端开发，复杂逻辑写java接口即可。
+3. **对标顶流**：向轻流、简道看齐，成为本地化top产品。
 
 ## 快速上手
 1. 安装: `jdk8/jdk11`，`mysql8`,导入初始化数据库`db/vlife_mysql.sql`
@@ -34,8 +31,6 @@
 ![界面简洁](https://gitee.com/wwwlike/vlife/raw/master/docs/static/product1.png)
 ### 模型设计器
 ![模型设计器](https://gitee.com/wwwlike/vlife/raw/master/docs/static/modelDesign.png)
-### 字段设计
-![字段设计](https://gitee.com/wwwlike/vlife/raw/master/docs/static/abcd.png)
 ### 视图配置
 ![视图配置](https://gitee.com/wwwlike/vlife/raw/master/docs/static/tableDesign.png)
 ### 表单设计器

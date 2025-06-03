@@ -10,7 +10,6 @@ import cn.wwwlike.common.VLifeApi;
 import cn.wwwlike.vlife.annotation.PermissionEnum;
 import cn.wwwlike.vlife.annotation.VMethod;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
-import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
