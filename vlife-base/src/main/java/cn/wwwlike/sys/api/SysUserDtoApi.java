@@ -19,6 +19,9 @@ public class SysUserDtoApi extends VLifeApi<SysUserDto, SysUserService> {
     @Autowired
     public SysVarService varService;
 
+    /**
+     * 新增
+     */
     @PostMapping("/create")
     public SysUserDto create(@RequestBody SysUserDto entity) {
         SysVar var=varService.findAll().get(0);
@@ -26,5 +29,13 @@ public class SysUserDtoApi extends VLifeApi<SysUserDto, SysUserService> {
         entity.setState(CT.STATE.NORMAL);
         entity.setPassword(SysUserService.encode(var.getResetPwd()==null?"123456":var.getResetPwd()));
         return super.create(entity);
+    }
+
+    @PostMapping("/_tel")
+    public String _tel(@RequestBody SysUserDto entity){
+        if("123".equals(entity.getTel())){
+            return "校验不通过";
+        }
+        return null;
     }
 }

@@ -53,10 +53,11 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
         }else{
             SysUser user=users.get(0);
             UserDetailVo detailVo=queryOne(UserDetailVo.class,user.getId());
-            if((user.getSuperUser()==null|| user.getSuperUser()==false)&&(detailVo.getSysUserGroup_sysGroup()==null||detailVo.getSysUserGroup_sysGroup().size()==0)){
-                throw new AccessDeniedException("该用户权限组为空,无法登录");
+            List<SysGroup> userGroups=detailVo.getSysUserGroup_sysGroup();
+            if(userGroups==null||userGroups.size()==0){
+                throw new AccessDeniedException("账号未分配权限，无法登录。");
             }
-            String groupFilterLevel=groupService.maxDataLevel(detailVo.getSysUserGroup_sysGroup());
+            String groupFilterLevel=groupService.maxDataLevel(userGroups);
             SecurityUser securityUser = new SecurityUser(user.getId(),
                     user.getUsername(),user.getPassword(),user.getSysDeptId(),detailVo.getCodeDept(),detailVo.getSysUserGroup_sysGroup().stream().map(d->d.getId()).collect(Collectors.toList()), groupFilterLevel
             );
