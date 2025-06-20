@@ -1,4 +1,5 @@
 package cn.wwwlike.sys.service;
+import cn.wwwlike.config.SecurityConfig;
 import cn.wwwlike.sys.dao.SysTabDao;
 import cn.wwwlike.sys.dto.FormDto;
 import cn.wwwlike.sys.dto.SysTabDto;
@@ -55,7 +56,7 @@ public class SysTabService extends VLifeService<SysTab, SysTabDao> {
         }
         if(map.get(modelType)==null){
             FormDto form= formService.getModelByType(modelClass.getSimpleName());
-            map.put(modelType,query(SysTabDto.class, QueryWrapper.of(SysTab.class).eq("entityId",form.getId())));
+            map.put(modelType,query(SysTabDto.class, QueryWrapper.of(SysTab.class).eq("formId",form.getId())));
         }
         List<SysTabDto> tabs=map.get(modelType);
         if(tabs!=null&&tabs.size()>0){
@@ -81,7 +82,7 @@ public class SysTabService extends VLifeService<SysTab, SysTabDao> {
         if(defTab==null||defTab.size()==0){
             SysTab tab=new SysTab();
             tab.setTitle("全部数据");
-            tab.setEntityId(entityId);
+            tab.setFormId(entityId);
             tab.setSort(1);
             tab.setDataLevel(CT.DATA_LEVEL.ALL);
             tab.setOrderType(CT.ORDER_TYPE.SYS);
@@ -103,6 +104,14 @@ public class SysTabService extends VLifeService<SysTab, SysTabDao> {
             return tab;
         }
         return defTab.get(0);
+    }
+
+    /**
+     * 判断用户是否有权限访问该页签
+     */
+    public boolean visit(SysTabDto tabDto,List<String> userGroupIds){
+        List<String> tab_visit_groupIds=tabDto.getSysTabVisits().stream().filter(t->t.getSysGroupId()!=null).map(SysTabVisit::getSysGroupId).collect(Collectors.toList());
+        return userGroupIds.stream().anyMatch(t->tab_visit_groupIds.contains(t));
     }
 
 

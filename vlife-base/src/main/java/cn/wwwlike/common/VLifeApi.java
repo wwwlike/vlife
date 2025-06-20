@@ -50,11 +50,9 @@ public class VLifeApi<D extends IdBean,S extends VLifeService>{
         try {
              result= service.remove(ids);
         }catch (Exception e){
-//            e.printStackTrace();
             List<Form> forms=formService.find("typeClass",e.getMessage());
             CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(forms.size()==0 ,"删除失败：存在关联的数据【"+forms.get(0).getTitle()+"】");
             e.printStackTrace();
-
         }
         return result;
     }
@@ -72,7 +70,7 @@ public class VLifeApi<D extends IdBean,S extends VLifeService>{
             }
         }
         if(entity instanceof SaveBean){
-            return (D) service.saveBean((SaveBean)entity,true);
+            return (D) service.save((SaveBean)entity,true);
         }else {
             return (D) service.save((DbEntity) entity);
         }
@@ -85,7 +83,7 @@ public class VLifeApi<D extends IdBean,S extends VLifeService>{
     @PostMapping("/edit")
     public D edit(@RequestBody D entity) {
         if(entity instanceof SaveBean){
-            return (D) service.saveBean((SaveBean)entity,true);
+            return (D) service.save((SaveBean)entity,true);
         }else {
             return (D) service.save((DbEntity) entity);
         }

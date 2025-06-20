@@ -95,4 +95,7 @@ public class Button extends DbEntity {
     public Boolean getSysBtn() {
         return sysBtn;
     }
+    public Boolean getDisabledHide() {
+        return disabledHide;
+    }
 }

@@ -66,19 +66,24 @@ public class PageComponentDto extends SaveBean<PageComponent> {
      * 组件置顶
      */
     public Boolean layoutTop;
-    /**
-     * 组件属性数据
-     * 待移除
-     */
-    public String componentPropJson;
+
     /**
      * 查看更多
      * 路由地址
      */
     public String more;
     /**
+     * 数据视图
+      */
+    public String sysTabId;
+    /**
+     * 组件属性数据
+     * 表单方式组件数据Json
+     */
+    public String componentPropJson;
+    /**
      * 组件属性配置
-     * 自定义prop方式配置组件属性
+     * 非表单方式,自定义组件方式，属性存数据库表
      */
     public List<PageComponentPropDto> props;
 

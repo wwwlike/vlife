@@ -47,7 +47,9 @@ public class FormRuleUtils {
             // 只读，隐藏，必填 等boolean类型
             sb.append(reaction.getPropName()+"().getVF()");
         }
-        return sb.toString();
+        //所有点号之前如果没有点号则加一个问号，解决ts报错
+        String result = sb.toString().replaceAll("(?<!\\?)\\.", "?.");
+        return result;
     }
 
 

@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Setter
 @Table
-@VClazz(remove = {SysTabVisit.class,SysTabButton.class})
+@VClazz(remove = {SysTabVisit.class,SysTabButton.class,PageComponent.class})
 public class SysTab extends DbEntity {
     //所属页面
     public String sysMenuId;
@@ -26,10 +26,9 @@ public class SysTab extends DbEntity {
     @VField(dictCode = "FORM_SHOW_TYPE")
     public String formShowType;
     /**
-     * 实体id
-     * 冗余方便数据范围取模型
+     * 实体模型
      */
-    public String entityId;
+    public String formId;
     //数据权限
     @VField(dictCode = "DATA_LEVEL")
     public String dataLevel;
@@ -78,10 +77,6 @@ public class SysTab extends DbEntity {
         return conditionJson;
     }
 
-    public String getEntityId() {
-        return entityId;
-    }
-
     public String getDataLevel() {
         return dataLevel;
     }
@@ -107,4 +102,7 @@ public class SysTab extends DbEntity {
         return fieldNames;
     }
 
+    public String getFormId() {
+        return formId;
+    }
 }

@@ -51,8 +51,6 @@ public class Where {
      * 匹配字段值
      */
     public Object[] value;
-    // fieldName opt value
-    public Object desc;
     /**
      * 转换函数
      */
@@ -61,18 +59,6 @@ public class Where {
     public String fieldId;
 
     public String fixCode;
-
-//    //以下没有用处
-//    public Class clazz;
-//    /**
-//     * 字段信息
-//     */
-//    public String fieldDto;
-//    /**
-//     * 模型名称
-//     */
-//    public String path;
-
 
     public Class getClazz(){
         return

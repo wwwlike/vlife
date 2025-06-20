@@ -3,8 +3,12 @@ package cn.wwwlike.sys.api;
 import cn.wwwlike.config.SecurityConfig;
 import cn.wwwlike.config.VlifeFilterInvocationSecurityMetadataSource;
 import cn.wwwlike.sys.dto.SysTabDto;
+import cn.wwwlike.sys.entity.Form;
+import cn.wwwlike.sys.entity.SysMenu;
 import cn.wwwlike.sys.entity.SysTab;
 import cn.wwwlike.sys.entity.SysTabVisit;
+import cn.wwwlike.sys.service.FormService;
+import cn.wwwlike.sys.service.SysMenuService;
 import cn.wwwlike.sys.service.SysTabService;
 import cn.wwwlike.vlife.annotation.PermissionEnum;
 import cn.wwwlike.vlife.annotation.VMethod;
@@ -12,6 +16,7 @@ import cn.wwwlike.common.VLifeApi;
 import cn.wwwlike.vlife.query.QueryWrapper;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import cn.wwwlike.web.security.core.SecurityUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,15 +28,32 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/sysTabDto")
 public class SysTabDtoApi extends VLifeApi<SysTabDto, SysTabService> {
+    @Autowired
+    private SysMenuService menuService;
+
+    @Autowired
+    private FormService formService;
     /**
      * 保存DTO
      */
     @PostMapping("/save")
     public SysTabDto save(@RequestBody SysTabDto dto) {
         long count=service.count(QueryWrapper.of(SysTab.class).eq("sysMenuId",dto.getSysMenuId()));
+
         if(dto.getId()==null){
             dto.setSort((int) count+1);
         }
+        //实体模型(非菜单关联的表单模型)
+        if(dto.getFormId()==null&&dto.getSysMenuId()!=null){
+            SysMenu menu=menuService.findOne(dto.getSysMenuId());
+            Form form=formService.findOne(menu.getFormId());
+            if(form.getEntityId()!=null){
+                dto.setFormId(form.getEntityId());
+            }else{
+                dto.setFormId(form.getId());
+            }
+        }
+
         dto=service.save(dto,true);
         //动态权限置空
         VlifeFilterInvocationSecurityMetadataSource.urlVisits=null;

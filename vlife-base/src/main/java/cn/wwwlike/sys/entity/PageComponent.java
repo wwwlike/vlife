@@ -64,6 +64,10 @@ public class PageComponent extends DbEntity {
      */
     public Boolean layoutTop;
     /**
+     * 数据视图
+     */
+    public String sysTabId;
+    /**
      * 组件属性数据
      */
     public String componentPropJson;
@@ -204,5 +208,13 @@ public class PageComponent extends DbEntity {
 
     public void setMore(String more) {
         this.more = more;
+    }
+
+    public String getSysTabId() {
+        return sysTabId;
+    }
+
+    public void setSysTabId(String sysTabId) {
+        this.sysTabId = sysTabId;
     }
 }

@@ -1,6 +1,5 @@
 package cn.wwwlike.config;
 
-import cn.wwwlike.sys.dto.FormDto;
 import cn.wwwlike.sys.dto.SysTabDto;
 import cn.wwwlike.sys.entity.*;
 import cn.wwwlike.sys.service.FormService;
@@ -21,7 +20,6 @@ import cn.wwwlike.vlife.query.req.VlifeQuery;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
 import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import cn.wwwlike.web.security.core.SecurityUser;
-import com.alibaba.fastjson.JSON;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -33,8 +31,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 /**
  * 根据用户数据查询过滤
@@ -96,18 +92,21 @@ public class LineTabFilter {
         return false;
     }
 
-    //返回空表示没有查询条件
-    private Conditions tabFilter(SysTabDto tab,Class entityClass,SecurityUser securityUser){
+    public static Conditions tabFilter(SysTabDto tab,Class entityClass,SecurityUser securityUser) {
+        return tabFilter(tab.getConditionJson(),tab.getDataLevel(),entityClass,securityUser);
+    }
+
+        //返回空表示没有查询条件
+    public static Conditions tabFilter(String conditionJson ,String dataLevel,Class entityClass,SecurityUser securityUser){
         Conditions conditions=new Conditions();
         conditions.setOrAnd("and");
         conditions.setConditions(new ArrayList<>());
         Conditions queryBuilderCondition=null;
-        if(tab.getConditionJson()!=null){
-            String tranConditionJson=ConditionUtils.condtionJsonElTran(tab.conditionJson,securityUser.getId(),securityUser.getDeptId(),securityUser.getDeptCode());
+        if(conditionJson!=null){
+            String tranConditionJson=ConditionUtils.condtionJsonElTran(conditionJson,securityUser.getId(),securityUser.getDeptId(),securityUser.getDeptCode());
             queryBuilderCondition=QueryUtils.conditionJsonToConditions(tranConditionJson);
             conditions.getConditions().add(queryBuilderCondition);
         }
-        String dataLevel=tab.getDataLevel();
         //查询本人||根据角色组权限(角色组是查本人)
         if(CT.DATA_LEVEL.USER.equals(dataLevel)
                 ||(CT.DATA_LEVEL.BY_GROUP.equals(dataLevel)&&CT.DATA_LEVEL.USER.equals(securityUser.getDefaultLevel()))){
@@ -156,7 +155,7 @@ public class LineTabFilter {
                 ||(CT.DATA_LEVEL.BY_GROUP.equals(dataLevel)&&CT.DATA_LEVEL.DEPT.equals(securityUser.getDefaultLevel()))){
             CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(securityUser.getDeptCode()!=null,"当前用户没有关联部门");
             if(entityClass==SysDept.class){
-                //查看部门表->本部门以及下级部门
+                //1. 直接查询本部门
                 Where deptWhere=new Where();
                 String [] deptCode={securityUser.getDeptCode()};
                 deptWhere.setValue(deptCode);
@@ -164,7 +163,7 @@ public class LineTabFilter {
                 deptWhere.setFieldName("code");
                 conditions.getWhere().add(deptWhere);
             }else if(ReflectionUtils.getAccessibleFieldByClass(entityClass,"sysDeptId")!=null){
-                //其他业务表里有部门ID的数据过滤(如用户表)
+                //2. 根据外键字段关联部门过滤
                 Where deptWhere=new Where();
                 String [] deptCode={securityUser.getDeptCode()};
                 deptWhere.setEntityName(SysDept.class.getSimpleName());
@@ -173,6 +172,7 @@ public class LineTabFilter {
                 deptWhere.setFieldName("code");
                 conditions.getWhere().add(deptWhere);
             }else{
+                //3. 根据创建部门过滤
                 Where deptWhere=new Where();
                 String [] deptCode={securityUser.getDeptCode()};
                 deptWhere.setValue(deptCode);

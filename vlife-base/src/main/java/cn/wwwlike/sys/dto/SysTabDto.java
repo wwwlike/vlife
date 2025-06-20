@@ -17,7 +17,7 @@ public class SysTabDto extends SaveBean<SysTab> {
     public String sysMenuId;
     public String icon;
     public String viewType;
-    public String entityId;
+    public String formId;
     public Integer sort;
     public String dataLevel;
     public String orderType;

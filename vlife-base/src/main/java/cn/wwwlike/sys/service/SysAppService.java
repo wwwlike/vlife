@@ -35,6 +35,4 @@ public class SysAppService extends VLifeService<SysApp, SysAppDao> {
         String appKey=classPackage[classPackage.length-3];
         return find(QueryWrapper.of(SysApp.class).eq("appKey",appKey)).get(0);
     }
-
-
 }

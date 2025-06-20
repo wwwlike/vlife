@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class SysGroupService extends BaseService<SysGroup, SysGroupDao> {
 
-    //最大权限范围
+    //指定范围内的最大权限范围
     public String maxDataLevel(List<SysGroup> groups){
         if(groups.stream().filter(t->t.getDefaultLevel().equals(CT.DATA_LEVEL.ALL)).count()>0){
             return CT.DATA_LEVEL.ALL;

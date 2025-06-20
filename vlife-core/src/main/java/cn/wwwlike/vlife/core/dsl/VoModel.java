@@ -17,13 +17,10 @@
  */
 
 package cn.wwwlike.vlife.core.dsl;
-
 import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.vlife.base.BaseRequest;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.base.VoBean;
-import cn.wwwlike.vlife.bi.Groups;
-import cn.wwwlike.vlife.bi.ReportWrapper;
 import cn.wwwlike.vlife.dict.CT;
 import cn.wwwlike.vlife.dict.Join;
 import cn.wwwlike.vlife.dict.Opt;
@@ -45,17 +42,14 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-
 import javax.persistence.Transient;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 /**
@@ -425,43 +419,6 @@ public class VoModel<T extends Item> extends QueryHelper implements QModel<T> {
         filterQuery = addQueryFilterJoin(filterQuery, wrapper); //添加查询条件里需要做查询的leftPath到joins里
         // step3 filter(sub filter)
         filterQuery.where(whereByWrapper(wrapper));
-        return filterQuery;
-    }
-
-    /**
-     * 聚合查询query表达式返回
-     *
-     * @param wrapper
-     * @param <R>
-     * @return
-     */
-    public synchronized <R extends ReportWrapper> JPAQuery fromGroupWhere(R wrapper) {
-        EntityPathBase entityPathBase = getMain();
-        //1. 基本select from where 组装
-        filterQuery = fromWhere(wrapper);
-        //2. group by加入
-        List<Groups> groups = wrapper.getGroups();
-        SimpleExpression[] groupExpression = new SimpleExpression[groups.size()];
-        int i = 0;
-        for (Groups group : groups) {
-            SimpleExpression groupException = (SimpleExpression) ReflectionUtils.getFieldValue(entityPathBase, group.getColumn());
-            if (group.getFunc() != null) {
-                groupException = QueryHelper.tran(groupException, group.getFunc(),dbType);
-                filterQuery.groupBy(groupException);//直接加入到fiulterQuery
-            }
-            groupExpression[i] = groupException; // 这里也加入了，会加入两次
-            i++;
-        }
-        filterQuery.groupBy(groupExpression);//加入
-
-        //2. select 分组 聚合的
-        SimpleExpression fieldExpression = (SimpleExpression) ReflectionUtils.getFieldValue(entityPathBase, wrapper.getItemField());
-        SimpleExpression[] selectExpression = selectExpression = ArrayUtils.addAll(groupExpression,
-                QueryHelper.tran(fieldExpression, wrapper.getFunc(),dbType).as(wrapper.getCode()));//分组的字段和查询的字段（code）都加入进来
-        filterQuery.select(selectExpression);
-
-        //group by加入
-        //having 加入
         return filterQuery;
     }
 

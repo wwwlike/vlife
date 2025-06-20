@@ -117,7 +117,7 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
         List<SysMenu> crudMenus= find(QueryWrapper.of(SysMenu.class).andSub( SysTab.class,qw->qw.andSub(SysTabVisit.class,qw2->qw2.in("sysGroupId",sysGroupIds.toArray(new String[0])))));
         //chart菜单加入
         for(String groupId:sysGroupIds){
-           List<SysMenu> _chartMenus= find(QueryWrapper.of(SysMenu.class).like("groupIds",groupId));
+           List<SysMenu> _chartMenus= find(QueryWrapper.of(SysMenu.class).like("groupIds","%"+groupId+"%"));
            if(_chartMenus!=null&&_chartMenus.size()>0){
                crudMenus.addAll(_chartMenus);
            }

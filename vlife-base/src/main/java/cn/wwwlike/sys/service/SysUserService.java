@@ -57,6 +57,7 @@ public class SysUserService extends BaseService<SysUser, SysUserDao> implements 
             if(userGroups==null||userGroups.size()==0){
                 throw new AccessDeniedException("账号未分配权限，无法登录。");
             }
+            //用户所有角色的最大权限范围
             String groupFilterLevel=groupService.maxDataLevel(userGroups);
             SecurityUser securityUser = new SecurityUser(user.getId(),
                     user.getUsername(),user.getPassword(),user.getSysDeptId(),detailVo.getCodeDept(),detailVo.getSysUserGroup_sysGroup().stream().map(d->d.getId()).collect(Collectors.toList()), groupFilterLevel
