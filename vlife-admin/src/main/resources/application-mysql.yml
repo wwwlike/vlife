@@ -3,7 +3,7 @@ spring:
     #    driver-class-name: com.mysql.cj.jdbc.Driver
     #    url: jdbc:mysql://localhost:3306/auth?useSSL=true&serverTimezone=GMT%2B8&characterEncoding=UTF8
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    url: jdbc:p6spy:mysql://localhost:3306/vlife3?useUnicode=true&characterEncoding=utf8
+    url: jdbc:p6spy:mysql://localhost:3306/vlife?useUnicode=true&characterEncoding=utf8
     username: root
     password: root
   jpa:
@@ -14,14 +14,6 @@ spring:
 endpoints:
   metrics:
     sensitive: false
-vlife:
-  email: #注册码发送
-    from: vlifelowcode@163.com
-    pwd: OBSSIMMGHVKBCWBA
-  gitee: #gitee登录
-    client_id: e3b04bf27387e4c935f5e1827ad596d568790fd38f5ca436f2c59b187dbbbee4
-    client_secret: c35b11b3d4eafe729969e4e3058c4591740a0324872876a2fd2ea2b713e73922
-    redirect_uri: http://admin.vlife.cc/login?from=gitee
 management:
   endpoints:
     restart:

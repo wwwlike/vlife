@@ -15,12 +15,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package cn.wwwlike.config;
-import cn.vlife.generator.TitleJson;
-import cn.vlife.utils.VlifePathUtils;
 import cn.wwwlike.vlife.objship.read.ModelReadCheck;
-import cn.wwwlike.vlife.objship.read.tag.ClzTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ExitCodeGenerator;
@@ -28,14 +24,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.annotation.Order;
-
-import java.util.List;
-
-
 /**
- * bean容器启动前
- * 1. 加载模型信息
- * 2. 生成title.json(ide环境)
+ *   bean容器启动前
+ *  加载模型信息
  */
 @Order(1)
 public class VlifeApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>{
@@ -46,7 +37,7 @@ public class VlifeApplicationContextInitializer implements ApplicationContextIni
         ModelReadCheck modelReadCheck=new ModelReadCheck();
         Integer errNum= modelReadCheck.load(loader);//模型读取
         if(errNum>0){
-            logger.info("[vlife] 容器初始化失败，请按照规范编写各类模型(http://vlife.cc/help/model)");
+            logger.info("[vlife] 容器初始化失败，请按照规范编写各类模型");
             exitApplication(applicationContext);
         }
         logger.info("[vlife] 模型关系读取完毕");

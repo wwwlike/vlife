@@ -53,8 +53,6 @@ public class FormApi extends VLifeApi<Form, FormService> {
     public RestTemplate restTemplate() {
         return builder.build();
     }
-    @Value("${vlife.packroot}")
-    public String packroot;
     @Value("${vlife.generatorPackRoot}")
     public String generatorPackRoot;
     @Autowired

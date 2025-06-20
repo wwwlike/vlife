@@ -45,9 +45,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import java.util.List;
-
 import static cn.wwwlike.config.VlifeFilterInvocationSecurityMetadataSource.PUBLIC_URLS;
 
 @Configuration
@@ -100,19 +98,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(new VerifyTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new MyUsernamePasswordAuthenticationFilter("/vlife/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
-                .maximumSessions(1) // 一个账户只允许在一台机器登录
+                .maximumSessions(1)
                 .sessionRegistry(sessionRegistry);
-        //表达式拦截器 注册表
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry authorizeRequests = httpSecurity
                 .authorizeRequests();
-        // 403  未登录请求资源  EAccessDeniedHandler 没有权限的处理
         httpSecurity.exceptionHandling().authenticationEntryPoint(new Jwt403AuthenticationEntryPoint())
                 .accessDeniedHandler(new EAccessDeniedHandler());
         try {
-            //标准版以上开放
             if (!VlifePathUtils.isRunningFromJar()) {
-                List<ClzTag> tags= TitleJson.getJavaClzTag();//security里读取过
-                // 1. 模型信息(form/formField)同步java模型(标准版)
+                List<ClzTag> tags= TitleJson.getJavaClzTag();
+                //模型信息(form/formField)同步java模型(标准版)
                 GlobalData.allModels().stream().forEach(javaDto -> {
                     ClzTag tag=tags.stream().filter(t->t.getEntityName().toLowerCase().equals(javaDto.getType().toLowerCase())).findFirst().get();
                     formService.syncOne(javaDto,tag);
