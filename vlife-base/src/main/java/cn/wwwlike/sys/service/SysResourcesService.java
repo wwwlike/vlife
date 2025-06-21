@@ -397,16 +397,17 @@ public class SysResourcesService extends VLifeService<SysResources, SysResources
      * @param formDto
      */
     public void createDefaultResources(FormDto formDto){
-        if(formDto==null||formDto.getSysAppId()==null){
-            System.out.println("11111");
-        }
         if(formDto!=null){
             SysApp app=appService.findOne(formDto.getSysAppId());
-            String packname=app.getAppKey().equals("sys")?"cn.wwwlike":generatorPackRoot;
-            String fullClassName=packname+"."+app.getAppKey()+".api."+StringUtils.capitalize(formDto.getType())+"Api";
-            addCreateResource(formDto,fullClassName);
-            addModifyResource(formDto,fullClassName);
-            addRemoveSysResource(formDto,fullClassName);
+            if(app!=null){
+                String packname=app.getAppKey().equals("sys")?"cn.wwwlike":generatorPackRoot;
+                String fullClassName=packname+"."+app.getAppKey()+".api."+StringUtils.capitalize(formDto.getType())+"Api";
+                addCreateResource(formDto,fullClassName);
+                addModifyResource(formDto,fullClassName);
+                addRemoveSysResource(formDto,fullClassName);
+            }else{
+                throw new RuntimeException(formDto.getType()+"模型所属应用不存在,请检查");
+            }
         }
     }
 

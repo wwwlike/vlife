@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Setter
 @Table
-@VClazz(remove = {SysTabVisit.class,SysTabButton.class,PageComponent.class})
+@VClazz(remove = {SysTabVisit.class,SysTabButton.class})//,PageComponent.class
 public class SysTab extends DbEntity {
     //所属页面
     public String sysMenuId;

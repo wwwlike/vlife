@@ -17,6 +17,7 @@
  */
 
 package cn.wwwlike.config;
+import java.util.List;
 import cn.vlife.generator.TitleJson;
 import cn.vlife.utils.VlifePathUtils;
 import cn.wwwlike.sys.service.FormService;
@@ -45,7 +46,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import java.util.List;
 import static cn.wwwlike.config.VlifeFilterInvocationSecurityMetadataSource.PUBLIC_URLS;
 
 @Configuration
@@ -107,7 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         try {
             if (!VlifePathUtils.isRunningFromJar()) {
                 List<ClzTag> tags= TitleJson.getJavaClzTag();
-                //模型信息(form/formField)同步java模型(标准版)
+                //模型同步
                 GlobalData.allModels().stream().forEach(javaDto -> {
                     ClzTag tag=tags.stream().filter(t->t.getEntityName().toLowerCase().equals(javaDto.getType().toLowerCase())).findFirst().get();
                     formService.syncOne(javaDto,tag);

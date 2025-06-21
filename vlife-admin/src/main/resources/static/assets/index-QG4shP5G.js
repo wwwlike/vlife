@@ -1,0 +1,1 @@
+import{r}from"./index-BNDtW2eT.js";import{D as n}from"./formPage-BHPYqPSB.js";import{c as u}from"./useEffectWithTarget-aARMLXxS.js";var f={restoreOnUnmount:!1};function c(e,t){t===void 0&&(t=f);var o=r.useRef(u?document.title:"");r.useEffect(function(){document.title=e},[e]),n(function(){t.restoreOnUnmount&&(document.title=o.current)})}export{c as u};

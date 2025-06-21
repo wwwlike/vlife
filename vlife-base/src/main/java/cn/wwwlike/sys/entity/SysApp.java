@@ -1,5 +1,6 @@
 package cn.wwwlike.sys.entity;
 
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 @Table
+@VClazz(unableRm = {Form.class})
 public class SysApp  extends DbEntity {
     //应用名称
     public String name;
