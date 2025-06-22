@@ -43,7 +43,7 @@ public enum CommonResponseEnum implements CommonExceptionAssert {
      */
     SERVER_ERROR(9999, "网络异常"),
     TOKEN_EXPIRED(440, "登录超时"),
-    CANOT_CONTINUE (7000, "不能继续，{0}。"),
+    CANOT_CONTINUE (7000, "校验错误，{0}。"),
 
     QUERY_ERROR(7000,"查询异常，{0}");
 

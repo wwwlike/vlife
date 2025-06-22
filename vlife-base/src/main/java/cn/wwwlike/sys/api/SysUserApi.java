@@ -67,18 +67,6 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
     }
 
     /**
-     * 删除
-     */
-    @DeleteMapping("/remove")
-    public Long remove(@RequestBody String[] ids) {
-        Arrays.stream(ids).forEach(id->{
-          List<Item> items=service.realationData(id);
-          CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(items.size()==0,"请先对"+service.findOne(id).getName()+"的数据进行转移");////每个人检查，数据删除之前先转移
-        });
-        return super.remove(ids);
-    }
-
-    /**
      * 数据迁移
      */
     @PostMapping("/move")
@@ -98,19 +86,5 @@ public class SysUserApi extends VLifeApi<SysUser, SysUserService> {
        return service.getUserDetailVo( SecurityConfig.getCurrUser());
     }
 
-
-    //用户启用
-    @PostMapping("/enable")
-    public Integer enable(@RequestBody String[] ids){
-        service.save("state", CT.STATE.NORMAL,ids);
-        return ids.length;
-    }
-
-    //用户停用
-    @PostMapping("/disable")
-    public Integer disable(@RequestBody  String[] ids){
-        service.save("state",CT.STATE.DISABLE,ids);
-        return ids.length;
-    }
 
 }

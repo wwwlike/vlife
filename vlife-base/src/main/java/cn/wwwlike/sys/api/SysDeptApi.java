@@ -21,15 +21,7 @@ public class SysDeptApi extends VLifeApi<SysDept, SysDeptService> {
     for(String id:ids){
       CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(userService.find("sysDeptId",id).size()==0 ,"不能删除"+service.findOne(id).getName()+"，该部门下还有用户");
     }
-    //当前只能删除没有员工的部门
-    Long count = 0L;
-    for(String id:ids){
-      if(userService.find("sysDeptId",id).size()==0){
-        count++;
-        service.remove(id);
-      }
-    }
-    return count;
+    return super.remove(ids);
   }
 
 }
