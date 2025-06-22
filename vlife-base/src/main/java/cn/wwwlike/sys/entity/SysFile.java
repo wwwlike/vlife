@@ -56,6 +56,9 @@ public class SysFile extends DbEntity {
      * 归类，同一业务可以有不同类别场景的文件，如人才关联了合同类，基本信息类
      */
     public String type;
+
+    //待移除
+    
     /**
      * 关联业务id
      * 多对1时使用该字段

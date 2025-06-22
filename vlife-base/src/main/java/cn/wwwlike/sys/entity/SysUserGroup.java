@@ -6,7 +6,9 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-//用户角色关联
+/**
+ * 用户角色关联
+ */
 @Data
 @Table
 @Entity
@@ -15,5 +17,4 @@ public class SysUserGroup extends DbEntity {
     public String sysUserId;
     //角色
     public String sysGroupId;
-
 }

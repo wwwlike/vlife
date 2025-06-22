@@ -18,14 +18,15 @@ import javax.persistence.Table;
 public class SysTabVisit extends DbEntity {
     //视图
     public String sysTabId;
-    //访问对象
-    // 权限组
+    //关联角色
     public String sysGroupId;
-    // 部门
+    //关联部门
     public String sysDeptId;
-    // 用户
+    //关联用户
     public String sysUserId;
-    // 当前授权对象启用按钮(启用的接口)
+    /**
+     * 关联按钮集合
+     */
     public String visitButtonIds;
 
     public String getSysTabId() {

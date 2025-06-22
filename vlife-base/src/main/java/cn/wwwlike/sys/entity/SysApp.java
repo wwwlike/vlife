@@ -3,7 +3,6 @@ package cn.wwwlike.sys.entity;
 import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 

@@ -37,12 +37,16 @@ import javax.persistence.Table;
 @VClazz(orders = "code_asc,sort_asc")
 public class SysDict extends DbEntity {
     /**
+     * 绑定字段
+     */
+    public String formFieldId;
+    /**
      * 字典层级
      */
     public Integer level;
     /**
      * 字典项编码
-     * 直接绑定字段路径如：实体_字段名,如果字段上有code就使用系统的字典
+     * 系统级字段code有值，字段级字段采用formFieldId字段
      */
     public String code;
     /**

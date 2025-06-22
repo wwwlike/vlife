@@ -48,10 +48,5 @@ public class SysGroup extends DbEntity {
     */
    @VField(dictCode = "DEFAULT_LEVEL")
    public String defaultLevel;
-   /**
-    * 操作维度
-    *
-    */
-//   public String dataOptLevel;
 
 }

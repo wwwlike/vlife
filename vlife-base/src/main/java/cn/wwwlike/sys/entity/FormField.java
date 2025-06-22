@@ -10,12 +10,12 @@ import javax.persistence.Table;
 
 /**
  * 模型字段信息
- * 也包含UI场景的配置信息
  */
 @Entity
 @Data
 @Table(name = "form_field")
-@VClazz(orders = "sort_asc")
+//级联删除
+@VClazz(orders = "sort_asc",remove = {SysDict.class,PageComponentProp.class,FormNo.class,ButtonField.class,FormReaction.class})
 public class FormField extends DbEntity {
     /**
      *  所属模型
@@ -29,10 +29,6 @@ public class FormField extends DbEntity {
      * 字段名
      */
     public String title;
-//    /**
-//     * 注释说明
-//     */
-//    public String javaTitle;
     /**
      * 字段类别
      * basic,array,object
@@ -47,7 +43,6 @@ public class FormField extends DbEntity {
      * java类型
      */
     public String javaType;
-
     /**
      * 系统字段
      */
@@ -63,7 +58,6 @@ public class FormField extends DbEntity {
     public boolean  create_hide;
     /**
      * 修改时只读
-     * 不可修改
      */
     public boolean  modify_read;
     /**
@@ -108,7 +102,6 @@ public class FormField extends DbEntity {
      * 描述
      */
     public String description;
-
     /**
      * 采用组件
      */
@@ -185,16 +178,15 @@ public class FormField extends DbEntity {
      * 分组名称
      */
     public String dividerLabel;
-
-
-    public FormField(String formId,String entityType,String fieldName,String title,String javaType,boolean sysField){
-        this.entityType=entityType;
-        this.fieldName=fieldName;
-        this.formId=formId;
-        this.title=title;
-        this.javaType=javaType;
-        this.sysField=sysField;
-    }
-
-    public FormField(){}
+//
+//    public FormField(String formId,String entityType,String fieldName,String title,String javaType,boolean sysField){
+//        this.entityType=entityType;
+//        this.fieldName=fieldName;
+//        this.formId=formId;
+//        this.title=title;
+//        this.javaType=javaType;
+//        this.sysField=sysField;
+//    }
+//
+//    public FormField(){}
 }

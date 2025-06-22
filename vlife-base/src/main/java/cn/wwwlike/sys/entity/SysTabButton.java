@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 /**
  * 视图按钮
- * 单个视图可用按钮
+ * 单个视图绑定操作按钮
  */
 @Table
 @Data
@@ -16,10 +16,10 @@ import javax.persistence.Table;
 public class SysTabButton extends DbEntity {
     //视图
     public String sysTabId;
-    //视图绑定按钮
+    //按钮
     public String buttonId;
-    //按钮排序
+    //排序
     public Integer buttonSort;
-    //按钮位置
+    //位置
     public String buttonPosition;
 }

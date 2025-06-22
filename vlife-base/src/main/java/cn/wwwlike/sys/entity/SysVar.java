@@ -7,8 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * 系统变量
- * 前端做数据展示和逻辑处理用到的变量(系统名称，分页数量，系统图标等)
+ * 系统设置
  */
 @Entity
 @Data

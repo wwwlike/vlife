@@ -7,12 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * 1. 一个单据号一个流水号类型
- * 2. 规则支持 固定字符 + 日期 + 流水号  三组类型自由排序组合 (字段值(待实现))
- * 3. 新增时数据时更新流水号，规则变化时重置流水号
- */
-
-/**
  * 单据编号规则
  */
 @Data

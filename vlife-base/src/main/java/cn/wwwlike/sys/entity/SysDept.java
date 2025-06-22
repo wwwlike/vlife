@@ -23,14 +23,13 @@ import cn.wwwlike.vlife.bean.DbEntity;
 import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
 /**
  * 科室部门
  */
 @Data
 @Entity
-@VClazz(clear = {SysUser.class})
 @Table(name = "sys_dept")
+@VClazz(unableRm = {SysUser.class},remove = {SysTabVisit.class})
 public class SysDept extends DbEntity implements ITree {
     /**
      * 部门名称
@@ -44,11 +43,4 @@ public class SysDept extends DbEntity implements ITree {
      * 上级部门
      */
     public String pcode;
-//    /**
-//     * 上级部门id
-//     * 冗余导入数据时采用
-//     * @create_hide:true
-//     */
-//    public String parentId;
-
 }

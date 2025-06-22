@@ -17,6 +17,7 @@
  */
 
 package cn.wwwlike.sys.entity;
+import cn.wwwlike.vlife.annotation.VClazz;
 import cn.wwwlike.vlife.base.IUser;
 import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.bean.DbEntity;
@@ -30,6 +31,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "sys_user")
+@VClazz(remove = {SysTabVisit.class})
 public class SysUser extends DbEntity implements IUser {
     /**
      * 用户名
@@ -74,10 +76,6 @@ public class SysUser extends DbEntity implements IUser {
      */
     @VField(dictCode = "STATE")
     public String state;
-    /**
-     * 第三方id
-     */
-    public String thirdId;
     /**
      * 超级用户
      */

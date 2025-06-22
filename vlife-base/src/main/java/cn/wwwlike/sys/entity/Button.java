@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 /**
  * 按钮
- * 没有绑定菜单则为系统按钮创建模型时生成
  */
 @Setter
 @Entity
@@ -63,7 +62,6 @@ public class Button extends DbEntity {
     public String getFormFields() {
         return formFields;
     }
-
     @Column(columnDefinition = "text")
     public String getConditionJson() {
         return conditionJson;

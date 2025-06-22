@@ -19,12 +19,12 @@ import javax.persistence.Table;
 public class PageComponentProp extends DbEntity {
     /**
      * 关联字段
-     * FormField里选择x_component后，其属性信息在本表里存储
+     * 有值则表示作为表单设计器的字段组件属性设置
      */
     public String formFieldId;
     /***
      * 关联组件
-     * 与关联字段二选1,pageComponentId有值的场景是组件配置
+     * pageComponentId有值的场景自定义页面
      */
     public String pageComponentId;
     /**
@@ -64,7 +64,6 @@ public class PageComponentProp extends DbEntity {
     public String filterFunc;
     /**
      * 过滤条件的连接方式
-     * (准备移除，采用conditionJson方式后端过滤)
      * and/or
      */
     public String filterConnectionType;
@@ -73,10 +72,6 @@ public class PageComponentProp extends DbEntity {
      * 来源于接口则可以配置一个通用的过滤条件组
      */
     public String conditionJson;
-//    /**
-//     * 属性适配的组件类型
-//     */
-//    public String x_component;
 
     public String getFormFieldId() {
         return formFieldId;
@@ -123,7 +118,4 @@ public class PageComponentProp extends DbEntity {
         return conditionJson;
     }
 
-//    public String getFormComponent() {
-//        return formComponent;
-//    }
 }
