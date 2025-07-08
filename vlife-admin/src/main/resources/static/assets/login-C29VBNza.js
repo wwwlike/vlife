@@ -1,0 +1,1 @@
+import{r as s}from"./index-zu87m18r.js";const p=(e,t)=>{const[a,o]=s.useState(e),[r,g]=s.useState({}),n=s.useCallback((l,u)=>{o(c=>({...c,[l]:u}))},[t]);return{values:a,errors:r,setFieldValue:n}},m="/assets/login_bg-ewLp5Bdx.jpg",b="/assets/login_left-DJARTDei.png";export{m as b,b as l,p as u};

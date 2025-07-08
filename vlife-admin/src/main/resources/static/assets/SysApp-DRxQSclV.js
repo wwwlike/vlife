@@ -1,0 +1,1 @@
+import{ae as t}from"./index-zu87m18r.js";const r=s=>t.post("/sysApp/list",s||{}),p=s=>t.post("/sysApp/create",s),a=s=>t.post("/sysApp/edit",s),o=s=>t.delete("/sysApp/remove",{data:s}),n=s=>t.get(`/sysApp/detail/${s.id}`);export{p as c,n as d,a as e,r as l,o as r};

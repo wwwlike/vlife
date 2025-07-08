@@ -1,0 +1,1 @@
+import{r}from"./index-zu87m18r.js";import{d as n}from"./BtnToolBar-eoxdJY99.js";import{b as u}from"./isBrowser-DDdYk2YE.js";var f={restoreOnUnmount:!1};function c(e,t){t===void 0&&(t=f);var o=r.useRef(u?document.title:"");r.useEffect(function(){document.title=e},[e]),n(function(){t.restoreOnUnmount&&(document.title=o.current)})}export{c as u};
