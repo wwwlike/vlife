@@ -19,6 +19,7 @@
 package cn.wwwlike.sys.dto;
 import cn.vlife.common.IForm;
 import cn.wwwlike.sys.entity.Form;
+import cn.wwwlike.vlife.annotation.VField;
 import cn.wwwlike.vlife.base.SaveBean;
 import lombok.Data;
 import java.util.List;
@@ -39,7 +40,6 @@ public class FormDto extends SaveBean<Form> implements IForm {
     public String state;
     public String entityId;
     public String itemType;
-    public String icon;
     public Integer modelSize;
     public String orders;
     public String formDesc;
@@ -53,7 +53,4 @@ public class FormDto extends SaveBean<Form> implements IForm {
     public String cascadeDeleteEntityNames;
     public String flowJson;
     public String unpublishJson;
-
-//    public String sysMenuId;
-
 }

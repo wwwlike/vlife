@@ -24,11 +24,4 @@ public class FormPageReq  extends PageQuery<Form> {
     public String type;
     //所属应用
     public String sysAppId;
-    /**
-     * 所属菜单
-     * 页面模型
-     */
-//    public String sysMenuId;
-//    //是否模型
-//    public Boolean model;
 }

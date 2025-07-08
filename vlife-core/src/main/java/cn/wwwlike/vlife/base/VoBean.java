@@ -22,14 +22,11 @@ package cn.wwwlike.vlife.base;
  * vo视图层模型接口
  */
 public  class VoBean<T extends Item> implements IdBean{
-
     public String id;
-
     @Override
     public String getId() {
         return this.id;
     }
-
     @Override
     public void setId(String id) {
         this.id=id;

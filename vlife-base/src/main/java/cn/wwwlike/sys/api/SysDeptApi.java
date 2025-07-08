@@ -8,6 +8,8 @@ import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 部门接口
  */
@@ -17,7 +19,7 @@ public class SysDeptApi extends VLifeApi<SysDept, SysDeptService> {
   @Autowired
   public SysUserService userService;
 
-  public Long remove(@RequestBody String[] ids) {
+  public List<String> remove(@RequestBody String[] ids) {
     for(String id:ids){
       CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(userService.find("sysDeptId",id).size()==0 ,"不能删除"+service.findOne(id).getName()+"，该部门下还有用户");
     }

@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 页签按钮资源vo
+ * 视图按钮关联信息展示vo
  */
 @Data
 public class SysTabButtonVo extends VoBean<SysTabButton> {

@@ -36,7 +36,7 @@ public class SysUserDtoApi extends VLifeApi<SysUserDto, SysUserService> {
     /**
      * 删除
      */
-    public Long remove(@RequestBody String[] ids) {
+    public List<String> remove(@RequestBody String[] ids) {
         String userId= SecurityConfig.getCurrUser().getId();
         CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(!Arrays.asList(ids).contains(userId),"不允许删除自己");////每个人检查，数据删除之前先转移
         Arrays.stream(ids).forEach(id->{

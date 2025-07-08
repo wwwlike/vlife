@@ -14,14 +14,14 @@ import javax.persistence.*;
 @Setter
 @VClazz(remove = {PageComponentProp.class, SysResources.class,SysMenu.class,FormField.class})
 public class Form extends DbEntity {
-    //所属应用
-    public String sysAppId;
-    //已关联菜单
-    public String sysMenuId;
     //模型名称
     public String title;
     //模型标识
     public String type;
+    //所属应用
+    public String sysAppId;
+    //已关联菜单
+    public String sysMenuId;
     /**
      * 关联实体
      * 如自身就是实体则存储当前表id
@@ -41,8 +41,6 @@ public class Form extends DbEntity {
     public String state;
     //待发布的表单JSON
     public String unpublishForm;
-    //图标
-    public String icon;
     //默认排序
     public String orders;
     //完整类名
@@ -102,9 +100,6 @@ public class Form extends DbEntity {
     }
     public Integer getModelSize() {
         return modelSize;
-    }
-    public String getIcon() {
-        return icon;
     }
     public String getFormDesc() {
         return formDesc;

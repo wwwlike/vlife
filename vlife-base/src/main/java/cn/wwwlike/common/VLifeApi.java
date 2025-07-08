@@ -45,16 +45,15 @@ public class VLifeApi<D extends IdBean,S extends VLifeService>{
      * 删除
      */
     @DeleteMapping("/remove")
-    public Long remove(@RequestBody String[] ids) {
-        long result=0;
+    public List<String> remove(@RequestBody String[] ids) {
         try {
-             result= service.remove(ids);
+             return service.remove(ids);
         }catch (Exception e){
             List<Form> forms=formService.find("typeClass",e.getMessage());
             CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(forms.size()==0 ,"删除失败：存在关联的数据【"+forms.get(0).getTitle()+"】");
             e.printStackTrace();
         }
-        return result;
+        return null;
     }
 
     /**

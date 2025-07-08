@@ -317,6 +317,9 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
     @Override
     public <E extends Item> E save(E item) {
         convertEmptyStringsToNull(item);
+        if(item.getStatus()==null){
+            item.setStatus(CT.STATUS.NORMAL);
+        }
         if (item.getId() == null) {
             em.persist(item);
         } else {
@@ -334,6 +337,9 @@ public class DslDao<T extends Item> extends QueryHelper implements VLifeDao<T> {
      */
     @Override
     public <E extends Item> E save(E item, DataProcess dataProcess) {
+        if(item.getStatus()==null){
+            item.setStatus(CT.STATUS.NORMAL);
+        }
         convertEmptyStringsToNull(item);
         WModel wmodel = edit(item.getClass());
         EntityPathBase<? extends Item> saveEntityPath = getItemEntityPath(item.getClass());

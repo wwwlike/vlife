@@ -17,11 +17,8 @@
  */
 
 package cn.wwwlike.common;
-
-import cn.wwwlike.sys.common.IDeptUser;
 import cn.wwwlike.sys.dto.FormDto;
 import cn.wwwlike.sys.entity.SysGroup;
-import cn.wwwlike.sys.entity.SysDept;
 import cn.wwwlike.sys.service.SysDeptService;
 import cn.wwwlike.vlife.base.IdBean;
 import cn.wwwlike.sys.entity.Form;
@@ -46,8 +43,6 @@ import java.util.Map;
  */
 public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeService<T, D> {
     public final String TREECODE = "code";
-    @Autowired
-    public SysDeptService deptService;
     @Autowired
     public FormService formService;
     /*
@@ -89,22 +84,12 @@ public class BaseService<T extends Item, D extends VLifeDao<T>> extends VLifeSer
         if (idBean instanceof ITree) {
             oldTree = treeCode((ITree) idBean, idBean.getId() != null ? (ITree) findOne(idBean.getId()) : null);
         }
-        if(idBean instanceof IDeptUser){
-            IDeptUser deptUser=((IDeptUser) idBean);
-            if(deptUser.getSysUserId()!=null){
-                SysDept dept=deptService.getByUserId(deptUser.getSysUserId());
-                deptUser.setDeptCode(dept.getCode());
-            }else{
-                deptUser.setDeptCode(null);
-            }
-        }
         saveBean(idBean, null, null, null, isFull);
         //树形节点子节点code级联更新
         if (oldTree != null) {  //1 修改之前的子集成新的code
             batchTreeSub(oldTree.getCode(), ((ITree) idBean).getCode());
         }
         return idBean;
-
     }
 
     /**

@@ -42,7 +42,7 @@ public class SysMenu extends DbEntity implements ITree {
     public String pageType;
     //图表看板页面
     public String pageLayoutId;
-    //授权角色组
+    //授权角色
     public String groupIds;
     public String getName() {
         return name;

@@ -6,9 +6,7 @@ import cn.wwwlike.sys.dao.FormDao;
 import cn.wwwlike.sys.dto.FormDto;
 import cn.wwwlike.sys.dto.FormFieldDto;
 import cn.wwwlike.sys.dto.PageComponentPropDto;
-import cn.wwwlike.sys.entity.Button;
-import cn.wwwlike.sys.entity.Form;
-import cn.wwwlike.sys.entity.SysTab;
+import cn.wwwlike.sys.entity.*;
 import cn.wwwlike.vlife.base.Item;
 import cn.wwwlike.vlife.bean.ColumnInfo;
 import cn.wwwlike.vlife.bean.DbTableInfo;
@@ -69,12 +67,12 @@ public class FormService extends VLifeService<Form, FormDao> {
     /**
      * 查询实体的子表模型
      */
-    public List<FormDto> querySubForms(Form entityForm) {
-        if (entityForm == null) {
-            return null;
-        }
-        List<FormDto> otherEntitys = query(FormDto.class, QueryWrapper.of(Form.class).eq("itemType", VCT.MODEL_TYPE.ENTITY).ne("id", entityForm.getId()));
-        return otherEntitys.stream().filter(other -> other.getFields().stream().filter(field -> field.getEntityType().equals(entityForm.getType())).count() > 0).collect(Collectors.toList());
+    public List<FormDto> querySubForms(String entityType) {
+        QueryWrapper<Form> qw=QueryWrapper.of(Form.class);
+        qw.eq("itemType","entity").ne("type",entityType).andSub(FormField.class, qw1->qw1.eq("fieldName",entityType+"Id"));
+        List<FormDto> forms= query(FormDto.class,qw);
+        //有接口的关联子表(排除多对多)
+        return forms.stream().filter(f->resourcesService.count(QueryWrapper.of(SysResources.class).eq("formId",f.getId()))>0).collect(Collectors.toList());
     }
 
     /**
@@ -500,5 +498,25 @@ public class FormService extends VLifeService<Form, FormDao> {
             sysTabService.initTab(sysMenuId,entityId,sysBtns,dto);
         }
     }
+
+    /**
+     * 查找主表Type集合
+     * @param allFkFields 所有外键字段
+     * @param formId 子表id
+     */
+    public List<String> parents(List<FormField> allFkFields,String formId){
+        return allFkFields.stream().filter(f->f.getFormId().equals(formId)).map(t->t.getFieldName().replaceAll("Id$", "")).collect(Collectors.toList());
+    }
+
+    /**
+     * 查找子表type集合
+     * @param entityMap key=>id value=>type
+     * @param allFkFields 所有外键字段
+     * @param entityType 实体type
+     */
+    public List<String> subs(Map<String,String> entityMap ,List<FormField> allFkFields,String entityType){
+        return allFkFields.stream().filter(f->f.getFieldName().equals(entityType+"Id")).map(t->entityMap.get(t.getFormId())).collect(Collectors.toList());
+    }
+
 
 }

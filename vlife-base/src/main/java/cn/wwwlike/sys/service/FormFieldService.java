@@ -316,4 +316,13 @@ public class FormFieldService extends VLifeService<FormField, FormFieldDao> {
                         )).collect(Collectors.toList());
     }
 
+
+    //所有表的外键
+    public List<FormField> allEntityfkFields(){
+        QueryWrapper<FormField> qw =QueryWrapper.of(FormField.class);
+        qw.eq("itemType","entity",Form.class);
+        qw.ne("fieldName","id").eq("entityFieldName","id");
+        return find(qw);
+    }
+
 }

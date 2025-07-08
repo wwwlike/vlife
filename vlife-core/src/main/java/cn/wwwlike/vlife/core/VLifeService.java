@@ -35,6 +35,7 @@ import cn.wwwlike.vlife.query.req.QueryUtils;
 import cn.wwwlike.vlife.query.req.VlifeQuery;
 import cn.wwwlike.vlife.utils.GenericsUtils;
 import cn.wwwlike.vlife.utils.ReflectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -272,12 +273,19 @@ public class VLifeService<T extends Item, D extends VLifeDao<T>> {
     /**
      * 12 根据ID逻辑删除<T>类实体对象，以及能递归以<T>为外键的关联实体数据根据规则进行操作（逻辑删除，清除外键关系，不做操作）
      */
-    public long remove(String ...ids) throws Exception {
+    public List<String> remove(String ...ids) throws Exception {
+        List<String> successfullyDeletedIds=new ArrayList<>();
         if (ids == null||ids.length==0) {
             logger.error("remove-> id is null");
-            return 0;
+            return successfullyDeletedIds;
         }
-        return remove(entityClz, ids);
+        for(String id:ids){
+            long num=remove(entityClz, id);
+            if(num==1){
+                successfullyDeletedIds.add(id);
+            }
+        }
+        return successfullyDeletedIds;
     }
 
     /**

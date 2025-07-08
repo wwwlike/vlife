@@ -12,6 +12,5 @@ public interface IForm {
     public String getCascadeDeleteEntityNames();
     public String  getTypeClass();
     public String getState();
-    public String getIcon();
     public List<? extends IField> getFields();
 }

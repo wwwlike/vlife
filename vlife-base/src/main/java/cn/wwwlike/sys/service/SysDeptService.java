@@ -27,33 +27,9 @@ import cn.wwwlike.web.exception.enums.CommonResponseEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SysDeptService extends BaseService<SysDept, SysDeptDao> {
 
-    @Autowired
-    public SysUserService userService;
-
-    //通过用户id查询所在部门
-    public SysDept getByUserId(String userId){
-        QueryWrapper<SysDept> qw= QueryWrapper.of(SysDept.class);
-        qw.andSub(SysUser.class,qw2->qw2.eq("id",userId));
-        return find(qw).get(0);
-    }
-
-    @Override
-    public long remove(String... ids) {
-//        for(String id:ids){
-//            CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(userService.find("sysDeptId",id).size()==0 ,"不能删除"+findOne(id).getName()+"，该部门下还有用户");
-//        }
-        Long count = 0L;
-        for(String id:ids){
-            try {
-                super.remove(id);
-            }catch (Exception e){
-                CommonResponseEnum.CANOT_CONTINUE.assertIsTrue(false,e.getMessage());
-            }
-            count++;
-        }
-        return count;
-    }
 }

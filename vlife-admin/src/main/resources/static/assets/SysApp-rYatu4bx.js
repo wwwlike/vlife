@@ -1,1 +1,0 @@
-import{a0 as t}from"./index-BNDtW2eT.js";const r=s=>t.post("/sysApp/list",s||{}),p=s=>t.post("/sysApp/create",s),o=s=>t.post("/sysApp/edit",s),a=s=>t.delete("/sysApp/remove",{data:s});export{p as c,o as e,r as l,a as r};

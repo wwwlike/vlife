@@ -7,8 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * 视图按钮
- * 单个视图绑定操作按钮
+ * 视图与按钮关联表
  */
 @Table
 @Data

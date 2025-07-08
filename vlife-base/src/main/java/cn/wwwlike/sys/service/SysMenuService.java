@@ -105,9 +105,8 @@ public class SysMenuService extends BaseService<SysMenu, SysMenuDao> {
     }
 
     @Override
-    public long remove(String... ids) throws Exception {
-        Long total=super.remove(ids);
-        return total;
+    public List<String> remove(String... ids) throws Exception {
+        return super.remove(ids);
     }
 
     //根据页签绑定的访问权限对象查询可以访问的菜单(给到前端的)
